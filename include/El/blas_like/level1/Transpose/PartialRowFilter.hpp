@@ -24,7 +24,7 @@ void PartialRowFilter
           A.RowDist() != B.ColDist() )
           LogicError("Incompatible distributions");
     )
-    unique_ptr<ElementalMatrix<T>>
+    std::unique_ptr<ElementalMatrix<T>>
         AFilt( B.ConstructTranspose(B.Grid(),B.Root()) );
     if( B.ColConstrained() )
         AFilt->AlignRowsWith( B, false );
@@ -50,7 +50,7 @@ void PartialRowFilter
           A.RowDist() != B.ColDist() )
           LogicError("Incompatible distributions");
     )
-    unique_ptr<BlockMatrix<T>>
+    std::unique_ptr<BlockMatrix<T>>
         AFilt( B.ConstructTranspose(B.Grid(),B.Root()) );
     if( B.ColConstrained() )
         AFilt->AlignRowsWith( B, false );

@@ -20,7 +20,7 @@ void MakeTrapezoidal( UpperOrLower uplo, Matrix<T>& A, Int offset )
     const Int ldim = A.LDim();
     T* buffer = A.Buffer();
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         EL_PARALLEL_FOR
         for( Int j=Max(0,offset+1); j<width; ++j )
@@ -54,7 +54,7 @@ MakeTrapezoidal( UpperOrLower uplo, AbstractDistMatrix<T>& A, Int offset )
     T* buffer = A.Buffer();
     const Int ldim = A.LDim();
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         EL_PARALLEL_FOR
         for( Int jLoc=0; jLoc<localWidth; ++jLoc )

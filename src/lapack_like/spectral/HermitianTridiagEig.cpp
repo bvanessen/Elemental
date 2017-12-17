@@ -61,7 +61,7 @@ void SortAndFilter
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Real,Real,STAR,STAR> wProx( wPre );
+    DistMatrixReadWriteProxy<Real,Real,Dist::STAR,Dist::STAR> wProx( wPre );
     auto& w = wProx.Get();
 
     const Int n = w.Height();
@@ -70,7 +70,7 @@ void SortAndFilter
     if( ctrl.subset.indexSubset )
     {
         Sort( w, ctrl.sort );
-        DistMatrix<Real,STAR,STAR> wCopy( w );
+        DistMatrix<Real,Dist::STAR,Dist::STAR> wCopy( w );
         w = wCopy(IR(ctrl.subset.lowerIndex,ctrl.subset.upperIndex+1),ALL);
     }
     else if( ctrl.subset.rangeSubset )
@@ -82,7 +82,7 @@ void SortAndFilter
                 w.GetLocal(j,0) <= ctrl.subset.upperBound )
                 ++numValid;
 
-        DistMatrix<Real,STAR,STAR> wFilter(numValid,1,g);
+        DistMatrix<Real,Dist::STAR,Dist::STAR> wFilter(numValid,1,g);
         numValid = 0;
         for( Int j=0; j<n; ++j )
            if( w.GetLocal(j,0) > ctrl.subset.lowerBound &&
@@ -167,8 +167,8 @@ void SortAndFilter
     EL_DEBUG_CSE
     typedef Base<F> Real;
 
-    DistMatrixReadWriteProxy<Real,Real,STAR,STAR> wProx( wPre );
-    DistMatrixReadWriteProxy<F,F,VC,STAR> QProx( QPre );
+    DistMatrixReadWriteProxy<Real,Real,Dist::STAR,Dist::STAR> wProx( wPre );
+    DistMatrixReadWriteProxy<F,F,Dist::VC,Dist::STAR> QProx( QPre );
     auto& w = wProx.Get();
     auto& Q = QProx.Get();
 
@@ -182,8 +182,8 @@ void SortAndFilter
             w.SetLocal( j, 0, sortPairs[j].value );
         ApplyTaggedSortToEachRow( sortPairs, Q );
 
-        DistMatrix<Real,STAR,STAR> wCopy( w );
-        DistMatrix<F,VC,STAR> QCopy( Q );
+        DistMatrix<Real,Dist::STAR,Dist::STAR> wCopy( w );
+        DistMatrix<F,Dist::VC,Dist::STAR> QCopy( Q );
         w = wCopy(IR(ctrl.subset.lowerIndex,ctrl.subset.upperIndex+1),ALL);
         Q = QCopy(ALL,IR(ctrl.subset.lowerIndex,ctrl.subset.upperIndex+1));
     }
@@ -196,8 +196,8 @@ void SortAndFilter
                 w.GetLocal(j,0) <= ctrl.subset.upperBound )
                 ++numValid;
 
-        DistMatrix<Real,STAR,STAR> wFilter(numValid,1,g);
-        DistMatrix<F,VC,STAR> QFilter(n,numValid,g);
+        DistMatrix<Real,Dist::STAR,Dist::STAR> wFilter(numValid,1,g);
+        DistMatrix<F,Dist::VC,Dist::STAR> QFilter(n,numValid,g);
         numValid = 0;
         for( Int j=0; j<n; ++j )
         {
@@ -255,8 +255,8 @@ void RemovePhase
 
 template<typename Real>
 void RemovePhase
-( const DistMatrix<Complex<Real>,STAR,STAR>& dSub,
-        DistMatrix<Real,STAR,STAR>& dSubReal )
+( const DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR>& dSub,
+        DistMatrix<Real,Dist::STAR,Dist::STAR>& dSubReal )
 {
     EL_DEBUG_CSE
     const Int n = dSub.Height() + 1;
@@ -291,9 +291,9 @@ void RemovePhase
 
 template<typename Real>
 void RemovePhase
-( const DistMatrix<Complex<Real>,STAR,STAR>& dSub,
-        DistMatrix<Real,STAR,STAR>& dSubReal,
-        DistMatrix<Complex<Real>,STAR,STAR>& phase )
+( const DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR>& dSub,
+        DistMatrix<Real,Dist::STAR,Dist::STAR>& dSubReal,
+        DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR>& phase )
 {
     EL_DEBUG_CSE
     const Int n = dSub.Height() + 1;
@@ -473,7 +473,7 @@ QRHelper
 {
     EL_DEBUG_CSE
     HermitianTridiagEigInfo info;
-    DistMatrix<Real,STAR,STAR> d_STAR_STAR(d), dSub_STAR_STAR(dSub);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> d_STAR_STAR(d), dSub_STAR_STAR(dSub);
     info.qrInfo = QRAlg( d_STAR_STAR, dSub_STAR_STAR, ctrl );
     herm_eig::SortAndFilter( d_STAR_STAR, ctrl );
     Copy( d_STAR_STAR, w );
@@ -492,10 +492,10 @@ QRHelper
     HermitianTridiagEigInfo info;
     const Grid& g = d.Grid();
 
-    DistMatrix<Real,STAR,STAR> d_STAR_STAR( d );
-    DistMatrix<Complex<Real>,STAR,STAR> dSub_STAR_STAR( dSub );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> d_STAR_STAR( d );
+    DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR> dSub_STAR_STAR( dSub );
 
-    DistMatrix<Real,STAR,STAR> dSubReal(g);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> dSubReal(g);
     RemovePhase( dSub_STAR_STAR, dSubReal );
 
     info.qrInfo = QRAlg( d_STAR_STAR, dSubReal, ctrl );
@@ -515,9 +515,9 @@ DCHelper
 {
     EL_DEBUG_CSE
     HermitianTridiagEigInfo info;
-    DistMatrix<Real,STAR,STAR> d_STAR_STAR(d), dSub_STAR_STAR(dSub);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> d_STAR_STAR(d), dSub_STAR_STAR(dSub);
 
-    DistMatrixWriteProxy<Real,Real,STAR,STAR> wProx( wPre );
+    DistMatrixWriteProxy<Real,Real,Dist::STAR,Dist::STAR> wProx( wPre );
     auto& w = wProx.Get();
 
     auto ctrlMod( ctrl );
@@ -544,13 +544,13 @@ DCHelper
     HermitianTridiagEigInfo info;
     const Grid& g = d.Grid();
 
-    DistMatrix<Real,STAR,STAR> d_STAR_STAR( d );
-    DistMatrix<Complex<Real>,STAR,STAR> dSub_STAR_STAR( dSub );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> d_STAR_STAR( d );
+    DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR> dSub_STAR_STAR( dSub );
 
-    DistMatrix<Real,STAR,STAR> dSubReal(g);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> dSubReal(g);
     RemovePhase( dSub_STAR_STAR, dSubReal );
 
-    DistMatrixWriteProxy<Real,Real,STAR,STAR> wProx( wPre );
+    DistMatrixWriteProxy<Real,Real,Dist::STAR,Dist::STAR> wProx( wPre );
     auto& w = wProx.Get();
 
     auto ctrlMod( ctrl );
@@ -581,14 +581,14 @@ MRRRHelper
     wCtrl.colConstrain = true;
     wCtrl.colAlign = 0;
 
-    DistMatrixWriteProxy<Real,Real,VR,STAR> wProx( wPre, wCtrl );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> wProx( wPre, wCtrl );
     auto& w = wProx.Get();
 
     // Force the computation to take place with double-precision since PMRRR
     // currently only supports this case
     const Int n = d.Height();
     const Grid& g = d.Grid();
-    DistMatrix<double,STAR,STAR> d_STAR_STAR(g), dSub_STAR_STAR(g);
+    DistMatrix<double,Dist::STAR,Dist::STAR> d_STAR_STAR(g), dSub_STAR_STAR(g);
     Copy( d, d_STAR_STAR );
     dSub_STAR_STAR.Resize( n-1, 1, n );
     Copy( dSub, dSub_STAR_STAR );
@@ -678,20 +678,20 @@ MRRRHelper
     wCtrl.colConstrain = true;
     wCtrl.colAlign = 0;
 
-    DistMatrixWriteProxy<Real,Real,VR,STAR> wProx( wPre, wCtrl );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> wProx( wPre, wCtrl );
     auto& w = wProx.Get();
 
     // Force the computation to take place with double-precision since PMRRR
     // currently only supports this case
     const Int n = d.Height();
     const Grid& g = d.Grid();
-    DistMatrix<double,STAR,STAR> d_STAR_STAR(g);
-    DistMatrix<Complex<double>,STAR,STAR> dSub_STAR_STAR(g);
+    DistMatrix<double,Dist::STAR,Dist::STAR> d_STAR_STAR(g);
+    DistMatrix<Complex<double>,Dist::STAR,Dist::STAR> dSub_STAR_STAR(g);
     Copy( d, d_STAR_STAR );
     dSub_STAR_STAR.Resize( n-1, 1, n );
     Copy( dSub, dSub_STAR_STAR );
 
-    DistMatrix<double,STAR,STAR> dSubReal(g);
+    DistMatrix<double,Dist::STAR,Dist::STAR> dSubReal(g);
     RemovePhase( dSub_STAR_STAR, dSubReal );
 
     herm_tridiag_eig::Info rangeInfo;
@@ -998,18 +998,18 @@ QRHelper
 {
     EL_DEBUG_CSE
     HermitianTridiagEigInfo info;
-    DistMatrix<Real,STAR,STAR> d_STAR_STAR(d), dSub_STAR_STAR(dSub);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> d_STAR_STAR(d), dSub_STAR_STAR(dSub);
 
     if( ctrl.accumulateEigVecs )
     {
-        DistMatrixReadWriteProxy<Real,Real,VC,STAR> QProx( QPre );
+        DistMatrixReadWriteProxy<Real,Real,Dist::VC,Dist::STAR> QProx( QPre );
         auto& Q = QProx.Get();
         info.qrInfo = QRAlg( d_STAR_STAR, dSub_STAR_STAR, Q, ctrl );
         herm_eig::SortAndFilter( d_STAR_STAR, Q, ctrl );
     }
     else
     {
-        DistMatrixWriteProxy<Real,Real,VC,STAR> QProx( QPre );
+        DistMatrixWriteProxy<Real,Real,Dist::VC,Dist::STAR> QProx( QPre );
         auto& Q = QProx.Get();
 
         info.qrInfo = QRAlg( d_STAR_STAR, dSub_STAR_STAR, Q, ctrl );
@@ -1034,16 +1034,16 @@ QRHelper
     const Grid& g = d.Grid();
     HermitianTridiagEigInfo info;
 
-    DistMatrix<Real,STAR,STAR> d_STAR_STAR( d );
-    DistMatrix<F,STAR,STAR> dSub_STAR_STAR( dSub );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> d_STAR_STAR( d );
+    DistMatrix<F,Dist::STAR,Dist::STAR> dSub_STAR_STAR( dSub );
 
-    DistMatrix<Real,STAR,STAR> dSubReal(g);
-    DistMatrix<F,STAR,STAR> phase(g);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> dSubReal(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> phase(g);
     RemovePhase( dSub_STAR_STAR, dSubReal, phase );
 
     if( ctrl.accumulateEigVecs )
     {
-        DistMatrixReadWriteProxy<F,F,VC,STAR> QProx(QPre);
+        DistMatrixReadWriteProxy<F,F,Dist::VC,Dist::STAR> QProx(QPre);
         auto& Q = QProx.Get();
 
         info.qrInfo = QRAlg( d_STAR_STAR, dSubReal, Q, ctrl );
@@ -1054,7 +1054,7 @@ QRHelper
     else
     {
         const Int n = d.Height();
-        DistMatrix<Real,VC,STAR> QReal(g);
+        DistMatrix<Real,Dist::VC,Dist::STAR> QReal(g);
         Identity( QReal, n, n );
 
         info.qrInfo = QRAlg( d_STAR_STAR, dSubReal, QReal, ctrl );
@@ -1079,7 +1079,7 @@ DCHelper
 {
     EL_DEBUG_CSE
     HermitianTridiagEigInfo info;
-    DistMatrix<Real,STAR,STAR> d_STAR_STAR(d), dSub_STAR_STAR(dSub);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> d_STAR_STAR(d), dSub_STAR_STAR(dSub);
 
     if( ctrl.accumulateEigVecs )
     {
@@ -1087,9 +1087,9 @@ DCHelper
     }
     else
     {
-        DistMatrixWriteProxy<Real,Real,STAR,STAR> wProx( wPre );
+        DistMatrixWriteProxy<Real,Real,Dist::STAR,Dist::STAR> wProx( wPre );
         auto& w = wProx.Get();
-        DistMatrixWriteProxy<Real,Real,MC,MR> QProx( QPre );
+        DistMatrixWriteProxy<Real,Real,Dist::MC,Dist::MR> QProx( QPre );
         auto& Q = QProx.Get();
         auto ctrlMod( ctrl );
         ctrlMod.subset.indexSubset = false;
@@ -1117,11 +1117,11 @@ DCHelper
     const Grid& g = d.Grid();
     HermitianTridiagEigInfo info;
 
-    DistMatrix<Real,STAR,STAR> d_STAR_STAR( d );
-    DistMatrix<F,STAR,STAR> dSub_STAR_STAR( dSub );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> d_STAR_STAR( d );
+    DistMatrix<F,Dist::STAR,Dist::STAR> dSub_STAR_STAR( dSub );
 
-    DistMatrix<Real,STAR,STAR> dSubReal(g);
-    DistMatrix<F,STAR,STAR> phase(g);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> dSubReal(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> phase(g);
     RemovePhase( dSub_STAR_STAR, dSubReal, phase );
 
     if( ctrl.accumulateEigVecs )
@@ -1130,9 +1130,9 @@ DCHelper
     }
     else
     {
-        DistMatrix<Real,MC,MR> QReal(g);
+        DistMatrix<Real,Dist::MC,Dist::MR> QReal(g);
 
-        DistMatrixWriteProxy<Real,Real,STAR,STAR> wProx( wPre );
+        DistMatrixWriteProxy<Real,Real,Dist::STAR,Dist::STAR> wProx( wPre );
         auto& w = wProx.Get();
 
         auto ctrlMod( ctrl );
@@ -1172,12 +1172,12 @@ MRRRHelper
     QCtrl.rowConstrain = true;
     QCtrl.rowAlign = 0;
 
-    DistMatrixWriteProxy<Real,Real,VR,STAR> wProx( wPre, wCtrl );
-    DistMatrixWriteProxy<Real,double,STAR,VR> QProx( QPre, QCtrl );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> wProx( wPre, wCtrl );
+    DistMatrixWriteProxy<Real,double,Dist::STAR,Dist::VR> QProx( QPre, QCtrl );
     auto& w = wProx.Get();
     auto& Q = QProx.Get();
 
-    DistMatrix<double,STAR,STAR> d_STAR_STAR(g), dSub_STAR_STAR(g);
+    DistMatrix<double,Dist::STAR,Dist::STAR> d_STAR_STAR(g), dSub_STAR_STAR(g);
     Copy( d, d_STAR_STAR );
     dSub_STAR_STAR.Resize( n-1, 1, n );
     Copy( dSub, dSub_STAR_STAR );
@@ -1248,14 +1248,14 @@ MRRRHelper
     typedef Complex<Real> C;
     HermitianTridiagEigInfo info;
 
-    DistMatrix<double,STAR,STAR> d_STAR_STAR(g);
-    DistMatrix<Complex<double>,STAR,STAR> dSub_STAR_STAR(g);
+    DistMatrix<double,Dist::STAR,Dist::STAR> d_STAR_STAR(g);
+    DistMatrix<Complex<double>,Dist::STAR,Dist::STAR> dSub_STAR_STAR(g);
     Copy( d, d_STAR_STAR );
     dSub_STAR_STAR.Resize( n-1, 1, n );
     Copy( dSub, dSub_STAR_STAR );
 
-    DistMatrix<double,STAR,STAR> dSubReal(g);
-    DistMatrix<Complex<double>,STAR,STAR> phase(g);
+    DistMatrix<double,Dist::STAR,Dist::STAR> dSubReal(g);
+    DistMatrix<Complex<double>,Dist::STAR,Dist::STAR> phase(g);
     RemovePhase( dSub_STAR_STAR, dSubReal, phase );
 
     ElementalProxyCtrl wCtrl, QCtrl;
@@ -1264,8 +1264,8 @@ MRRRHelper
     QCtrl.rowConstrain = true;
     QCtrl.rowAlign = 0;
 
-    DistMatrixWriteProxy<Real,Real,VR,STAR> wProx( wPre, wCtrl );
-    DistMatrixWriteProxy<C,C,STAR,VR> QProx( QPre, QCtrl );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> wProx( wPre, wCtrl );
+    DistMatrixWriteProxy<C,C,Dist::STAR,Dist::VR> QProx( QPre, QCtrl );
     auto& w = wProx.Get();
     auto& Q = QProx.Get();
 
@@ -1287,7 +1287,7 @@ MRRRHelper
         k = ( n==0 ? 0 : ctrl.subset.upperIndex-ctrl.subset.lowerIndex+1 );
     else
         k = n;
-    DistMatrix<double,STAR,VR> QReal(g);
+    DistMatrix<double,Dist::STAR,Dist::VR> QReal(g);
     QReal.Resize( n, k );
 
     herm_tridiag_eig::Info rangeInfo;
@@ -1447,8 +1447,8 @@ Int MRRREstimateHelper
 {
     EL_DEBUG_CSE
     const Int n = d.Height();
-    DistMatrix<double,STAR,STAR> d_STAR_STAR( d.Grid() );
-    DistMatrix<double,STAR,STAR> dSub_STAR_STAR( d.Grid() );
+    DistMatrix<double,Dist::STAR,Dist::STAR> d_STAR_STAR( d.Grid() );
+    DistMatrix<double,Dist::STAR,Dist::STAR> dSub_STAR_STAR( d.Grid() );
     Copy( d, d_STAR_STAR );
     dSub_STAR_STAR.Resize( n-1, 1, n );
     Copy( dSub, dSub_STAR_STAR );
@@ -1498,13 +1498,13 @@ MRRRPostEstimateHelper
     QCtrl.rowConstrain = true;
     QCtrl.rowAlign = 0;
 
-    DistMatrixWriteProxy<Real,Real,VR,STAR> wProx( wPre, wCtrl );
-    DistMatrixWriteProxy<Real,double,STAR,VR> QProx( QPre, QCtrl );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> wProx( wPre, wCtrl );
+    DistMatrixWriteProxy<Real,double,Dist::STAR,Dist::VR> QProx( QPre, QCtrl );
     auto& w = wProx.Get();
     auto& Q = QProx.Get();
 
     const Int n = d.Height();
-    DistMatrix<double,STAR,STAR> d_STAR_STAR( d.Grid() ),
+    DistMatrix<double,Dist::STAR,Dist::STAR> d_STAR_STAR( d.Grid() ),
                                  dSub_STAR_STAR( d.Grid() );
     Copy( d, d_STAR_STAR );
     dSub_STAR_STAR.Resize( n-1, 1, n );

@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include "./NormsFromScaledSquares.hpp"
 
@@ -73,7 +72,7 @@ void RowMaxNorms( const Matrix<Field>& A, Matrix<Base<Field>>& norms )
 
 template<typename Field,Dist U,Dist V>
 void RowTwoNorms
-( const DistMatrix<Field,U,V>& A, DistMatrix<Base<Field>,U,STAR>& norms )
+( const DistMatrix<Field,U,V>& A, DistMatrix<Base<Field>,U,Dist::STAR>& norms )
 {
     EL_DEBUG_CSE
     norms.AlignWith( A );
@@ -88,7 +87,7 @@ void RowTwoNorms
 
 template<typename Field,Dist U,Dist V>
 void RowMaxNorms
-( const DistMatrix<Field,U,V>& A, DistMatrix<Base<Field>,U,STAR>& norms )
+( const DistMatrix<Field,U,V>& A, DistMatrix<Base<Field>,U,Dist::STAR>& norms )
 {
     EL_DEBUG_CSE
     norms.AlignWith( A );
@@ -101,10 +100,10 @@ void RowMaxNorms
 #define PROTO_DIST(Field,U,V) \
   template void RowTwoNorms \
   ( const DistMatrix<Field,U,V>& X, \
-          DistMatrix<Base<Field>,U,STAR>& norms ); \
+          DistMatrix<Base<Field>,U,Dist::STAR>& norms ); \
   template void RowMaxNorms \
   ( const DistMatrix<Field,U,V>& X, \
-          DistMatrix<Base<Field>,U,STAR>& norms );
+          DistMatrix<Base<Field>,U,Dist::STAR>& norms );
 
 #define PROTO(Field) \
   template void RowTwoNorms \
@@ -113,19 +112,19 @@ void RowMaxNorms
   template void RowMaxNorms \
   ( const Matrix<Field>& X, \
           Matrix<Base<Field>>& norms ); \
-  PROTO_DIST(Field,MC,  MR  ) \
-  PROTO_DIST(Field,MC,  STAR) \
-  PROTO_DIST(Field,MD,  STAR) \
-  PROTO_DIST(Field,MR,  MC  ) \
-  PROTO_DIST(Field,MR,  STAR) \
-  PROTO_DIST(Field,STAR,MC  ) \
-  PROTO_DIST(Field,STAR,MD  ) \
-  PROTO_DIST(Field,STAR,MR  ) \
-  PROTO_DIST(Field,STAR,STAR) \
-  PROTO_DIST(Field,STAR,VC  ) \
-  PROTO_DIST(Field,STAR,VR  ) \
-  PROTO_DIST(Field,VC,  STAR) \
-  PROTO_DIST(Field,VR,  STAR)
+  PROTO_DIST(Field,Dist::MC,  Dist::MR  ) \
+  PROTO_DIST(Field,Dist::MC,  Dist::STAR) \
+  PROTO_DIST(Field,Dist::MD,  Dist::STAR) \
+  PROTO_DIST(Field,Dist::MR,  Dist::MC  ) \
+  PROTO_DIST(Field,Dist::MR,  Dist::STAR) \
+  PROTO_DIST(Field,Dist::STAR,Dist::MC  ) \
+  PROTO_DIST(Field,Dist::STAR,Dist::MD  ) \
+  PROTO_DIST(Field,Dist::STAR,Dist::MR  ) \
+  PROTO_DIST(Field,Dist::STAR,Dist::STAR) \
+  PROTO_DIST(Field,Dist::STAR,Dist::VC  ) \
+  PROTO_DIST(Field,Dist::STAR,Dist::VR  ) \
+  PROTO_DIST(Field,Dist::VC,  Dist::STAR) \
+  PROTO_DIST(Field,Dist::VR,  Dist::STAR)
 
 #define EL_NO_INT_PROTO
 #define EL_ENABLE_DOUBLEDOUBLE

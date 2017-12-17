@@ -45,7 +45,7 @@ void ColAllToAllPromote
         }
         else
         {
-            vector<T> buffer;
+            std::vector<T> buffer;
             FastResize( buffer, 2*colStrideUnion*portionSize );
             T* firstBuf  = &buffer[0];
             T* secondBuf = &buffer[colStrideUnion*portionSize];
@@ -81,7 +81,7 @@ void ColAllToAllPromote
         const Int sendColRankPart = Mod( colRankPart+colDiff, colStridePart );
         const Int recvColRankPart = Mod( colRankPart-colDiff, colStridePart );
 
-        vector<T> buffer;
+        std::vector<T> buffer;
         FastResize( buffer, 2*colStrideUnion*portionSize );
         T* firstBuf  = &buffer[0];
         T* secondBuf = &buffer[colStrideUnion*portionSize];
@@ -117,8 +117,8 @@ void ColAllToAllPromote
 
 template<typename T,Dist U,Dist V>
 void ColAllToAllPromote
-( const DistMatrix<T,        U,                     V   ,BLOCK>& A,
-        DistMatrix<T,Partial<U>(),PartialUnionRow<U,V>(),BLOCK>& B )
+( const DistMatrix<T,        U,                     V   ,DistWrap::BLOCK>& A,
+        DistMatrix<T,Partial<U>(),PartialUnionRow<U,V>(),DistWrap::BLOCK>& B )
 {
     EL_DEBUG_CSE
     AssertSameGrids( A, B );

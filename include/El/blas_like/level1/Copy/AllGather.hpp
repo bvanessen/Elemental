@@ -39,7 +39,7 @@ void AllGather
             const Int maxLocalHeight = MaxLength(height,colStride);
             const Int maxLocalWidth = MaxLength(width,rowStride);
             const Int portionSize = mpi::Pad( maxLocalHeight*maxLocalWidth );
-            vector<T> buf;
+            std::vector<T> buf;
             FastResize( buf, (distStride+1)*portionSize );
             T* sendBuf = &buf[0];
             T* recvBuf = &buf[portionSize];
@@ -69,8 +69,8 @@ void AllGather
 
 template<typename T,Dist U,Dist V>
 void AllGather
-( const DistMatrix<T,        U,           V   ,BLOCK>& A,
-        DistMatrix<T,Collect<U>(),Collect<V>(),BLOCK>& B )
+( const DistMatrix<T,        U,           V   ,DistWrap::BLOCK>& A,
+        DistMatrix<T,Collect<U>(),Collect<V>(),DistWrap::BLOCK>& B )
 {
     EL_DEBUG_CSE
     AssertSameGrids( A, B );

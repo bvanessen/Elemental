@@ -12,7 +12,7 @@
 namespace El {
 
 template<typename T>
-void IndexDependentFill( Matrix<T>& A, function<T(Int,Int)> func )
+void IndexDependentFill( Matrix<T>& A, std::function<T(Int,Int)> func )
 {
     EL_DEBUG_CSE
     const Int m = A.Height();
@@ -47,7 +47,7 @@ void IndexDependentFill( Matrix<T>& A, function<T(Int,Int)> func )
 
 template<typename T>
 void IndexDependentFill
-( AbstractDistMatrix<T>& A, function<T(Int,Int)> func )
+( AbstractDistMatrix<T>& A, std::function<T(Int,Int)> func )
 {
     EL_DEBUG_CSE
     const Int mLoc = A.LocalHeight();
@@ -92,9 +92,9 @@ void IndexDependentFill
 
 #define PROTO(T) \
   EL_EXTERN template void IndexDependentFill \
-  ( Matrix<T>& A, function<T(Int,Int)> func ); \
+  ( Matrix<T>& A, std::function<T(Int,Int)> func ); \
   EL_EXTERN template void IndexDependentFill \
-  ( AbstractDistMatrix<T>& A, function<T(Int,Int)> func );
+  ( AbstractDistMatrix<T>& A, std::function<T(Int,Int)> func );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

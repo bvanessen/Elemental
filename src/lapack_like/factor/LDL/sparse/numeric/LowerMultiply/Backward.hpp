@@ -1,20 +1,20 @@
 /*
-   Copyright (c) 2009-2012, Jack Poulson, Lexing Ying, and 
+   Copyright (c) 2009-2012, Jack Poulson, Lexing Ying, and
    The University of Texas at Austin.
    All rights reserved.
 
    Copyright (c) 2013, Jack Poulson, Lexing Ying, and Stanford University.
    All rights reserved.
 
-   Copyright (c) 2013-2014, Jack Poulson and 
+   Copyright (c) 2013-2014, Jack Poulson and
    The Georgia Institute of Technology.
    All rights reserved.
 
    Copyright (c) 2014-2015, Jack Poulson and Stanford University.
    All rights reserved.
-   
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_FACTOR_LDL_SPARSE_NUMERIC_LOWERMULTIPLY_BACKWARD_HPP
@@ -27,9 +27,9 @@
 namespace El {
 namespace ldl {
 
-template<typename F> 
+template<typename F>
 inline void LowerBackwardMultiply
-( const NodeInfo& info, 
+( const NodeInfo& info,
   const Front<F>& front, MatrixNode<F>& X, bool conjugate )
 {
     EL_DEBUG_CSE
@@ -41,8 +41,8 @@ inline void LowerBackwardMultiply
     bool haveDupMatParent = dupMat != nullptr && dupMat->parent != nullptr;
     // Ugh.
     auto& W =
-      (haveParent ? X.work 
-                  : (haveDupMVParent ? dupMV->work.Matrix()  
+      (haveParent ? X.work
+                  : (haveDupMVParent ? dupMV->work.Matrix()
                                      : (haveDupMatParent ? dupMat->work.Matrix()
                                                          : X.matrix)));
 
@@ -53,7 +53,7 @@ inline void LowerBackwardMultiply
         // Set up a workspace for the child
         auto& childW = X.children[c]->work;
         childW.Resize( front.children[c]->Height(), numRHS );
-        Matrix<F> childWT, childWB; 
+        Matrix<F> childWT, childWB;
         PartitionDown( childW, childWT, childWB, info.children[c]->size );
         childWT = X.children[c]->matrix;
 
@@ -80,12 +80,12 @@ inline void LowerBackwardMultiply
     else if( haveDupMVParent )
     {
         X.matrix = W( IR(0,info.size), IR(0,numRHS) );
-        dupMV->work.Empty();    
+        dupMV->work.Empty();
     }
     else if( haveDupMatParent )
     {
         X.matrix = W( IR(0,info.size), IR(0,numRHS) );
-        dupMat->work.Empty();    
+        dupMat->work.Empty();
     }
 }
 
@@ -121,7 +121,7 @@ inline void LowerBackwardMultiply
         auto& childW = X.child->work;
         childW.SetGrid( childGrid );
         childW.Resize( childFrontHeight, numRHS );
-        DistMatrix<F,VC,STAR> childWT(childGrid), childWB(childGrid);
+        DistMatrix<F,Dist::VC,Dist::STAR> childWT(childGrid), childWB(childGrid);
         PartitionDown( childW, childWT, childWB, info.child->size );
         childWT = X.child->matrix;
 

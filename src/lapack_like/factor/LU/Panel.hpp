@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_LU_PANEL_HPP
@@ -16,7 +16,7 @@ template<typename F>
 void Panel( Matrix<F>& A, Permutation& P, Permutation& PB, Int offset )
 {
     EL_DEBUG_CSE
-    const Int m = A.Height(); 
+    const Int m = A.Height();
     const Int n = A.Width();
     F* ABuf = A.Buffer();
     const Int ALDim = A.LDim();
@@ -60,14 +60,14 @@ void Panel( Matrix<F>& A, Permutation& P, Permutation& PB, Int offset )
 }
 
 // NOTE: It is assumed that the local buffers of A[*,*] and B[MC,*] can be
-//       verticially stacked, so that the top-left local entry of B is 
+//       verticially stacked, so that the top-left local entry of B is
 //       the n'th local entry of A[*,*]'s local buffer.
 //       Also, on entry, it is only required that process row 0 has the correct
 //       data for A.
 template<typename F>
 void Panel
-( DistMatrix<F,  STAR,STAR>& A, 
-  DistMatrix<F,  MC,  STAR>& B, 
+( DistMatrix<F,  Dist::STAR,Dist::STAR>& A,
+  DistMatrix<F,  Dist::MC,  Dist::STAR>& B,
   DistPermutation& P,
   DistPermutation& PB,
   Int offset,
@@ -104,7 +104,7 @@ void Panel
               F* A22Buf = &ABuf[(k+1) + (k+1)*ALDim];
 
         // Store the index/value of the local pivot candidate
-        Int aB1LocalInd = blas::MaxInd( ind2Size+1+BLocHeight, aB1Buf, 1 ); 
+        Int aB1LocalInd = blas::MaxInd( ind2Size+1+BLocHeight, aB1Buf, 1 );
         ValueInt<Real> localPivot;
         localPivot.value = Abs(aB1Buf[aB1LocalInd]);
         if( aB1LocalInd+k < n )

@@ -283,17 +283,17 @@ void LUNLarge
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
-    DistMatrixReadProxy<F,F,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadProxy<F,F,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
     auto& shifts = shiftsProx.GetLocked();
 
-    DistMatrix<F,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<F,STAR,MR  > X1_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > X1_STAR_VR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > X1_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
 
     const Int kLast = LastOffset( m, bsize );
     Int k=kLast, kOld=m;
@@ -351,9 +351,9 @@ void LUNLarge
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<Real,Real,MC,MR> UProx( UPre );
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixReadWriteProxy<Real,Real,MC,MR>
+    DistMatrixReadProxy<Real,Real,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixReadWriteProxy<Real,Real,Dist::MC,Dist::MR>
       XRealProx( XRealPre ),
       XImagProx( XImagPre );
     auto& U = UProx.GetLocked();
@@ -361,10 +361,10 @@ void LUNLarge
     auto& XImag = XImagProx.Get();
     auto& shifts = shiftsProx.GetLocked();
 
-    DistMatrix<Real,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<Real,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<Real,STAR,MR  > X1Real_STAR_MR(g), X1Imag_STAR_MR(g);
-    DistMatrix<Real,STAR,VR  > X1Real_STAR_VR(g), X1Imag_STAR_VR(g);
+    DistMatrix<Real,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<Real,Dist::STAR,Dist::MR  > X1Real_STAR_MR(g), X1Imag_STAR_MR(g);
+    DistMatrix<Real,Dist::STAR,Dist::VR  > X1Real_STAR_VR(g), X1Imag_STAR_VR(g);
 
     const Int kLast = LastOffset( m, bsize );
     Int k=kLast, kOld=m;
@@ -432,18 +432,18 @@ void LUNMedium
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
-    DistMatrixReadProxy<F,F,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadProxy<F,F,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
     auto& shifts = shiftsProx.GetLocked();
 
-    DistMatrix<F,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<F,MR,  STAR> X1Trans_MR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> X1Trans_MR_STAR(g);
 
-    DistMatrix<F,MR,  STAR> shifts_MR_STAR(shifts),
+    DistMatrix<F,Dist::MR,  Dist::STAR> shifts_MR_STAR(shifts),
                             shifts_MR_STAR_Align(g);
 
     const Int kLast = LastOffset( m, bsize );
@@ -505,9 +505,9 @@ void LUNMedium
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<Real,Real,MC,MR> UProx( UPre );
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixReadWriteProxy<Real,Real,MC,MR>
+    DistMatrixReadProxy<Real,Real,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixReadWriteProxy<Real,Real,Dist::MC,Dist::MR>
       XRealProx( XRealPre ),
       XImagProx( XImagPre );
     auto& U = UProx.GetLocked();
@@ -515,12 +515,12 @@ void LUNMedium
     auto& XImag = XImagProx.Get();
     auto& shifts = shiftsProx.GetLocked();
 
-    DistMatrix<Real,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<Real,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<Real,MR,  STAR> X1RealTrans_MR_STAR(g),
+    DistMatrix<Real,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<Real,Dist::MR,  Dist::STAR> X1RealTrans_MR_STAR(g),
                                X1ImagTrans_MR_STAR(g);
 
-    DistMatrix<C,MR,  STAR> shifts_MR_STAR(shifts),
+    DistMatrix<C,Dist::MR,  Dist::STAR> shifts_MR_STAR(shifts),
                             shifts_MR_STAR_Align(g);
 
     const Int kLast = LastOffset( m, bsize );
@@ -580,9 +580,9 @@ void LUNMedium
 
 template<typename F,Dist colDist,Dist shiftColDist,Dist shiftRowDist>
 void LUNSmall
-( const DistMatrix<F,     colDist,STAR        >& U,
+( const DistMatrix<F,     colDist,Dist::STAR        >& U,
   const DistMatrix<F,shiftColDist,shiftRowDist>& shifts,
-        DistMatrix<F,     colDist,STAR        >& X )
+        DistMatrix<F,     colDist,Dist::STAR        >& X )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -599,7 +599,7 @@ void LUNSmall
     const Int bsize = Blocksize();
     const Grid& g = U.Grid();
 
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g), X1_STAR_STAR(g),
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g), X1_STAR_STAR(g),
                             shifts_STAR_STAR(shifts);
 
     const Int kLast = LastOffset( m, bsize );
@@ -641,10 +641,10 @@ void LUNSmall
 
 template<typename Real,Dist colDist,Dist shiftColDist,Dist shiftRowDist>
 void LUNSmall
-( const DistMatrix<Real,              colDist,STAR        >& U,
+( const DistMatrix<Real,              colDist,Dist::STAR        >& U,
   const DistMatrix<Complex<Real>,shiftColDist,shiftRowDist>& shifts,
-        DistMatrix<Real,              colDist,STAR        >& XReal,
-        DistMatrix<Real,              colDist,STAR        >& XImag )
+        DistMatrix<Real,              colDist,Dist::STAR        >& XReal,
+        DistMatrix<Real,              colDist,Dist::STAR        >& XImag )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -666,9 +666,9 @@ void LUNSmall
     const Int bsize = Blocksize();
     const Grid& g = U.Grid();
 
-    DistMatrix<Real,STAR,STAR> U11_STAR_STAR(g), X1Real_STAR_STAR(g),
+    DistMatrix<Real,Dist::STAR,Dist::STAR> U11_STAR_STAR(g), X1Real_STAR_STAR(g),
                                                  X1Imag_STAR_STAR(g);
-    DistMatrix<C,STAR,STAR> shifts_STAR_STAR(shifts);
+    DistMatrix<C,Dist::STAR,Dist::STAR> shifts_STAR_STAR(shifts);
 
     const Int kLast = LastOffset( m, bsize );
     Int k=kLast, kOld=m;

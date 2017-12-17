@@ -65,7 +65,7 @@ void Read
     }
     else if( sequential )
     {
-        DistMatrix<T,CIRC,CIRC> A_CIRC_CIRC( A.Grid() );
+        DistMatrix<T,Dist::CIRC,Dist::CIRC> A_CIRC_CIRC( A.Grid() );
         if( format == BINARY_FLAT )
             A_CIRC_CIRC.Resize( A.Height(), A.Width() );
         if( A_CIRC_CIRC.CrossRank() == A_CIRC_CIRC.Root() )

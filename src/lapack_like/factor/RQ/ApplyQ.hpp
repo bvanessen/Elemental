@@ -86,8 +86,8 @@ void ApplyQ
     const Int offset = APre.Width()-APre.Height();
     const Int minDim = Min(APre.Height(),APre.Width());
 
-    DistMatrixReadProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> BProx( BPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> BProx( BPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.Get();
 
@@ -97,7 +97,7 @@ void ApplyQ
     householderScalarsCtrl.root = A.DiagonalRoot(offset);
     householderScalarsCtrl.colAlign = A.DiagonalAlign(offset);
 
-    DistMatrixReadProxy<F,F,MD,STAR>
+    DistMatrixReadProxy<F,F,Dist::MD,Dist::STAR>
      householderScalarsProx( householderScalarsPre, householderScalarsCtrl );
     auto& householderScalars = householderScalarsProx.GetLocked();
 

@@ -76,8 +76,8 @@ void UpperBlocked
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(AssertSameGrids( APre, householderScalarsPre ))
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,STAR,STAR>
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::STAR,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& A = AProx.Get();
     auto& householderScalars = householderScalarsProx.Get();
@@ -86,9 +86,9 @@ void UpperBlocked
     const Int n = A.Height();
     householderScalars.Resize( Max(n-1,0), 1 );
 
-    DistMatrix<F,MC,STAR> V01_MC_STAR(g), UB1_MC_STAR(g), VB1_MC_STAR(g);
-    DistMatrix<F,MR,STAR> UB1_MR_STAR(g), V21_MR_STAR(g);
-    DistMatrix<F,STAR,STAR> G11_STAR_STAR(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> V01_MC_STAR(g), UB1_MC_STAR(g), VB1_MC_STAR(g);
+    DistMatrix<F,Dist::MR,Dist::STAR> UB1_MR_STAR(g), V21_MR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> G11_STAR_STAR(g);
 
     const Int bsize = Blocksize();
     for( Int k=0; k<n-1; k+=bsize )

@@ -32,14 +32,14 @@ template<typename T,Dist U,Dist V>
 void Translate( const DistMatrix<T,U,V>& A, DistMatrix<T,U,V>& B );
 template<typename T,Dist U,Dist V>
 void Translate
-( const DistMatrix<T,U,V,BLOCK>& A, DistMatrix<T,U,V,BLOCK>& B );
+( const DistMatrix<T,U,V,DistWrap::BLOCK>& A, DistMatrix<T,U,V,DistWrap::BLOCK>& B );
 
 template<typename T>
 void TranslateBetweenGrids
-( const DistMatrix<T,MC,MR>& A, DistMatrix<T,MC,MR>& B );
+( const DistMatrix<T,Dist::MC,Dist::MR>& A, DistMatrix<T,Dist::MC,Dist::MR>& B );
 template<typename T>
 void TranslateBetweenGrids
-( const DistMatrix<T,STAR,STAR>& A, DistMatrix<T,STAR,STAR>& B );
+( const DistMatrix<T,Dist::STAR,Dist::STAR>& A, DistMatrix<T,Dist::STAR,Dist::STAR>& B );
 // The fallback case that simply throws an exception
 template<typename T,Dist U,Dist V>
 void TranslateBetweenGrids
@@ -48,12 +48,12 @@ void TranslateBetweenGrids
 // NOTE: Only instantiated for (U,V)=(MC,MR) and (U,V)=(MR,MC)
 template<typename T,Dist U,Dist V>
 void ColwiseVectorExchange
-( const DistMatrix<T,ProductDist<U,V>(),STAR>& A,
-        DistMatrix<T,ProductDist<V,U>(),STAR>& B );
+( const DistMatrix<T,ProductDist<U,V>(),Dist::STAR>& A,
+        DistMatrix<T,ProductDist<V,U>(),Dist::STAR>& B );
 template<typename T,Dist U,Dist V>
 void RowwiseVectorExchange
-( const DistMatrix<T,STAR,ProductDist<U,V>()>& A,
-        DistMatrix<T,STAR,ProductDist<V,U>()>& B );
+( const DistMatrix<T,Dist::STAR,ProductDist<U,V>()>& A,
+        DistMatrix<T,Dist::STAR,ProductDist<V,U>()>& B );
 
 // NOTE: Only instantiated for (U,V)=(MC,MR) and (U,V)=(MR,MC)
 template<typename T,Dist U,Dist V>
@@ -65,8 +65,8 @@ void Filter
         DistMatrix<T,        U,           V   >& B );
 template<typename T,Dist U,Dist V>
 void Filter
-( const DistMatrix<T,Collect<U>(),Collect<V>(),BLOCK>& A,
-        DistMatrix<T,        U,           V   ,BLOCK>& B );
+( const DistMatrix<T,Collect<U>(),Collect<V>(),DistWrap::BLOCK>& A,
+        DistMatrix<T,        U,           V   ,DistWrap::BLOCK>& B );
 
 // (V,Collect(U)) |-> (U,V)
 template<typename T>
@@ -110,8 +110,8 @@ void AllGather
         DistMatrix<T,Collect<U>(),Collect<V>()>& B );
 template<typename T,Dist U,Dist V>
 void AllGather
-( const DistMatrix<T,        U,           V   ,BLOCK>& A,
-        DistMatrix<T,Collect<U>(),Collect<V>(),BLOCK>& B );
+( const DistMatrix<T,        U,           V   ,DistWrap::BLOCK>& A,
+        DistMatrix<T,Collect<U>(),Collect<V>(),DistWrap::BLOCK>& B );
 
 // (U,V) |-> (Collect(U),V)
 template<typename T>
@@ -135,8 +135,8 @@ void PartialColAllGather
         DistMatrix<T,Partial<U>(),V>& B );
 template<typename T,Dist U,Dist V>
 void PartialColAllGather
-( const DistMatrix<T,        U,   V,BLOCK>& A,
-        DistMatrix<T,Partial<U>(),V,BLOCK>& B );
+( const DistMatrix<T,        U,   V,DistWrap::BLOCK>& A,
+        DistMatrix<T,Partial<U>(),V,DistWrap::BLOCK>& B );
 
 // (U,V) |-> (U,Partial(V))
 template<typename T>
@@ -152,8 +152,8 @@ void ColAllToAllDemote
         DistMatrix<T,        U,                     V   >& B );
 template<typename T,Dist U,Dist V>
 void ColAllToAllDemote
-( const DistMatrix<T,Partial<U>(),PartialUnionRow<U,V>(),BLOCK>& A,
-        DistMatrix<T,        U,                     V   ,BLOCK>& B );
+( const DistMatrix<T,Partial<U>(),PartialUnionRow<U,V>(),DistWrap::BLOCK>& A,
+        DistMatrix<T,        U,                     V   ,DistWrap::BLOCK>& B );
 
 template<typename T,Dist U,Dist V>
 void RowAllToAllDemote
@@ -161,8 +161,8 @@ void RowAllToAllDemote
         DistMatrix<T,                U,             V   >& B );
 template<typename T,Dist U,Dist V>
 void RowAllToAllDemote
-( const DistMatrix<T,PartialUnionCol<U,V>(),Partial<V>(),BLOCK>& A,
-        DistMatrix<T,                U,             V   ,BLOCK>& B );
+( const DistMatrix<T,PartialUnionCol<U,V>(),Partial<V>(),DistWrap::BLOCK>& A,
+        DistMatrix<T,                U,             V   ,DistWrap::BLOCK>& B );
 
 template<typename T,Dist U,Dist V>
 void ColAllToAllPromote
@@ -170,8 +170,8 @@ void ColAllToAllPromote
         DistMatrix<T,Partial<U>(),PartialUnionRow<U,V>()>& B );
 template<typename T,Dist U,Dist V>
 void ColAllToAllPromote
-( const DistMatrix<T,        U,                     V   ,BLOCK>& A,
-        DistMatrix<T,Partial<U>(),PartialUnionRow<U,V>(),BLOCK>& B );
+( const DistMatrix<T,        U,                     V   ,DistWrap::BLOCK>& A,
+        DistMatrix<T,Partial<U>(),PartialUnionRow<U,V>(),DistWrap::BLOCK>& B );
 
 template<typename T,Dist U,Dist V>
 void RowAllToAllPromote
@@ -179,35 +179,35 @@ void RowAllToAllPromote
         DistMatrix<T,PartialUnionCol<U,V>(),Partial<V>()>& B );
 template<typename T,Dist U,Dist V>
 void RowAllToAllPromote
-( const DistMatrix<T,                U,             V   ,BLOCK>& A,
-        DistMatrix<T,PartialUnionCol<U,V>(),Partial<V>(),BLOCK>& B );
+( const DistMatrix<T,                U,             V   ,DistWrap::BLOCK>& A,
+        DistMatrix<T,PartialUnionCol<U,V>(),Partial<V>(),DistWrap::BLOCK>& B );
 
 template<typename T>
 void Gather
 ( const ElementalMatrix<T>& A,
-        DistMatrix<T,CIRC,CIRC>& B );
+        DistMatrix<T,Dist::CIRC,Dist::CIRC>& B );
 template<typename T>
 void Gather
 ( const BlockMatrix<T>& A,
-        DistMatrix<T,CIRC,CIRC,BLOCK>& B );
+        DistMatrix<T,Dist::CIRC,Dist::CIRC,DistWrap::BLOCK>& B );
 
 template<typename T>
 void Scatter
-( const DistMatrix<T,CIRC,CIRC>& A,
+( const DistMatrix<T,Dist::CIRC,Dist::CIRC>& A,
         ElementalMatrix<T>& B );
 template<typename T>
 void Scatter
-( const DistMatrix<T,CIRC,CIRC,BLOCK>& A,
+( const DistMatrix<T,Dist::CIRC,Dist::CIRC,DistWrap::BLOCK>& A,
         BlockMatrix<T>& B );
 
 template<typename T>
 void Scatter
-( const DistMatrix<T,CIRC,CIRC>& A,
-        DistMatrix<T,STAR,STAR>& B );
+( const DistMatrix<T,Dist::CIRC,Dist::CIRC>& A,
+        DistMatrix<T,Dist::STAR,Dist::STAR>& B );
 template<typename T>
 void Scatter
-( const DistMatrix<T,CIRC,CIRC,BLOCK>& A,
-        DistMatrix<T,STAR,STAR,BLOCK>& B );
+( const DistMatrix<T,Dist::CIRC,Dist::CIRC,DistWrap::BLOCK>& A,
+        DistMatrix<T,Dist::STAR,Dist::STAR,DistWrap::BLOCK>& B );
 
 } // namespace copy
 

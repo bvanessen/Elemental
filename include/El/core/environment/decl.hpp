@@ -1,46 +1,38 @@
 /*
-   Copyright (c) 2009-2016, Jack Poulson
-   All rights reserved.
+  Copyright (c) 2009-2016, Jack Poulson
+  All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License,
-   which can be found in the LICENSE file in the root directory, or at
-   http://opensource.org/licenses/BSD-2-Clause
+  This file is part of Elemental and is under the BSD 2-Clause License,
+  which can be found in the LICENSE file in the root directory, or at
+  http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_ENVIRONMENT_DECL_HPP
 #define EL_ENVIRONMENT_DECL_HPP
 
-namespace El {
+// FIXME (trb 12/15/17): THIS FILE IS TERRRRRRRIBLE AND, FRANKLY, A
+// GOOD EXAMPLE OF SOMETHING THAT LEADS TO ALL THOSE REASONS WHY
+// PEOPLE RELIGIOUSLY HATE C++
 
-using std::size_t;
+#include <exception>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <sstream>
+#include <stdexcept>
+#include <vector>
 
-using std::array;
-using std::function;
-using std::pair;
-using std::vector;
+#include "El/core/imports/mpi.hpp"
+#include "El/core/imports/mpi_choice.hpp"
 
-using std::make_shared;
-using std::shared_ptr;
-using std::unique_ptr;
+#include "El/macros.h"
 
-using std::move;
+namespace El
+{
 
-using std::string;
-using std::cout;
-using std::cerr;
-using std::endl;
-using std::ifstream;
-using std::ofstream;
-using std::istream;
-using std::ostream;
-using std::ostringstream;
-
-using std::exception;
-using std::uncaught_exception;
-
-void PrintVersion( ostream& os=cout );
-void PrintConfig( ostream& os=cout );
-void PrintCCompilerInfo( ostream& os=cout );
-void PrintCxxCompilerInfo( ostream& os=cout );
+void PrintVersion( std::ostream& os=std::cout );
+void PrintConfig( std::ostream& os=std::cout );
+void PrintCCompilerInfo( std::ostream& os=std::cout );
+void PrintCxxCompilerInfo( std::ostream& os=std::cout );
 bool Using64BitInt();
 bool Using64BitBlasInt();
 
@@ -66,21 +58,21 @@ class Args : public choice::MpiArgs
 public:
     Args
     ( int argc, char** argv,
-      mpi::Comm comm=mpi::COMM_WORLD, ostream& error=cerr )
-    : choice::MpiArgs(argc,argv,comm,error)
+      mpi::Comm comm=mpi::COMM_WORLD, std::ostream& error=std::cerr )
+        : choice::MpiArgs(argc,argv,comm,error)
     { }
     virtual ~Args() { }
 protected:
-    virtual void HandleVersion( ostream& os=cout ) const;
-    virtual void HandleBuild( ostream& os=cout ) const;
+    virtual void HandleVersion( std::ostream& os=std::cout ) const;
+    virtual void HandleBuild( std::ostream& os=std::cout ) const;
 };
 Args& GetArgs();
 
 // For processing command-line arguments
 template<typename T>
-T Input( string name, string desc );
+T Input( std::string name, std::string desc );
 template<typename T>
-T Input( string name, string desc, T defaultVal );
+T Input( std::string name, std::string desc, T defaultVal );
 void ProcessInput();
 void PrintInputReport();
 
@@ -109,14 +101,14 @@ template<typename T,
          typename=EnableIf<IsPacked<T>>>
 void MemCopy
 (       T* dest,
-  const T* source,
+        const T* source,
         size_t numEntries );
 template<typename T,
          typename=DisableIf<IsPacked<T>>,
          typename=void>
 void MemCopy
 (       T* dest,
-  const T* source,
+        const T* source,
         size_t numEntries );
 
 template<typename T,
@@ -140,13 +132,13 @@ template<typename T,
          typename=EnableIf<IsPacked<T>>>
 void StridedMemCopy
 (       T* dest,   Int destStride,
-  const T* source, Int sourceStride, Int numEntries );
+        const T* source, Int sourceStride, Int numEntries );
 template<typename T,
          typename=DisableIf<IsPacked<T>>,
          typename=void>
 void StridedMemCopy
 (       T* dest,   Int destStride,
-  const T* source, Int sourceStride, Int numEntries );
+        const T* source, Int sourceStride, Int numEntries );
 
 // A thin wrapper around std::copy
 template<typename S,typename T>
@@ -170,24 +162,25 @@ void SwapClear( T& x );
 // valgrind is currently running or the datatype *requires* construction.
 template<typename T,
          typename=EnableIf<IsPacked<T>>>
-void FastResize( vector<T>& v, Int numEntries );
+void FastResize( std::vector<T>& v, Int numEntries );
 template<typename T,
          typename=DisableIf<IsPacked<T>>,
          typename=void>
-void FastResize( vector<T>& v, Int numEntries );
+void FastResize( std::vector<T>& v, Int numEntries );
 
-inline void BuildStream( ostringstream& ) { }
+inline void BuildStream( std::ostringstream& ) { }
 
 template<typename T,typename... ArgPack>
-void BuildStream( ostringstream& os, const T& item, const ArgPack& ... args );
+void BuildStream( std::ostringstream& os, const T& item,
+                  const ArgPack& ... args );
 template<typename... ArgPack>
-string BuildString( const ArgPack& ... args );
+std::string BuildString( const ArgPack& ... args );
 
 class UnrecoverableException : public std::runtime_error
 {
 public:
     UnrecoverableException( const char* msg="Unrecoverable exception" )
-    : std::runtime_error( msg ) { }
+        : std::runtime_error( msg ) { }
 };
 
 template<typename... ArgPack>
@@ -200,7 +193,7 @@ void RuntimeError( const ArgPack& ... args );
 // This is the only place that Elemental is currently using duck-typing.
 // I'm not sure if it's a good idea to use it more often.
 template<class MatType>
-string DimsString( const MatType& A, string label="Matrix" );
+std::string DimsString( const MatType& A, std::string label="Matrix" );
 
 // This is defined in choice.hpp
 class ArgException;
@@ -210,7 +203,7 @@ class SingularMatrixException : public std::runtime_error
 {
 public:
     SingularMatrixException( const char* msg="Matrix was singular" )
-    : std::runtime_error( msg ) { }
+        : std::runtime_error( msg ) { }
 };
 
 // An exception which signifies a zero pivot was chosen, though the matrix
@@ -219,7 +212,7 @@ class ZeroPivotException : public std::runtime_error
 {
 public:
     ZeroPivotException( const char* msg="Zero pivot was chosen" )
-    : std::runtime_error( msg ) { }
+        : std::runtime_error( msg ) { }
 };
 
 // An exception which signifies that a matrix was unexpectedly non-HPD
@@ -227,7 +220,7 @@ class NonHPDMatrixException  : public std::runtime_error
 {
 public:
     NonHPDMatrixException( const char* msg="Matrix was not HPD" )
-    : std::runtime_error( msg ) { }
+        : std::runtime_error( msg ) { }
 };
 
 // An exception which signifies that a matrix was unexpectedly non-HPSD
@@ -235,33 +228,33 @@ class NonHPSDMatrixException  : public std::runtime_error
 {
 public:
     NonHPSDMatrixException( const char* msg="Matrix was not HPSD" )
-    : std::runtime_error( msg ) { }
+        : std::runtime_error( msg ) { }
 };
 
 EL_DEBUG_ONLY(
     void EnableTracing();
     void DisableTracing();
 
-    void PushCallStack( string s );
+    void PushCallStack( std::string s );
     void PopCallStack();
-    void DumpCallStack( ostream& os=cerr );
+    void DumpCallStack( std::ostream& os=std::cerr );
 
     class CallStackEntry
     {
     public:
-        CallStackEntry( string s )
+        CallStackEntry( std::string s )
         {
-            if( !uncaught_exception() )
+            if( !std::uncaught_exception() )
                 PushCallStack(s);
         }
         ~CallStackEntry()
         {
-            if( !uncaught_exception() )
+            if( !std::uncaught_exception() )
                 PopCallStack();
         }
     };
     typedef CallStackEntry CSE;
-)
+    )
 
 void OpenLog( const char* filename );
 
@@ -272,7 +265,7 @@ void Log( const ArgPack& ... args );
 
 void CloseLog();
 
-void ReportException( const exception& e, ostream& os=cerr );
+void ReportException( const std::exception& e, std::ostream& os=std::cerr );
 
 void ComplainIfDebug();
 
@@ -290,30 +283,36 @@ template<typename... ArgPack>
 void OutputFromRoot( mpi::Comm comm, const ArgPack& ... args );
 
 template<typename T>
-void EnsureConsistent( T alpha, mpi::Comm comm, string name="" );
+void EnsureConsistent( T alpha, mpi::Comm comm, std::string name="" );
 
 // This will be guaranteed by C++14 via std::make_unique
+#if __cplusplus < 201402L
 template<typename T,typename ...ArgPack>
-unique_ptr<T> MakeUnique( ArgPack&& ...args )
-{ return unique_ptr<T>( new T( std::forward<ArgPack>(args)... ) ); }
+std::unique_ptr<T> MakeUnique( ArgPack&& ...args )
+{ return std::unique_ptr<T>( new T( std::forward<ArgPack>(args)... ) ); }
+#else
+template<typename T,typename ...ArgPack>
+std::unique_ptr<T> MakeUnique( ArgPack&& ...args )
+{ return std::make_unique<T>(std::forward<ArgPack>(args)...); }
+#endif
 
 // MakeFunction allows for the automatic conversion of a lambda to an
 // std::function and is similar to http://stackoverflow.com/a/24068396/1119818.
 
 /*
-namespace make_function {
+  namespace make_function {
 
-template<typename T>
-struct Helper { using type = void; };
-template<typename Ret,typename Class,typename... Args>
-struct Helper<Ret(Class::*)(Args...) const>
-{ using type = std::function<Ret(Args...)>; };
+  template<typename T>
+  struct Helper { using type = void; };
+  template<typename Ret,typename Class,typename... Args>
+  struct Helper<Ret(Class::*)(Args...) const>
+  { using type = std::function<Ret(Args...)>; };
 
-} // namespace make_function
+  } // namespace make_function
 
-template<typename Function>
-typename make_function::Helper<decltype(&Function::operator())>::type
-MakeFunction(Function const& func) { return func; }
+  template<typename Function>
+  typename make_function::Helper<decltype(&Function::operator())>::type
+  MakeFunction(Function const& func) { return func; }
 */
 
 // Handles generic types that are functors, delegate to its 'operator()'
@@ -326,7 +325,7 @@ template<typename ClassType,typename ReturnType,typename... Args>
 struct function_traits<ReturnType(ClassType::*)(Args...) const>
 {
     enum { arity = sizeof...(Args) };
-    typedef function<ReturnType (Args...)> f_type;
+    typedef std::function<ReturnType (Args...)> f_type;
 };
 
 // Handles pointers to member functions
@@ -334,7 +333,7 @@ template<typename ClassType,typename ReturnType,typename... Args>
 struct function_traits<ReturnType(ClassType::*)(Args...)>
 {
     enum { arity = sizeof...(Args) };
-    typedef function<ReturnType (Args...)> f_type;
+    typedef std::function<ReturnType (Args...)> f_type;
 };
 
 // Handles function pointers
@@ -342,7 +341,7 @@ template<typename ReturnType,typename... Args>
 struct function_traits<ReturnType (*)(Args...)>
 {
     enum { arity = sizeof...(Args) };
-    typedef function<ReturnType (Args...)> f_type;
+    typedef std::function<ReturnType (Args...)> f_type;
 };
 
 template<typename L>
@@ -352,7 +351,7 @@ static typename function_traits<L>::f_type MakeFunction(L l)
 // Handles std::bind & multiple function call operator()'s
 template<typename ReturnType,typename... Args,class T>
 auto MakeFunction(T&& t)
-  -> std::function<decltype(ReturnType(t(std::declval<Args>()...)))(Args...)>
+    -> std::function<decltype(ReturnType(t(std::declval<Args>()...)))(Args...)>
 { return {std::forward<T>(t)}; }
 
 // For explicit overloads
@@ -368,26 +367,27 @@ auto MakeFunction(ReturnType(ClassType::*p)(Args...))
 { return {p}; }
 
 template<typename T>
-T Scan( const vector<T>& counts, vector<T>& offsets );
+T Scan( const std::vector<T>& counts, std::vector<T>& offsets );
 
 template<typename T>
-bool IsSorted( const vector<T>& x );
+bool IsSorted( const std::vector<T>& x );
 // While is_strictly_sorted exists in Boost, it does not exist in the STL (yet)
 template<typename T>
-bool IsStrictlySorted( const vector<T>& x );
+bool IsStrictlySorted( const std::vector<T>& x );
 
 void Union
-( vector<Int>& both,
-  const vector<Int>& first, const vector<Int>& second );
-vector<Int>
-Union( const vector<Int>& first, const vector<Int>& second );
+( std::vector<Int>& both,
+  const std::vector<Int>& first, const std::vector<Int>& second );
+std::vector<Int>
+Union( const std::vector<Int>& first, const std::vector<Int>& second );
 
-void RelativeIndices
-( vector<Int>& relInds, const vector<Int>& sub, const vector<Int>& full );
-vector<Int> RelativeIndices( const vector<Int>& sub, const vector<Int>& full );
+void RelativeIndices(std::vector<Int>& relInds, const std::vector<Int>& sub,
+                     const std::vector<Int>& full);
+std::vector<Int> RelativeIndices(
+    const std::vector<Int>& sub, const std::vector<Int>& full );
 
 // Insists that the index can be found
-Int Find( const vector<Int>& sortedInds, Int index );
+Int Find( const std::vector<Int>& sortedInds, Int index );
 
 #ifdef EL_HAVE_PRETTY_FUNCTION
 # define EL_FUNCTION __PRETTY_FUNCTION__
@@ -395,10 +395,10 @@ Int Find( const vector<Int>& sortedInds, Int index );
 # define EL_FUNCTION __func__
 #endif
 
-#define EL_LOGIC_ERROR(...) \
- El::LogicError(EL_FUNCTION," in ",__FILE__,"@",__LINE__,": ",__VA_ARGS__);
-#define EL_RUNTIME_ERROR(...) \
- El::RuntimeError(EL_FUNCTION," in ",__FILE__,"@",__LINE__,": ",__VA_ARGS__);
+#define EL_LOGIC_ERROR(...)                                             \
+    El::LogicError(EL_FUNCTION," in ",__FILE__,"@",__LINE__,": ",__VA_ARGS__);
+#define EL_RUNTIME_ERROR(...)                                           \
+    El::RuntimeError(EL_FUNCTION," in ",__FILE__,"@",__LINE__,": ",__VA_ARGS__);
 #define EL_DEBUG_CSE EL_DEBUG_ONLY(El::CSE cse(EL_FUNCTION))
 
 } // namespace El

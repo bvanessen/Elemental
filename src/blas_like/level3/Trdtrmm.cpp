@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include <El/blas_like/level3.hpp>
 
@@ -61,8 +60,8 @@ void Trdtrmm( UpperOrLower uplo, AbstractDistMatrix<F>& A, bool conjugate )
 
 template<typename F>
 void Trdtrmm
-( UpperOrLower uplo, 
-  AbstractDistMatrix<F>& A, const AbstractDistMatrix<F>& dOff, 
+( UpperOrLower uplo,
+  AbstractDistMatrix<F>& A, const AbstractDistMatrix<F>& dOff,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -78,13 +77,13 @@ void Trdtrmm
 
 template<typename F>
 void Trdtrmm
-( UpperOrLower uplo, DistMatrix<F,STAR,STAR>& A, bool conjugate )
+( UpperOrLower uplo, DistMatrix<F,Dist::STAR,Dist::STAR>& A, bool conjugate )
 { Trdtrmm( uplo, A.Matrix(), conjugate ); }
 
 template<typename F>
 void Trdtrmm
-( UpperOrLower uplo, DistMatrix<F,STAR,STAR>& A, 
-  const DistMatrix<F,STAR,STAR>& dOff, bool conjugate )
+( UpperOrLower uplo, DistMatrix<F,Dist::STAR,Dist::STAR>& A,
+  const DistMatrix<F,Dist::STAR,Dist::STAR>& dOff, bool conjugate )
 { Trdtrmm( uplo, A.Matrix(), dOff.LockedMatrix(), conjugate ); }
 
 #define PROTO(F) \
@@ -98,10 +97,10 @@ void Trdtrmm
     AbstractDistMatrix<F>& A, const AbstractDistMatrix<F>& dOff, \
     bool conjugate ); \
   template void Trdtrmm \
-  ( UpperOrLower uplo, DistMatrix<F,STAR,STAR>& A, bool conjugate ); \
+  ( UpperOrLower uplo, DistMatrix<F,Dist::STAR,Dist::STAR>& A, bool conjugate ); \
   template void Trdtrmm \
-  ( UpperOrLower uplo, DistMatrix<F,STAR,STAR>& A, \
-    const DistMatrix<F,STAR,STAR>& dOff, bool conjugate );
+  ( UpperOrLower uplo, DistMatrix<F,Dist::STAR,Dist::STAR>& A, \
+    const DistMatrix<F,Dist::STAR,Dist::STAR>& dOff, bool conjugate );
 
 #define EL_NO_INT_PROTO
 #define EL_ENABLE_DOUBLEDOUBLE

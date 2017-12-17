@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_SCHUR_QUASITRIANGEIG_HPP
@@ -72,14 +72,14 @@ void QuasiTriangEig
     EL_DEBUG_CSE
     typedef Base<F> Real;
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.GetLocked();
 
-    DistMatrixWriteProxy<Complex<Real>,Complex<Real>,STAR,STAR> wProx( wPre );
+    DistMatrixWriteProxy<Complex<Real>,Complex<Real>,Dist::STAR,Dist::STAR> wProx( wPre );
     auto& w = wProx.Get();
 
     const Grid& g = U.Grid();
-    DistMatrix<F,STAR,STAR> dMain(g), dSub(g), dSup(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> dMain(g), dSub(g), dSup(g);
     dMain = GetDiagonal(U);
     dSub = GetDiagonal(U,-1);
     dSup = GetDiagonal(U,+1);
@@ -88,11 +88,11 @@ void QuasiTriangEig
 }
 
 template<typename F>
-DistMatrix<Complex<Base<F>>,VR,STAR> 
+DistMatrix<Complex<Base<F>>,Dist::VR,Dist::STAR>
 QuasiTriangEig( const AbstractDistMatrix<F>& U )
 {
     EL_DEBUG_CSE
-    DistMatrix<Complex<Base<F>>,VR,STAR> w(U.Grid());
+    DistMatrix<Complex<Base<F>>,Dist::VR,Dist::STAR> w(U.Grid());
     QuasiTriangEig( U, w );
     return w;
 }

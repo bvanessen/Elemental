@@ -60,14 +60,14 @@ SafeProduct<Base<Field>> AfterCholesky
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.GetLocked();
 
     typedef Base<Field> Real;
     const Int n = A.Height();
     const Grid& g = A.Grid();
 
-    DistMatrix<Field,MD,STAR> d(g);
+    DistMatrix<Field,Dist::MD,Dist::STAR> d(g);
     GetDiagonal( A, d );
     Real localKappa = 0;
     if( d.Participating() )
@@ -93,7 +93,7 @@ Cholesky( UpperOrLower uplo, AbstractDistMatrix<Field>& APre )
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     SafeProduct<Base<Field>> det( A.Height() );

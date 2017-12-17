@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include "./NormsFromScaledSquares.hpp"
 
@@ -105,7 +104,7 @@ void ColumnMaxNorms( const Matrix<Field>& X, Matrix<Base<Field>>& norms )
 
 template<typename Field,Dist U,Dist V,DistWrap W>
 void ColumnTwoNorms
-( const DistMatrix<Field,U,V,W>& A, DistMatrix<Base<Field>,V,STAR,W>& norms )
+( const DistMatrix<Field,U,V,W>& A, DistMatrix<Base<Field>,V,Dist::STAR,W>& norms )
 {
     EL_DEBUG_CSE
     norms.AlignWith( A );
@@ -120,7 +119,7 @@ void ColumnTwoNorms
 
 template<typename Field,Dist U,Dist V,DistWrap W>
 void ColumnMaxNorms
-( const DistMatrix<Field,U,V,W>& A, DistMatrix<Base<Field>,V,STAR,W>& norms )
+( const DistMatrix<Field,U,V,W>& A, DistMatrix<Base<Field>,V,Dist::STAR,W>& norms )
 {
     EL_DEBUG_CSE
     norms.AlignWith( A );
@@ -158,7 +157,7 @@ template<typename Real,Dist U,Dist V,typename>
 void ColumnTwoNorms
 ( const DistMatrix<Real,U,V>& XReal,
   const DistMatrix<Real,U,V>& XImag,
-        DistMatrix<Real,V,STAR>& norms )
+        DistMatrix<Real,V,Dist::STAR>& norms )
 {
     EL_DEBUG_CSE
     if( XReal.RowAlign() != norms.ColAlign() )
@@ -178,17 +177,17 @@ void ColumnTwoNorms
 
 #define PROTO_DIST(Field,U,V) \
   template void ColumnTwoNorms \
-  ( const DistMatrix<Field,U,V,ELEMENT>& X, \
-          DistMatrix<Base<Field>,V,STAR,ELEMENT>& norms ); \
+  ( const DistMatrix<Field,U,V,DistWrap::ELEMENT>& X, \
+          DistMatrix<Base<Field>,V,Dist::STAR,DistWrap::ELEMENT>& norms ); \
   template void ColumnMaxNorms \
-  ( const DistMatrix<Field,U,V,ELEMENT>& X, \
-          DistMatrix<Base<Field>,V,STAR,ELEMENT>& norms ); \
+  ( const DistMatrix<Field,U,V,DistWrap::ELEMENT>& X, \
+          DistMatrix<Base<Field>,V,Dist::STAR,DistWrap::ELEMENT>& norms ); \
   template void ColumnTwoNorms \
-  ( const DistMatrix<Field,U,V,BLOCK>& X, \
-          DistMatrix<Base<Field>,V,STAR,BLOCK>& norms ); \
+  ( const DistMatrix<Field,U,V,DistWrap::BLOCK>& X, \
+          DistMatrix<Base<Field>,V,Dist::STAR,DistWrap::BLOCK>& norms ); \
   template void ColumnMaxNorms \
-  ( const DistMatrix<Field,U,V,BLOCK>& X, \
-          DistMatrix<Base<Field>,V,STAR,BLOCK>& norms );
+  ( const DistMatrix<Field,U,V,DistWrap::BLOCK>& X, \
+          DistMatrix<Base<Field>,V,Dist::STAR,DistWrap::BLOCK>& norms );
 
 #define PROTO(Field) \
   template void ColumnTwoNorms \
@@ -197,25 +196,25 @@ void ColumnTwoNorms
   template void ColumnMaxNorms \
   ( const Matrix<Field>& X, \
           Matrix<Base<Field>>& norms ); \
-  PROTO_DIST(Field,MC,  MR  ) \
-  PROTO_DIST(Field,MC,  STAR) \
-  PROTO_DIST(Field,MD,  STAR) \
-  PROTO_DIST(Field,MR,  MC  ) \
-  PROTO_DIST(Field,MR,  STAR) \
-  PROTO_DIST(Field,STAR,MC  ) \
-  PROTO_DIST(Field,STAR,MD  ) \
-  PROTO_DIST(Field,STAR,MR  ) \
-  PROTO_DIST(Field,STAR,STAR) \
-  PROTO_DIST(Field,STAR,VC  ) \
-  PROTO_DIST(Field,STAR,VR  ) \
-  PROTO_DIST(Field,VC,  STAR) \
-  PROTO_DIST(Field,VR,  STAR)
+  PROTO_DIST(Field,Dist::MC,  Dist::MR  ) \
+  PROTO_DIST(Field,Dist::MC,  Dist::STAR) \
+  PROTO_DIST(Field,Dist::MD,  Dist::STAR) \
+  PROTO_DIST(Field,Dist::MR,  Dist::MC  ) \
+  PROTO_DIST(Field,Dist::MR,  Dist::STAR) \
+  PROTO_DIST(Field,Dist::STAR,Dist::MC  ) \
+  PROTO_DIST(Field,Dist::STAR,Dist::MD  ) \
+  PROTO_DIST(Field,Dist::STAR,Dist::MR  ) \
+  PROTO_DIST(Field,Dist::STAR,Dist::STAR) \
+  PROTO_DIST(Field,Dist::STAR,Dist::VC  ) \
+  PROTO_DIST(Field,Dist::STAR,Dist::VR  ) \
+  PROTO_DIST(Field,Dist::VC,  Dist::STAR) \
+  PROTO_DIST(Field,Dist::VR,  Dist::STAR)
 
 #define PROTO_REAL_DIST(Real,U,V) \
   template void ColumnTwoNorms \
   ( const DistMatrix<Real,U,V>& XReal, \
     const DistMatrix<Real,U,V>& XImag, \
-          DistMatrix<Real,V,STAR>& norms );
+          DistMatrix<Real,V,Dist::STAR>& norms );
 
 #define PROTO_REAL(Real) \
   PROTO(Real) \
@@ -223,19 +222,19 @@ void ColumnTwoNorms
   ( const Matrix<Real>& XReal, \
     const Matrix<Real>& XImag, \
           Matrix<Real>& norms ); \
-  PROTO_REAL_DIST(Real,MC,  MR  ) \
-  PROTO_REAL_DIST(Real,MC,  STAR) \
-  PROTO_REAL_DIST(Real,MD,  STAR) \
-  PROTO_REAL_DIST(Real,MR,  MC  ) \
-  PROTO_REAL_DIST(Real,MR,  STAR) \
-  PROTO_REAL_DIST(Real,STAR,MC  ) \
-  PROTO_REAL_DIST(Real,STAR,MD  ) \
-  PROTO_REAL_DIST(Real,STAR,MR  ) \
-  PROTO_REAL_DIST(Real,STAR,STAR) \
-  PROTO_REAL_DIST(Real,STAR,VC  ) \
-  PROTO_REAL_DIST(Real,STAR,VR  ) \
-  PROTO_REAL_DIST(Real,VC,  STAR) \
-  PROTO_REAL_DIST(Real,VR,  STAR)
+  PROTO_REAL_DIST(Real,Dist::MC,  Dist::MR  ) \
+  PROTO_REAL_DIST(Real,Dist::MC,  Dist::STAR) \
+  PROTO_REAL_DIST(Real,Dist::MD,  Dist::STAR) \
+  PROTO_REAL_DIST(Real,Dist::MR,  Dist::MC  ) \
+  PROTO_REAL_DIST(Real,Dist::MR,  Dist::STAR) \
+  PROTO_REAL_DIST(Real,Dist::STAR,Dist::MC  ) \
+  PROTO_REAL_DIST(Real,Dist::STAR,Dist::MD  ) \
+  PROTO_REAL_DIST(Real,Dist::STAR,Dist::MR  ) \
+  PROTO_REAL_DIST(Real,Dist::STAR,Dist::STAR) \
+  PROTO_REAL_DIST(Real,Dist::STAR,Dist::VC  ) \
+  PROTO_REAL_DIST(Real,Dist::STAR,Dist::VR  ) \
+  PROTO_REAL_DIST(Real,Dist::VC,  Dist::STAR) \
+  PROTO_REAL_DIST(Real,Dist::VR,  Dist::STAR)
 
 #define EL_NO_INT_PROTO
 #define EL_ENABLE_DOUBLEDOUBLE

@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -11,7 +11,7 @@ namespace El {
 namespace gemm {
 
 // Transpose Normal Gemm that avoids communicating the matrix A
-template<typename T> 
+template<typename T>
 void SUMMA_TNA
 ( Orientation orientA,
   T alpha,
@@ -24,17 +24,17 @@ void SUMMA_TNA
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,MC,STAR> B1_MC_STAR(g);
-    DistMatrix<T,MR,STAR> D1_MR_STAR(g);
-    DistMatrix<T,MR,MC  > D1_MR_MC(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> B1_MC_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> D1_MR_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::MC  > D1_MR_MC(g);
 
     B1_MC_STAR.AlignWith( A );
     D1_MR_STAR.AlignWith( A );
@@ -47,7 +47,7 @@ void SUMMA_TNA
 
         // D1[MR,*] := alpha (A1[MC,MR])^T B1[MC,*]
         //           = alpha (A1^T)[MR,MC] B1[MC,*]
-        B1_MC_STAR = B1; 
+        B1_MC_STAR = B1;
         LocalGemm( orientA, NORMAL, alpha, A, B1_MC_STAR, D1_MR_STAR );
 
         // C1[MC,MR] += scattered & transposed D1[MR,*] summed over grid cols
@@ -57,7 +57,7 @@ void SUMMA_TNA
 }
 
 // Transpose Normal Gemm that avoids communicating the matrix B
-template<typename T> 
+template<typename T>
 void SUMMA_TNB
 ( Orientation orientA,
   T alpha,
@@ -71,16 +71,16 @@ void SUMMA_TNB
     const Grid& g = APre.Grid();
     const bool conjugate = ( orientA == ADJOINT );
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,MC,STAR> A1_MC_STAR(g);
-    DistMatrix<T,MR,STAR> D1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> A1_MC_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> D1Trans_MR_STAR(g);
 
     A1_MC_STAR.AlignWith( B );
     D1Trans_MR_STAR.AlignWith( B );
@@ -100,7 +100,7 @@ void SUMMA_TNB
 }
 
 // Transpose Normal Gemm that avoids communicating the matrix C
-template<typename T> 
+template<typename T>
 void SUMMA_TNC
 ( Orientation orientA,
   T alpha,
@@ -113,16 +113,16 @@ void SUMMA_TNC
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,STAR,MC> A1_STAR_MC(g);
-    DistMatrix<T,MR,STAR> B1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MC> A1_STAR_MC(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> B1Trans_MR_STAR(g);
 
     A1_STAR_MC.AlignWith( C );
     B1Trans_MR_STAR.AlignWith( C );
@@ -135,7 +135,7 @@ void SUMMA_TNC
 
         // C[MC,MR] += alpha (A1[*,MC])^T B1[*,MR]
         //           = alpha (A1^T)[MC,*] B1[*,MR]
-        A1_STAR_MC = A1; 
+        A1_STAR_MC = A1;
         Transpose( B1, B1Trans_MR_STAR );
         LocalGemm
         ( orientA, TRANSPOSE, alpha, A1_STAR_MC, B1Trans_MR_STAR, T(1), C );
@@ -156,24 +156,24 @@ void SUMMA_TNDot
         AbstractDistMatrix<T>& CPre,
   Int blockSize=2000 )
 {
-    EL_DEBUG_CSE 
+    EL_DEBUG_CSE
     const Int m = CPre.Height();
     const Int n = CPre.Width();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,VC,STAR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::VC,Dist::STAR> AProx( APre );
     auto& A = AProx.GetLocked();
 
     ElementalProxyCtrl BCtrl;
     BCtrl.colConstrain = true;
     BCtrl.colAlign = A.ColAlign();
-    DistMatrixReadProxy<T,T,VC,STAR> BProx( BPre, BCtrl );
+    DistMatrixReadProxy<T,T,Dist::VC,Dist::STAR> BProx( BPre, BCtrl );
     auto& B = BProx.GetLocked();
 
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& C = CProx.Get();
 
-    DistMatrix<T,STAR,STAR> C11_STAR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> C11_STAR_STAR(g);
     for( Int kOuter=0; kOuter<m; kOuter+=blockSize )
     {
         const Int nbOuter = Min(blockSize,m-kOuter);

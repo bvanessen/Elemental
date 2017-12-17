@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_CORE_PROXY_HPP
@@ -14,14 +14,14 @@
 namespace El {
 
 template<typename S,typename T,typename=EnableIf<CanCast<S,T>>>
-class MatrixReadProxy 
+class MatrixReadProxy
 {
 private:
     Matrix<T>* prox_;
 
 public:
     MatrixReadProxy( const Matrix<S>& A )
-    { 
+    {
         prox_ = new Matrix<T>;
         Copy( A, *prox_ );
     }
@@ -63,7 +63,7 @@ public:
 };
 
 template<typename S,typename T,typename=EnableIf<CanCast<T,S>>>
-class MatrixWriteProxy 
+class MatrixWriteProxy
 {
 private:
     Matrix<S>& orig_;
@@ -74,9 +74,9 @@ public:
     : orig_(A)
     { prox_ = new Matrix<T>( A.Height(), A.Width() ); }
 
-    ~MatrixWriteProxy() 
-    { 
-        if( !uncaught_exception() )
+    ~MatrixWriteProxy()
+    {
+        if( !std::uncaught_exception() )
             Copy( *prox_, orig_ );
         delete prox_;
     }
@@ -103,7 +103,7 @@ public:
 };
 
 template<typename S,typename T,typename=EnableIf<CanBidirectionalCast<S,T>>>
-class MatrixReadWriteProxy 
+class MatrixReadWriteProxy
 {
 private:
     Matrix<S>& orig_;
@@ -114,9 +114,9 @@ public:
     : orig_(A)
     { prox_ = new Matrix<T>(A); }
 
-    ~MatrixReadWriteProxy() 
-    { 
-        if( !uncaught_exception() )
+    ~MatrixReadWriteProxy()
+    {
+        if( !std::uncaught_exception() )
             Copy( *prox_, orig_ );
         delete prox_;
     }
@@ -142,16 +142,16 @@ public:
           Matrix<T>& Get()             { return orig_; }
 };
 
-struct ProxyCtrl 
+struct ProxyCtrl
 {
     bool colConstrain, rowConstrain, rootConstrain;
     Int colAlign, rowAlign, root;
     Int blockHeight, blockWidth;
     Int colCut, rowCut;
 
-    ProxyCtrl() 
+    ProxyCtrl()
     : colConstrain(false), rowConstrain(false), rootConstrain(false),
-      colAlign(0), rowAlign(0), root(0), 
+      colAlign(0), rowAlign(0), root(0),
       blockHeight(DefaultBlockHeight()), blockWidth(DefaultBlockWidth()),
       colCut(0), rowCut(0)
     { }
@@ -162,21 +162,21 @@ struct ElementalProxyCtrl
     bool colConstrain, rowConstrain, rootConstrain;
     Int colAlign, rowAlign, root;
 
-    ElementalProxyCtrl() 
+    ElementalProxyCtrl()
     : colConstrain(false), rowConstrain(false), rootConstrain(false),
-      colAlign(0), rowAlign(0), root(0) 
+      colAlign(0), rowAlign(0), root(0)
     { }
 };
 
-template<typename S,typename T,Dist U=MC,Dist V=MR,DistWrap wrap=ELEMENT,
+template<typename S,typename T,Dist U=Dist::MC,Dist V=Dist::MR,DistWrap wrap=DistWrap::ELEMENT,
          typename=EnableIf<CanCast<S,T>>>
-class DistMatrixReadProxy; 
+class DistMatrixReadProxy;
 
 template<typename S,typename T,Dist U,Dist V>
-class DistMatrixReadProxy<S,T,U,V,ELEMENT,void>
+class DistMatrixReadProxy<S,T,U,V,DistWrap::ELEMENT,void>
 {
 private:
-    typedef DistMatrix<T,U,V,ELEMENT> proxType;
+    typedef DistMatrix<T,U,V,DistWrap::ELEMENT> proxType;
 
     bool locked_;
     proxType* prox_;
@@ -187,12 +187,12 @@ public:
     DistMatrixReadProxy
     ( const AbstractDistMatrix<S>& A,
       const ElementalProxyCtrl& ctrl=ElementalProxyCtrl() )
-    { 
+    {
         prox_ = new proxType(A.Grid());
         if( ctrl.rootConstrain )
             prox_->SetRoot( ctrl.root );
         if( ctrl.colConstrain )
-            prox_->AlignCols( ctrl.colAlign );    
+            prox_->AlignCols( ctrl.colAlign );
         if( ctrl.rowConstrain )
             prox_->AlignRows( ctrl.rowAlign );
         Copy( A, *prox_ );
@@ -201,12 +201,12 @@ public:
     DistMatrixReadProxy
     ( AbstractDistMatrix<S>& A,
       const ElementalProxyCtrl& ctrl=ElementalProxyCtrl() )
-    { 
+    {
         prox_ = new proxType(A.Grid());
         if( ctrl.rootConstrain )
             prox_->SetRoot( ctrl.root );
         if( ctrl.colConstrain )
-            prox_->AlignCols( ctrl.colAlign );    
+            prox_->AlignCols( ctrl.colAlign );
         if( ctrl.rowConstrain )
             prox_->AlignRows( ctrl.rowAlign );
         Copy( A, *prox_ );
@@ -219,10 +219,10 @@ public:
 };
 
 template<typename T,Dist U,Dist V>
-class DistMatrixReadProxy<T,T,U,V,ELEMENT,void>
+class DistMatrixReadProxy<T,T,U,V,DistWrap::ELEMENT,void>
 {
 private:
-    typedef DistMatrix<T,U,V,ELEMENT> proxType;
+    typedef DistMatrix<T,U,V,DistWrap::ELEMENT> proxType;
 
     bool locked_;
     bool madeCopy_;
@@ -234,14 +234,14 @@ public:
     DistMatrixReadProxy
     ( const AbstractDistMatrix<T>& A,
       const ElementalProxyCtrl& ctrl=ElementalProxyCtrl() )
-    { 
-        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == ELEMENT )
+    {
+        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == DistWrap::ELEMENT )
         {
-            const bool colMisalign = 
+            const bool colMisalign =
               ( ctrl.colConstrain && A.ColAlign() != ctrl.colAlign );
-            const bool rowMisalign = 
+            const bool rowMisalign =
               ( ctrl.rowConstrain && A.RowAlign() != ctrl.rowAlign );
-            const bool rootMisalign = 
+            const bool rootMisalign =
               ( ctrl.rootConstrain && A.Root() != ctrl.root );
             if( !colMisalign && !rowMisalign && !rootMisalign )
             {
@@ -258,7 +258,7 @@ public:
         if( ctrl.rootConstrain )
             prox_->SetRoot( ctrl.root );
         if( ctrl.colConstrain )
-            prox_->AlignCols( ctrl.colAlign );    
+            prox_->AlignCols( ctrl.colAlign );
         if( ctrl.rowConstrain )
             prox_->AlignRows( ctrl.rowAlign );
         Copy( A, *prox_ );
@@ -268,14 +268,14 @@ public:
     ( AbstractDistMatrix<T>& A,
       const ElementalProxyCtrl& ctrl=ElementalProxyCtrl() )
     : locked_(false)
-    { 
-        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == ELEMENT )
+    {
+        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == DistWrap::ELEMENT )
         {
-            const bool colMisalign = 
+            const bool colMisalign =
               ( ctrl.colConstrain && A.ColAlign() != ctrl.colAlign );
-            const bool rowMisalign = 
+            const bool rowMisalign =
               ( ctrl.rowConstrain && A.RowAlign() != ctrl.rowAlign );
-            const bool rootMisalign = 
+            const bool rootMisalign =
               ( ctrl.rootConstrain && A.Root() != ctrl.root );
             if( !colMisalign && !rowMisalign && !rootMisalign )
             {
@@ -284,7 +284,7 @@ public:
                 if( ctrl.rootConstrain )
                     prox_->SetRoot( ctrl.root );
                 if( ctrl.colConstrain )
-                    prox_->AlignCols( ctrl.colAlign );    
+                    prox_->AlignCols( ctrl.colAlign );
                 if( ctrl.rowConstrain )
                     prox_->AlignRows( ctrl.rowAlign );
                 return;
@@ -295,14 +295,14 @@ public:
         if( ctrl.rootConstrain )
             prox_->SetRoot( ctrl.root );
         if( ctrl.colConstrain )
-            prox_->AlignCols( ctrl.colAlign );    
+            prox_->AlignCols( ctrl.colAlign );
         if( ctrl.rowConstrain )
             prox_->AlignRows( ctrl.rowAlign );
         Copy( A, *prox_ );
     }
 
-    ~DistMatrixReadProxy() 
-    { 
+    ~DistMatrixReadProxy()
+    {
         if( madeCopy_ )
             delete prox_;
     }
@@ -318,10 +318,10 @@ public:
 };
 
 template<typename S,typename T,Dist U,Dist V>
-class DistMatrixReadProxy<S,T,U,V,BLOCK,void>
+class DistMatrixReadProxy<S,T,U,V,DistWrap::BLOCK,void>
 {
 private:
-    typedef DistMatrix<T,U,V,BLOCK> proxType;
+    typedef DistMatrix<T,U,V,DistWrap::BLOCK> proxType;
     proxType* prox_;
 
 public:
@@ -330,7 +330,7 @@ public:
     DistMatrixReadProxy
     ( const AbstractDistMatrix<S>& A,
       const ProxyCtrl& ctrl=ProxyCtrl() )
-    { 
+    {
         prox_ = new proxType(A.Grid());
         if( ctrl.rootConstrain )
             prox_->SetRoot( ctrl.root );
@@ -344,7 +344,7 @@ public:
     DistMatrixReadProxy
     ( AbstractDistMatrix<S>& A,
       const ProxyCtrl& ctrl=ProxyCtrl() )
-    { 
+    {
         prox_ = new proxType(A.Grid());
         if( ctrl.rootConstrain )
             prox_->SetRoot( ctrl.root );
@@ -362,10 +362,10 @@ public:
 };
 
 template<typename T,Dist U,Dist V>
-class DistMatrixReadProxy<T,T,U,V,BLOCK,void>
+class DistMatrixReadProxy<T,T,U,V,DistWrap::BLOCK,void>
 {
 private:
-    typedef DistMatrix<T,U,V,BLOCK> proxType;
+    typedef DistMatrix<T,U,V,DistWrap::BLOCK> proxType;
 
     bool locked_;
     bool madeCopy_;
@@ -377,20 +377,20 @@ public:
     DistMatrixReadProxy
     ( const AbstractDistMatrix<T>& A,
       const ProxyCtrl& ctrl=ProxyCtrl() )
-    { 
-        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == BLOCK )
+    {
+        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == DistWrap::BLOCK )
         {
-            const bool colMisalign = 
-              ( ctrl.colConstrain && 
+            const bool colMisalign =
+              ( ctrl.colConstrain &&
                 (A.ColAlign() != ctrl.colAlign ||
                  A.BlockHeight() != ctrl.blockHeight ||
                  A.ColCut() != ctrl.colCut) );
-            const bool rowMisalign = 
-              ( ctrl.rowConstrain && 
+            const bool rowMisalign =
+              ( ctrl.rowConstrain &&
                 (A.RowAlign() != ctrl.rowAlign ||
                  A.BlockWidth() != ctrl.blockWidth ||
                  A.RowCut() != ctrl.rowCut) );
-            const bool rootMisalign = 
+            const bool rootMisalign =
               ( ctrl.rootConstrain && A.Root() != ctrl.root );
             if( !colMisalign && !rowMisalign && !rootMisalign )
             {
@@ -417,20 +417,20 @@ public:
     ( AbstractDistMatrix<T>& A,
       const ProxyCtrl& ctrl=ProxyCtrl() )
     : locked_(false)
-    { 
-        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == BLOCK )
+    {
+        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == DistWrap::BLOCK )
         {
-            const bool colMisalign = 
-              ( ctrl.colConstrain && 
+            const bool colMisalign =
+              ( ctrl.colConstrain &&
                 (A.ColAlign() != ctrl.colAlign ||
                  A.BlockHeight() != ctrl.blockHeight ||
                  A.ColCut() != ctrl.colCut) );
-            const bool rowMisalign = 
-              ( ctrl.rowConstrain && 
+            const bool rowMisalign =
+              ( ctrl.rowConstrain &&
                 (A.RowAlign() != ctrl.rowAlign ||
                  A.BlockWidth() != ctrl.blockWidth ||
                  A.RowCut() != ctrl.rowCut) );
-            const bool rootMisalign = 
+            const bool rootMisalign =
               ( ctrl.rootConstrain && A.Root() != ctrl.root );
             if( !colMisalign && !rowMisalign && !rootMisalign )
             {
@@ -440,7 +440,7 @@ public:
                     prox_->SetRoot( ctrl.root );
                 if( ctrl.colConstrain )
                     prox_->AlignCols
-                    ( ctrl.blockHeight, ctrl.colAlign, ctrl.colCut ); 
+                    ( ctrl.blockHeight, ctrl.colAlign, ctrl.colCut );
                 if( ctrl.rowConstrain )
                     prox_->AlignRows
                     ( ctrl.blockWidth, ctrl.rowAlign, ctrl.rowCut );
@@ -458,8 +458,8 @@ public:
         Copy( A, *prox_ );
     }
 
-    ~DistMatrixReadProxy() 
-    { 
+    ~DistMatrixReadProxy()
+    {
         if( madeCopy_ )
             delete prox_;
     }
@@ -474,15 +474,15 @@ public:
     }
 };
 
-template<typename S,typename T,Dist U=MC,Dist V=MR,DistWrap wrap=ELEMENT,
+template<typename S,typename T,Dist U=Dist::MC,Dist V=Dist::MR,DistWrap wrap=DistWrap::ELEMENT,
          typename=EnableIf<CanCast<T,S>>>
 class DistMatrixWriteProxy;
 
 template<typename S,typename T,Dist U,Dist V>
-class DistMatrixWriteProxy<S,T,U,V,ELEMENT,void>
+class DistMatrixWriteProxy<S,T,U,V,DistWrap::ELEMENT,void>
 {
 private:
-    typedef DistMatrix<T,U,V,ELEMENT> proxType;
+    typedef DistMatrix<T,U,V,DistWrap::ELEMENT> proxType;
 
     AbstractDistMatrix<S>& orig_;
     proxType* prox_;
@@ -493,20 +493,20 @@ public:
     ( AbstractDistMatrix<S>& A,
       const ElementalProxyCtrl& ctrl=ElementalProxyCtrl() )
     : orig_(A)
-    { 
+    {
         prox_ = new proxType(A.Grid());
         if( ctrl.rootConstrain )
             prox_->SetRoot( ctrl.root );
         if( ctrl.colConstrain )
-            prox_->AlignCols( ctrl.colAlign );    
+            prox_->AlignCols( ctrl.colAlign );
         if( ctrl.rowConstrain )
             prox_->AlignRows( ctrl.rowAlign );
         prox_->Resize( A.Height(), A.Width() );
     }
 
-    ~DistMatrixWriteProxy() 
-    { 
-        if( !uncaught_exception() ) 
+    ~DistMatrixWriteProxy()
+    {
+        if( !std::uncaught_exception() )
             Copy( *prox_, orig_ );
         delete prox_;
     }
@@ -516,10 +516,10 @@ public:
 };
 
 template<typename T,Dist U,Dist V>
-class DistMatrixWriteProxy<T,T,U,V,ELEMENT,void>
+class DistMatrixWriteProxy<T,T,U,V,DistWrap::ELEMENT,void>
 {
 private:
-    typedef DistMatrix<T,U,V,ELEMENT> proxType;
+    typedef DistMatrix<T,U,V,DistWrap::ELEMENT> proxType;
 
     bool madeCopy_;
     AbstractDistMatrix<T>& orig_;
@@ -531,14 +531,14 @@ public:
     ( AbstractDistMatrix<T>& A,
       const ElementalProxyCtrl& ctrl=ElementalProxyCtrl() )
     : orig_(A)
-    { 
-        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == ELEMENT )
+    {
+        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == DistWrap::ELEMENT )
         {
-            const bool colMisalign = 
+            const bool colMisalign =
               ( ctrl.colConstrain && A.ColAlign() != ctrl.colAlign );
-            const bool rowMisalign = 
+            const bool rowMisalign =
               ( ctrl.rowConstrain && A.RowAlign() != ctrl.rowAlign );
-            const bool rootMisalign = 
+            const bool rootMisalign =
               ( ctrl.rootConstrain && A.Root() != ctrl.root );
             if( !colMisalign && !rowMisalign && !rootMisalign )
             {
@@ -547,7 +547,7 @@ public:
                 if( ctrl.rootConstrain )
                     prox_->SetRoot( ctrl.root );
                 if( ctrl.colConstrain )
-                    prox_->AlignCols( ctrl.colAlign );    
+                    prox_->AlignCols( ctrl.colAlign );
                 if( ctrl.rowConstrain )
                     prox_->AlignRows( ctrl.rowAlign );
                 return;
@@ -558,17 +558,17 @@ public:
         if( ctrl.rootConstrain )
             prox_->SetRoot( ctrl.root );
         if( ctrl.colConstrain )
-            prox_->AlignCols( ctrl.colAlign );    
+            prox_->AlignCols( ctrl.colAlign );
         if( ctrl.rowConstrain )
             prox_->AlignRows( ctrl.rowAlign );
         prox_->Resize( A.Height(), A.Width() );
     }
 
-    ~DistMatrixWriteProxy() 
-    { 
+    ~DistMatrixWriteProxy()
+    {
         if( madeCopy_ )
         {
-            if( !uncaught_exception() )
+            if( !std::uncaught_exception() )
                 Copy( *prox_, orig_ );
             delete prox_;
         }
@@ -579,10 +579,10 @@ public:
 };
 
 template<typename S,typename T,Dist U,Dist V>
-class DistMatrixWriteProxy<S,T,U,V,BLOCK,void>
+class DistMatrixWriteProxy<S,T,U,V,DistWrap::BLOCK,void>
 {
 private:
-    typedef DistMatrix<T,U,V,BLOCK> proxType;
+    typedef DistMatrix<T,U,V,DistWrap::BLOCK> proxType;
 
     AbstractDistMatrix<S>& orig_;
     proxType* prox_;
@@ -593,7 +593,7 @@ public:
     ( AbstractDistMatrix<S>& A,
       const ProxyCtrl& ctrl=ProxyCtrl() )
     : orig_(A)
-    { 
+    {
         prox_ = new proxType(A.Grid());
         if( ctrl.rootConstrain )
             prox_->SetRoot( ctrl.root );
@@ -604,9 +604,9 @@ public:
         prox_->Resize( A.Height(), A.Width() );
     }
 
-    ~DistMatrixWriteProxy() 
-    { 
-        if( !uncaught_exception() ) 
+    ~DistMatrixWriteProxy()
+    {
+        if( !std::uncaught_exception() )
             Copy( *prox_, orig_ );
         delete prox_;
     }
@@ -616,10 +616,10 @@ public:
 };
 
 template<typename T,Dist U,Dist V>
-class DistMatrixWriteProxy<T,T,U,V,BLOCK,void>
+class DistMatrixWriteProxy<T,T,U,V,DistWrap::BLOCK,void>
 {
 private:
-    typedef DistMatrix<T,U,V,BLOCK> proxType;
+    typedef DistMatrix<T,U,V,DistWrap::BLOCK> proxType;
 
     bool madeCopy_;
     AbstractDistMatrix<T>& orig_;
@@ -631,20 +631,20 @@ public:
     ( AbstractDistMatrix<T>& A,
       const ProxyCtrl& ctrl=ProxyCtrl() )
     : orig_(A)
-    { 
-        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == BLOCK )
+    {
+        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == DistWrap::BLOCK )
         {
-            const bool colMisalign = 
-              ( ctrl.colConstrain && 
+            const bool colMisalign =
+              ( ctrl.colConstrain &&
                 (A.ColAlign() != ctrl.colAlign ||
                  A.BlockHeight() != ctrl.blockHeight ||
                  A.ColCut() != ctrl.colCut) );
-            const bool rowMisalign = 
-              ( ctrl.rowConstrain && 
+            const bool rowMisalign =
+              ( ctrl.rowConstrain &&
                 (A.RowAlign() != ctrl.rowAlign ||
                  A.BlockWidth() != ctrl.blockWidth ||
                  A.RowCut() != ctrl.rowCut) );
-            const bool rootMisalign = 
+            const bool rootMisalign =
               ( ctrl.rootConstrain && A.Root() != ctrl.root );
             if( !colMisalign && !rowMisalign && !rootMisalign )
             {
@@ -654,7 +654,7 @@ public:
                     prox_->SetRoot( ctrl.root );
                 if( ctrl.colConstrain )
                     prox_->AlignCols
-                    ( ctrl.blockHeight, ctrl.colAlign, ctrl.colCut ); 
+                    ( ctrl.blockHeight, ctrl.colAlign, ctrl.colCut );
                 if( ctrl.rowConstrain )
                     prox_->AlignRows
                     ( ctrl.blockWidth, ctrl.rowAlign, ctrl.rowCut );
@@ -672,11 +672,11 @@ public:
         prox_->Resize( A.Height(), A.Width() );
     }
 
-    ~DistMatrixWriteProxy() 
-    { 
+    ~DistMatrixWriteProxy()
+    {
         if( madeCopy_ )
         {
-            if( !uncaught_exception() )
+            if( !std::uncaught_exception() )
                 Copy( *prox_, orig_ );
             delete prox_;
         }
@@ -686,15 +686,15 @@ public:
           proxType& Get()             { return *prox_; }
 };
 
-template<typename S,typename T,Dist U=MC,Dist V=MR,DistWrap wrap=ELEMENT,
+template<typename S,typename T,Dist U=Dist::MC,Dist V=Dist::MR,DistWrap wrap=DistWrap::ELEMENT,
          typename=EnableIf<CanBidirectionalCast<S,T>>>
-class DistMatrixReadWriteProxy; 
+class DistMatrixReadWriteProxy;
 
 template<typename S,typename T,Dist U,Dist V>
-class DistMatrixReadWriteProxy<S,T,U,V,ELEMENT,void>
+class DistMatrixReadWriteProxy<S,T,U,V,DistWrap::ELEMENT,void>
 {
 private:
-    typedef DistMatrix<T,U,V,ELEMENT> proxType;
+    typedef DistMatrix<T,U,V,DistWrap::ELEMENT> proxType;
 
     AbstractDistMatrix<S>& orig_;
     proxType* prox_;
@@ -705,20 +705,20 @@ public:
     ( AbstractDistMatrix<S>& A,
       const ElementalProxyCtrl& ctrl=ElementalProxyCtrl() )
     : orig_(A)
-    { 
+    {
         prox_ = new proxType(A.Grid());
         if( ctrl.rootConstrain )
             prox_->SetRoot( ctrl.root );
         if( ctrl.colConstrain )
-            prox_->AlignCols( ctrl.colAlign );    
+            prox_->AlignCols( ctrl.colAlign );
         if( ctrl.rowConstrain )
             prox_->AlignRows( ctrl.rowAlign );
         Copy( A, *prox_ );
     }
 
-    ~DistMatrixReadWriteProxy() 
-    { 
-        if( !uncaught_exception() )
+    ~DistMatrixReadWriteProxy()
+    {
+        if( !std::uncaught_exception() )
             Copy( *prox_, orig_ );
         delete prox_;
     }
@@ -728,10 +728,10 @@ public:
 };
 
 template<typename T,Dist U,Dist V>
-class DistMatrixReadWriteProxy<T,T,U,V,ELEMENT,void>
+class DistMatrixReadWriteProxy<T,T,U,V,DistWrap::ELEMENT,void>
 {
 private:
-    typedef DistMatrix<T,U,V,ELEMENT> proxType;
+    typedef DistMatrix<T,U,V,DistWrap::ELEMENT> proxType;
 
     bool madeCopy_;
     AbstractDistMatrix<T>& orig_;
@@ -743,14 +743,14 @@ public:
     ( AbstractDistMatrix<T>& A,
       const ElementalProxyCtrl& ctrl=ElementalProxyCtrl() )
     : orig_(A)
-    { 
-        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == ELEMENT )
+    {
+        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == DistWrap::ELEMENT )
         {
-            const bool colMisalign = 
+            const bool colMisalign =
               ( ctrl.colConstrain && A.ColAlign() != ctrl.colAlign );
-            const bool rowMisalign = 
+            const bool rowMisalign =
               ( ctrl.rowConstrain && A.RowAlign() != ctrl.rowAlign );
-            const bool rootMisalign = 
+            const bool rootMisalign =
               ( ctrl.rootConstrain && A.Root() != ctrl.root );
             if( !colMisalign && !rowMisalign && !rootMisalign )
             {
@@ -759,7 +759,7 @@ public:
                 if( ctrl.rootConstrain )
                     prox_->SetRoot( ctrl.root );
                 if( ctrl.colConstrain )
-                    prox_->AlignCols( ctrl.colAlign );    
+                    prox_->AlignCols( ctrl.colAlign );
                 if( ctrl.rowConstrain )
                     prox_->AlignRows( ctrl.rowAlign );
                 return;
@@ -770,17 +770,17 @@ public:
         if( ctrl.rootConstrain )
             prox_->SetRoot( ctrl.root );
         if( ctrl.colConstrain )
-            prox_->AlignCols( ctrl.colAlign );    
+            prox_->AlignCols( ctrl.colAlign );
         if( ctrl.rowConstrain )
             prox_->AlignRows( ctrl.rowAlign );
         Copy( A, *prox_ );
     }
 
-    ~DistMatrixReadWriteProxy() 
-    { 
+    ~DistMatrixReadWriteProxy()
+    {
         if( madeCopy_ )
         {
-            if( !uncaught_exception() )
+            if( !std::uncaught_exception() )
                 Copy( *prox_, orig_ );
             delete prox_;
         }
@@ -791,10 +791,10 @@ public:
 };
 
 template<typename S,typename T,Dist U,Dist V>
-class DistMatrixReadWriteProxy<S,T,U,V,BLOCK,void>
+class DistMatrixReadWriteProxy<S,T,U,V,DistWrap::BLOCK,void>
 {
 private:
-    typedef DistMatrix<T,U,V,BLOCK> proxType;
+    typedef DistMatrix<T,U,V,DistWrap::BLOCK> proxType;
 
     AbstractDistMatrix<S>& orig_;
     proxType* prox_;
@@ -805,7 +805,7 @@ public:
     ( AbstractDistMatrix<S>& A,
       const ProxyCtrl& ctrl=ProxyCtrl() )
     : orig_(A)
-    { 
+    {
         prox_ = new proxType(A.Grid());
         if( ctrl.rootConstrain )
             prox_->SetRoot( ctrl.root );
@@ -816,9 +816,9 @@ public:
         Copy( A, *prox_ );
     }
 
-    ~DistMatrixReadWriteProxy() 
-    { 
-        if( !uncaught_exception() )
+    ~DistMatrixReadWriteProxy()
+    {
+        if( !std::uncaught_exception() )
             Copy( *prox_, orig_ );
         delete prox_;
     }
@@ -828,10 +828,10 @@ public:
 };
 
 template<typename T,Dist U,Dist V>
-class DistMatrixReadWriteProxy<T,T,U,V,BLOCK,void>
+class DistMatrixReadWriteProxy<T,T,U,V,DistWrap::BLOCK,void>
 {
 private:
-    typedef DistMatrix<T,U,V,BLOCK> proxType;
+    typedef DistMatrix<T,U,V,DistWrap::BLOCK> proxType;
 
     bool madeCopy_;
     AbstractDistMatrix<T>& orig_;
@@ -843,20 +843,20 @@ public:
     ( AbstractDistMatrix<T>& A,
       const ProxyCtrl& ctrl=ProxyCtrl() )
     : orig_(A)
-    { 
-        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == BLOCK )
+    {
+        if( A.ColDist() == U && A.RowDist() == V && A.Wrap() == DistWrap::BLOCK )
         {
-            const bool colMisalign = 
-              ( ctrl.colConstrain && 
+            const bool colMisalign =
+              ( ctrl.colConstrain &&
                 (A.ColAlign() != ctrl.colAlign ||
                  A.BlockHeight() != ctrl.blockHeight ||
                  A.ColCut() != ctrl.colCut) );
-            const bool rowMisalign = 
-              ( ctrl.rowConstrain && 
+            const bool rowMisalign =
+              ( ctrl.rowConstrain &&
                 (A.RowAlign() != ctrl.rowAlign ||
                  A.BlockWidth() != ctrl.blockWidth ||
                  A.RowCut() != ctrl.rowCut) );
-            const bool rootMisalign = 
+            const bool rootMisalign =
               ( ctrl.rootConstrain && A.Root() != ctrl.root );
             if( !colMisalign && !rowMisalign && !rootMisalign )
             {
@@ -866,7 +866,7 @@ public:
                     prox_->SetRoot( ctrl.root );
                 if( ctrl.colConstrain )
                     prox_->AlignCols
-                    ( ctrl.blockHeight, ctrl.colAlign, ctrl.colCut ); 
+                    ( ctrl.blockHeight, ctrl.colAlign, ctrl.colCut );
                 if( ctrl.rowConstrain )
                     prox_->AlignRows
                     ( ctrl.blockWidth, ctrl.rowAlign, ctrl.rowCut );
@@ -884,11 +884,11 @@ public:
         Copy( A, *prox_ );
     }
 
-    ~DistMatrixReadWriteProxy() 
-    { 
+    ~DistMatrixReadWriteProxy()
+    {
         if( madeCopy_ )
         {
-            if( !uncaught_exception() )
+            if( !std::uncaught_exception() )
                 Copy( *prox_, orig_ );
             delete prox_;
         }

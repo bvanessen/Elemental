@@ -25,7 +25,7 @@ void TransposeContract
     }
     else
     {
-        unique_ptr<ElementalMatrix<T>>
+        std::unique_ptr<ElementalMatrix<T>>
             ASumFilt( B.ConstructTranspose(B.Grid(),B.Root()) );
         if( B.ColConstrained() )
             ASumFilt->AlignRowsWith( B, true );
@@ -56,7 +56,7 @@ void TransposeContract
     }
     else
     {
-        unique_ptr<BlockMatrix<T>>
+        std::unique_ptr<BlockMatrix<T>>
             ASumFilt( B.ConstructTranspose(B.Grid(),B.Root()) );
         if( B.ColConstrained() )
             ASumFilt->AlignRowsWith( B, true );

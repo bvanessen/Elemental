@@ -77,7 +77,7 @@ void Pseudoinverse( AbstractDistMatrix<Field>& APre, Base<Field> tolerance )
     EL_DEBUG_CSE
     typedef Base<Field> Real;
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int m = A.Height();
@@ -87,7 +87,7 @@ void Pseudoinverse( AbstractDistMatrix<Field>& APre, Base<Field> tolerance )
     const Real eps = limits::Epsilon<Real>();
 
     // Get the SVD of A
-    DistMatrix<Real,VR,STAR> s(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> s(g);
     DistMatrix<Field> U(g), V(g);
     SVDCtrl<Real> ctrl;
     ctrl.overwrite = true;
@@ -112,13 +112,13 @@ void HermitianPseudoinverse
     EL_DEBUG_CSE
     typedef Base<Field> Real;
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
     const Grid& g = A.Grid();
 
     // Get the EVD of A
     // TODO(poulson): Use a relative eigenvalue lower-bound
-    DistMatrix<Real,VR,STAR> w(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> w(g);
     DistMatrix<Field> Z(g);
     HermitianEig( uplo, A, w, Z );
 

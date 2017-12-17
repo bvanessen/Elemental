@@ -5,8 +5,8 @@
    Copyright (c) 2013, The University of Texas at Austin
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRMM_LUN_HPP
@@ -20,9 +20,9 @@ void LocalAccumulateLUN
 ( Orientation orientation,
   UnitOrNonUnit diag,
   T alpha,
-  const DistMatrix<T,MC,  MR  >& U,
-  const DistMatrix<T,STAR,MR  >& XTrans,
-        DistMatrix<T,MC,  STAR>& Z )
+  const DistMatrix<T,Dist::MC,  Dist::MR  >& U,
+  const DistMatrix<T,Dist::STAR,Dist::MR  >& XTrans,
+        DistMatrix<T,Dist::MC,  Dist::STAR>& Z )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -71,7 +71,7 @@ void LocalAccumulateLUN
 
 template<typename T>
 void LUNA
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<T>& UPre,
         AbstractDistMatrix<T>& XPre )
 {
@@ -87,14 +87,14 @@ void LUNA
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,VR,  STAR> X1_VR_STAR(g);
-    DistMatrix<T,STAR,MR  > X1Trans_STAR_MR(g);
-    DistMatrix<T,MC,  STAR> Z1_MC_STAR(g);
+    DistMatrix<T,Dist::VR,  Dist::STAR> X1_VR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MR  > X1Trans_STAR_MR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> Z1_MC_STAR(g);
 
     X1_VR_STAR.AlignWith( U );
     X1Trans_STAR_MR.AlignWith( U );
@@ -119,7 +119,7 @@ void LUNA
 
 template<typename T>
 void LUNCOld
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<T>& UPre,
         AbstractDistMatrix<T>& XPre )
 {
@@ -135,17 +135,17 @@ void LUNCOld
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<T,STAR,MC  > U12_STAR_MC(g);
-    DistMatrix<T,STAR,VR  > X1_STAR_VR(g);
-    DistMatrix<T,MR,  STAR> D1Trans_MR_STAR(g);
-    DistMatrix<T,MR,  MC  > D1Trans_MR_MC(g);
-    DistMatrix<T,MC,  MR  > D1(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MC  > U12_STAR_MC(g);
+    DistMatrix<T,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> D1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::MR,  Dist::MC  > D1Trans_MR_MC(g);
+    DistMatrix<T,Dist::MC,  Dist::MR  > D1(g);
 
     for( Int k=0; k<m; k+=bsize )
     {
@@ -162,7 +162,7 @@ void LUNCOld
         LocalTrmm
         ( LEFT, UPPER, NORMAL, diag, T(1), U11_STAR_STAR, X1_STAR_VR );
         X1 = X1_STAR_VR;
- 
+
         U12_STAR_MC.AlignWith( X2 );
         U12_STAR_MC = U12;
         D1Trans_MR_STAR.AlignWith( X1 );
@@ -180,7 +180,7 @@ void LUNCOld
 
 template<typename T>
 void LUNC
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<T>& UPre,
         AbstractDistMatrix<T>& XPre )
 {
@@ -195,15 +195,15 @@ void LUNC
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<T,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<T,STAR,VR  > X1_STAR_VR(g);
-    DistMatrix<T,MR,  STAR> X1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> X1Trans_MR_STAR(g);
 
     for( Int k=0; k<m; k+=bsize )
     {

@@ -30,7 +30,7 @@ Base<Field> TwoCondition( const AbstractDistMatrix<Field>& A )
 {
     EL_DEBUG_CSE
     typedef Base<Field> Real;
-    DistMatrix<Real,VR,STAR> s( A.Grid() );
+    DistMatrix<Real,Dist::VR,Dist::STAR> s( A.Grid() );
     SVD( A, s );
 
     Real cond = 1;

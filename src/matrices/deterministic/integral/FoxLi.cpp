@@ -67,12 +67,12 @@ void FoxLi( AbstractDistMatrix<Complex<Real>>& APre, Int n, Real omega )
     const Real pi = 4*Atan( Real(1) );
     const C phi = Sqrt( C(0,omega/pi) );
 
-    DistMatrixWriteProxy<C,C,MC,MR> AProx( APre );
+    DistMatrixWriteProxy<C,C,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     // Compute Gauss quadrature points and weights
     const Grid& g = A.Grid();
-    DistMatrix<Real,VR,STAR> d(g), e(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> d(g), e(g);
     Zeros( d, n, 1 );
     e.Resize( n-1, 1 );
     auto& eLoc = e.Matrix();
@@ -82,13 +82,13 @@ void FoxLi( AbstractDistMatrix<Complex<Real>>& APre, Int n, Real omega )
         const Real betaInv = 2*Sqrt(1-Pow(i+Real(1),-2)/4);
         eLoc(iLoc) = 1/betaInv;
     }
-    DistMatrix<Real,VR,STAR> x(g);
-    DistMatrix<Real,STAR,VR> Z(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> x(g);
+    DistMatrix<Real,Dist::STAR,Dist::VR> Z(g);
     HermitianTridiagEigCtrl<Real> ctrl;
     ctrl.sort = UNSORTED;
     HermitianTridiagEig( d, e, x, Z, ctrl );
     auto z = Z( IR(0), ALL );
-    DistMatrix<Real,STAR,VR> sqrtWeights( z );
+    DistMatrix<Real,Dist::STAR,Dist::VR> sqrtWeights( z );
     auto& sqrtWeightsLoc = sqrtWeights.Matrix();
     for( Int jLoc=0; jLoc<sqrtWeights.LocalWidth(); ++jLoc )
         sqrtWeightsLoc(0,jLoc) = Sqrt(Real(2))*Abs(sqrtWeightsLoc(0,jLoc));
@@ -99,8 +99,8 @@ void FoxLi( AbstractDistMatrix<Complex<Real>>& APre, Int n, Real omega )
 
     // Form the integral operator
     A.Resize( n, n );
-    DistMatrix<Real,MC,STAR> x_MC( A.Grid() );
-    DistMatrix<Real,MR,STAR> x_MR( A.Grid() );
+    DistMatrix<Real,Dist::MC,Dist::STAR> x_MC( A.Grid() );
+    DistMatrix<Real,Dist::MR,Dist::STAR> x_MR( A.Grid() );
     x_MC.AlignWith( A );
     x_MR.AlignWith( A );
     x_MC = x;
@@ -121,7 +121,7 @@ void FoxLi( AbstractDistMatrix<Complex<Real>>& APre, Int n, Real omega )
     }
 
     // Apply the weighting
-    DistMatrix<Real,VR,STAR> sqrtWeightsTrans(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> sqrtWeightsTrans(g);
     Transpose( sqrtWeights, sqrtWeightsTrans );
     DiagonalScale( LEFT, NORMAL, sqrtWeightsTrans, A );
     DiagonalScale( RIGHT, NORMAL, sqrtWeightsTrans, A );

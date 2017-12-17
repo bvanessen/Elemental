@@ -65,7 +65,7 @@ void PartialColAllGather
         }
         else
         {
-            vector<T> buffer;
+            std::vector<T> buffer;
             FastResize( buffer, (colStrideUnion+1)*portionSize );
             T* firstBuf = &buffer[0];
             T* secondBuf = &buffer[portionSize];
@@ -97,7 +97,7 @@ void PartialColAllGather
         if( A.Grid().Rank() == 0 )
             cerr << "Unaligned PartialColAllGather" << endl;
 #endif
-        vector<T> buffer;
+        std::vector<T> buffer;
         FastResize( buffer, (colStrideUnion+1)*portionSize );
         T* firstBuf = &buffer[0];
         T* secondBuf = &buffer[portionSize];
@@ -131,8 +131,8 @@ void PartialColAllGather
 
 template<typename T,Dist U,Dist V>
 void PartialColAllGather
-( const DistMatrix<T,        U,   V,BLOCK>& A,
-        DistMatrix<T,Partial<U>(),V,BLOCK>& B )
+( const DistMatrix<T,        U,   V,DistWrap::BLOCK>& A,
+        DistMatrix<T,Partial<U>(),V,DistWrap::BLOCK>& B )
 {
     EL_DEBUG_CSE
     AssertSameGrids( A, B );

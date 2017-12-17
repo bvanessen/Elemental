@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_APPLYPACKEDREFLECTORS_RUHB_HPP
@@ -14,15 +14,15 @@ namespace apply_packed_reflectors {
 
 //
 // Since applying Householder transforms from vectors stored bottom-to-top
-// implies that we will be forming a generalization of 
+// implies that we will be forming a generalization of
 //
-//  (I - tau_1 v_1^T v_1) (I - tau_0 v_0^T v_0) = 
+//  (I - tau_1 v_1^T v_1) (I - tau_0 v_0^T v_0) =
 //  I - [ v_0^T, v_1^T ] [  tau_0,                       0     ] [ conj(v_0) ]
 //                       [ -tau_0 tau_1 conj(v_1) v_0^T, tau_1 ] [ conj(v_1) ],
 //
-// which has a lower-triangular center matrix, say S, we will form S as 
+// which has a lower-triangular center matrix, say S, we will form S as
 // the inverse of a matrix T, which can easily be formed as
-// 
+//
 //   tril(T,-1) = triu( conj(V V^H) ),
 //   diag(T) = 1/householderScalars or 1/conj(householderScalars),
 //
@@ -175,11 +175,11 @@ RUHBUnblocked
 
     // We gather the entire set of Householder scalars at the start rather than
     // continually paying the latency cost of the broadcasts in a 'Get' call
-    DistMatrixReadProxy<F,F,STAR,STAR>
+    DistMatrixReadProxy<F,F,Dist::STAR,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& householderScalars = householderScalarsProx.GetLocked();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int nA = A.Width();
@@ -191,8 +191,8 @@ RUHBUnblocked
     )
     const Grid& g = H.Grid();
     auto hPan = unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
-    DistMatrix<F,STAR,MR> hPan_STAR_MR(g);
-    DistMatrix<F,MC,STAR> z_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR> hPan_STAR_MR(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> z_MC_STAR(g);
 
     const Int iOff = ( offset>=0 ? 0      : -offset );
     const Int jOff = ( offset>=0 ? offset : 0       );
@@ -239,11 +239,11 @@ RUHBBlocked
       AssertSameGrids( H, householderScalarsPre, APre );
     )
 
-    DistMatrixReadProxy<F,F,MC,STAR>
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& householderScalars = householderScalarsProx.GetLocked();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int nA = A.Width();
@@ -256,12 +256,12 @@ RUHBBlocked
     const Grid& g = H.Grid();
     auto HPan = unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
     DistMatrix<F> HPanConj(g);
-    DistMatrix<F,STAR,VR  > HPan_STAR_VR(g);
-    DistMatrix<F,STAR,MR  > HPan_STAR_MR(g);
-    DistMatrix<F,STAR,STAR> householderScalars1_STAR_STAR(g);
-    DistMatrix<F,STAR,STAR> SInv_STAR_STAR(g);
-    DistMatrix<F,STAR,MC  > ZAdj_STAR_MC(g);
-    DistMatrix<F,STAR,VC  > ZAdj_STAR_VC(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > HPan_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > HPan_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> householderScalars1_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> SInv_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > ZAdj_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::VC  > ZAdj_STAR_VC(g);
 
     const Int iOff = ( offset>=0 ? 0      : -offset );
     const Int jOff = ( offset>=0 ? offset : 0       );

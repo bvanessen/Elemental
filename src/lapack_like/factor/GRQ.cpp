@@ -36,7 +36,7 @@ void GRQ
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre ), BProx( BPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre ), BProx( BPre );
     auto& A = AProx.Get();
     auto& B = BProx.Get();
 
@@ -64,13 +64,13 @@ void ExplicitTriang( AbstractDistMatrix<F>& APre, AbstractDistMatrix<F>& BPre )
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre ), BProx( BPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre ), BProx( BPre );
     auto& A = AProx.Get();
     auto& B = BProx.Get();
 
     const Grid& g = A.Grid();
-    DistMatrix<F,MD,STAR> householderScalarsA(g);
-    DistMatrix<Base<F>,MD,STAR> signatureA(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalarsA(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signatureA(g);
     RQ( A, householderScalarsA, signatureA );
     rq::ApplyQ( RIGHT, ADJOINT, A, householderScalarsA, signatureA, B );
     MakeTrapezoidal( UPPER, A, Min(A.Height(),A.Width()) );

@@ -102,7 +102,7 @@ void TransposeAxpy
     }
     else
     {
-        unique_ptr<ElementalMatrix<T>>
+        std::unique_ptr<ElementalMatrix<T>>
             C( B.ConstructTranspose(A.Grid(),A.Root()) );
         C->AlignRowsWith( B.DistData() );
         C->AlignColsWith( B.DistData() );

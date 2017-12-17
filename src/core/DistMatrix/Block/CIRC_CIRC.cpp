@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like.hpp>
 
 #define COLDIST CIRC
@@ -119,33 +118,33 @@ int BDM::PartialUnionRowRank() const EL_NO_EXCEPT
 // ####################################################################
 
 #define SELF(T,U,V) \
-  template DistMatrix<T,COLDIST,ROWDIST,BLOCK>::DistMatrix \
-  ( const DistMatrix<T,U,V,BLOCK>& A );
+  template DistMatrix<T,COLDIST,ROWDIST,DistWrap::BLOCK>::DistMatrix \
+  ( const DistMatrix<T,U,V,DistWrap::BLOCK>& A );
 #define OTHER(T,U,V) \
-  template DistMatrix<T,COLDIST,ROWDIST,BLOCK>::DistMatrix \
+  template DistMatrix<T,COLDIST,ROWDIST,DistWrap::BLOCK>::DistMatrix \
   ( const DistMatrix<T,U,V>& A ); \
-  template DistMatrix<T,COLDIST,ROWDIST,BLOCK>& \
-           DistMatrix<T,COLDIST,ROWDIST,BLOCK>::operator= \
+  template DistMatrix<T,COLDIST,ROWDIST,DistWrap::BLOCK>& \
+           DistMatrix<T,COLDIST,ROWDIST,DistWrap::BLOCK>::operator= \
            ( const DistMatrix<T,U,V>& A )
 #define BOTH(T,U,V) \
   SELF(T,U,V) \
   OTHER(T,U,V)
 #define PROTO(T) \
-  template class DistMatrix<T,COLDIST,ROWDIST,BLOCK>; \
-  OTHER(T,CIRC,CIRC); \
-  BOTH( T,MC,  MR  ); \
-  BOTH( T,MC,  STAR); \
-  BOTH( T,MD,  STAR); \
-  BOTH( T,MR,  MC  ); \
-  BOTH( T,MR,  STAR); \
-  BOTH( T,STAR,MC  ); \
-  BOTH( T,STAR,MD  ); \
-  BOTH( T,STAR,MR  ); \
-  BOTH( T,STAR,STAR); \
-  BOTH( T,STAR,VC  ); \
-  BOTH( T,STAR,VR  ); \
-  BOTH( T,VC,  STAR); \
-  BOTH( T,VR,  STAR);
+  template class DistMatrix<T,COLDIST,ROWDIST,DistWrap::BLOCK>; \
+  OTHER(T,Dist::CIRC,CIRC); \
+  BOTH( T,Dist::MC,  MR  ); \
+  BOTH( T,Dist::MC,  STAR); \
+  BOTH( T,Dist::MD,  STAR); \
+  BOTH( T,Dist::MR,  MC  ); \
+  BOTH( T,Dist::MR,  STAR); \
+  BOTH( T,Dist::STAR,MC  ); \
+  BOTH( T,Dist::STAR,MD  ); \
+  BOTH( T,Dist::STAR,MR  ); \
+  BOTH( T,Dist::STAR,STAR); \
+  BOTH( T,Dist::STAR,VC  ); \
+  BOTH( T,Dist::STAR,VR  ); \
+  BOTH( T,Dist::VC,  STAR); \
+  BOTH( T,Dist::VR,  STAR);
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

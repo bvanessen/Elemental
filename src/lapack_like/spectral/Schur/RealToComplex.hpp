@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_SCHUR_REALTOCOMPLEX_HPP
@@ -106,13 +106,13 @@ void RealToComplex
 
 template<typename Real>
 void RealToComplex
-( const AbstractDistMatrix<        Real >& UQuasi, 
+( const AbstractDistMatrix<        Real >& UQuasi,
         AbstractDistMatrix<Complex<Real>>& UPre )
 {
     EL_DEBUG_CSE
     typedef Complex<Real> C;
 
-    DistMatrixWriteProxy<C,C,MC,MR> UProx( UPre );
+    DistMatrixWriteProxy<C,C,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.Get();
 
     EL_DEBUG_ONLY(CheckRealSchur(UQuasi))
@@ -122,9 +122,9 @@ void RealToComplex
     const Grid& g = U.Grid();
 
     DistMatrix<C> U01(g), U12(g);
-    DistMatrix<C,STAR,STAR> U11_STAR_STAR(g), V11(2,2,g), w1(2,1,g);
-    DistMatrix<C,VC,STAR> U01_VC_STAR(g), U01Copy_VC_STAR(g); 
-    DistMatrix<C,STAR,VR> U12_STAR_VR(g), U12Copy_STAR_VR(g);
+    DistMatrix<C,Dist::STAR,Dist::STAR> U11_STAR_STAR(g), V11(2,2,g), w1(2,1,g);
+    DistMatrix<C,Dist::VC,Dist::STAR> U01_VC_STAR(g), U01Copy_VC_STAR(g);
+    DistMatrix<C,Dist::STAR,Dist::VR> U12_STAR_VR(g), U12Copy_STAR_VR(g);
 
     HessenbergSchurCtrl ctrl;
     ctrl.fullTriangle = true;
@@ -166,7 +166,7 @@ void RealToComplex
 
 template<typename Real>
 void RealToComplex
-( const AbstractDistMatrix<        Real >& UQuasi, 
+( const AbstractDistMatrix<        Real >& UQuasi,
   const AbstractDistMatrix<        Real >& QQuasi,
         AbstractDistMatrix<Complex<Real>>& UPre,
         AbstractDistMatrix<Complex<Real>>& QPre )
@@ -174,7 +174,7 @@ void RealToComplex
     EL_DEBUG_CSE
     typedef Complex<Real> C;
 
-    DistMatrixWriteProxy<C,C,MC,MR> UProx( UPre ), QProx( QPre );
+    DistMatrixWriteProxy<C,C,Dist::MC,Dist::MR> UProx( UPre ), QProx( QPre );
     auto& U = UProx.Get();
     auto& Q = QProx.Get();
 
@@ -186,10 +186,10 @@ void RealToComplex
     const Grid& g = U.Grid();
 
     DistMatrix<C> U01(g), U12(g);
-    DistMatrix<C,STAR,STAR> U11_STAR_STAR(g), V11(2,2,g), w1(2,1,g);
-    DistMatrix<C,VC,STAR> Q1_VC_STAR(g), Q1Copy_VC_STAR(g),
-                          U01_VC_STAR(g), U01Copy_VC_STAR(g); 
-    DistMatrix<C,STAR,VR> U12_STAR_VR(g), U12Copy_STAR_VR(g);
+    DistMatrix<C,Dist::STAR,Dist::STAR> U11_STAR_STAR(g), V11(2,2,g), w1(2,1,g);
+    DistMatrix<C,Dist::VC,Dist::STAR> Q1_VC_STAR(g), Q1Copy_VC_STAR(g),
+                          U01_VC_STAR(g), U01Copy_VC_STAR(g);
+    DistMatrix<C,Dist::STAR,Dist::VR> U12_STAR_VR(g), U12Copy_STAR_VR(g);
 
     HessenbergSchurCtrl ctrl;
     ctrl.fullTriangle = true;

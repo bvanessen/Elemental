@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -14,10 +14,10 @@ template<typename T>
 void LocalAccumulateLL
 ( Orientation orientation, T alpha,
   const DistMatrix<T>& A,
-  const DistMatrix<T,MC,  STAR>& B_MC_STAR,
-  const DistMatrix<T,STAR,MR  >& BTrans_STAR_MR,
-        DistMatrix<T,MC,  STAR>& Z_MC_STAR,
-        DistMatrix<T,MR,  STAR>& Z_MR_STAR )
+  const DistMatrix<T,Dist::MC,  Dist::STAR>& B_MC_STAR,
+  const DistMatrix<T,Dist::STAR,Dist::MR  >& BTrans_STAR_MR,
+        DistMatrix<T,Dist::MC,  Dist::STAR>& Z_MC_STAR,
+        DistMatrix<T,Dist::MR,  Dist::STAR>& Z_MR_STAR )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -104,20 +104,20 @@ void LLA
     const Grid& g = APre.Grid();
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre ), BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre ), BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,MC,STAR> B1_MC_STAR(g);
-    DistMatrix<T,VR,STAR> B1_VR_STAR(g);
-    DistMatrix<T,STAR,MR> B1Trans_STAR_MR(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> B1_MC_STAR(g);
+    DistMatrix<T,Dist::VR,Dist::STAR> B1_VR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MR> B1Trans_STAR_MR(g);
     DistMatrix<T> Z1(g);
-    DistMatrix<T,MC,STAR> Z1_MC_STAR(g);
-    DistMatrix<T,MR,STAR> Z1_MR_STAR(g);
-    DistMatrix<T,MR,MC  > Z1_MR_MC(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> Z1_MC_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> Z1_MR_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::MC  > Z1_MR_MC(g);
 
     B1_MC_STAR.AlignWith( A );
     B1_VR_STAR.AlignWith( A );
@@ -139,7 +139,7 @@ void LLA
         Zero( Z1_MC_STAR );
         Zero( Z1_MR_STAR );
         LocalAccumulateLL
-        ( orientation, 
+        ( orientation,
           alpha, A, B1_MC_STAR, B1Trans_STAR_MR, Z1_MC_STAR, Z1_MR_STAR );
 
         Contract( Z1_MR_STAR, Z1_MR_MC );
@@ -155,7 +155,7 @@ void LLC
 ( T alpha,
   const AbstractDistMatrix<T>& APre,
   const AbstractDistMatrix<T>& BPre,
-        AbstractDistMatrix<T>& CPre, 
+        AbstractDistMatrix<T>& CPre,
   bool conjugate=false )
 {
     EL_DEBUG_CSE
@@ -165,16 +165,16 @@ void LLC
     const Grid& g = APre.Grid();
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre ), BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre ), BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,MC,  STAR> AB1_MC_STAR(g);
-    DistMatrix<T,STAR,MC  > A1L_STAR_MC(g);
-    DistMatrix<T,MR,  STAR> B1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> AB1_MC_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MC  > A1L_STAR_MC(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> B1Trans_MR_STAR(g);
 
     B1Trans_MR_STAR.AlignWith( C );
 
@@ -204,11 +204,11 @@ void LLC
         Transpose( B1, B1Trans_MR_STAR );
 
         LocalGemm
-        ( NORMAL, TRANSPOSE, 
+        ( NORMAL, TRANSPOSE,
           alpha, AB1_MC_STAR, B1Trans_MR_STAR, T(1), CB );
 
         LocalGemm
-        ( orientation, TRANSPOSE, 
+        ( orientation, TRANSPOSE,
           alpha, A1L_STAR_MC, B1Trans_MR_STAR, T(1), CT );
     }
 }

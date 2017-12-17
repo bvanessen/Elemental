@@ -298,7 +298,7 @@ void RankOneMod
     const Grid& g = APre.Grid();
     typedef Base<F> Real;
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int m = A.Height();
@@ -321,7 +321,7 @@ void RankOneMod
     Trsv( LOWER, NORMAL, UNIT, A, w );
 
     // Maintain an external vector for the temporary subdiagonal of U
-    DistMatrix<F,MD,STAR> uSub(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> uSub(g);
     uSub.SetRoot( A.DiagonalRoot(-1) );
     uSub.AlignCols( A.DiagonalAlign(-1) );
     Zeros( uSub, minDim-1, 1 );
@@ -572,13 +572,13 @@ void LUMod
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
-    DistMatrixReadProxy<Field,Field,MC,MR> UProx( UPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.GetLocked();
 
-    DistMatrixReadProxy<Field,Field,MC,MR> VProx( VPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> VProx( VPre );
     auto& V = VProx.GetLocked();
 
     // TODO(poulson): Add a higher-rank implementation.

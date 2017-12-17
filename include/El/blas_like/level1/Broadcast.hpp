@@ -29,7 +29,7 @@ void Broadcast( Matrix<T>& A, mpi::Comm comm, int rank )
     }
     else
     {
-        vector<T> buf;
+        std::vector<T> buf;
         FastResize( buf, size );
 
         // Pack
@@ -70,7 +70,7 @@ void Broadcast( AbstractDistMatrix<T>& A, mpi::Comm comm, int rank )
     }
     else
     {
-        vector<T> buf;
+        std::vector<T> buf;
         FastResize( buf, localSize );
 
         // Pack

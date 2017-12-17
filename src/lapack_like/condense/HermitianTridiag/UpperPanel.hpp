@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_HERMITIANTRIDIAG_UPPER_PANEL_HPP
@@ -16,11 +16,11 @@ template<typename F>
 void UpperPanel
 ( DistMatrix<F>& A,
   DistMatrix<F>& W,
-  DistMatrix<F,MD,STAR>& t,
-  DistMatrix<F,MC,STAR>& B_MC_STAR, 
-  DistMatrix<F,MR,STAR>& B_MR_STAR,
-  DistMatrix<F,MC,STAR>& W_MC_STAR,
-  DistMatrix<F,MR,STAR>& W_MR_STAR,
+  DistMatrix<F,Dist::MD,Dist::STAR>& t,
+  DistMatrix<F,Dist::MC,Dist::STAR>& B_MC_STAR,
+  DistMatrix<F,Dist::MR,Dist::STAR>& B_MR_STAR,
+  DistMatrix<F,Dist::MC,Dist::STAR>& W_MC_STAR,
+  DistMatrix<F,Dist::MR,Dist::STAR>& W_MR_STAR,
   const SymvCtrl<F>& ctrl )
 {
     EL_DEBUG_CSE
@@ -46,8 +46,8 @@ void UpperPanel
     const Int off = n-nW;
 
     // Create a distributed matrix for storing the superdiagonal
-    auto expandedABR = A( IR(off-1,n), IR(off-1,n) ); 
-    DistMatrix<Real,MD,STAR> e(g);
+    auto expandedABR = A( IR(off-1,n), IR(off-1,n) );
+    DistMatrix<Real,Dist::MD,Dist::STAR> e(g);
     e.SetRoot( expandedABR.DiagonalRoot(1) );
     e.AlignCols( expandedABR.DiagonalAlign(1) );
     e.Resize( nW, 1 );
@@ -56,9 +56,9 @@ void UpperPanel
     FastResize( w01LastBuf, n/r+1 );
 
     DistMatrix<F> w01Last(g);
-    DistMatrix<F,MC,STAR> a01_MC(g), p01_MC(g),
+    DistMatrix<F,Dist::MC,Dist::STAR> a01_MC(g), p01_MC(g),
                           a01Last_MC(g), w01Last_MC(g);
-    DistMatrix<F,MR,STAR> a01_MR(g), q01_MR(g),
+    DistMatrix<F,Dist::MR,Dist::STAR> a01_MR(g), q01_MR(g),
                           x21_MR(g), y21_MR(g),
                           a01Last_MR(g), w01Last_MR(g);
 
@@ -68,7 +68,7 @@ void UpperPanel
     {
         const Int kA = k+off;
         const bool firstIteration = ( k == nW-1 );
-        if( !firstIteration ) 
+        if( !firstIteration )
         {
             // TODO: Move these and make them auto
             View( a01Last_MC, B_MC_STAR, IR(0,kA+1), IR(k+1) );
@@ -107,7 +107,7 @@ void UpperPanel
         // View the portions of a01[MC] and p01[MC] above the current
         // panel's square
         auto a01T_MC = a01_MC( IR(0,off), ALL );
-        auto p01T_MC = p01_MC( IR(0,off), ALL ); 
+        auto p01T_MC = p01_MC( IR(0,off), ALL );
 
         const bool thisIsMyCol = ( g.Col() == alpha11.RowAlign() );
         if( thisIsMyCol )
@@ -120,7 +120,7 @@ void UpperPanel
                 const F* a01Last_MC_Buf = a01Last_MC.Buffer();
                 for( Int i=0; i<aT1LocalHeight; ++i )
                     aT1Buf[i] -=
-                      w01LastBuf[i] + 
+                      w01LastBuf[i] +
                       a01Last_MC_Buf[i]*Conj(w01LastBottomEntry);
             }
             // Compute the Householder reflector
@@ -128,13 +128,13 @@ void UpperPanel
             tau1.Set(0,0,tau);
         }
 
-        // Store the subdiagonal value and turn a01 into a proper scaled 
+        // Store the subdiagonal value and turn a01 into a proper scaled
         // reflector by explicitly placing the implicit one in its first entry.
         GetRealPartOfDiagonal( alpha01B, epsilon1 );
         alpha01B.Set( 0, 0, F(1) );
 
-        // If this is the first iteration, have each member of the owning 
-        // process column broadcast tau and a01 within its process row. 
+        // If this is the first iteration, have each member of the owning
+        // process column broadcast tau and a01 within its process row.
         // Otherwise, also add w01 into the broadcast.
         if( firstIteration )
         {
@@ -151,7 +151,7 @@ void UpperPanel
             }
             // Broadcast a01 and tau across the process row
             mpi::Broadcast
-            ( rowBcastBuf.data(), 
+            ( rowBcastBuf.data(),
               a01LocalHeight+1, a01.RowAlign(), g.RowComm() );
             // Store a01[MC] into its DistMatrix class and also store a copy
             // for the next iteration
@@ -159,11 +159,11 @@ void UpperPanel
             ( a01_MC.Buffer(), rowBcastBuf.data(), a01LocalHeight );
             // Store a01[MC] into B[MC,* ]
             MemCopy
-            ( B_MC_STAR.Buffer(0,k), 
+            ( B_MC_STAR.Buffer(0,k),
               rowBcastBuf.data(), a01LocalHeight );
             // Store tau
             tau = rowBcastBuf[a01LocalHeight];
-            
+
             a01_MR = a01_MC;
             // Store a01[MR]
             MemCopy
@@ -178,35 +178,35 @@ void UpperPanel
             vector<F> rowBcastBuf;
             FastResize( rowBcastBuf, a01LocalHeight+w01LastLocalHeight+1 );
 
-            if( thisIsMyCol ) 
+            if( thisIsMyCol )
             {
                 // Pack the broadcast buffer with a01, w01Last, and tau
                 MemCopy
                 ( rowBcastBuf.data(), a01.Buffer(), a01LocalHeight );
                 MemCopy
-                ( &rowBcastBuf[a01LocalHeight], 
+                ( &rowBcastBuf[a01LocalHeight],
                   w01LastBuf.data(), w01LastLocalHeight );
                 rowBcastBuf[a01LocalHeight+w01LastLocalHeight] = tau;
             }
             // Broadcast a01, w01Last, and tau across the process row
             mpi::Broadcast
-            ( rowBcastBuf.data(), 
-              a01LocalHeight+w01LastLocalHeight+1, 
+            ( rowBcastBuf.data(),
+              a01LocalHeight+w01LastLocalHeight+1,
               a01.RowAlign(), g.RowComm() );
-            // Store a01[MC] into its DistMatrix class 
+            // Store a01[MC] into its DistMatrix class
             MemCopy
             ( a01_MC.Buffer(), rowBcastBuf.data(), a01LocalHeight );
             // Store a01[MC] into B[MC,* ]
             MemCopy
-            ( B_MC_STAR.Buffer(0,k), 
+            ( B_MC_STAR.Buffer(0,k),
               rowBcastBuf.data(), a01LocalHeight );
             // Store w01Last[MC] into its DistMatrix class
             w01Last_MC.AlignWith( A00 );
             w01Last_MC.Resize( kA+1, 1 );
             MemCopy
-            ( w01Last_MC.Buffer(), 
+            ( w01Last_MC.Buffer(),
               &rowBcastBuf[a01LocalHeight], w01LastLocalHeight );
-            // Store the bottom part of w01Last[MC] into WB[MC,* ] and, 
+            // Store the bottom part of w01Last[MC] into WB[MC,* ] and,
             // if necessary, w01.
             MemCopy
             ( W_MC_STAR.Buffer(0,k+1),
@@ -220,13 +220,13 @@ void UpperPanel
             // Store tau
             tau = rowBcastBuf[a01LocalHeight+w01LastLocalHeight];
 
-            // Form a01[MR] and w01Last[MR] by combining the 
-            // communications needed for taking a vector from 
-            // [MC,* ] -> [MR,* ]: 
-            //   local copy to [VC,* ], 
-            //   Send/Recv to [VR,* ], 
+            // Form a01[MR] and w01Last[MR] by combining the
+            // communications needed for taking a vector from
+            // [MC,* ] -> [MR,* ]:
+            //   local copy to [VC,* ],
+            //   Send/Recv to [VR,* ],
             //   AllGather to [MR,* ]
-            // We can combine the two by treating a01 as [a01; 0] 
+            // We can combine the two by treating a01 as [a01; 0]
 
             const Int colAlignSource = A00.ColAlign();
             const Int colAlignDest = A00.RowAlign();
@@ -238,11 +238,11 @@ void UpperPanel
 
             const Int colShiftVRDest = Shift(g.VRRank(),colAlignDest,p);
             const Int colShiftVCSource = Shift(g.VCRank(),colAlignSource,p);
-            const Int sendRankRM = 
+            const Int sendRankRM =
                 (g.VRRank()+(p+colShiftVCSource-colShiftVRDest))%p;
-            const Int recvRankCM = 
+            const Int recvRankCM =
                 (g.VCRank()+(p+colShiftVRDest-colShiftVCSource))%p;
-            const Int recvRankRM = 
+            const Int recvRankRM =
                 (recvRankCM/r)+c*(recvRankCM%r);
 
             vector<F> transBuf;
@@ -260,7 +260,7 @@ void UpperPanel
                 StridedMemCopy
                 ( sendBuf,                           1,
                   w01Last_MC.LockedBuffer(offset,0), c, w01VCLocalHeight );
-                
+
                 // Pack the necessary portion of a01[MC]
                 const Int a01VCLocalHeight = Length(height-1,shift,p);
                 StridedMemCopy
@@ -270,7 +270,7 @@ void UpperPanel
 
             // [VR,* ] <- [VC,* ]
             mpi::SendRecv
-            ( sendBuf, portionSize, sendRankRM, 
+            ( sendBuf, portionSize, sendRankRM,
               recvBuf, portionSize, recvRankRM, g.VRComm() );
 
             // [MR,* ] <- [VR,* ]
@@ -309,9 +309,9 @@ void UpperPanel
               a01_MR.Buffer(),
               a01_MR.LocalHeight() );
 
-            // Update the portion of A00 that is in our current panel with 
+            // Update the portion of A00 that is in our current panel with
             // w01Last and a01Last using two gers. We do not need their bottom
-            // entries. We trash the lower triangle of our panel of A since we 
+            // entries. We trash the lower triangle of our panel of A since we
             // are only doing slightly more work and we can replace it
             // afterwards.
             auto a01Last_MC_Top = a01Last_MC( ind0, ALL );
@@ -367,10 +367,10 @@ void UpperPanel
             MemCopy
             ( x21_MR.Buffer(), colSumRecvBuf.data(), x21LocalHeight );
             MemCopy
-            ( y21_MR.Buffer(), 
+            ( y21_MR.Buffer(),
               &colSumRecvBuf[x21LocalHeight], y21LocalHeight );
             MemCopy
-            ( q01_MR.Buffer(), 
+            ( q01_MR.Buffer(),
               &colSumRecvBuf[x21LocalHeight+y21LocalHeight], q01LocalHeight );
         }
 
@@ -379,8 +379,8 @@ void UpperPanel
 
         if( k > 0 )
         {
-            // This is not the last iteration of the panel factorization, 
-            // combine the Reduce to one of p01[MC] with the redistribution 
+            // This is not the last iteration of the panel factorization,
+            // combine the Reduce to one of p01[MC] with the redistribution
             // of q01[MR,* ] -> q01[MC,MR] to the next process column.
             const Int localHeight = p01_MC.LocalHeight();
             vector<F> reduceToOneSendBuf, reduceToOneRecvBuf;
@@ -392,7 +392,7 @@ void UpperPanel
             ( reduceToOneSendBuf.data(), p01_MC.Buffer(), localHeight );
 
             // Fill in contributions to q01[MC,MR] from q01[MR,* ]
-            const bool contributing = 
+            const bool contributing =
                 ( q01_MR.ColShift() % g.GCD() ==
                   p01_MC.ColShift() % g.GCD() );
             if( contributing )
@@ -410,8 +410,8 @@ void UpperPanel
                     // Fill in the entries that we contribute to.
                     // We seek to find the minimum s in N such that
                     //   s*c = a0-b0 (mod r)
-                    // where a0 is the column shift of MC, b0 is the row shift
-                    // of MR, and s is our first local entry of MR that will 
+                    // where a0 is the column shift of Dist::MC, b0 is the row shift
+                    // of Dist::MR, and s is our first local entry of MR that will
                     // contribute to MC. I cannot think of an O(1) method, so
                     // I will instead use the worst-case O(lcm(c,r)/c) method.
                     const Int sourcePeriod = g.LCM() / c;
@@ -451,22 +451,22 @@ void UpperPanel
               2*localHeight, nextProcessCol, g.RowComm() );
             if( g.Col() == nextProcessCol )
             {
-                // Combine the second half into the first half        
+                // Combine the second half into the first half
                 blas::Axpy
                 ( localHeight, F(1),
                   &reduceToOneRecvBuf[localHeight], 1,
                   &reduceToOneRecvBuf[0],           1 );
 
-                // Finish computing w01. During its computation, ensure that 
+                // Finish computing w01. During its computation, ensure that
                 // every process has a copy of the last element of the w01.
                 // We know a priori that the last element of a01 is one.
                 const F* a01_MC_Buf = a01_MC.Buffer();
                 F myDotProduct = blas::Dot
-                    ( localHeight, reduceToOneRecvBuf.data(), 1, 
+                    ( localHeight, reduceToOneRecvBuf.data(), 1,
                                    a01_MC_Buf,                1 );
                 F sendBuf[2], recvBuf[2];
                 sendBuf[0] = myDotProduct;
-                sendBuf[1] = ( g.Row()==nextProcessRow ? 
+                sendBuf[1] = ( g.Row()==nextProcessRow ?
                                reduceToOneRecvBuf[localHeight-1] : 0 );
                 mpi::AllReduce( sendBuf, recvBuf, 2, g.ColComm() );
                 F dotProduct = recvBuf[0];
@@ -496,7 +496,7 @@ void UpperPanel
             ( allReduceSendBuf.data(), p01_MC.Buffer(), localHeight );
 
             // Fill in contributions to q01[MC] from q01[MR]
-            const bool contributing = 
+            const bool contributing =
                 ( q01_MR.ColShift() % g.GCD() ==
                   p01_MC.ColShift() % g.GCD() );
             if( contributing )
@@ -514,8 +514,8 @@ void UpperPanel
                     // Fill in the entries that we contribute to.
                     // We seek to find the minimum s in N such that
                     //   s*c = a0-b0 (mod r)
-                    // where a0 is the column shift of MC, b0 is the row shift
-                    // of MR, and s is our first local entry of MR that will 
+                    // where a0 is the column shift of Dist::MC, b0 is the row shift
+                    // of Dist::MR, and s is our first local entry of MR that will
                     // contribute to MC. I cannot think of an O(1) method, so
                     // I will instead use the worst-case O(lcm(c,r)/c) method.
                     const Int sourcePeriod = g.LCM() / c;
@@ -536,7 +536,7 @@ void UpperPanel
 
                     const Int globalShift = b0+sourceStart*c;
                     const Int targetStart = (globalShift-a0)/r;
-                    const Int localLength = 
+                    const Int localLength =
                         Length(localHeight,targetStart,targetPeriod);
                     const Int offset = localHeight + targetStart;
                     StridedMemCopy
@@ -552,18 +552,18 @@ void UpperPanel
             ( allReduceSendBuf.data(), allReduceRecvBuf.data(),
               2*localHeight, g.RowComm() );
 
-            // Combine the second half into the first half        
+            // Combine the second half into the first half
             blas::Axpy
-            ( localHeight, F(1), 
-              &allReduceRecvBuf[localHeight], 1, 
+            ( localHeight, F(1),
+              &allReduceRecvBuf[localHeight], 1,
               &allReduceRecvBuf[0],           1 );
- 
-            // Finish computing w01. During its computation, ensure that 
+
+            // Finish computing w01. During its computation, ensure that
             // every process has a copy of the last element of the w01.
             // We know a priori that the last element of a01 is one.
             const F* a01_MC_Buf = a01_MC.Buffer();
             F myDotProduct = blas::Dot
-                ( localHeight, allReduceRecvBuf.data(), 1, 
+                ( localHeight, allReduceRecvBuf.data(), 1,
                                a01_MC_Buf,              1 );
             const F dotProduct = mpi::AllReduce( myDotProduct, g.ColComm() );
 

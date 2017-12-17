@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level2.hpp>
 
 namespace El {
@@ -18,7 +17,7 @@ void Trr2
   T alpha,
   const Matrix<T>& X,
   const Matrix<T>& Y,
-        Matrix<T>& A, 
+        Matrix<T>& A,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -46,7 +45,7 @@ void Trr2
             for( Int i=j; i<m; ++i )
                 ACol[i] += XCol0[i]*eta0 + XCol1[i]*eta1;
             if( conjugate )
-                A.MakeReal( j, j ); 
+                A.MakeReal( j, j );
         }
     }
     else
@@ -59,7 +58,7 @@ void Trr2
             for( Int i=0; i<=j; ++i )
                 ACol[i] += XCol0[i]*eta0 + XCol1[i]*eta1;
             if( conjugate )
-                A.MakeReal( j, j ); 
+                A.MakeReal( j, j );
         }
     }
 }
@@ -79,8 +78,8 @@ void Trr2
           LogicError("X and Y must be of width 2");
     )
 
-    DistMatrixReadProxy<T,T,MC,MR> XProx( XPre ), YProx( YPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> XProx( XPre ), YProx( YPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     auto& X = XProx.GetLocked();
     auto& Y = YProx.GetLocked();
     auto& A = AProx.Get();
@@ -92,8 +91,8 @@ void Trr2
         if( X.Height() != A.Height() || Y.Height() != A.Width() )
             LogicError("X and Y must conform with A");
     )
-    DistMatrix<T,MC,STAR> X_MC_STAR(g);
-    DistMatrix<T,MR,STAR> Y_MR_STAR(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> X_MC_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> Y_MR_STAR(g);
     X_MC_STAR.AlignWith( A );
     X_MC_STAR = X;
     Y_MR_STAR.AlignWith( A );
@@ -111,8 +110,8 @@ void Trr2
             const Int j = A.GlobalCol(jLoc);
             const Int mLocBefore = A.LocalRowOffset(j);
 
-            const T value0 = YLocCol0[jLoc]; 
-            const T value1 = YLocCol1[jLoc]; 
+            const T value0 = YLocCol0[jLoc];
+            const T value1 = YLocCol1[jLoc];
             const T eta0 = alpha*( conjugate ? Conj(value0) : value0 );
             const T eta1 = alpha*( conjugate ? Conj(value1) : value1 );
             T* ALocCol = A.Buffer(0,jLoc);

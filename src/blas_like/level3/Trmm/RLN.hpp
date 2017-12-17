@@ -5,8 +5,8 @@
    Copyright (c) 2013, The University of Texas at Austin
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRMM_RLN_HPP
@@ -20,9 +20,9 @@ void LocalAccumulateRLN
 ( Orientation orientation,
   UnitOrNonUnit diag,
   T alpha,
-  const DistMatrix<T,MC,  MR  >& L,
-  const DistMatrix<T,STAR,MC  >& X,
-        DistMatrix<T,MR,  STAR>& ZTrans )
+  const DistMatrix<T,Dist::MC,  Dist::MR  >& L,
+  const DistMatrix<T,Dist::STAR,Dist::MC  >& X,
+        DistMatrix<T,Dist::MR,  Dist::STAR>& ZTrans )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -70,7 +70,7 @@ void LocalAccumulateRLN
 
 template<typename T>
 void RLNA
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<T>& LPre,
         AbstractDistMatrix<T>& XPre )
 {
@@ -84,15 +84,15 @@ void RLNA
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> LProx( LPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& L = LProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,STAR,VC  > X1_STAR_VC(g);
-    DistMatrix<T,STAR,MC  > X1_STAR_MC(g);
-    DistMatrix<T,MR,  STAR> Z1Trans_MR_STAR(g);
-    DistMatrix<T,MR,  MC  > Z1Trans_MR_MC(g);
+    DistMatrix<T,Dist::STAR,Dist::VC  > X1_STAR_VC(g);
+    DistMatrix<T,Dist::STAR,Dist::MC  > X1_STAR_MC(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> Z1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::MR,  Dist::MC  > Z1Trans_MR_MC(g);
 
     X1_STAR_VC.AlignWith( L );
     X1_STAR_MC.AlignWith( L );
@@ -120,7 +120,7 @@ void RLNA
 
 template<typename T>
 void RLNCOld
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<T>& LPre,
         AbstractDistMatrix<T>& XPre )
 {
@@ -135,15 +135,15 @@ void RLNCOld
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> LProx( LPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& L = LProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,STAR,STAR> L11_STAR_STAR(g);
-    DistMatrix<T,MR,  STAR> L21_MR_STAR(g);
-    DistMatrix<T,VC,  STAR> X1_VC_STAR(g);
-    DistMatrix<T,MC,  STAR> D1_MC_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> L11_STAR_STAR(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> L21_MR_STAR(g);
+    DistMatrix<T,Dist::VC,  Dist::STAR> X1_VC_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> D1_MC_STAR(g);
 
     for( Int k=0; k<n; k+=bsize )
     {
@@ -160,7 +160,7 @@ void RLNCOld
         LocalTrmm
         ( RIGHT, LOWER, NORMAL, diag, T(1), L11_STAR_STAR, X1_VC_STAR );
         X1 = X1_VC_STAR;
- 
+
         L21_MR_STAR.AlignWith( X2 );
         L21_MR_STAR = L21;
         D1_MC_STAR.AlignWith( X1 );
@@ -171,7 +171,7 @@ void RLNCOld
 
 template<typename T>
 void RLNC
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<T>& LPre,
         AbstractDistMatrix<T>& XPre )
 {
@@ -186,15 +186,15 @@ void RLNC
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> LProx( LPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& L = LProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,STAR,STAR> L11_STAR_STAR(g);
-    DistMatrix<T,MR,  STAR> L10Trans_MR_STAR(g);
-    DistMatrix<T,VC,  STAR> X1_VC_STAR(g);
-    DistMatrix<T,MC,  STAR> X1_MC_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> L11_STAR_STAR(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> L10Trans_MR_STAR(g);
+    DistMatrix<T,Dist::VC,  Dist::STAR> X1_VC_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> X1_MC_STAR(g);
 
     for( Int k=0; k<n; k+=bsize )
     {
@@ -227,7 +227,7 @@ void RLNC
 //   X := X trilu(L)
 template<typename T>
 void RLN
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<T>& L,
         AbstractDistMatrix<T>& X )
 {

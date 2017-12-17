@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 
 namespace El {
@@ -93,7 +92,7 @@ void Transform2x2
         AbstractDistMatrix<Ring>& a2 )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Ring,Ring,STAR,STAR> GProx( GPre );
+    DistMatrixReadProxy<Ring,Ring,Dist::STAR,Dist::STAR> GProx( GPre );
     const auto& G = GProx.GetLocked();
     Transform2x2( G.LockedMatrix(), a1, a2 );
 }
@@ -174,7 +173,7 @@ void Transform2x2Rows
         AbstractDistMatrix<Ring>& A, Int i1, Int i2 )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Ring,Ring,STAR,STAR> GProx( GPre );
+    DistMatrixReadProxy<Ring,Ring,Dist::STAR,Dist::STAR> GProx( GPre );
     const auto& G = GProx.GetLocked();
     Transform2x2Rows( G.LockedMatrix(), A, i1, i2 );
 }
@@ -261,7 +260,7 @@ void Transform2x2Cols
         AbstractDistMatrix<Ring>& A, Int j1, Int j2 )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Ring,Ring,STAR,STAR> GProx( GPre );
+    DistMatrixReadProxy<Ring,Ring,Dist::STAR,Dist::STAR> GProx( GPre );
     const auto& G = GProx.GetLocked();
     Transform2x2Cols( G.LockedMatrix(), A, j1, j2 );
 }

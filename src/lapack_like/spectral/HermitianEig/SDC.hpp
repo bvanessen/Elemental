@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_HERMITIANEIG_SDC_HPP
@@ -39,7 +39,7 @@ QDWHDivide( UpperOrLower uplo, Matrix<F>& A, Matrix<F>& G, bool returnQ=false )
     ShiftDiagonal( G, F(1) );
     G *= F(1)/F(2);
 
-    // Compute the pivoted QR decomposition of the spectral projection 
+    // Compute the pivoted QR decomposition of the spectral projection
     Matrix<F> t;
     Matrix<Base<F>> d;
     Matrix<Int> p;
@@ -86,11 +86,11 @@ QDWHDivide
     ShiftDiagonal( G, F(1) );
     G *= F(1)/F(2);
 
-    // Compute the pivoted QR decomposition of the spectral projection 
+    // Compute the pivoted QR decomposition of the spectral projection
     const Grid& g = A.Grid();
-    DistMatrix<F,MD,STAR> t(g);
-    DistMatrix<Base<F>,MD,STAR> d(g);
-    DistMatrix<Int,VR,STAR> p(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> t(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> d(g);
+    DistMatrix<Int,Dist::VR,Dist::STAR> p(g);
     El::QR( G, t, d, p );
 
     // A := Q^H A Q
@@ -122,7 +122,7 @@ RandomizedSignDivide
 ( UpperOrLower uplo,
   Matrix<F>& A,
   Matrix<F>& G,
-  bool returnQ, 
+  bool returnQ,
   const HermitianSDCCtrl<Base<F>>& ctrl )
 {
     EL_DEBUG_CSE
@@ -191,7 +191,7 @@ RandomizedSignDivide
 ( UpperOrLower uplo,
   DistMatrix<F>& A,
   DistMatrix<F>& G,
-  bool returnQ, 
+  bool returnQ,
   const HermitianSDCCtrl<Base<F>>& ctrl )
 {
     EL_DEBUG_CSE
@@ -216,8 +216,8 @@ RandomizedSignDivide
 
     ValueInt<Real> part;
     DistMatrix<F> V(g), B(g);
-    DistMatrix<F,MD,STAR> t(g);
-    DistMatrix<Base<F>,MD,STAR> d(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> t(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> d(g);
     Int it=0;
     while( it < ctrl.maxInnerIts )
     {
@@ -309,7 +309,7 @@ ValueInt<Base<F>>
 SpectralDivide
 ( UpperOrLower uplo,
   Matrix<F>& A,
-  Matrix<F>& Q, 
+  Matrix<F>& Q,
   const HermitianSDCCtrl<Base<F>>& ctrl )
 {
     EL_DEBUG_CSE
@@ -357,7 +357,7 @@ template<typename F>
 ValueInt<Base<F>>
 SpectralDivide
 ( UpperOrLower uplo,
-  DistMatrix<F>& A, 
+  DistMatrix<F>& A,
   const HermitianSDCCtrl<Base<F>>& ctrl )
 {
     EL_DEBUG_CSE
@@ -407,7 +407,7 @@ ValueInt<Base<F>>
 SpectralDivide
 ( UpperOrLower uplo,
   DistMatrix<F>& A,
-  DistMatrix<F>& Q, 
+  DistMatrix<F>& Q,
   const HermitianSDCCtrl<Base<F>>& ctrl )
 {
     EL_DEBUG_CSE
@@ -456,7 +456,7 @@ template<typename F>
 void SDC
 ( UpperOrLower uplo,
   Matrix<F>& A,
-  Matrix<Base<F>>& w, 
+  Matrix<Base<F>>& w,
   const HermitianSDCCtrl<Base<F>> ctrl )
 {
     EL_DEBUG_CSE
@@ -497,7 +497,7 @@ void SDC
 ( UpperOrLower uplo,
   Matrix<F>& A,
   Matrix<Base<F>>& w,
-  Matrix<F>& Q, 
+  Matrix<F>& Q,
   const HermitianSDCCtrl<Base<F>> ctrl )
 {
     EL_DEBUG_CSE
@@ -526,7 +526,7 @@ void SDC
 
     auto QL = Q( ALL, ind1 );
     auto QR = Q( ALL, ind2 );
-   
+
     if( uplo == LOWER )
         Zero( ABL );
     else
@@ -547,8 +547,8 @@ void SDC
 template<typename F>
 void SDC
 ( UpperOrLower uplo,
-  AbstractDistMatrix<F>& APre, 
-  AbstractDistMatrix<Base<F>>& wPre, 
+  AbstractDistMatrix<F>& APre,
+  AbstractDistMatrix<Base<F>>& wPre,
   const HermitianSDCCtrl<Base<F>> ctrl )
 {
     EL_DEBUG_CSE
@@ -567,8 +567,8 @@ void SDC
         return;
     }
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Real,Real,VR,STAR> wProx( wPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> wProx( wPre );
     auto& A = AProx.Get();
     auto& w = wProx.Get();
 
@@ -592,7 +592,7 @@ void SDC
 
     // Recurse on the two subproblems
     DistMatrix<F> ATLSub, ABRSub;
-    DistMatrix<Real,VR,STAR> wTSub, wBSub;
+    DistMatrix<Real,Dist::VR,Dist::STAR> wTSub, wBSub;
     PushSubproblems
     ( ATL, ABR, ATLSub, ABRSub, wT, wB, wTSub, wBSub, ctrl.progress );
     if( ATL.Participating() )
@@ -604,10 +604,10 @@ void SDC
 
 template<typename F>
 void SDC
-( UpperOrLower uplo, 
+( UpperOrLower uplo,
   AbstractDistMatrix<F>& APre,
-  AbstractDistMatrix<Base<F>>& wPre, 
-  AbstractDistMatrix<F>& QPre, 
+  AbstractDistMatrix<Base<F>>& wPre,
+  AbstractDistMatrix<F>& QPre,
   const HermitianSDCCtrl<Base<F>> ctrl )
 {
     EL_DEBUG_CSE
@@ -628,9 +628,9 @@ void SDC
         return;
     }
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,MC,MR> QProx( QPre );
-    DistMatrixWriteProxy<Real,Real,VR,STAR> wProx( wPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR> QProx( QPre );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> wProx( wPre );
     auto& A = AProx.Get();
     auto& Q = QProx.Get();
     auto& w = wProx.Get();
@@ -658,9 +658,9 @@ void SDC
 
     // Recurse on the two subproblems
     DistMatrix<F> ATLSub, ABRSub, ZTSub, ZBSub;
-    DistMatrix<Real,VR,STAR> wTSub, wBSub;
+    DistMatrix<Real,Dist::VR,Dist::STAR> wTSub, wBSub;
     PushSubproblems
-    ( ATL, ABR, ATLSub, ABRSub, wT, wB, wTSub, wBSub, ZTSub, ZBSub, 
+    ( ATL, ABR, ATLSub, ABRSub, wT, wB, wTSub, wBSub, ZTSub, ZBSub,
       ctrl.progress );
     if( ATLSub.Participating() )
         SDC( uplo, ATLSub, wTSub, ZTSub, ctrl );

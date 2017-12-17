@@ -45,13 +45,13 @@ void SymmetricInverse
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     if( uplo == LOWER )
     {
         DistPermutation P( A.Grid() );
-        DistMatrix<Field,MD,STAR> dSub( A.Grid() );
+        DistMatrix<Field,Dist::MD,Dist::STAR> dSub( A.Grid() );
 
         LDL( A, dSub, P, conjugate, ctrl );
         TriangularInverse( LOWER, UNIT, A );
@@ -69,7 +69,7 @@ void SymmetricInverse
 template<typename Field>
 void LocalSymmetricInverse
 ( UpperOrLower uplo,
-  DistMatrix<Field,STAR,STAR>& A,
+  DistMatrix<Field,Dist::STAR,Dist::STAR>& A,
   bool conjugate,
   const LDLPivotCtrl<Base<Field>>& ctrl )
 {
@@ -90,7 +90,7 @@ void LocalSymmetricInverse
     const LDLPivotCtrl<Base<Field>>& ctrl ); \
   template void LocalSymmetricInverse \
   ( UpperOrLower uplo, \
-    DistMatrix<Field,STAR,STAR>& A, \
+    DistMatrix<Field,Dist::STAR,Dist::STAR>& A, \
     bool conjugate, \
     const LDLPivotCtrl<Base<Field>>& ctrl );
 

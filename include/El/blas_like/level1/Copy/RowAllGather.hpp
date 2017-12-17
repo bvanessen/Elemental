@@ -50,7 +50,7 @@ void RowAllGather( const ElementalMatrix<T>& A, ElementalMatrix<T>& B )
                 const Int maxLocalWidth = MaxLength(width,rowStride);
 
                 const Int portionSize = mpi::Pad( localHeight*maxLocalWidth );
-                vector<T> buffer;
+                std::vector<T> buffer;
                 FastResize( buffer, (rowStride+1)*portionSize );
                 T* sendBuf = &buffer[0];
                 T* recvBuf = &buffer[portionSize];
@@ -103,7 +103,7 @@ void RowAllGather( const ElementalMatrix<T>& A, ElementalMatrix<T>& B )
                 const Int maxLocalWidth = MaxLength(width,rowStride);
 
                 const Int portionSize = mpi::Pad(maxLocalHeight*maxLocalWidth);
-                vector<T> buffer;
+                std::vector<T> buffer;
                 FastResize( buffer, (rowStride+1)*portionSize );
                 T* firstBuf = &buffer[0];
                 T* secondBuf = &buffer[portionSize];
@@ -194,7 +194,7 @@ void RowAllGather( const BlockMatrix<T>& A, BlockMatrix<T>& B )
                   MaxBlockedLength(width,blockWidth,rowCut,rowStride);
 
                 const Int portionSize = mpi::Pad( localHeight*maxLocalWidth );
-                vector<T> buffer;
+                std::vector<T> buffer;
                 FastResize( buffer, (rowStride+1)*portionSize );
                 T* sendBuf = &buffer[0];
                 T* recvBuf = &buffer[portionSize];
@@ -246,7 +246,7 @@ void RowAllGather( const BlockMatrix<T>& A, BlockMatrix<T>& B )
                   MaxBlockedLength(width,blockWidth,rowCut,rowStride);
 
                 const Int portionSize = mpi::Pad(maxLocalHeight*maxLocalWidth);
-                vector<T> buffer;
+                std::vector<T> buffer;
                 FastResize( buffer, (rowStride+1)*portionSize );
                 T* firstBuf = &buffer[0];
                 T* secondBuf = &buffer[portionSize];

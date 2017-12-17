@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -25,19 +25,19 @@ void UT_C
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
     const T alphaSec = ( conjugate ? Conj(alpha) : alpha );
 
-    DistMatrixReadProxy<T,T,MC,MR>
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR>
       AProx( APre ),
       BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR>
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR>
       CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,MR,  STAR> A1Trans_MR_STAR(g), B1Trans_MR_STAR(g);
-    DistMatrix<T,STAR,VR  > A1_STAR_VR(g), B1_STAR_VR(g);
-    DistMatrix<T,STAR,MC  > A1_STAR_MC(g), B1_STAR_MC(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> A1Trans_MR_STAR(g), B1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::VR  > A1_STAR_VR(g), B1_STAR_VR(g);
+    DistMatrix<T,Dist::STAR,Dist::MC  > A1_STAR_MC(g), B1_STAR_MC(g);
 
     A1Trans_MR_STAR.AlignWith( C );
     B1Trans_MR_STAR.AlignWith( C );
@@ -60,7 +60,7 @@ void UT_C
         B1_STAR_MC = B1_STAR_VR;
 
         LocalTrr2k
-        ( UPPER, orientation, TRANSPOSE, orientation, TRANSPOSE, 
+        ( UPPER, orientation, TRANSPOSE, orientation, TRANSPOSE,
           alpha,    A1_STAR_MC, B1Trans_MR_STAR,
           alphaSec, B1_STAR_MC, A1Trans_MR_STAR, T(1), C );
     }
@@ -75,25 +75,25 @@ void UT_Dot
   const bool conjugate,
   Int blockSize=2000 )
 {
-    EL_DEBUG_CSE 
+    EL_DEBUG_CSE
     const Int n = CPre.Height();
     const Grid& g = APre.Grid();
 
     const Orientation orient = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrixReadProxy<T,T,VC,STAR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::VC,Dist::STAR> AProx( APre );
     auto& A = AProx.GetLocked();
 
     ElementalProxyCtrl BCtrl;
     BCtrl.colConstrain = true;
     BCtrl.colAlign = A.ColAlign();
-    DistMatrixReadProxy<T,T,VC,STAR> BProx( BPre, BCtrl );
+    DistMatrixReadProxy<T,T,Dist::VC,Dist::STAR> BProx( BPre, BCtrl );
     auto& B = BProx.GetLocked();
 
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& C = CProx.Get();
 
-    DistMatrix<T,STAR,STAR> Z( blockSize, blockSize, g );
+    DistMatrix<T,Dist::STAR,Dist::STAR> Z( blockSize, blockSize, g );
     Zero( Z );
     for( Int kOuter=0; kOuter<n; kOuter+=blockSize )
     {
@@ -112,7 +112,7 @@ void UT_Dot
 
         for( Int kInner=0; kInner<kOuter; kInner+=blockSize )
         {
-            const Int nbInner = Min(blockSize,kOuter-kInner); 
+            const Int nbInner = Min(blockSize,kOuter-kInner);
             const Range<Int> indInner( kInner, kInner+nbInner );
 
             auto A2 = A( ALL, indInner );

@@ -245,7 +245,7 @@ SVDInfo TallAbsoluteProduct
 
         // Set each column of U to be the corresponding normalized column of Y
         U = Y;
-        DistMatrix<Real,MR,STAR> colNorms(g);
+        DistMatrix<Real,Dist::MR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( U, colNorms );
         DiagonalSolve( RIGHT, NORMAL, colNorms, U );
     }
@@ -263,9 +263,9 @@ SVDInfo TallAbsoluteProduct
   bool avoidU )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> UProx( UPre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> VProx( VPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> VProx( VPre );
     auto& A = AProx.GetLocked();
     auto& U = UProx.Get();
     auto& V = VProx.Get();
@@ -313,7 +313,7 @@ SVDInfo TallRelativeProduct
     const Real twoNorm = Sqrt(MaxNorm(s));
 
     // Sigma := sqrt(Sigma^2), where all sigmas > relTol*twoNorm
-    DistMatrix<Real,STAR,STAR> s_STAR_STAR( s );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> s_STAR_STAR( s );
     auto& sLoc = s_STAR_STAR.Matrix();
     for( Int i=0; i<n; ++i )
     {
@@ -337,7 +337,7 @@ SVDInfo TallRelativeProduct
 
         // Set each column of U to be the corresponding normalized column of Y
         U = Y;
-        DistMatrix<Real,MR,STAR> colNorms(g);
+        DistMatrix<Real,Dist::MR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( U, colNorms );
         DiagonalSolve( RIGHT, NORMAL, colNorms, U );
     }
@@ -355,9 +355,9 @@ SVDInfo TallRelativeProduct
   bool avoidU )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> UProx( UPre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> VProx( VPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> VProx( VPre );
     auto& A = AProx.GetLocked();
     auto& U = UProx.Get();
     auto& V = VProx.Get();
@@ -383,10 +383,10 @@ SVDInfo TallProduct
 
 template<typename Field>
 SVDInfo TallAbsoluteProduct
-( const DistMatrix<Field,VC,STAR>& A,
-        DistMatrix<Field,VC,STAR>& U,
-        DistMatrix<Base<Field>,STAR,STAR>& s,
-        DistMatrix<Field,STAR,STAR>& V,
+( const DistMatrix<Field,Dist::VC,Dist::STAR>& A,
+        DistMatrix<Field,Dist::VC,Dist::STAR>& U,
+        DistMatrix<Base<Field>,Dist::STAR,Dist::STAR>& s,
+        DistMatrix<Field,Dist::STAR,Dist::STAR>& V,
   Base<Field> tol,
   bool avoidU )
 {
@@ -419,7 +419,7 @@ SVDInfo TallAbsoluteProduct
 
     // C := A^H A
     const Grid& g = A.Grid();
-    DistMatrix<Field,STAR,STAR> C(g);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> C(g);
     Zeros( C, n, n );
     Herk( LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
     El::AllReduce( C, A.ColComm() );
@@ -447,14 +447,14 @@ SVDInfo TallAbsoluteProduct
     if( !avoidU )
     {
         // Y := A V
-        DistMatrix<Field,VC,STAR> Y(g);
+        DistMatrix<Field,Dist::VC,Dist::STAR> Y(g);
         Y.AlignWith( A );
         Zeros( Y, m, k );
         LocalGemm( NORMAL, NORMAL, Field(1), A, V, Field(0), Y );
 
         // Set each column of U to be the corresponding normalized column of Y
         U = Y;
-        DistMatrix<Real,STAR,STAR> colNorms(g);
+        DistMatrix<Real,Dist::STAR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( U, colNorms );
         DiagonalSolve( RIGHT, NORMAL, colNorms, U );
     }
@@ -464,7 +464,7 @@ SVDInfo TallAbsoluteProduct
 
 template<typename Field>
 SVDInfo TallAbsoluteProduct
-( const DistMatrix<Field,VC,STAR>& A,
+( const DistMatrix<Field,Dist::VC,Dist::STAR>& A,
         AbstractDistMatrix<Field>& UPre,
         AbstractDistMatrix<Base<Field>>& sPre,
         AbstractDistMatrix<Field>& VPre,
@@ -472,9 +472,9 @@ SVDInfo TallAbsoluteProduct
   bool avoidU )
 {
     EL_DEBUG_CSE
-    DistMatrixWriteProxy<Field,Field,VC,STAR> UProx( UPre );
-    DistMatrixWriteProxy<Base<Field>,Base<Field>,STAR,STAR> sProx( sPre );
-    DistMatrixWriteProxy<Field,Field,STAR,STAR> VProx( VPre );
+    DistMatrixWriteProxy<Field,Field,Dist::VC,Dist::STAR> UProx( UPre );
+    DistMatrixWriteProxy<Base<Field>,Base<Field>,Dist::STAR,Dist::STAR> sProx( sPre );
+    DistMatrixWriteProxy<Field,Field,Dist::STAR,Dist::STAR> VProx( VPre );
     auto& s = sProx.Get();
     auto& U = UProx.Get();
     auto& V = VProx.Get();
@@ -483,10 +483,10 @@ SVDInfo TallAbsoluteProduct
 
 template<typename Field>
 SVDInfo TallRelativeProduct
-( const DistMatrix<Field,VC,STAR>& A,
-        DistMatrix<Field,VC,STAR>& U,
-        DistMatrix<Base<Field>,STAR,STAR>& s,
-        DistMatrix<Field,STAR,STAR>& V,
+( const DistMatrix<Field,Dist::VC,Dist::STAR>& A,
+        DistMatrix<Field,Dist::VC,Dist::STAR>& U,
+        DistMatrix<Base<Field>,Dist::STAR,Dist::STAR>& s,
+        DistMatrix<Field,Dist::STAR,Dist::STAR>& V,
   Base<Field> relTol,
   bool avoidU )
 {
@@ -511,7 +511,7 @@ SVDInfo TallRelativeProduct
     }
 
     // C := A^H A
-    DistMatrix<Field,STAR,STAR> C(g);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> C(g);
     Zeros( C, n, n );
     Herk( LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
     El::AllReduce( C, A.ColComm() );
@@ -542,14 +542,14 @@ SVDInfo TallRelativeProduct
     if( !avoidU )
     {
         // Y := A V
-        DistMatrix<Field,VC,STAR> Y(g);
+        DistMatrix<Field,Dist::VC,Dist::STAR> Y(g);
         Y.AlignWith( A );
         Zeros( Y, m, k );
         LocalGemm( NORMAL, NORMAL, Field(1), A, V, Field(0), Y );
 
         // Set each column of U to be the corresponding normalized column of Y
         U = Y;
-        DistMatrix<Real,STAR,STAR> colNorms(g);
+        DistMatrix<Real,Dist::STAR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( U, colNorms );
         DiagonalSolve( RIGHT, NORMAL, colNorms, U );
     }
@@ -559,7 +559,7 @@ SVDInfo TallRelativeProduct
 
 template<typename Field>
 SVDInfo TallRelativeProduct
-( const DistMatrix<Field,VC,STAR>& A,
+( const DistMatrix<Field,Dist::VC,Dist::STAR>& A,
         AbstractDistMatrix<Field>& UPre,
         AbstractDistMatrix<Base<Field>>& sPre,
         AbstractDistMatrix<Field>& VPre,
@@ -567,9 +567,9 @@ SVDInfo TallRelativeProduct
   bool avoidU )
 {
     EL_DEBUG_CSE
-    DistMatrixWriteProxy<Base<Field>,Base<Field>,STAR,STAR> sProx( sPre );
-    DistMatrixWriteProxy<Field,Field,VC,STAR> UProx( UPre );
-    DistMatrixWriteProxy<Field,Field,STAR,STAR> VProx( VPre );
+    DistMatrixWriteProxy<Base<Field>,Base<Field>,Dist::STAR,Dist::STAR> sProx( sPre );
+    DistMatrixWriteProxy<Field,Field,Dist::VC,Dist::STAR> UProx( UPre );
+    DistMatrixWriteProxy<Field,Field,Dist::STAR,Dist::STAR> VProx( VPre );
     auto& s = sProx.Get();
     auto& U = UProx.Get();
     auto& V = VProx.Get();
@@ -578,7 +578,7 @@ SVDInfo TallRelativeProduct
 
 template<typename Field>
 SVDInfo TallProduct
-( const DistMatrix<Field,VC,STAR>& A,
+( const DistMatrix<Field,Dist::VC,Dist::STAR>& A,
         AbstractDistMatrix<Field>& U,
         AbstractDistMatrix<Base<Field>>& s,
         AbstractDistMatrix<Field>& V,
@@ -813,7 +813,7 @@ SVDInfo WideAbsoluteProduct
         Gemm( ADJOINT, NORMAL, Field(1), A, U, V );
 
         // Normalize each column of Sigma V
-        DistMatrix<Real,MR,STAR> colNorms(g);
+        DistMatrix<Real,Dist::MR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( V, colNorms );
         DiagonalSolve( RIGHT, NORMAL, colNorms, V );
     }
@@ -831,9 +831,9 @@ SVDInfo WideAbsoluteProduct
   bool avoidV )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> UProx( UPre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> VProx( VPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> VProx( VPre );
     auto& A = AProx.GetLocked();
     auto& U = UProx.Get();
     auto& V = VProx.Get();
@@ -880,7 +880,7 @@ SVDInfo WideRelativeProduct
     const Real twoNorm = Sqrt(MaxNorm(s));
 
     // Sigma := sqrt(Sigma^2), where all sigmas > relTol*twoNorm
-    DistMatrix<Real,STAR,STAR> s_STAR_STAR( s );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> s_STAR_STAR( s );
     auto& sLoc = s_STAR_STAR.Matrix();
     for( Int i=0; i<m; ++i )
     {
@@ -902,7 +902,7 @@ SVDInfo WideRelativeProduct
         Gemm( ADJOINT, NORMAL, Field(1), A, U, V );
 
         // Normalize each column of Sigma V
-        DistMatrix<Real,MR,STAR> colNorms(g);
+        DistMatrix<Real,Dist::MR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( V, colNorms );
         DiagonalSolve( RIGHT, NORMAL, colNorms, V );
     }
@@ -920,9 +920,9 @@ SVDInfo WideRelativeProduct
   bool avoidV )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> UProx( UPre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> VProx( VPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> VProx( VPre );
     auto& A = AProx.GetLocked();
     auto& U = UProx.Get();
     auto& V = VProx.Get();
@@ -1167,7 +1167,7 @@ SVDInfo TallAbsoluteProduct
   Base<Field> tol )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.GetLocked();
     return TallAbsoluteProduct( A, s, tol );
 }
@@ -1202,7 +1202,7 @@ SVDInfo TallRelativeProduct
     const Real twoNorm = Sqrt(MaxNorm(s));
 
     // Sigma := sqrt(Sigma^2), where all sigmas > relTol*twoNorm
-    DistMatrix<Real,STAR,STAR> s_STAR_STAR( s );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> s_STAR_STAR( s );
     auto& sLoc = s_STAR_STAR.Matrix();
     for( Int i=0; i<n; ++i )
     {
@@ -1227,7 +1227,7 @@ SVDInfo TallRelativeProduct
   Base<Field> relTol )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.GetLocked();
     return TallRelativeProduct( A, s, relTol );
 }
@@ -1248,8 +1248,8 @@ SVDInfo TallProduct
 
 template<typename Field>
 SVDInfo TallAbsoluteProduct
-( const DistMatrix<Field,VC,STAR>& A,
-        DistMatrix<Base<Field>,STAR,STAR>& s,
+( const DistMatrix<Field,Dist::VC,Dist::STAR>& A,
+        DistMatrix<Base<Field>,Dist::STAR,Dist::STAR>& s,
   Base<Field> tol )
 {
     EL_DEBUG_CSE
@@ -1279,7 +1279,7 @@ SVDInfo TallAbsoluteProduct
 
     // C := A^H A
     const Grid& g = A.Grid();
-    DistMatrix<Field,STAR,STAR> C(g);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> C(g);
     Zeros( C, n, n );
     Herk( LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
     El::AllReduce( C, A.ColComm() );
@@ -1308,21 +1308,21 @@ SVDInfo TallAbsoluteProduct
 
 template<typename Field>
 SVDInfo TallAbsoluteProduct
-( const DistMatrix<Field,VC,STAR>& A,
+( const DistMatrix<Field,Dist::VC,Dist::STAR>& A,
         AbstractDistMatrix<Base<Field>>& sPre,
   Base<Field> tol )
 {
     EL_DEBUG_CSE
     typedef Base<Field> Real;
-    DistMatrixWriteProxy<Real,Real,STAR,STAR> sProx( sPre );
+    DistMatrixWriteProxy<Real,Real,Dist::STAR,Dist::STAR> sProx( sPre );
     auto& s = sProx.Get();
     return TallAbsoluteProduct( A, s, tol );
 }
 
 template<typename Field>
 SVDInfo TallRelativeProduct
-( const DistMatrix<Field,VC,STAR>& A,
-        DistMatrix<Base<Field>,STAR,STAR>& s,
+( const DistMatrix<Field,Dist::VC,Dist::STAR>& A,
+        DistMatrix<Base<Field>,Dist::STAR,Dist::STAR>& s,
   Base<Field> relTol )
 {
     EL_DEBUG_CSE
@@ -1339,7 +1339,7 @@ SVDInfo TallRelativeProduct
     SVDInfo info;
 
     // C := A^H A
-    DistMatrix<Field,STAR,STAR> C(g);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> C(g);
     Zeros( C, n, n );
     Herk( LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
     El::AllReduce( C, A.ColComm() );
@@ -1369,20 +1369,20 @@ SVDInfo TallRelativeProduct
 
 template<typename Field>
 SVDInfo TallRelativeProduct
-( const DistMatrix<Field,VC,STAR>& A,
+( const DistMatrix<Field,Dist::VC,Dist::STAR>& A,
         AbstractDistMatrix<Base<Field>>& sPre,
   Base<Field> relTol )
 {
     EL_DEBUG_CSE
     typedef Base<Field> Real;
-    DistMatrixWriteProxy<Real,Real,STAR,STAR> sProx( sPre );
+    DistMatrixWriteProxy<Real,Real,Dist::STAR,Dist::STAR> sProx( sPre );
     auto& s = sProx.Get();
     return TallRelativeProduct( A, s, relTol );
 }
 
 template<typename Field>
 SVDInfo TallProduct
-( const DistMatrix<Field,VC,STAR>& A,
+( const DistMatrix<Field,Dist::VC,Dist::STAR>& A,
         AbstractDistMatrix<Base<Field>>& s,
   Base<Field> tol,
   bool relative )
@@ -1568,7 +1568,7 @@ SVDInfo WideAbsoluteProduct
   Base<Field> tol )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.GetLocked();
     return WideAbsoluteProduct( A, s, tol );
 }
@@ -1603,7 +1603,7 @@ SVDInfo WideRelativeProduct
     const Real twoNorm = Sqrt(MaxNorm(s));
 
     // Sigma := sqrt(Sigma^2), where all sigmas > relTol*twoNorm
-    DistMatrix<Real,STAR,STAR> s_STAR_STAR( s );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> s_STAR_STAR( s );
     auto& sLoc = s_STAR_STAR.Matrix();
     for( Int i=0; i<m; ++i )
     {
@@ -1628,7 +1628,7 @@ SVDInfo WideRelativeProduct
   Base<Field> relTol )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.GetLocked();
     return WideRelativeProduct( A, s, relTol );
 }

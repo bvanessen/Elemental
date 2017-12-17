@@ -65,18 +65,18 @@ CholeskyLVar2( AbstractDistMatrix<Field>& APre )
           LogicError("Nonsquare matrices cannot be triangular");
     )
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Grid& g = A.Grid();
-    DistMatrix<Field,STAR,STAR> A11_STAR_STAR(g);
-    DistMatrix<Field,STAR,VR  > A10_STAR_VR(g);
-    DistMatrix<Field,VC,  STAR> A21_VC_STAR(g);
-    DistMatrix<Field,STAR,MC  > A10_STAR_MC(g);
-    DistMatrix<Field,STAR,MR  > A10_STAR_MR(g);
-    DistMatrix<Field,STAR,MC  > A21Trans_STAR_MC(g);
-    DistMatrix<Field,VR,  STAR> A21_VR_STAR(g);
-    DistMatrix<Field,STAR,MR  > A21Adj_STAR_MR(g);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> A11_STAR_STAR(g);
+    DistMatrix<Field,Dist::STAR,Dist::VR  > A10_STAR_VR(g);
+    DistMatrix<Field,Dist::VC,  Dist::STAR> A21_VC_STAR(g);
+    DistMatrix<Field,Dist::STAR,Dist::MC  > A10_STAR_MC(g);
+    DistMatrix<Field,Dist::STAR,Dist::MR  > A10_STAR_MR(g);
+    DistMatrix<Field,Dist::STAR,Dist::MC  > A21Trans_STAR_MC(g);
+    DistMatrix<Field,Dist::VR,  Dist::STAR> A21_VR_STAR(g);
+    DistMatrix<Field,Dist::STAR,Dist::MR  > A21Adj_STAR_MR(g);
 
     const Int n = A.Height();
     const Int bsize = Blocksize();

@@ -161,9 +161,9 @@ void SweepHelper
 
 template<typename Field>
 void SweepHelper
-(       DistMatrix<Field,MC,MR,BLOCK>& H,
-  const DistMatrix<Complex<Base<Field>>,STAR,STAR>& shifts,
-        DistMatrix<Field,MC,MR,BLOCK>& Z,
+(       DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+  const DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& shifts,
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE
@@ -229,9 +229,9 @@ void Sweep
 
 template<typename Field>
 void Sweep
-(       DistMatrix<Field,MC,MR,BLOCK>& H,
-  const DistMatrix<Complex<Base<Field>>,STAR,STAR>& shifts,
-        DistMatrix<Field,MC,MR,BLOCK>& Z,
+(       DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+  const DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& shifts,
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE
@@ -254,7 +254,7 @@ void Sweep
     if( numShifts % 2 != 0 )
         LogicError("Expected an even number of shifts");
 
-    DistMatrix<Complex<Base<Field>>,STAR,STAR> validShifts(shifts);
+    DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR> validShifts(shifts);
     if( !IsComplex<Field>::value )
         PairShifts( validShifts.Matrix() );
 

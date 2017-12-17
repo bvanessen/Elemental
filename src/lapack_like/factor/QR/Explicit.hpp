@@ -34,8 +34,8 @@ template<typename F>
 void ExplicitTriang( AbstractDistMatrix<F>& A, const QRCtrl<Base<F>>& ctrl )
 {
     EL_DEBUG_CSE
-    DistMatrix<F,MD,STAR> householderScalars(A.Grid());
-    DistMatrix<Base<F>,MD,STAR> signature(A.Grid());
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(A.Grid());
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(A.Grid());
     if( ctrl.colPiv )
     {
         DistPermutation Omega(A.Grid());
@@ -85,12 +85,12 @@ void ExplicitUnitary
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Grid& g = A.Grid();
-    DistMatrix<F,MD,STAR> householderScalars(g);
-    DistMatrix<Base<F>,MD,STAR> signature(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(g);
     if( ctrl.colPiv )
     {
         DistPermutation Omega(g);
@@ -166,12 +166,12 @@ void Explicit
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Grid& g = A.Grid();
-    DistMatrix<F,MD,STAR> householderScalars(g);
-    DistMatrix<Base<F>,MD,STAR> signature(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(g);
     if( ctrl.colPiv )
     {
         DistPermutation Omega(g);
@@ -254,12 +254,12 @@ void Explicit
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Grid& g = A.Grid();
-    DistMatrix<F,MD,STAR> householderScalars(g);
-    DistMatrix<Base<F>,MD,STAR> signature(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(g);
     DistPermutation Omega(g);
     QR( A, householderScalars, signature, Omega, ctrl );
 

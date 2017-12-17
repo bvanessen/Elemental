@@ -261,13 +261,13 @@ void Scatter( AbstractDistMatrix<F>& A, const TreeData<F>& treeData )
 }
 
 template<typename F>
-inline DistMatrix<F,STAR,STAR>
+inline DistMatrix<F,Dist::STAR,Dist::STAR>
 FormR( const AbstractDistMatrix<F>& A, const TreeData<F>& treeData )
 {
     if( A.RowDist() != STAR )
         LogicError("Invalid row distribution for TSQR");
     const Grid& g = A.Grid();
-    DistMatrix<F,CIRC,CIRC> RRoot(g);
+    DistMatrix<F,Dist::CIRC,Dist::CIRC> RRoot(g);
     if( A.ColRank() == 0 )
     {
         const Int n = A.Width();
@@ -278,7 +278,7 @@ FormR( const AbstractDistMatrix<F>& A, const TreeData<F>& treeData )
     }
     else
         CopyFromNonRoot( RRoot );
-    DistMatrix<F,STAR,STAR> R(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> R(g);
     R = RRoot;
     return R;
 }

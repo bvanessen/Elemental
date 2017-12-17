@@ -11,8 +11,8 @@
 namespace El {
 
 PermutationMeta::PermutationMeta
-( const DistMatrix<Int,STAR,STAR>& perm,
-  const DistMatrix<Int,STAR,STAR>& invPerm,
+( const DistMatrix<Int,Dist::STAR,Dist::STAR>& perm,
+  const DistMatrix<Int,Dist::STAR,Dist::STAR>& invPerm,
         Int permAlign,
         mpi::Comm permComm )
 {

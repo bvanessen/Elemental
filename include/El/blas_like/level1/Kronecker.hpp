@@ -43,7 +43,7 @@ void Kronecker
 {
     EL_DEBUG_CSE
 
-    DistMatrixWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& C = CProx.Get();
 
     const Int mA = A.Height();

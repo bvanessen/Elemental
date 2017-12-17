@@ -15,7 +15,7 @@ template<typename T>
 void GetDiagonal( const Matrix<T>& A, Matrix<T>& d, Int offset )
 {
     EL_DEBUG_CSE
-    function<T(const T&)> identity( []( const T& alpha ) { return alpha; } );
+    std::function<T(const T&)> identity( []( const T& alpha ) { return alpha; } );
     GetMappedDiagonal( A, d, identity, offset );
 }
 
@@ -24,7 +24,7 @@ void GetRealPartOfDiagonal
 ( const Matrix<T>& A, Matrix<Base<T>>& d, Int offset )
 {
     EL_DEBUG_CSE
-    function<Base<T>(const T&)> realPart
+    std::function<Base<T>(const T&)> realPart
     ( []( const T& alpha ) { return RealPart(alpha); } );
     GetMappedDiagonal( A, d, realPart, offset );
 }
@@ -34,7 +34,7 @@ void GetImagPartOfDiagonal
 ( const Matrix<T>& A, Matrix<Base<T>>& d, Int offset )
 {
     EL_DEBUG_CSE
-    function<Base<T>(const T&)> imagPart
+    std::function<Base<T>(const T&)> imagPart
     ( []( const T& alpha ) { return ImagPart(alpha); } );
     GetMappedDiagonal( A, d, imagPart, offset );
 }
@@ -68,7 +68,7 @@ void GetDiagonal
 ( const DistMatrix<T,U,V,wrap>& A, AbstractDistMatrix<T>& d, Int offset )
 {
     EL_DEBUG_CSE
-    function<T(const T&)> identity( []( const T& alpha ) { return alpha; } );
+    std::function<T(const T&)> identity( []( const T& alpha ) { return alpha; } );
     GetMappedDiagonal( A, d, identity, offset );
 }
 
@@ -77,7 +77,7 @@ void GetRealPartOfDiagonal
 ( const DistMatrix<T,U,V,wrap>& A, AbstractDistMatrix<Base<T>>& d, Int offset )
 {
     EL_DEBUG_CSE
-    function<Base<T>(const T&)> realPart
+    std::function<Base<T>(const T&)> realPart
     ( []( const T& alpha ) { return RealPart(alpha); } );
     GetMappedDiagonal( A, d, realPart, offset );
 }
@@ -87,7 +87,7 @@ void GetImagPartOfDiagonal
 ( const DistMatrix<T,U,V,wrap>& A, AbstractDistMatrix<Base<T>>& d, Int offset )
 {
     EL_DEBUG_CSE
-    function<Base<T>(const T&)> imagPart
+    std::function<Base<T>(const T&)> imagPart
     ( []( const T& alpha ) { return ImagPart(alpha); } );
     GetMappedDiagonal( A, d, imagPart, offset );
 }
@@ -146,10 +146,10 @@ GetDiagonal( const DistMatrix<T,U,V>& A, Int offset )
 // TODO(poulson): Use a different output distribution after BlockMatrix has
 // better operator= coverage
 template<typename T,Dist U,Dist V>
-DistMatrix<T,MC,STAR>
-GetDiagonal( const DistMatrix<T,U,V,BLOCK>& A, Int offset )
+DistMatrix<T,Dist::MC,Dist::STAR>
+GetDiagonal( const DistMatrix<T,U,V,DistWrap::BLOCK>& A, Int offset )
 {
-    DistMatrix<T,MC,STAR> d(A.Grid());
+    DistMatrix<T,Dist::MC,Dist::STAR> d(A.Grid());
     GetDiagonal( A, d, offset );
     return d;
 }
@@ -164,10 +164,10 @@ GetRealPartOfDiagonal( const DistMatrix<T,U,V>& A, Int offset )
 }
 
 template<typename T,Dist U,Dist V>
-DistMatrix<Base<T>,MC,STAR>
-GetRealPartOfDiagonal( const DistMatrix<T,U,V,BLOCK>& A, Int offset )
+DistMatrix<Base<T>,Dist::MC,Dist::STAR>
+GetRealPartOfDiagonal( const DistMatrix<T,U,V,DistWrap::BLOCK>& A, Int offset )
 {
-    DistMatrix<Base<T>,MC,STAR> d(A.Grid());
+    DistMatrix<Base<T>,Dist::MC,Dist::STAR> d(A.Grid());
     GetRealPartOfDiagonal( A, d, offset );
     return d;
 }
@@ -182,10 +182,10 @@ GetImagPartOfDiagonal( const DistMatrix<T,U,V>& A, Int offset )
 }
 
 template<typename T,Dist U,Dist V>
-DistMatrix<Base<T>,MC,STAR>
-GetImagPartOfDiagonal( const DistMatrix<T,U,V,BLOCK>& A, Int offset )
+DistMatrix<Base<T>,Dist::MC,Dist::STAR>
+GetImagPartOfDiagonal( const DistMatrix<T,U,V,DistWrap::BLOCK>& A, Int offset )
 {
-    DistMatrix<Base<T>,MC,STAR> d(A.Grid());
+    DistMatrix<Base<T>,Dist::MC,Dist::STAR> d(A.Grid());
     GetImagPartOfDiagonal( A, d, offset );
     return d;
 }

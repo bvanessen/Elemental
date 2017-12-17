@@ -48,14 +48,14 @@ void LU( AbstractDistMatrix<F>& APre )
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Grid& g = A.Grid();
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g);
-    DistMatrix<F,MC,  STAR> A21_MC_STAR(g);
-    DistMatrix<F,STAR,VR  > A12_STAR_VR(g);
-    DistMatrix<F,STAR,MR  > A12_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> A21_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > A12_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > A12_STAR_MR(g);
 
     const Int m = A.Height();
     const Int n = A.Width();
@@ -96,7 +96,7 @@ void LU( AbstractDistMatrix<F>& APre )
 }
 
 template<typename F>
-void LU( DistMatrix<F,STAR,STAR>& A )
+void LU( DistMatrix<F,Dist::STAR,Dist::STAR>& A )
 { LU( A.Matrix() ); }
 
 // Performs LU factorization with partial pivoting
@@ -156,14 +156,14 @@ void LU( AbstractDistMatrix<F>& APre, DistPermutation& P )
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Grid& g = A.Grid();
-    DistMatrix<F,  STAR,STAR> A11_STAR_STAR(g);
-    DistMatrix<F,  MC,  STAR> A21_MC_STAR(g);
-    DistMatrix<F,  STAR,VR  > A12_STAR_VR(g);
-    DistMatrix<F,  STAR,MR  > A12_STAR_MR(g);
+    DistMatrix<F,  Dist::STAR,Dist::STAR> A11_STAR_STAR(g);
+    DistMatrix<F,  Dist::MC,  Dist::STAR> A21_MC_STAR(g);
+    DistMatrix<F,  Dist::STAR,Dist::VR  > A12_STAR_VR(g);
+    DistMatrix<F,  Dist::STAR,Dist::MR  > A12_STAR_MR(g);
 
     const Int m = A.Height();
     const Int n = A.Width();
@@ -233,7 +233,7 @@ void LU
 #define PROTO(F) \
   template void LU( Matrix<F>& A ); \
   template void LU( AbstractDistMatrix<F>& A ); \
-  template void LU( DistMatrix<F,STAR,STAR>& A ); \
+  template void LU( DistMatrix<F,Dist::STAR,Dist::STAR>& A ); \
   template void LU \
   ( Matrix<F>& A, \
     Permutation& P ); \
@@ -268,8 +268,8 @@ void LU
     Permutation& PB, \
     Int offset ); \
   template void lu::Panel \
-  ( DistMatrix<F,  STAR,STAR>& A11, \
-    DistMatrix<F,  MC,  STAR>& A21, \
+  ( DistMatrix<F,  Dist::STAR,Dist::STAR>& A11, \
+    DistMatrix<F,  Dist::MC,  Dist::STAR>& A21, \
     DistPermutation& P, \
     DistPermutation& PB, \
     Int offset, \

@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_SCHUR_CONDENSE_HPP
@@ -31,7 +31,7 @@ void Condense
 
     if( ctrl.time )
         timer.Start();
-    HessenbergSchur( A, w, ctrl.hessSchurCtrl ); 
+    HessenbergSchur( A, w, ctrl.hessSchurCtrl );
     if( ctrl.time )
         Output("  HessenbergSchur: ",timer.Stop()," seconds");
 
@@ -48,7 +48,7 @@ template<typename F>
 void Condense
 ( Matrix<F>& A,
   Matrix<Complex<Base<F>>>& w,
-  Matrix<F>& Q, 
+  Matrix<F>& Q,
   const SchurCtrl<Base<F>>& ctrl )
 {
     EL_DEBUG_CSE
@@ -67,7 +67,7 @@ void Condense
     hessSchurCtrl.accumulateSchurVecs = true;
     if( ctrl.time )
         timer.Start();
-    HessenbergSchur( A, w, Q, hessSchurCtrl ); 
+    HessenbergSchur( A, w, Q, hessSchurCtrl );
     if( ctrl.time )
         Output("  HessenbergSchur: ",timer.Stop()," seconds");
 
@@ -95,7 +95,7 @@ void Condense
         timer.Start();
     hessenberg::ExplicitCondensed( UPPER, A );
     if( ctrl.time && grid.Rank() == 0 )
-        Output("  Hessenberg reduction: ",timer.Stop()," seconds"); 
+        Output("  Hessenberg reduction: ",timer.Stop()," seconds");
 
     // Run the black-box Hessenberg Schur decomposition
     if( ctrl.time && grid.Rank() == 0 )
@@ -126,7 +126,7 @@ void Condense
     Timer timer;
 
     // Reduce A to upper-Hessenberg form
-    DistMatrix<F,STAR,STAR> householderScalars( A.Grid() );
+    DistMatrix<F,Dist::STAR,Dist::STAR> householderScalars( A.Grid() );
     if( ctrl.time && grid.Rank() == 0 )
         timer.Start();
     Hessenberg( UPPER, A, householderScalars );
@@ -140,7 +140,7 @@ void Condense
     if( ctrl.time && grid.Rank() == 0 )
         Output("  hessenberg::FormQ: ",timer.Stop()," seconds");
     MakeTrapezoidal( UPPER, A, -1 );
-    
+
     // Call the black-box HessenbergSchur decomposition
     if( ctrl.time && grid.Rank() == 0 )
         timer.Start();

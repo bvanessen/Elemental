@@ -78,8 +78,8 @@ void UpperUnblocked
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,STAR,STAR>
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::STAR,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& A = AProx.Get();
     auto& householderScalars = householderScalarsProx.Get();
@@ -90,10 +90,10 @@ void UpperUnblocked
     householderScalars.SetGrid( g );
     householderScalars.Resize( householderScalarsHeight, 1 );
 
-    DistMatrix<F,MC,STAR> a21_MC(g);
-    DistMatrix<F,MR,STAR> a21_MR(g);
-    DistMatrix<F,MC,STAR> x1_MC(g);
-    DistMatrix<F,MR,STAR> x12Adj_MR(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> a21_MC(g);
+    DistMatrix<F,Dist::MR,Dist::STAR> a21_MR(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> x1_MC(g);
+    DistMatrix<F,Dist::MR,Dist::STAR> x12Adj_MR(g);
 
     for( Int k=0; k<n-1; ++k )
     {

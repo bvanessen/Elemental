@@ -24,7 +24,7 @@ bool TriangIsNormal( const Matrix<Field>& U, Base<Field> tol )
 template<typename Field>
 bool TriangIsNormal( const AbstractDistMatrix<Field>& UPre, Base<Field> tol )
 {
-    DistMatrixReadProxy<Field,Field,MC,MR> UProx( UPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.GetLocked();
 
     const Base<Field> diagFrob = FrobeniusNorm(GetDiagonal(U));
@@ -336,7 +336,7 @@ void FixColumns( DistMatrix<Field,U,V>& X )
 {
     EL_DEBUG_CSE
     typedef Base<Field> Real;
-    DistMatrix<Real,V,STAR> norms( X.Grid() );
+    DistMatrix<Real,V,Dist::STAR> norms( X.Grid() );
     ColumnTwoNorms( X, norms );
     const Int nLocal = X.LocalWidth();
     auto& normsLoc = norms.Matrix();
@@ -370,7 +370,7 @@ void CapEstimates( Matrix<Real>& activeEsts )
 }
 
 template<typename Real>
-void CapEstimates( DistMatrix<Real,MR,STAR>& activeEsts )
+void CapEstimates( DistMatrix<Real,Dist::MR,Dist::STAR>& activeEsts )
 {
     EL_DEBUG_CSE
     CapEstimates( activeEsts.Matrix() );
@@ -410,11 +410,11 @@ FindConverged
 }
 
 template<typename Real>
-DistMatrix<Int,MR,STAR>
+DistMatrix<Int,Dist::MR,Dist::STAR>
 FindConverged
-( const DistMatrix<Real,MR,STAR>& lastActiveEsts,
-  const DistMatrix<Real,MR,STAR>& activeEsts,
-        DistMatrix<Int, VR,STAR>& activeItCounts,
+( const DistMatrix<Real,Dist::MR,Dist::STAR>& lastActiveEsts,
+  const DistMatrix<Real,Dist::MR,Dist::STAR>& activeEsts,
+        DistMatrix<Int, Dist::VR,Dist::STAR>& activeItCounts,
         Real maxDiff )
 {
     EL_DEBUG_CSE
@@ -425,7 +425,7 @@ FindConverged
     )
     const Real normCap = NormCap<Real>();
 
-    DistMatrix<Int,MR,STAR> activeConverged( activeEsts.Grid() );
+    DistMatrix<Int,Dist::MR,Dist::STAR> activeConverged( activeEsts.Grid() );
     activeConverged.AlignWith( activeEsts );
     Zeros( activeConverged, activeEsts.Height(), 1 );
 

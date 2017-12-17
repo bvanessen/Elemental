@@ -9,92 +9,99 @@
 #ifndef EL_DISTMATRIX_ELEMENTAL_CIRC_CIRC_HPP
 #define EL_DISTMATRIX_ELEMENTAL_CIRC_CIRC_HPP
 
-namespace El {
+#include <vector>
+
+#include "El/core/DistMatrix_decl.hpp"
+#include "El/core/Grid.hpp"
+#include "El/macros.h"
+
+namespace El
+{
 
 // Partial specialization to A[o,o].
 //
 // The entire matrix is only stored on a single process.
 template<typename Ring>
-class DistMatrix<Ring,CIRC,CIRC> : public ElementalMatrix<Ring>
+class DistMatrix<Ring,Dist::CIRC,Dist::CIRC> : public ElementalMatrix<Ring>
 {
 public:
     // Typedefs
     // ========
     typedef AbstractDistMatrix<Ring> absType;
     typedef ElementalMatrix<Ring> elemType;
-    typedef DistMatrix<Ring,CIRC,CIRC> type;
-    typedef DistMatrix<Ring,CIRC,CIRC> transType;
-    typedef DistMatrix<Ring,CIRC,CIRC> diagType;
+    typedef DistMatrix<Ring,Dist::CIRC,Dist::CIRC> type;
+    typedef DistMatrix<Ring,Dist::CIRC,Dist::CIRC> transType;
+    typedef DistMatrix<Ring,Dist::CIRC,Dist::CIRC> diagType;
 
     // Constructors and destructors
     // ============================
 
     // Create a 0 x 0 distributed matrix
-    DistMatrix( const El::Grid& grid=Grid::Default(), int root=0 );
+    DistMatrix(const El::Grid& grid=Grid::Default(), int root=0);
 
     // Create a height x width distributed matrix
     DistMatrix
-    ( Int height, Int width, const El::Grid& grid=Grid::Default(), int root=0 );
+    (Int height, Int width, const El::Grid& grid=Grid::Default(), int root=0);
 
     // Create a direct copy (redistributing if necessary)
-    DistMatrix( const type& A );
-    DistMatrix( const absType& A );
-    DistMatrix( const elemType& A );
+    DistMatrix(const type& A);
+    DistMatrix(const absType& A);
+    DistMatrix(const elemType& A);
     template<Dist colDist,Dist rowDist>
-    DistMatrix( const DistMatrix<Ring,colDist,rowDist>& A );
+    DistMatrix(const DistMatrix<Ring,colDist,rowDist>& A);
     template<Dist colDist,Dist rowDist>
-    DistMatrix( const DistMatrix<Ring,colDist,rowDist,BLOCK>& A );
+    DistMatrix(const DistMatrix<Ring,colDist,rowDist,DistWrap::BLOCK>& A);
 
     // Move constructor
-    DistMatrix( type&& A ) EL_NO_EXCEPT;
+    DistMatrix(type&& A) EL_NO_EXCEPT;
 
     // Destructor
     ~DistMatrix();
 
     type* Copy() const override;
     type* Construct
-    ( const El::Grid& grid, int root ) const override;
+    (const El::Grid& grid, int root) const override;
     transType* ConstructTranspose
-    ( const El::Grid& grid, int root ) const override;
+    (const El::Grid& grid, int root) const override;
     diagType* ConstructDiagonal
-    ( const El::Grid& grid, int root ) const override;
+    (const El::Grid& grid, int root) const override;
 
     // Operator overloading
     // ====================
 
     // Return a view of a contiguous submatrix
     // ---------------------------------------
-          type operator()( Range<Int> I, Range<Int> J );
-    const type operator()( Range<Int> I, Range<Int> J ) const;
+          type operator()(Range<Int> I, Range<Int> J);
+    const type operator()(Range<Int> I, Range<Int> J) const;
 
     // Return a copy of a (generally non-contiguous) submatrix
     // -------------------------------------------------------
-    type operator()( Range<Int> I, const vector<Int>& J ) const;
-    type operator()( const vector<Int>& I, Range<Int> J ) const;
-    type operator()( const vector<Int>& I, const vector<Int>& J ) const;
+    type operator()(Range<Int> I, const std::vector<Int>& J) const;
+    type operator()(const std::vector<Int>& I, Range<Int> J) const;
+    type operator()(const std::vector<Int>& I, const std::vector<Int>& J) const;
 
     // Make a copy
     // -----------
-    type& operator=( const type& A );
-    type& operator=( const absType& A );
-    type& operator=( const elemType& A );
+    type& operator=(const type& A);
+    type& operator=(const absType& A);
+    type& operator=(const elemType& A);
     template<Dist colDist,Dist rowDist>
-    type& operator=( const DistMatrix<Ring,colDist,rowDist,BLOCK>& A );
+    type& operator=(const DistMatrix<Ring,colDist,rowDist,DistWrap::BLOCK>& A);
 
     // Move assignment
     // ---------------
-    type& operator=( type&& A );
+    type& operator=(type&& A);
 
     // Rescaling
     // ---------
-    const type& operator*=( Ring alpha );
+    const type& operator*=(Ring alpha);
 
     // Addition/subtraction
     // --------------------
-    const type& operator+=( const elemType& A );
-    const type& operator+=( const absType& A );
-    const type& operator-=( const elemType& A );
-    const type& operator-=( const absType& A );
+    const type& operator+=(const elemType& A);
+    const type& operator+=(const absType& A);
+    const type& operator-=(const elemType& A);
+    const type& operator-=(const absType& A);
 
     // Basic queries
     // =============

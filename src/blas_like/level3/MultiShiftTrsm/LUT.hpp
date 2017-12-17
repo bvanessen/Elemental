@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -15,7 +15,7 @@ void LUT
 ( Orientation orientation,
         Matrix<F>& U,
   const Matrix<F>& shifts,
-        Matrix<F>& X ) 
+        Matrix<F>& X )
 {
     EL_DEBUG_CSE
 
@@ -45,22 +45,22 @@ void LUT
 ( Orientation orientation,
   const AbstractDistMatrix<F>& UPre,
   const AbstractDistMatrix<F>& shiftsPre,
-        AbstractDistMatrix<F>& XPre ) 
+        AbstractDistMatrix<F>& XPre )
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
-    DistMatrixReadProxy<F,F,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadProxy<F,F,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& shifts = shiftsProx.GetLocked();
     auto& X = XProx.Get();
 
     const Grid& g = U.Grid();
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<F,STAR,MC  > U12_STAR_MC(g);
-    DistMatrix<F,STAR,MR  > X1_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > X1_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > U12_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > X1_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
 
     const Int m = X.Height();
     const Int bsize = Blocksize();
@@ -83,7 +83,7 @@ void LUT
         X1_STAR_VR.AlignWith( shifts );
         X1_STAR_VR = X1;  // X1[* ,VR] <- X1[MC,MR]
         LUT
-        ( orientation, 
+        ( orientation,
           U11_STAR_STAR.Matrix(), shifts.LockedMatrix(), X1_STAR_VR.Matrix() );
 
         X1_STAR_MR.AlignWith( X2 );

@@ -172,12 +172,12 @@ void Overwrite
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR>
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR>
       AProx( APre ),
       BProx( BPre ),
       CProx( CPre ),
       DProx( DPre );
-    DistMatrixWriteProxy<F,F,MC,MR>
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR>
       XProx( XPre );
     auto& A = AProx.Get();
     auto& B = BProx.Get();
@@ -206,8 +206,8 @@ void Overwrite
     const bool checkIfSingular = true;
 
     // Compute the implicit Generalized RQ decomposition of (B,A)
-    DistMatrix<F,MD,STAR> tA(g), tB(g);
-    DistMatrix<Base<F>,MD,STAR> dA(g), dB(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> tA(g), tB(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> dA(g), dB(g);
     GRQ( B, tB, dB, A, tA, dA );
 
     // G := Z^H C

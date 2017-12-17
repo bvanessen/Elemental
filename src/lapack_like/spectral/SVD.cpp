@@ -33,9 +33,9 @@ SVDInfo ScaLAPACKHelper
     SVDInfo info;
 #ifdef EL_HAVE_SCALAPACK
     typedef Base<Field> Real;
-    DistMatrix<Field,MC,MR,BLOCK> A( APre );
-    DistMatrixWriteProxy<Real,Real,STAR,STAR> sProx(sPre);
-    DistMatrixWriteProxy<Field,Field,MC,MR,BLOCK> UProx(UPre);
+    DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK> A( APre );
+    DistMatrixWriteProxy<Real,Real,Dist::STAR,Dist::STAR> sProx(sPre);
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR,DistWrap::BLOCK> UProx(UPre);
     auto& s = sProx.Get();
     auto& U = UProx.Get();
 
@@ -47,7 +47,7 @@ SVDInfo ScaLAPACKHelper
     if( approach == THIN_SVD || approach == COMPACT_SVD )
     {
         Zeros( U, m, k );
-        DistMatrix<Field,MC,MR,BLOCK> VH( A.Grid() );
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK> VH( A.Grid() );
         Zeros( VH, k, n );
         s.Resize( k, 1 );
 
@@ -329,7 +329,7 @@ SVDInfo SVD
         // TODO: Switch to using control structure
         if( U.ColDist() == VC && U.RowDist() == STAR )
         {
-            auto& UCast = static_cast<DistMatrix<Field,VC,STAR>&>( U );
+            auto& UCast = static_cast<DistMatrix<Field,Dist::VC,Dist::STAR>&>( U );
             info = svd::Product
             ( A, UCast, s, V,
               ctrl.bidiagSVDCtrl.tol, relative, avoidU, avoidV );
@@ -424,8 +424,8 @@ SVDInfo ScaLAPACKHelper
     SVDInfo info;
 #ifdef EL_HAVE_SCALAPACK
     typedef Base<Field> Real;
-    DistMatrix<Field,MC,MR,BLOCK> A( APre );
-    DistMatrixWriteProxy<Real,Real,STAR,STAR> sProx(sPre);
+    DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK> A( APre );
+    DistMatrixWriteProxy<Real,Real,Dist::STAR,Dist::STAR> sProx(sPre);
     auto& s = sProx.Get();
     const int m = A.Height();
     const int n = A.Width();
@@ -611,7 +611,7 @@ SVDInfo TSQR
         AbstractDistMatrix<Base<Field>>& s )
 {
     EL_DEBUG_CSE
-    DistMatrix<Field,VC,STAR> ACopy( A );
+    DistMatrix<Field,Dist::VC,Dist::STAR> ACopy( A );
     return TSQR( ACopy, s, true );
 }
 
@@ -624,12 +624,12 @@ SVDInfo TSQR
     EL_DEBUG_CSE
     if( !overwrite )
     {
-        DistMatrix<Field,VC,STAR> A( APre );
+        DistMatrix<Field,Dist::VC,Dist::STAR> A( APre );
         return TSQR( A, sPre, true );
     }
 
-    DistMatrixReadProxy<Field,Field,VC,STAR> AProx( APre );
-    DistMatrixWriteProxy<Base<Field>,Base<Field>,CIRC,CIRC> sProx( sPre );
+    DistMatrixReadProxy<Field,Field,Dist::VC,Dist::STAR> AProx( APre );
+    DistMatrixWriteProxy<Base<Field>,Base<Field>,Dist::CIRC,Dist::CIRC> sProx( sPre );
     auto& A = AProx.Get();
     auto& s = sProx.Get();
     const Int m = A.Height();
@@ -666,9 +666,9 @@ SVDInfo TSQR
 {
     EL_DEBUG_CSE
 
-    DistMatrixWriteProxy<Field,Field,VC,STAR> UProx( UPre );
-    DistMatrixWriteProxy<Base<Field>,Base<Field>,CIRC,CIRC> sProx( sPre );
-    DistMatrixWriteProxy<Field,Field,CIRC,CIRC> VProx( VPre );
+    DistMatrixWriteProxy<Field,Field,Dist::VC,Dist::STAR> UProx( UPre );
+    DistMatrixWriteProxy<Base<Field>,Base<Field>,Dist::CIRC,Dist::CIRC> sProx( sPre );
+    DistMatrixWriteProxy<Field,Field,Dist::CIRC,Dist::CIRC> VProx( VPre );
     auto& U = UProx.Get();
     auto& s = sProx.Get();
     auto& V = VProx.Get();

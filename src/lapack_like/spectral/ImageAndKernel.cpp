@@ -67,7 +67,7 @@ void ImageAndKernel
     SVDCtrl<Real> ctrl;
     ctrl.bidiagSVDCtrl.approach = FULL_SVD;
     DistMatrix<Field> U(g), V(g);
-    DistMatrix<Real,STAR,STAR> s(g);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> s(g);
     SVD( B, U, s, V, ctrl );
 
     const Int numSingVals = s.Height();
@@ -91,7 +91,7 @@ void ImageAndKernel
     auto UL = U( ALL, IR(0,rank) );
     auto VR = V( ALL, IR(rank,END) );
     Copy( UL, M );
-    Copy( VR, K );
+    Copy( Dist::VR, K );
 }
 
 template<typename Field>
@@ -135,7 +135,7 @@ void Image
     ctrl.bidiagSVDCtrl.tolType = RELATIVE_TO_MAX_SING_VAL_TOL;
     ctrl.bidiagSVDCtrl.tol = Max(m,n)*eps;
     DistMatrix<Field> V(g);
-    DistMatrix<Real,STAR,STAR> s(g);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> s(g);
     SVD( B, M, s, V, ctrl );
 }
 
@@ -194,7 +194,7 @@ void Kernel
     ctrl.bidiagSVDCtrl.approach = FULL_SVD;
     ctrl.bidiagSVDCtrl.wantU = false;
     DistMatrix<Field> U(g), V(g);
-    DistMatrix<Real,STAR,STAR> s(g);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> s(g);
     SVD( B, U, s, V, ctrl );
 
     const Int numSingVals = s.Height();
@@ -216,7 +216,7 @@ void Kernel
     }
 
     auto VR = V( ALL, IR(rank,END) );
-    Copy( VR, K );
+    Copy( Dist::VR, K );
 }
 
 #define PROTO(Field) \

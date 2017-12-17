@@ -60,7 +60,7 @@ void Translate
         const Int maxHeight = MaxLength( height, colStride );
         const Int maxWidth  = MaxLength( width,  rowStride );
         const Int pkgSize = mpi::Pad( maxHeight*maxWidth );
-        vector<T> buffer;
+        std::vector<T> buffer;
         if( crossRank == root || crossRank == B.Root() )
             FastResize( buffer, pkgSize );
 
@@ -116,8 +116,8 @@ void Translate
 
 template<typename T,Dist U,Dist V>
 void Translate
-( const DistMatrix<T,U,V,BLOCK>& A,
-        DistMatrix<T,U,V,BLOCK>& B )
+( const DistMatrix<T,U,V,DistWrap::BLOCK>& A,
+        DistMatrix<T,U,V,DistWrap::BLOCK>& B )
 {
     EL_DEBUG_CSE
     const Int height = A.Height();

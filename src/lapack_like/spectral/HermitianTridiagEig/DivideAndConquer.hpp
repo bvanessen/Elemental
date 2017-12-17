@@ -566,11 +566,11 @@ DCInfo
 Merge
 ( Real beta,
   // The n0 (unsorted) eigenvalues from T0.
-  const DistMatrix<Real,STAR,STAR>& w0,
+  const DistMatrix<Real,Dist::STAR,Dist::STAR>& w0,
   // The n1 (unsorted) eigenvalues from T1.
-  const DistMatrix<Real,STAR,STAR>& w1,
+  const DistMatrix<Real,Dist::STAR,Dist::STAR>& w1,
   // On exit, the (unsorted) eigenvalues of the merged tridiagonal matrix
-  DistMatrix<Real,STAR,STAR>& d,
+  DistMatrix<Real,Dist::STAR,Dist::STAR>& d,
   // If ctrl.wantEigVecs is true, then, on entry, a packing of the eigenvectors
   // from the two subproblems,
   //
@@ -673,13 +673,13 @@ Merge
 
     // Get a full copy of the last row of Q0 and the first row of Q1.
     const Int lastRowOfQ0 = ( ctrl.wantEigVecs ? n0-1 : 0 );
-    DistMatrix<Real,STAR,STAR> q0Last( Q0(IR(lastRowOfQ0),ALL) ),
+    DistMatrix<Real,Dist::STAR,Dist::STAR> q0Last( Q0(IR(lastRowOfQ0),ALL) ),
       q1First( Q1(IR(0),ALL) );
     const auto& q0LastLoc = q0Last.LockedMatrix();
     const auto& q1FirstLoc = q1First.LockedMatrix();
 
     // Put Q into [VC,STAR] distribution for Givens applications
-    DistMatrix<Real,VC,STAR> Q_VC_STAR(Q);
+    DistMatrix<Real,Dist::VC,Dist::STAR> Q_VC_STAR(Q);
     auto& Q_VC_STAR_Loc = Q_VC_STAR.Matrix();
 
     Matrix<Real> z(n,1);
@@ -905,7 +905,7 @@ Merge
                      packingInd2(packingOffsets[2],packingOffsets[3]);
 
     Matrix<Real> dPacked;
-    DistMatrix<Real,VC,STAR> QPacked(g);
+    DistMatrix<Real,Dist::VC,Dist::STAR> QPacked(g);
     dPacked.Resize( n, 1 );
     if( ctrl.wantEigVecs )
         QPacked.Resize( n, n );
@@ -967,8 +967,8 @@ Merge
     // Ensure that there is sufficient space for storing the needed eigenvectors
     // from the undeflated secular equation. Notice that we *always* need to
     // compute the eigenvectors of the undeflated secular equation.
-    DistMatrix<Real,VR,STAR> dSecular(numUndeflated,1,g);
-    DistMatrix<Real,STAR,VR> QSecular(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> dSecular(numUndeflated,1,g);
+    DistMatrix<Real,Dist::STAR,Dist::VR> QSecular(g);
     QSecular.Resize( numUndeflated, numUndeflated );
     auto& dSecularLoc = dSecular.Matrix();
     auto& QSecularLoc = QSecular.Matrix();
@@ -1026,7 +1026,7 @@ Merge
     // from the secular equation.
     if( ctrl.progress && amRoot )
         Output("Forming undeflated right singular vectors");
-    DistMatrix<Real,STAR,VR> U(g);
+    DistMatrix<Real,Dist::STAR,Dist::VR> U(g);
     U.Resize( numUndeflated, numUndeflated );
     auto& ULoc = U.Matrix();
     for( Int jLoc=0; jLoc<numUndeflatedLoc; ++jLoc )
@@ -1227,7 +1227,7 @@ DCInfo
 DivideAndConquer
 (       Matrix<Real>& mainDiag,
         Matrix<Real>& superDiag,
-        DistMatrix<Real,STAR,STAR>& w,
+        DistMatrix<Real,Dist::STAR,Dist::STAR>& w,
         DistMatrix<Real>& Q,
   const HermitianTridiagEigCtrl<Real>& ctrl,
   bool topLevel=true )
@@ -1358,7 +1358,7 @@ DivideAndConquer
         Zeros( Q1Sub, 2, n-split );
     }
 
-    DistMatrix<Real,STAR,STAR> w0Sub(*leftGrid), w1Sub(*rightGrid);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> w0Sub(*leftGrid), w1Sub(*rightGrid);
     DCInfo info0, info1;
     if( w0Sub.Participating() )
     {
@@ -1377,7 +1377,7 @@ DivideAndConquer
     w1Sub.MakeConsistent( includeViewers );
     Q1Sub.MakeConsistent( includeViewers );
 
-    DistMatrix<Real,STAR,STAR> w0(grid), w1(grid);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> w0(grid), w1(grid);
     w0 = w0Sub;
     w1 = w1Sub;
     if( ctrl.wantEigVecs )

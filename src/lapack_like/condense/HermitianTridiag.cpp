@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El.hpp>
@@ -13,11 +13,11 @@ namespace herm_tridiag {
 
 template<typename F>
 void Ger2Sub
-( const DistMatrix<F,MC,STAR>& x_MC,
-  const DistMatrix<F,MC,STAR>& y_MC,
-  const DistMatrix<F,MR,STAR>& x_MR,
-  const DistMatrix<F,MR,STAR>& y_MR,
-        DistMatrix<F,MC,MR  >& A )
+( const DistMatrix<F,Dist::MC,Dist::STAR>& x_MC,
+  const DistMatrix<F,Dist::MC,Dist::STAR>& y_MC,
+  const DistMatrix<F,Dist::MR,Dist::STAR>& x_MR,
+  const DistMatrix<F,Dist::MR,Dist::STAR>& y_MR,
+        DistMatrix<F,Dist::MC,Dist::MR  >& A )
 {
     EL_DEBUG_CSE
     const Int localHeight = A.LocalHeight();
@@ -61,7 +61,7 @@ void HermitianTridiag
         herm_tridiag::UpperBlocked( A, householderScalars );
 }
 
-template<typename F> 
+template<typename F>
 void HermitianTridiag
 ( UpperOrLower uplo,
   AbstractDistMatrix<F>& APre,
@@ -70,8 +70,8 @@ void HermitianTridiag
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,STAR,STAR>
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::STAR,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& A = AProx.Get();
     auto& householderScalars = householderScalarsProx.Get();
@@ -87,7 +87,7 @@ void HermitianTridiag
     }
     else if( ctrl.approach == HERMITIAN_TRIDIAG_SQUARE )
     {
-        // Drop down to a square mesh 
+        // Drop down to a square mesh
         const Int p = grid.Size();
         const Int pSqrt = Int(sqrt(double(p)));
 
@@ -113,7 +113,7 @@ void HermitianTridiag
         mpi::Comm viewingComm = grid.ViewingComm();
         const Grid squareGrid( viewingComm, squareGroup, pSqrt );
         DistMatrix<F> ASquare(squareGrid);
-        DistMatrix<F,STAR,STAR> householderScalarsSquare(squareGrid);
+        DistMatrix<F,Dist::STAR,Dist::STAR> householderScalarsSquare(squareGrid);
 
         // Perform the fast tridiagonalization on the square grid
         ASquare = A;
@@ -135,7 +135,7 @@ void HermitianTridiag
     }
     else
     {
-        // Use the normal approach unless we're already on a square 
+        // Use the normal approach unless we're already on a square
         // grid, in which case we use the fast square method.
         if( grid.Height() == grid.Width() )
         {
@@ -144,7 +144,7 @@ void HermitianTridiag
                 ( A, householderScalars, ctrl.symvCtrl );
             else
                 herm_tridiag::UpperBlockedSquare
-                ( A, householderScalars, ctrl.symvCtrl ); 
+                ( A, householderScalars, ctrl.symvCtrl );
         }
         else
         {
@@ -175,11 +175,11 @@ void ExplicitCondensed( UpperOrLower uplo, Matrix<F>& A )
 template<typename F>
 void ExplicitCondensed
 ( UpperOrLower uplo,
-  AbstractDistMatrix<F>& A, 
+  AbstractDistMatrix<F>& A,
   const HermitianTridiagCtrl<F>& ctrl )
 {
     EL_DEBUG_CSE
-    DistMatrix<F,STAR,STAR> householderScalars(A.Grid());
+    DistMatrix<F,Dist::STAR,Dist::STAR> householderScalars(A.Grid());
     HermitianTridiag( uplo, A, householderScalars, ctrl );
     if( uplo == UPPER )
         MakeTrapezoidal( LOWER, A, 1 );

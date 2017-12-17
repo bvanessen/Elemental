@@ -52,7 +52,7 @@ Base<Field> TwoNormEstimate
     EL_DEBUG_CSE
     typedef Base<Field> Real;
 
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.GetLocked();
 
     const Int m = A.Height();
@@ -133,7 +133,7 @@ Base<Field> HermitianTwoNormEstimate
     EL_DEBUG_CSE
     typedef Base<Field> Real;
 
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.GetLocked();
 
     const Int n = A.Height();
@@ -213,7 +213,7 @@ Base<Field> SymmetricTwoNormEstimate
     EL_DEBUG_CSE
     typedef Base<Field> Real;
 
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.GetLocked();
 
     const Int n = A.Height();

@@ -226,14 +226,14 @@ LN
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,STAR,VR> XProx( XPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::STAR,Dist::VR> XProx( XPre );
     auto& X = XProx.Get();
 
     ElementalProxyCtrl ctrl;
     ctrl.colConstrain = true;
     ctrl.colAlign = X.RowAlign();
 
-    DistMatrixReadProxy<Field,Field,VR,STAR> shiftsProx( shiftsPre, ctrl );
+    DistMatrixReadProxy<Field,Field,Dist::VR,Dist::STAR> shiftsProx( shiftsPre, ctrl );
     auto& shifts = shiftsProx.GetLocked();
     auto& shiftsLoc = shifts.LockedMatrix();
 
@@ -256,7 +256,7 @@ LN
         unique_ptr<AbstractDistMatrix<Field>>
           h0( H.Construct(H.Grid(),H.Root()) );
         LockedView( *h0, H, ALL, IR(0) );
-        DistMatrix<Field,STAR,STAR> h0_STAR_STAR( *h0 );
+        DistMatrix<Field,Dist::STAR,Dist::STAR> h0_STAR_STAR( *h0 );
         for( Int jLoc=0; jLoc<nLoc; ++jLoc )
         {
             MemCopy( W.Buffer(0,jLoc), h0_STAR_STAR.LockedBuffer(), m );
@@ -266,7 +266,7 @@ LN
 
     // Simultaneously find the LQ factorization and solve against L
     unique_ptr<AbstractDistMatrix<Field>> hB( H.Construct(H.Grid(),H.Root()) );
-    DistMatrix<Field,STAR,STAR> hB_STAR_STAR( H.Grid() );
+    DistMatrix<Field,Dist::STAR,Dist::STAR> hB_STAR_STAR( H.Grid() );
     for( Int k=0; k<m-1; ++k )
     {
         LockedView( *hB, H, IR(k+2,m), IR(k+1) );
@@ -348,14 +348,14 @@ UN
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,STAR,VR> XProx( XPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::STAR,Dist::VR> XProx( XPre );
     auto& X = XProx.Get();
 
     ElementalProxyCtrl ctrl;
     ctrl.colConstrain = true;
     ctrl.colAlign = X.RowAlign();
 
-    DistMatrixReadProxy<Field,Field,VR,STAR> shiftsProx( shiftsPre, ctrl );
+    DistMatrixReadProxy<Field,Field,Dist::VR,Dist::STAR> shiftsProx( shiftsPre, ctrl );
     auto& shifts = shiftsProx.GetLocked();
     auto& shiftsLoc = shifts.LockedMatrix();
 
@@ -378,7 +378,7 @@ UN
         unique_ptr<AbstractDistMatrix<Field>>
           hLast( H.Construct(H.Grid(),H.Root()) );
         LockedView( *hLast, H, ALL, IR(m-1) );
-        DistMatrix<Field,STAR,STAR> hLast_STAR_STAR( *hLast );
+        DistMatrix<Field,Dist::STAR,Dist::STAR> hLast_STAR_STAR( *hLast );
         for( Int jLoc=0; jLoc<nLoc; ++jLoc )
         {
             MemCopy( W.Buffer(0,jLoc), hLast_STAR_STAR.LockedBuffer(), m );
@@ -388,7 +388,7 @@ UN
 
     // Simultaneously form the RQ factorization and solve against R
     unique_ptr<AbstractDistMatrix<Field>> hT( H.Construct(H.Grid(),H.Root()) );
-    DistMatrix<Field,STAR,STAR> hT_STAR_STAR( H.Grid() );
+    DistMatrix<Field,Dist::STAR,Dist::STAR> hT_STAR_STAR( H.Grid() );
     for( Int k=m-1; k>0; --k )
     {
         LockedView( *hT, H, IR(0,k-1), IR(k-1) );

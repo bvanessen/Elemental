@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -51,11 +51,11 @@ void LNUnb( const Matrix<F>& L, Matrix<F>& x, bool checkIfSingular=false )
             Real c; F s;
             const F gamma11 = Givens( delta11, delta12, c, s );
             const F gamma21 =        c*delta21 + s*delta22;
-            const F gamma22 = -Conj(s)*delta21 + c*delta22; 
+            const F gamma22 = -Conj(s)*delta21 + c*delta22;
             if( checkIfSingular )
             {
                 // TODO: Instead check if values are too small in magnitude
-                if( gamma11 == F(0) || gamma22 == F(0) ) 
+                if( gamma11 == F(0) || gamma22 == F(0) )
                     LogicError("Singular diagonal block detected");
             }
             // Solve against L
@@ -70,10 +70,10 @@ void LNUnb( const Matrix<F>& L, Matrix<F>& x, bool checkIfSingular=false )
 
             // Update x2 := x2 - L21 x1
             blas::Axpy
-            ( m-(k+2), -xBuf[ k   *incx], 
+            ( m-(k+2), -xBuf[ k   *incx],
               &LBuf[(k+2)+ k   *ldl], 1, &xBuf[(k+2)*incx], incx );
             blas::Axpy
-            ( m-(k+2), -xBuf[(k+1)*incx], 
+            ( m-(k+2), -xBuf[(k+1)*incx],
               &LBuf[(k+2)+(k+1)*ldl], 1, &xBuf[(k+2)*incx], incx );
 
             k += 2;
@@ -88,7 +88,7 @@ void LNUnb( const Matrix<F>& L, Matrix<F>& x, bool checkIfSingular=false )
 
             // Update x2 := x2 - l21 chi_1
             blas::Axpy
-            ( m-(k+1), -xBuf[k*incx], 
+            ( m-(k+1), -xBuf[k*incx],
               &LBuf[(k+1)+k*ldl], 1, &xBuf[(k+1)*incx], incx );
 
             k += 1;
@@ -146,7 +146,7 @@ void LN( const Matrix<F>& L, Matrix<F>& x, bool checkIfSingular=false )
 template<typename F>
 void LN
 ( const AbstractDistMatrix<F>& LPre,
-        AbstractDistMatrix<F>& xPre, 
+        AbstractDistMatrix<F>& xPre,
   bool checkIfSingular=false )
 {
     EL_DEBUG_CSE
@@ -156,7 +156,7 @@ void LN
           LogicError("L must be square");
       if( xPre.Width() != 1 && xPre.Height() != 1 )
           LogicError("x must be a vector");
-      const Int xLength = 
+      const Int xLength =
           ( xPre.Width() == 1 ? xPre.Height() : xPre.Width() );
       if( LPre.Width() != xLength )
           LogicError("Nonconformal");
@@ -165,24 +165,24 @@ void LN
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> LProx( LPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> xProx( xPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> xProx( xPre );
     auto& L = LProx.GetLocked();
     auto& x = xProx.Get();
 
-    // Matrix views 
+    // Matrix views
     DistMatrix<F> L11(g), L21(g), x1(g);
 
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> L11_STAR_STAR(g), x1_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> L11_STAR_STAR(g), x1_STAR_STAR(g);
 
     if( x.Width() == 1 )
     {
-        DistMatrix<F,MR,STAR> x1_MR_STAR(g);
-        DistMatrix<F,MC,STAR> z_MC_STAR(g);
+        DistMatrix<F,Dist::MR,Dist::STAR> x1_MR_STAR(g);
+        DistMatrix<F,Dist::MC,Dist::STAR> z_MC_STAR(g);
 
         // Views of z[MC,* ], which will store updates to x
-        DistMatrix<F,MC,STAR> z1_MC_STAR(g), z2_MC_STAR(g);
+        DistMatrix<F,Dist::MC,Dist::STAR> z1_MC_STAR(g), z2_MC_STAR(g);
 
         z_MC_STAR.AlignWith( L );
         z_MC_STAR.Resize( m, 1 );
@@ -192,7 +192,7 @@ void LN
         while( k < m )
         {
             const Int nbProp = Min(bsize,m-k);
-            const bool in2x2 = 
+            const bool in2x2 =
                 ( k+nbProp<m && L.Get(k+nbProp-1,k+nbProp) != F(0) );
             const Int nb = ( in2x2 ? nbProp+1 : nbProp );
 
@@ -202,7 +202,7 @@ void LN
             View( x1, x, k,    0, k+nb, 1 );
 
             View( z1_MC_STAR, z_MC_STAR, k,    0, k+nb, 1 );
-            View( z2_MC_STAR, z_MC_STAR, k+nb, 0, m,    1 ); 
+            View( z2_MC_STAR, z_MC_STAR, k+nb, 0, m,    1 );
 
             if( k != 0 )
                 AxpyContract( F(1), z1_MC_STAR, x1 );
@@ -210,7 +210,7 @@ void LN
             x1_STAR_STAR = x1;
             L11_STAR_STAR = L11;
             quasitrsv::LN
-            ( L11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix(), 
+            ( L11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix(),
               checkIfSingular );
             x1 = x1_STAR_STAR;
 
@@ -223,12 +223,12 @@ void LN
     }
     else
     {
-        DistMatrix<F,STAR,MR> x1_STAR_MR(g);
-        DistMatrix<F,MR,  MC> z1_MR_MC(g);
-        DistMatrix<F,STAR,MC> z_STAR_MC(g);
+        DistMatrix<F,Dist::STAR,Dist::MR> x1_STAR_MR(g);
+        DistMatrix<F,Dist::MR,  Dist::MC> z1_MR_MC(g);
+        DistMatrix<F,Dist::STAR,Dist::MC> z_STAR_MC(g);
 
-        // Views of z[* ,MC]
-        DistMatrix<F,STAR,MC> z1_STAR_MC(g), z2_STAR_MC(g);
+        // Views of z[* ,Dist::MC]
+        DistMatrix<F,Dist::STAR,Dist::MC> z1_STAR_MC(g), z2_STAR_MC(g);
 
         z_STAR_MC.AlignWith( L );
         z_STAR_MC.Resize( 1, m );
@@ -238,7 +238,7 @@ void LN
         while( k < m )
         {
             const Int nbProp = Min(bsize,m-k);
-            const bool in2x2 = 
+            const bool in2x2 =
                 ( k+nbProp<m && L.Get(k+nbProp-1,k+nbProp) != F(0) );
             const Int nb = ( in2x2 ? nbProp+1 : nbProp );
             const IR ind1( k, k+nb ), ind2( k+nb, END );
@@ -260,7 +260,7 @@ void LN
             x1_STAR_STAR = x1;
             L11_STAR_STAR = L11;
             quasitrsv::LN
-            ( L11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix(), 
+            ( L11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix(),
               checkIfSingular );
             x1 = x1_STAR_STAR;
 

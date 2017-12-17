@@ -69,7 +69,7 @@ Full
     const Int n = APre.Width();
     const Int minDim = Min(m,n);
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     P.MakeIdentity( m );

@@ -75,9 +75,9 @@ void RuizEquil
     control.colAlign = 0;
     control.rowAlign = 0;
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre, control );
-    DistMatrixWriteProxy<Real,Real,MC,STAR> dRowProx( dRowPre, control );
-    DistMatrixWriteProxy<Real,Real,MR,STAR> dColProx( dColPre, control );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre, control );
+    DistMatrixWriteProxy<Real,Real,Dist::MC,Dist::STAR> dRowProx( dRowPre, control );
+    DistMatrixWriteProxy<Real,Real,Dist::MR,Dist::STAR> dColProx( dColPre, control );
     auto& A = AProx.Get();
     auto& dRow = dRowProx.Get();
     auto& dCol = dColProx.Get();
@@ -91,8 +91,8 @@ void RuizEquil
     // For now, simply hard-code the number of iterations
     const Int maxIter = 4;
 
-    DistMatrix<Real,MC,STAR> rowScale(A.Grid());
-    DistMatrix<Real,MR,STAR> colScale(A.Grid());
+    DistMatrix<Real,Dist::MC,Dist::STAR> rowScale(A.Grid());
+    DistMatrix<Real,Dist::MR,Dist::STAR> colScale(A.Grid());
     const Int indent = PushIndent();
     for( Int iter=0; iter<maxIter; ++iter )
     {
@@ -183,11 +183,11 @@ void StackedRuizEquil
     control.colAlign = 0;
     control.rowAlign = 0;
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre, control );
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> BProx( BPre, control );
-    DistMatrixWriteProxy<Real,Real,MC,STAR> dRowAProx( dRowAPre, control );
-    DistMatrixWriteProxy<Real,Real,MC,STAR> dRowBProx( dRowBPre, control );
-    DistMatrixWriteProxy<Real,Real,MR,STAR> dColProx( dColPre, control );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre, control );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> BProx( BPre, control );
+    DistMatrixWriteProxy<Real,Real,Dist::MC,Dist::STAR> dRowAProx( dRowAPre, control );
+    DistMatrixWriteProxy<Real,Real,Dist::MC,Dist::STAR> dRowBProx( dRowBPre, control );
+    DistMatrixWriteProxy<Real,Real,Dist::MR,Dist::STAR> dColProx( dColPre, control );
     auto& A = AProx.Get();
     auto& B = BProx.Get();
     auto& dRowA = dRowAProx.Get();
@@ -206,8 +206,8 @@ void StackedRuizEquil
     // For now, simply hard-code the number of iterations
     const Int maxIter = 4;
 
-    DistMatrix<Real,MC,STAR> rowScale(A.Grid());
-    DistMatrix<Real,MR,STAR> colScale(A.Grid()), colScaleB(B.Grid());
+    DistMatrix<Real,Dist::MC,Dist::STAR> rowScale(A.Grid());
+    DistMatrix<Real,Dist::MR,Dist::STAR> colScale(A.Grid()), colScaleB(B.Grid());
     auto& colScaleLoc = colScale.Matrix();
     auto& colScaleBLoc = colScaleB.Matrix();
     const Int indent = PushIndent();

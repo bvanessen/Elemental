@@ -54,7 +54,7 @@ void Print
     }
     else
     {
-        DistMatrix<T,CIRC,CIRC> A_CIRC_CIRC( A );
+        DistMatrix<T,Dist::CIRC,Dist::CIRC> A_CIRC_CIRC( A );
         if( A_CIRC_CIRC.CrossRank() == A_CIRC_CIRC.Root() )
             Print( A_CIRC_CIRC.LockedMatrix(), title, os );
     }

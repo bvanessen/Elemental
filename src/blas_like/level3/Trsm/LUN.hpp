@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -18,7 +18,7 @@ template<typename F>
 void LUNLarge
 ( UnitOrNonUnit diag,
   const AbstractDistMatrix<F>& UPre,
-        AbstractDistMatrix<F>& XPre, 
+        AbstractDistMatrix<F>& XPre,
   bool checkIfSingular )
 {
     EL_DEBUG_CSE
@@ -26,15 +26,15 @@ void LUNLarge
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<F,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<F,STAR,MR  > X1_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > X1_STAR_VR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > X1_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
 
     const Int kLast = LastOffset( m, bsize );
     for( Int k=kLast; k>=0; k-=bsize )
@@ -52,7 +52,7 @@ void LUNLarge
 
         U11_STAR_STAR = U11; // U11[* ,* ] <- U11[MC,MR]
         X1_STAR_VR    = X1;  // X1[* ,VR] <- X1[MC,MR]
-        
+
         // X1[* ,VR] := U11^-1[* ,* ] X1[* ,VR]
         LocalTrsm
         ( LEFT, UPPER, NORMAL, diag, F(1), U11_STAR_STAR, X1_STAR_VR,
@@ -71,7 +71,7 @@ void LUNLarge
 
 template<typename F>
 void LUNMedium
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<F>& UPre,
         AbstractDistMatrix<F>& XPre,
   bool checkIfSingular )
@@ -81,14 +81,14 @@ void LUNMedium
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<F,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<F,MR,  STAR> X1Trans_MR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> X1Trans_MR_STAR(g);
 
     const Int kLast = LastOffset( m, bsize );
     for( Int k=kLast; k>=0; k-=bsize )
@@ -107,11 +107,11 @@ void LUNMedium
         U11_STAR_STAR = U11; // U11[* ,* ] <- U11[MC,MR]
         X1Trans_MR_STAR.AlignWith( X0 );
         Transpose( X1, X1Trans_MR_STAR );
-        
+
         // X1^T[MR,* ] := X1^T[MR,* ] U11^-T[* ,* ]
         //              = (U11^-1[* ,* ] X1[* ,MR])^T
         LocalTrsm
-        ( RIGHT, UPPER, TRANSPOSE, diag, 
+        ( RIGHT, UPPER, TRANSPOSE, diag,
           F(1), U11_STAR_STAR, X1Trans_MR_STAR, checkIfSingular );
         Transpose( X1Trans_MR_STAR, X1 );
 
@@ -127,8 +127,8 @@ void LUNMedium
 template<typename F,Dist colDist>
 void LUNSmall
 ( UnitOrNonUnit diag,
-  const DistMatrix<F,colDist,STAR>& U,
-        DistMatrix<F,colDist,STAR>& X,
+  const DistMatrix<F,colDist,Dist::STAR>& U,
+        DistMatrix<F,colDist,Dist::STAR>& X,
   bool checkIfSingular )
 {
     EL_DEBUG_CSE
@@ -144,7 +144,7 @@ void LUNSmall
     const Int bsize = Blocksize();
     const Grid& g = U.Grid();
 
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g), X1_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g), X1_STAR_STAR(g);
 
     const Int kLast = LastOffset( m, bsize );
     for( Int k=kLast; k>=0; k-=bsize )
@@ -162,7 +162,7 @@ void LUNSmall
 
         U11_STAR_STAR = U11; // U11[* ,* ] <- U11[VC,* ]
         X1_STAR_STAR = X1;   // X1[* ,* ] <- X1[VC,* ]
-        
+
         // X1[* ,* ] := U11^-1[* ,* ] X1[* ,* ]
         LocalTrsm
         ( LEFT, UPPER, NORMAL, diag,

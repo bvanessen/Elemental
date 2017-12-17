@@ -113,11 +113,11 @@ void UpperPanel
 template<typename F>
 void UpperPanel
 ( DistMatrix<F>& A,
-  DistMatrix<F,STAR,STAR>& householderScalars,
-  DistMatrix<F,MC,  STAR>& U_MC_STAR,
-  DistMatrix<F,MR,  STAR>& U_MR_STAR,
-  DistMatrix<F,MC,  STAR>& V_MC_STAR,
-  DistMatrix<F,STAR,STAR>& G_STAR_STAR )
+  DistMatrix<F,Dist::STAR,Dist::STAR>& householderScalars,
+  DistMatrix<F,Dist::MC,  Dist::STAR>& U_MC_STAR,
+  DistMatrix<F,Dist::MR,  Dist::STAR>& U_MR_STAR,
+  DistMatrix<F,Dist::MC,  Dist::STAR>& V_MC_STAR,
+  DistMatrix<F,Dist::STAR,Dist::STAR>& G_STAR_STAR )
 {
     EL_DEBUG_CSE
     const Int nU = U_MC_STAR.Width();
@@ -151,8 +151,8 @@ void UpperPanel
     Zeros( V_MC_STAR,   n,  nU );
     Zeros( G_STAR_STAR, nU, nU );
 
-    DistMatrix<F,MC,  STAR> a1_MC(g);
-    DistMatrix<F,STAR,STAR> y10_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> a1_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> y10_STAR(g);
 
     for( Int k=0; k<nU; ++k )
     {

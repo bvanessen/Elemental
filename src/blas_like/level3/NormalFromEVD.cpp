@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include <El/blas_like/level3.hpp>
 
@@ -45,23 +44,23 @@ void NormalFromEVD
 template<typename Real>
 void NormalFromEVD
 (       AbstractDistMatrix<Complex<Real>>& APre,
-  const AbstractDistMatrix<Complex<Real>>& wPre, 
+  const AbstractDistMatrix<Complex<Real>>& wPre,
   const AbstractDistMatrix<Complex<Real>>& ZPre )
 {
     EL_DEBUG_CSE
     typedef Complex<Real> C;
 
-    DistMatrixWriteProxy<C,C,MC,MR> AProx( APre );
-    DistMatrixReadProxy<C,C,VR,STAR> wProx( wPre );
-    DistMatrixReadProxy<C,C,MC,MR> ZProx( ZPre );
+    DistMatrixWriteProxy<C,C,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> wProx( wPre );
+    DistMatrixReadProxy<C,C,Dist::MC,Dist::MR> ZProx( ZPre );
     auto& A = AProx.Get();
     auto& w = wProx.GetLocked();
     auto& Z = ZProx.GetLocked();
 
     const Grid& g = A.Grid();
-    DistMatrix<C,MC,  STAR> Z1_MC_STAR(g);
-    DistMatrix<C,VR,  STAR> Z1_VR_STAR(g);
-    DistMatrix<C,STAR,MR  > Z1Adj_STAR_MR(g);
+    DistMatrix<C,Dist::MC,  Dist::STAR> Z1_MC_STAR(g);
+    DistMatrix<C,Dist::VR,  Dist::STAR> Z1_VR_STAR(g);
+    DistMatrix<C,Dist::STAR,Dist::MR  > Z1Adj_STAR_MR(g);
 
     const Int m = Z.Height();
     const Int n = Z.Width();

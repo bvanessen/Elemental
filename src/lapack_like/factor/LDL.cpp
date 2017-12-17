@@ -49,7 +49,7 @@ void LDL( AbstractDistMatrix<Field>& A, bool conjugate )
 }
 
 template<typename Field>
-void LDL( DistMatrix<Field,STAR,STAR>& A, bool conjugate )
+void LDL( DistMatrix<Field,Dist::STAR,Dist::STAR>& A, bool conjugate )
 { LDL( A.Matrix(), conjugate ); }
 
 // Pivoted
@@ -81,7 +81,7 @@ void LDL
 #define PROTO(Field) \
   template void LDL( Matrix<Field>& A, bool conjugate ); \
   template void LDL( AbstractDistMatrix<Field>& A, bool conjugate ); \
-  template void LDL( DistMatrix<Field,STAR,STAR>& A, bool conjugate ); \
+  template void LDL( DistMatrix<Field,Dist::STAR,Dist::STAR>& A, bool conjugate ); \
   template void LDL \
   ( Matrix<Field>& A, \
     Matrix<Field>& dSub, \

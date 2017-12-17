@@ -220,10 +220,10 @@ void MultiShiftDiagonalBlockSolve
 
 template<typename Field>
 void MultiShiftDiagonalBlockSolve
-(       DistMatrix<Field,STAR,STAR>& U,
-  const DistMatrix<Field,VR,STAR>& shifts,
-        DistMatrix<Field,STAR,VR>& X,
-        DistMatrix<Field,VR,STAR>& scales )
+(       DistMatrix<Field,Dist::STAR,Dist::STAR>& U,
+  const DistMatrix<Field,Dist::VR,Dist::STAR>& shifts,
+        DistMatrix<Field,Dist::STAR,Dist::VR>& X,
+        DistMatrix<Field,Dist::VR,Dist::STAR>& scales )
 {
     EL_DEBUG_CSE
     typedef Base<Field> Real;
@@ -593,22 +593,22 @@ void MultiShiftSolve
     const Int bsize = Blocksize();
     const Int kLast = LastOffset( m, bsize );
 
-    DistMatrixReadProxy<Field,Field,MC,MR> UProx( UPre );
-    DistMatrixReadProxy<Field,Field,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> XProx( XPre );
-    DistMatrixWriteProxy<Field,Field,VR,STAR> scalesProx( scalesPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadProxy<Field,Field,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> XProx( XPre );
+    DistMatrixWriteProxy<Field,Field,Dist::VR,Dist::STAR> scalesProx( scalesPre );
     auto& U = UProx.GetLocked();
     auto& shifts = shiftsProx.GetLocked();
     auto& X = XProx.Get();
     auto& scales = scalesProx.Get();
 
     const Grid& g = U.Grid();
-    DistMatrix<Field,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<Field,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<Field,STAR,MR  > X1_STAR_MR(g);
-    DistMatrix<Field,STAR,VR  > X1_STAR_VR(g);
-    DistMatrix<Field,VR,  STAR> scalesUpdate_VR_STAR(g);
-    DistMatrix<Field,MR,  STAR> scalesUpdate_MR_STAR(g);
+    DistMatrix<Field,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<Field,Dist::STAR,Dist::MR  > X1_STAR_MR(g);
+    DistMatrix<Field,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
+    DistMatrix<Field,Dist::VR,  Dist::STAR> scalesUpdate_VR_STAR(g);
+    DistMatrix<Field,Dist::MR,  Dist::STAR> scalesUpdate_MR_STAR(g);
 
     Ones( scales, n, 1 );
     scalesUpdate_VR_STAR.Resize( n, 1 );

@@ -275,7 +275,7 @@ Matrix<Int> HessenbergSpectralCloud
 }
 
 template<typename Field>
-DistMatrix<Int,VR,STAR> TriangularSpectralCloud
+DistMatrix<Int,Dist::VR,Dist::STAR> TriangularSpectralCloud
 ( const AbstractDistMatrix<Field>& UPre,
   const AbstractDistMatrix<Complex<Base<Field>>>& shiftsPre,
         AbstractDistMatrix<Base<Field>>& invNorms,
@@ -287,11 +287,11 @@ DistMatrix<Int,VR,STAR> TriangularSpectralCloud
     const Grid& g = UPre.Grid();
 
     // Force 'U' to be complex and in a [MC,MR] distribution
-    DistMatrixReadProxy<Field,C,MC,MR> UProx( UPre );
+    DistMatrixReadProxy<Field,C,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.GetLocked();
 
     // Force 'shifts' to be in a [VR,STAR] distribution
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
     auto& shifts = shiftsProx.GetLocked();
 
     // Check if the off-diagonal is sufficiently small; if so, compute the
@@ -301,7 +301,7 @@ DistMatrix<Int,VR,STAR> TriangularSpectralCloud
     // cause problems for the Lanczos convergence criteria.
     if( pspec::TriangIsNormal( U, psCtrl.tol ) )
     {
-        DistMatrix<Int,VR,STAR> itCounts(g);
+        DistMatrix<Int,Dist::VR,Dist::STAR> itCounts(g);
         if( psCtrl.progress && g.Rank() == 0 )
             Output("Matrix was numerically normal");
         auto w = GetDiagonal(U);
@@ -332,7 +332,7 @@ DistMatrix<Int,VR,STAR> TriangularSpectralCloud
 }
 
 template<typename Field>
-DistMatrix<Int,VR,STAR> TriangularSpectralCloud
+DistMatrix<Int,Dist::VR,Dist::STAR> TriangularSpectralCloud
 ( const AbstractDistMatrix<Field>& UPre,
   const AbstractDistMatrix<Field>& QPre,
   const AbstractDistMatrix<Complex<Base<Field>>>& shiftsPre,
@@ -345,11 +345,11 @@ DistMatrix<Int,VR,STAR> TriangularSpectralCloud
     const Grid& g = UPre.Grid();
 
     // Force 'U' to be complex and in a [MC,MR] distribution
-    DistMatrixReadProxy<Field,C,MC,MR> UProx( UPre );
+    DistMatrixReadProxy<Field,C,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.GetLocked();
 
     // Force 'shifts' to be in a [VR,STAR] distribution
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
     auto& shifts = shiftsProx.GetLocked();
 
     // Check if the off-diagonal is sufficiently small; if so, compute the
@@ -359,7 +359,7 @@ DistMatrix<Int,VR,STAR> TriangularSpectralCloud
     // cause problems for the Lanczos convergence criteria.
     if( pspec::TriangIsNormal( U, psCtrl.tol ) )
     {
-        DistMatrix<Int,VR,STAR> itCounts(g);
+        DistMatrix<Int,Dist::VR,Dist::STAR> itCounts(g);
         if( psCtrl.progress && g.Rank() == 0 )
             Output("Matrix was numerically normal");
         auto w = GetDiagonal(U);
@@ -389,14 +389,14 @@ DistMatrix<Int,VR,STAR> TriangularSpectralCloud
     {
         // Force 'Q' to be complex and in a [MC,MR] distribution as cheaply
         // as possible
-        DistMatrixReadProxy<Field,C,MC,MR> QProx( QPre );
+        DistMatrixReadProxy<Field,C,Dist::MC,Dist::MR> QProx( QPre );
         auto& Q = QProx.GetLocked();
         return pspec::HagerHigham( U, Q, shifts, invNorms, psCtrl );
     }
 }
 
 template<typename Real>
-DistMatrix<Int,VR,STAR> QuasiTriangularSpectralCloud
+DistMatrix<Int,Dist::VR,Dist::STAR> QuasiTriangularSpectralCloud
 ( const AbstractDistMatrix<Real>& UPre,
   const AbstractDistMatrix<Complex<Real>>& shiftsPre,
         AbstractDistMatrix<Real>& invNorms,
@@ -407,11 +407,11 @@ DistMatrix<Int,VR,STAR> QuasiTriangularSpectralCloud
     const Grid& g = UPre.Grid();
 
     // Force 'U' to be in a [MC,MR] distribution
-    DistMatrixReadProxy<Real,Real,MC,MR> UProx( UPre );
+    DistMatrixReadProxy<Real,Real,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.GetLocked();
 
     // Force 'shifts' to be in a [VR,STAR] distribution
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
     auto& shifts = shiftsProx.GetLocked();
 
     // Check if the off-diagonal is sufficiently small; if so, compute the
@@ -421,7 +421,7 @@ DistMatrix<Int,VR,STAR> QuasiTriangularSpectralCloud
     // cause problems for the Lanczos convergence criteria.
     if( pspec::QuasiTriangIsNormal( U, psCtrl.tol ) )
     {
-        DistMatrix<Int,VR,STAR> itCounts(g);
+        DistMatrix<Int,Dist::VR,Dist::STAR> itCounts(g);
         if( psCtrl.progress && g.Rank() == 0 )
             Output("Matrix was numerically normal");
         auto w = schur::QuasiTriangEig( U );
@@ -441,7 +441,7 @@ DistMatrix<Int,VR,STAR> QuasiTriangularSpectralCloud
 }
 
 template<typename Real>
-DistMatrix<Int,VR,STAR> QuasiTriangularSpectralCloud
+DistMatrix<Int,Dist::VR,Dist::STAR> QuasiTriangularSpectralCloud
 ( const AbstractDistMatrix<Real>& UPre,
   const AbstractDistMatrix<Real>& QPre,
   const AbstractDistMatrix<Complex<Real>>& shiftsPre,
@@ -453,11 +453,11 @@ DistMatrix<Int,VR,STAR> QuasiTriangularSpectralCloud
     const Grid& g = UPre.Grid();
 
     // Force 'U' to be in a [MC,MR] distribution
-    DistMatrixReadProxy<Real,Real,MC,MR> UProx( UPre );
+    DistMatrixReadProxy<Real,Real,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.GetLocked();
 
     // Force 'shifts' to be in a [VR,STAR] distribution
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
     auto& shifts = shiftsProx.GetLocked();
 
     // Check if the off-diagonal is sufficiently small; if so, compute the
@@ -467,7 +467,7 @@ DistMatrix<Int,VR,STAR> QuasiTriangularSpectralCloud
     // cause problems for the Lanczos convergence criteria.
     if( pspec::QuasiTriangIsNormal( U, psCtrl.tol ) )
     {
-        DistMatrix<Int,VR,STAR> itCounts(g);
+        DistMatrix<Int,Dist::VR,Dist::STAR> itCounts(g);
         if( psCtrl.progress && g.Rank() == 0 )
             Output("Matrix was numerically normal");
         auto w = schur::QuasiTriangEig( U );
@@ -487,7 +487,7 @@ DistMatrix<Int,VR,STAR> QuasiTriangularSpectralCloud
 }
 
 template<typename Field>
-DistMatrix<Int,VR,STAR> HessenbergSpectralCloud
+DistMatrix<Int,Dist::VR,Dist::STAR> HessenbergSpectralCloud
 ( const AbstractDistMatrix<Field>& HPre,
   const AbstractDistMatrix<Complex<Base<Field>>>& shiftsPre,
         AbstractDistMatrix<Base<Field>>& invNorms,
@@ -498,11 +498,11 @@ DistMatrix<Int,VR,STAR> HessenbergSpectralCloud
     typedef Complex<Real> C;
 
     // Force 'H' to be complex in a [MC,MR] distribution
-    DistMatrixReadProxy<Field,C,MC,MR> HProx( HPre );
+    DistMatrixReadProxy<Field,C,Dist::MC,Dist::MR> HProx( HPre );
     auto& H = HProx.GetLocked();
 
     // Force 'shifts' to be in a [VR,STAR] distribution
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
     auto& shifts = shiftsProx.GetLocked();
 
     // TODO: Check if the subdiagonal is sufficiently small, and, if so, revert
@@ -525,7 +525,7 @@ DistMatrix<Int,VR,STAR> HessenbergSpectralCloud
 }
 
 template<typename Field>
-DistMatrix<Int,VR,STAR> HessenbergSpectralCloud
+DistMatrix<Int,Dist::VR,Dist::STAR> HessenbergSpectralCloud
 ( const AbstractDistMatrix<Field>& HPre,
   const AbstractDistMatrix<Field>& QPre,
   const AbstractDistMatrix<Complex<Base<Field>>>& shiftsPre,
@@ -537,11 +537,11 @@ DistMatrix<Int,VR,STAR> HessenbergSpectralCloud
     typedef Complex<Real> C;
 
     // Force 'H' to be complex and in a [MC,MR] distribution
-    DistMatrixReadProxy<Field,C,MC,MR> HProx( HPre );
+    DistMatrixReadProxy<Field,C,Dist::MC,Dist::MR> HProx( HPre );
     auto& H = HProx.GetLocked();
 
     // Force 'shifts' to be in a [VR,STAR] distribution
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
     auto& shifts = shiftsProx.GetLocked();
 
     // TODO: Check if the subdiagonal is sufficiently small, and, if so, revert
@@ -562,7 +562,7 @@ DistMatrix<Int,VR,STAR> HessenbergSpectralCloud
     else
     {
         // Force 'Q' to be complex and in a [MC,MR] distribution
-        DistMatrixReadProxy<Field,C,MC,MR> QProx( QPre );
+        DistMatrixReadProxy<Field,C,Dist::MC,Dist::MR> QProx( QPre );
         auto& Q = QProx.GetLocked();
         return pspec::HagerHigham( H, Q, shifts, invNorms, psCtrl );
     }
@@ -621,7 +621,7 @@ Matrix<Int> Helper
 }
 
 template<typename Real>
-DistMatrix<Int,VR,STAR> Helper
+DistMatrix<Int,Dist::VR,Dist::STAR> Helper
 ( const AbstractDistMatrix<Real>& A,
   const AbstractDistMatrix<Complex<Real>>& shifts,
         AbstractDistMatrix<Real>& invNorms,
@@ -641,7 +641,7 @@ DistMatrix<Int,VR,STAR> Helper
     if( !psCtrl.schur )
         LogicError("Real Hessenberg algorithm not yet supported");
     DistMatrix<Real> U( A );
-    DistMatrix<C,VR,STAR> w(g);
+    DistMatrix<C,Dist::VR,Dist::STAR> w(g);
     auto schurCtrl( psCtrl.schurCtrl );
     schurCtrl.hessSchurCtrl.fullTriangle = true;
     if( psCtrl.norm == PS_TWO_NORM )
@@ -720,7 +720,7 @@ Matrix<Int> Helper
 }
 
 template<typename Real>
-DistMatrix<Int,VR,STAR> Helper
+DistMatrix<Int,Dist::VR,Dist::STAR> Helper
 ( const AbstractDistMatrix<Complex<Real>>& A,
   const AbstractDistMatrix<Complex<Real>>& shifts,
         AbstractDistMatrix<Real>& invNorms,
@@ -736,7 +736,7 @@ DistMatrix<Int,VR,STAR> Helper
     {
         if( psCtrl.schur )
         {
-            DistMatrix<C,VR,STAR> w(g);
+            DistMatrix<C,Dist::VR,Dist::STAR> w(g);
             auto schurCtrl( psCtrl.schurCtrl );
             schurCtrl.hessSchurCtrl.fullTriangle = true;
             Schur( U, w, schurCtrl );
@@ -753,7 +753,7 @@ DistMatrix<Int,VR,STAR> Helper
         DistMatrix<C> Q(g);
         if( psCtrl.schur )
         {
-            DistMatrix<C,VR,STAR> w(g);
+            DistMatrix<C,Dist::VR,Dist::STAR> w(g);
             auto schurCtrl( psCtrl.schurCtrl );
             schurCtrl.hessSchurCtrl.fullTriangle = true;
             Schur( U, w, Q, schurCtrl );
@@ -761,7 +761,7 @@ DistMatrix<Int,VR,STAR> Helper
         }
         else
         {
-            DistMatrix<C,STAR,STAR> t(g);
+            DistMatrix<C,Dist::STAR,Dist::STAR> t(g);
             Hessenberg( UPPER, U, t );
             Identity( Q, U.Height(), U.Height() );
             hessenberg::ApplyQ( LEFT, UPPER, NORMAL, U, t, Q );
@@ -784,7 +784,7 @@ Matrix<Int> SpectralCloud
 }
 
 template<typename Field>
-DistMatrix<Int,VR,STAR> SpectralCloud
+DistMatrix<Int,Dist::VR,Dist::STAR> SpectralCloud
 ( const AbstractDistMatrix<Field>& A,
   const AbstractDistMatrix<Complex<Base<Field>>>& shifts,
         AbstractDistMatrix<Base<Field>>& invNorms,
@@ -1088,7 +1088,7 @@ DistMatrix<Int> TriangularSpectralWindow
     const Real realStep = realWidth/realSize;
     const Real imagStep = imagWidth/imagSize;
     const C corner = center + C(-realWidth/2,imagWidth/2);
-    DistMatrix<C,VR,STAR> shifts( realSize*imagSize, 1, g );
+    DistMatrix<C,Dist::VR,Dist::STAR> shifts( realSize*imagSize, 1, g );
     const Int numLocShifts = shifts.LocalHeight();
     for( Int iLoc=0; iLoc<numLocShifts; ++iLoc )
     {
@@ -1100,7 +1100,7 @@ DistMatrix<Int> TriangularSpectralWindow
     }
 
     // Form the vector of invNorms
-    DistMatrix<Real,VR,STAR> invNorms(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> invNorms(g);
     auto itCounts = TriangularSpectralCloud( U, shifts, invNorms, psCtrl );
 
     // Rearrange the vectors into grids
@@ -1137,7 +1137,7 @@ DistMatrix<Int> TriangularSpectralWindow
     const Real realStep = realWidth/realSize;
     const Real imagStep = imagWidth/imagSize;
     const C corner = center + C(-realWidth/2,imagWidth/2);
-    DistMatrix<C,VR,STAR> shifts( realSize*imagSize, 1, g );
+    DistMatrix<C,Dist::VR,Dist::STAR> shifts( realSize*imagSize, 1, g );
     const Int numLocShifts = shifts.LocalHeight();
     for( Int iLoc=0; iLoc<numLocShifts; ++iLoc )
     {
@@ -1149,7 +1149,7 @@ DistMatrix<Int> TriangularSpectralWindow
     }
 
     // Form the vector of invNorms
-    DistMatrix<Real,VR,STAR> invNorms(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> invNorms(g);
     auto itCounts = TriangularSpectralCloud( U, Q, shifts, invNorms, psCtrl );
 
     // Rearrange the vectors into grids
@@ -1184,7 +1184,7 @@ DistMatrix<Int> QuasiTriangularSpectralWindow
     const Real realStep = realWidth/realSize;
     const Real imagStep = imagWidth/imagSize;
     const C corner = center + C(-realWidth/2,imagWidth/2);
-    DistMatrix<C,VR,STAR> shifts( realSize*imagSize, 1, g );
+    DistMatrix<C,Dist::VR,Dist::STAR> shifts( realSize*imagSize, 1, g );
     const Int numLocShifts = shifts.LocalHeight();
     for( Int iLoc=0; iLoc<numLocShifts; ++iLoc )
     {
@@ -1196,7 +1196,7 @@ DistMatrix<Int> QuasiTriangularSpectralWindow
     }
 
     // Form the vector of invNorms
-    DistMatrix<Real,VR,STAR> invNorms(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> invNorms(g);
     auto itCounts = QuasiTriangularSpectralCloud( U, shifts, invNorms, psCtrl );
 
     // Rearrange the vectors into grids
@@ -1232,7 +1232,7 @@ DistMatrix<Int> QuasiTriangularSpectralWindow
     const Real realStep = realWidth/realSize;
     const Real imagStep = imagWidth/imagSize;
     const C corner = center + C(-realWidth/2,imagWidth/2);
-    DistMatrix<C,VR,STAR> shifts( realSize*imagSize, 1, g );
+    DistMatrix<C,Dist::VR,Dist::STAR> shifts( realSize*imagSize, 1, g );
     const Int numLocShifts = shifts.LocalHeight();
     for( Int iLoc=0; iLoc<numLocShifts; ++iLoc )
     {
@@ -1244,7 +1244,7 @@ DistMatrix<Int> QuasiTriangularSpectralWindow
     }
 
     // Form the vector of invNorms
-    DistMatrix<Real,VR,STAR> invNorms(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> invNorms(g);
     auto itCounts =
         QuasiTriangularSpectralCloud( U, Q, shifts, invNorms, psCtrl );
 
@@ -1281,7 +1281,7 @@ DistMatrix<Int> HessenbergSpectralWindow
     const Real realStep = realWidth/realSize;
     const Real imagStep = imagWidth/imagSize;
     const C corner = center + C(-realWidth/2,imagWidth/2);
-    DistMatrix<C,VR,STAR> shifts( realSize*imagSize, 1, g );
+    DistMatrix<C,Dist::VR,Dist::STAR> shifts( realSize*imagSize, 1, g );
     const Int numLocShifts = shifts.LocalHeight();
     for( Int iLoc=0; iLoc<numLocShifts; ++iLoc )
     {
@@ -1293,7 +1293,7 @@ DistMatrix<Int> HessenbergSpectralWindow
     }
 
     // Form the vector of invNorms
-    DistMatrix<Real,VR,STAR> invNorms(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> invNorms(g);
     auto itCounts = HessenbergSpectralCloud( H, shifts, invNorms, psCtrl );
 
     // Rearrange the vectors into grids
@@ -1330,7 +1330,7 @@ DistMatrix<Int> HessenbergSpectralWindow
     const Real realStep = realWidth/realSize;
     const Real imagStep = imagWidth/imagSize;
     const C corner = center + C(-realWidth/2,imagWidth/2);
-    DistMatrix<C,VR,STAR> shifts( realSize*imagSize, 1, g );
+    DistMatrix<C,Dist::VR,Dist::STAR> shifts( realSize*imagSize, 1, g );
     const Int numLocShifts = shifts.LocalHeight();
     for( Int iLoc=0; iLoc<numLocShifts; ++iLoc )
     {
@@ -1342,7 +1342,7 @@ DistMatrix<Int> HessenbergSpectralWindow
     }
 
     // Form the vector of invNorms
-    DistMatrix<Real,VR,STAR> invNorms(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> invNorms(g);
     auto itCounts = HessenbergSpectralCloud( H, Q, shifts, invNorms, psCtrl );
 
     // Rearrange the vectors into grids
@@ -1422,7 +1422,7 @@ DistMatrix<Int> SpectralWindow
     const Real realStep = realWidth/realSize;
     const Real imagStep = imagWidth/imagSize;
     const C corner = center + C(-realWidth/2,imagWidth/2);
-    DistMatrix<C,VR,STAR> shifts( realSize*imagSize, 1, g );
+    DistMatrix<C,Dist::VR,Dist::STAR> shifts( realSize*imagSize, 1, g );
     const Int numLocShifts = shifts.LocalHeight();
     for( Int iLoc=0; iLoc<numLocShifts; ++iLoc )
     {
@@ -1434,7 +1434,7 @@ DistMatrix<Int> SpectralWindow
     }
 
     // Form the vector of invNorms
-    DistMatrix<Real,VR,STAR> invNorms(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> invNorms(g);
     auto itCounts = SpectralCloud( A, shifts, invNorms, psCtrl );
 
     // Rearrange the vectors into grids
@@ -1737,7 +1737,7 @@ DistMatrix<Int> TriangularSpectralPortrait
     const Grid& g = UPre.Grid();
 
     // Force 'U' to be in a [MC,MR] distribution so that we can get its diagonal
-    DistMatrixReadProxy<Field,Field,MC,MR> UProx( UPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.GetLocked();
 
     const Real radius = MaxNorm( GetDiagonal(U) );
@@ -1794,7 +1794,7 @@ DistMatrix<Int> TriangularSpectralPortrait
     const Grid& g = UPre.Grid();
 
     // Force 'U' to be in a [MC,MR] distribution so that we can get its diagonal
-    DistMatrixReadProxy<Field,Field,MC,MR> UProx( UPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.GetLocked();
 
     const Real radius = MaxNorm( GetDiagonal(U) );
@@ -1850,7 +1850,7 @@ DistMatrix<Int> QuasiTriangularSpectralPortrait
     const Grid& g = UPre.Grid();
 
     // Force 'U' to be in a [MC,MR] distribution to get its eigenvalues
-    DistMatrixReadProxy<Real,Real,MC,MR> UProx( UPre );
+    DistMatrixReadProxy<Real,Real,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.GetLocked();
     const auto w = schur::QuasiTriangEig( U );
 
@@ -1907,7 +1907,7 @@ DistMatrix<Int> QuasiTriangularSpectralPortrait
     const Grid& g = UPre.Grid();
 
     // Force 'U' to be in a [MC,MR] distribution to get its eigenvalues
-    DistMatrixReadProxy<Real,Real,MC,MR> UProx( UPre );
+    DistMatrixReadProxy<Real,Real,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.GetLocked();
     const auto w = schur::QuasiTriangEig( U );
 
@@ -2106,7 +2106,7 @@ DistMatrix<Int> Helper
     {
         if( psCtrl.schur )
         {
-            DistMatrix<C,VR,STAR> w(g);
+            DistMatrix<C,Dist::VR,Dist::STAR> w(g);
             auto schurCtrl( psCtrl.schurCtrl );
             schurCtrl.hessSchurCtrl.fullTriangle = true;
             Schur( B, w, schurCtrl );
@@ -2125,7 +2125,7 @@ DistMatrix<Int> Helper
         DistMatrix<C> Q(g);
         if( psCtrl.schur )
         {
-            DistMatrix<C,VR,STAR> w(g);
+            DistMatrix<C,Dist::VR,Dist::STAR> w(g);
             auto schurCtrl( psCtrl.schurCtrl );
             schurCtrl.hessSchurCtrl.fullTriangle = true;
             Schur( B, w, Q, schurCtrl );
@@ -2134,7 +2134,7 @@ DistMatrix<Int> Helper
         }
         else
         {
-            DistMatrix<C,STAR,STAR> t(g);
+            DistMatrix<C,Dist::STAR,Dist::STAR> t(g);
             Hessenberg( UPPER, B, t );
             Identity( Q, B.Height(), B.Height() );
             hessenberg::ApplyQ( LEFT, UPPER, NORMAL, B, t, Q );
@@ -2224,7 +2224,7 @@ DistMatrix<Int> Helper
         LogicError("Real Hessenberg algorithm not yet supported");
     DistMatrix<Real> B( A );
 
-    DistMatrix<C,VR,STAR> w(g);
+    DistMatrix<C,Dist::VR,Dist::STAR> w(g);
     auto schurCtrl( psCtrl.schurCtrl );
     schurCtrl.hessSchurCtrl.fullTriangle = true;
     if( psCtrl.norm == PS_TWO_NORM )
@@ -2290,7 +2290,7 @@ DistMatrix<Int> SpectralPortrait
     const Matrix<Complex<Base<Field>>>& shifts, \
           Matrix<Base<Field>>& invNorms, \
           PseudospecCtrl<Base<Field>> psCtrl ); \
-  template DistMatrix<Int,VR,STAR> SpectralCloud \
+  template DistMatrix<Int,Dist::VR,Dist::STAR> SpectralCloud \
   ( const AbstractDistMatrix<Field>& A, \
     const AbstractDistMatrix<Complex<Base<Field>>>& shifts, \
           AbstractDistMatrix<Base<Field>>& invNorms, \
@@ -2300,7 +2300,7 @@ DistMatrix<Int> SpectralPortrait
     const Matrix<Complex<Base<Field>>>& shifts, \
           Matrix<Base<Field>>& invNorms, \
           PseudospecCtrl<Base<Field>> psCtrl ); \
-  template DistMatrix<Int,VR,STAR> TriangularSpectralCloud \
+  template DistMatrix<Int,Dist::VR,Dist::STAR> TriangularSpectralCloud \
   ( const AbstractDistMatrix<Field>& U, \
     const AbstractDistMatrix<Complex<Base<Field>>>& shifts, \
           AbstractDistMatrix<Base<Field>>& invNorms, \
@@ -2311,7 +2311,7 @@ DistMatrix<Int> SpectralPortrait
     const Matrix<Complex<Base<Field>>>& shifts, \
           Matrix<Base<Field>>& invNorms, \
           PseudospecCtrl<Base<Field>> psCtrl ); \
-  template DistMatrix<Int,VR,STAR> TriangularSpectralCloud \
+  template DistMatrix<Int,Dist::VR,Dist::STAR> TriangularSpectralCloud \
   ( const AbstractDistMatrix<Field>& U, \
     const AbstractDistMatrix<Field>& Q, \
     const AbstractDistMatrix<Complex<Base<Field>>>& shifts, \
@@ -2322,7 +2322,7 @@ DistMatrix<Int> SpectralPortrait
     const Matrix<Complex<Base<Field>>>& shifts, \
           Matrix<Base<Field>>& invNorms, \
           PseudospecCtrl<Base<Field>> psCtrl ); \
-  template DistMatrix<Int,VR,STAR> HessenbergSpectralCloud \
+  template DistMatrix<Int,Dist::VR,Dist::STAR> HessenbergSpectralCloud \
   ( const AbstractDistMatrix<Field>& H, \
     const AbstractDistMatrix<Complex<Base<Field>>>& shifts, \
           AbstractDistMatrix<Base<Field>>& invNorms, \
@@ -2333,7 +2333,7 @@ DistMatrix<Int> SpectralPortrait
     const Matrix<Complex<Base<Field>>>& shifts, \
           Matrix<Base<Field>>& invNorms, \
           PseudospecCtrl<Base<Field>> psCtrl ); \
-  template DistMatrix<Int,VR,STAR> HessenbergSpectralCloud \
+  template DistMatrix<Int,Dist::VR,Dist::STAR> HessenbergSpectralCloud \
   ( const AbstractDistMatrix<Field>& H, \
     const AbstractDistMatrix<Field>& Q, \
     const AbstractDistMatrix<Complex<Base<Field>>>& shifts, \
@@ -2482,7 +2482,7 @@ DistMatrix<Int> SpectralPortrait
     const Matrix<Complex<Real>>& shifts, \
           Matrix<Real>& invNorms, \
           PseudospecCtrl<Real> psCtrl ); \
-  template DistMatrix<Int,VR,STAR> QuasiTriangularSpectralCloud \
+  template DistMatrix<Int,Dist::VR,Dist::STAR> QuasiTriangularSpectralCloud \
   ( const AbstractDistMatrix<Real>& U, \
     const AbstractDistMatrix<Complex<Real>>& shifts, \
           AbstractDistMatrix<Real>& invNorms, \
@@ -2493,7 +2493,7 @@ DistMatrix<Int> SpectralPortrait
     const Matrix<Complex<Real>>& shifts, \
           Matrix<Real>& invNorms, \
           PseudospecCtrl<Real> psCtrl ); \
-  template DistMatrix<Int,VR,STAR> QuasiTriangularSpectralCloud \
+  template DistMatrix<Int,Dist::VR,Dist::STAR> QuasiTriangularSpectralCloud \
   ( const AbstractDistMatrix<Real>& U, \
     const AbstractDistMatrix<Real>& Q, \
     const AbstractDistMatrix<Complex<Real>>& shifts, \

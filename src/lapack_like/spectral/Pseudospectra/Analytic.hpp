@@ -63,7 +63,7 @@ void Analytic
     using namespace pspec;
     typedef Complex<Real> C;
 
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
     auto& shifts = shiftsProx.GetLocked();
     auto& shiftsLoc = shifts.LockedMatrix();
 
@@ -71,7 +71,7 @@ void Analytic
     ctrl.colConstrain = true;
     ctrl.colAlign = shifts.ColAlign();
 
-    DistMatrixWriteProxy<Real,Real,VR,STAR> invNormsProx( invNormsPre, ctrl );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> invNormsProx( invNormsPre, ctrl );
     auto& invNorms = invNormsProx.Get();
 
     const Int n = w.Height();
@@ -85,7 +85,7 @@ void Analytic
         return;
     auto& invNormsLoc = invNorms.Matrix();
 
-    DistMatrix<C,STAR,STAR> w_STAR_STAR( w );
+    DistMatrix<C,Dist::STAR,Dist::STAR> w_STAR_STAR( w );
     auto& wLoc = w_STAR_STAR.LockedMatrix();
 
     const Int numLocShifts = shifts.LocalHeight();
@@ -105,7 +105,7 @@ void Analytic
     }
 
     snapCtrl.itCounts = false;
-    DistMatrix<Int,VR,STAR> itCounts(g);
+    DistMatrix<Int,Dist::VR,Dist::STAR> itCounts(g);
     FinalSnapshot( invNorms, itCounts, snapCtrl );
 }
 

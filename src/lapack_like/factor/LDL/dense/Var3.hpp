@@ -115,17 +115,17 @@ void Var3( AbstractDistMatrix<F>& APre, bool conjugate=false )
     )
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int n = A.Height();
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), d1_STAR_STAR(g);
-    DistMatrix<F,VC,  STAR> A21_VC_STAR(g);
-    DistMatrix<F,VR,  STAR> A21_VR_STAR(g);
-    DistMatrix<F,STAR,MC  > S21Trans_STAR_MC(g);
-    DistMatrix<F,STAR,MR  > A21Trans_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), d1_STAR_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> A21_VC_STAR(g);
+    DistMatrix<F,Dist::VR,  Dist::STAR> A21_VR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > S21Trans_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > A21Trans_STAR_MR(g);
 
     const Int bsize = Blocksize();
     for( Int k=0; k<n; k+=bsize )

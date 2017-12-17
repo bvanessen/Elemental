@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRSM_LVAR3_HPP
@@ -88,7 +88,7 @@ void LVar3( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
 
 template<typename F>
 void LVar3
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& APre,
   const AbstractDistMatrix<F>& LPre )
 {
@@ -105,18 +105,18 @@ void LVar3
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> LProx( LPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
     auto& A = AProx.Get();
     auto& L = LProx.GetLocked();
 
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), L11_STAR_STAR(g), 
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), L11_STAR_STAR(g),
                             X11_STAR_STAR(g);
-    DistMatrix<F,VC,  STAR> A21_VC_STAR(g);
-    DistMatrix<F,STAR,VR  > A10_STAR_VR(g), L10_STAR_VR(g);
-    DistMatrix<F,STAR,MR  > A10_STAR_MR(g), L10_STAR_MR(g), A11_STAR_MR(g);
-    DistMatrix<F,MC,  STAR> L21_MC_STAR(g), X21_MC_STAR(g), Z21_MC_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> A21_VC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > A10_STAR_VR(g), L10_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > A10_STAR_MR(g), L10_STAR_MR(g), A11_STAR_MR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> L21_MC_STAR(g), X21_MC_STAR(g), Z21_MC_STAR(g);
 
     // We will use an entire extra matrix as temporary storage. If this is not
     // acceptable, use LVar4 instead.
@@ -157,7 +157,7 @@ void LVar3
         X11_STAR_STAR.Resize( nb, nb );
         Zero( X11_STAR_STAR );
         Her2k
-        ( LOWER, NORMAL, 
+        ( LOWER, NORMAL,
           F(1), A10_STAR_VR.Matrix(), L10_STAR_VR.Matrix(),
           F(0), X11_STAR_STAR.Matrix() );
         MakeTrapezoidal( LOWER, X11_STAR_STAR );

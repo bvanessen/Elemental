@@ -49,13 +49,13 @@ void Overwrite
     if( uplo == UPPER )
         LogicError("Upper Bunch-Kaufman is not yet supported");
 
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> BProx( BPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> BProx( BPre );
     auto& A = AProx.Get();
     auto& B = BProx.Get();
 
     DistPermutation p(A.Grid());
-    DistMatrix<Field,MD,STAR> dSub(A.Grid());
+    DistMatrix<Field,Dist::MD,Dist::STAR> dSub(A.Grid());
     LDL( A, dSub, p, hermitian, ctrl );
     const bool conjFlip = (orientation == ADJOINT && !hermitian) ||
                           (orientation == TRANSPOSE && hermitian);

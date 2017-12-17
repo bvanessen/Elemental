@@ -92,16 +92,16 @@ Blocked
     }
     dSubPre.Resize( n-1, 1 );
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,MC,STAR> dSubProx( dSubPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::STAR> dSubProx( dSubPre );
     auto& A = AProx.Get();
     auto& dSub = dSubProx.Get();
 
     Zero( dSub );
 
     const Grid& g = APre.Grid();
-    DistMatrix<F,MC,STAR> XB1(g);
-    DistMatrix<F,MR,STAR> YB1(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> XB1(g);
+    DistMatrix<F,Dist::MR,Dist::STAR> YB1(g);
     const Int bsize = Blocksize();
     Int k=0;
     while( k < n )

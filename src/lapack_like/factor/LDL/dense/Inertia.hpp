@@ -64,10 +64,10 @@ InertiaType Inertia( const Matrix<Base<F>>& d, const Matrix<F>& dSub )
 template<typename F>
 InertiaType
 Inertia
-( const DistMatrix<Base<F>,MC,STAR>& d,
-  const DistMatrix<Base<F>,MC,STAR>& dPrev,
-  const DistMatrix<F,MC,STAR>& dSub,
-  const DistMatrix<F,MC,STAR>& dSubPrev )
+( const DistMatrix<Base<F>,Dist::MC,Dist::STAR>& d,
+  const DistMatrix<Base<F>,Dist::MC,Dist::STAR>& dPrev,
+  const DistMatrix<F,Dist::MC,Dist::STAR>& dSub,
+  const DistMatrix<F,Dist::MC,Dist::STAR>& dSubPrev )
 {
     EL_DEBUG_CSE
     typedef Base<F> Real;
@@ -149,8 +149,8 @@ InertiaType Inertia
     typedef Base<F> Real;
     const Grid& g = d.Grid();
 
-    DistMatrix<Real,MC,STAR> d_MC_STAR(g);
-    DistMatrix<F,MC,STAR> dSub_MC_STAR(g);
+    DistMatrix<Real,Dist::MC,Dist::STAR> d_MC_STAR(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> dSub_MC_STAR(g);
     d_MC_STAR.AlignCols( 0 );
     dSub_MC_STAR.AlignCols( 0 );
     d_MC_STAR = d;
@@ -161,8 +161,8 @@ InertiaType Inertia
     if( colStride == 1 )
         return Inertia( d_MC_STAR.LockedMatrix(), dSub_MC_STAR.LockedMatrix() );
 
-    DistMatrix<Real,MC,STAR> dPrev_MC_STAR(g);
-    DistMatrix<F,MC,STAR> dSubPrev_MC_STAR(g);
+    DistMatrix<Real,Dist::MC,Dist::STAR> dPrev_MC_STAR(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> dSubPrev_MC_STAR(g);
     const Int colAlignPrev = 1 % colStride;
     dPrev_MC_STAR.AlignCols( colAlignPrev );
     dSubPrev_MC_STAR.AlignCols( colAlignPrev );

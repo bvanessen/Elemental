@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -27,7 +27,7 @@ void LLNUnb( const Matrix<F>& L, const Matrix<F>& shifts, Matrix<F>& X )
     while( k < m )
     {
         const bool in2x2 = ( k+1<m && LBuf[k+(k+1)*ldl] != F(0) );
-        if( in2x2 ) 
+        if( in2x2 )
         {
             // Solve the 2x2 linear systems via 2x2 LQ decompositions produced
             // by the Givens rotation
@@ -64,10 +64,10 @@ void LLNUnb( const Matrix<F>& L, const Matrix<F>& shifts, Matrix<F>& X )
 
                 // Update x2 := x2 - L21 x1
                 blas::Axpy
-                ( m-(k+2), -xBuf[k  ], 
+                ( m-(k+2), -xBuf[k  ],
                   &LBuf[(k+2)+ k   *ldl], 1, &xBuf[k+2], 1 );
                 blas::Axpy
-                ( m-(k+2), -xBuf[k+1], 
+                ( m-(k+2), -xBuf[k+1],
                   &LBuf[(k+2)+(k+1)*ldl], 1, &xBuf[k+2], 1 );
             }
 
@@ -118,7 +118,7 @@ void LLN( const Matrix<F>& L, const Matrix<F>& shifts, Matrix<F>& X )
 template<typename F>
 void LLNLarge
 ( const AbstractDistMatrix<F>& LPre,
-  const AbstractDistMatrix<F>& shiftsPre, 
+  const AbstractDistMatrix<F>& shiftsPre,
         AbstractDistMatrix<F>& XPre )
 {
     EL_DEBUG_CSE
@@ -126,17 +126,17 @@ void LLNLarge
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> LProx( LPre );
-    DistMatrixReadProxy<F,F,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadProxy<F,F,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& L = LProx.GetLocked();
     auto& X = XProx.Get();
     auto& shifts = shiftsProx.GetLocked();
 
-    DistMatrix<F,STAR,STAR> L11_STAR_STAR(g);
-    DistMatrix<F,MC,  STAR> L21_MC_STAR(g);
-    DistMatrix<F,STAR,MR  > X1_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > X1_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> L11_STAR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> L21_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > X1_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
 
     for( Int k=0; k<m; k+=bsize )
     {
@@ -166,7 +166,7 @@ void LLNLarge
         X1          = X1_STAR_MR; // X1[MC,MR] <- X1[* ,MR]
         L21_MC_STAR.AlignWith( X2 );
         L21_MC_STAR = L21;        // L21[MC,* ] <- L21[MC,MR]
-        
+
         // X2[MC,MR] -= L21[MC,* ] X1[* ,MR]
         LocalGemm( NORMAL, NORMAL, F(-1), L21_MC_STAR, X1_STAR_MR, F(1), X2 );
     }
@@ -176,7 +176,7 @@ void LLNLarge
 template<typename F>
 void LLNMedium
 ( const AbstractDistMatrix<F>& LPre,
-  const AbstractDistMatrix<F>& shiftsPre, 
+  const AbstractDistMatrix<F>& shiftsPre,
         AbstractDistMatrix<F>& XPre )
 {
     EL_DEBUG_CSE
@@ -184,18 +184,18 @@ void LLNMedium
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> LProx( LPre );
-    DistMatrixReadProxy<F,F,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadProxy<F,F,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& L = LProx.GetLocked();
     auto& X = XProx.Get();
     auto& shifts = shiftsProx.GetLocked();
 
-    DistMatrix<F,STAR,STAR> L11_STAR_STAR(g);
-    DistMatrix<F,MC,  STAR> L21_MC_STAR(g);
-    DistMatrix<F,MR,  STAR> X1Trans_MR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> L11_STAR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> L21_MC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> X1Trans_MR_STAR(g);
 
-    DistMatrix<F,MR,  STAR> shifts_MR_STAR( shifts ),
+    DistMatrix<F,Dist::MR,  Dist::STAR> shifts_MR_STAR( shifts ),
                             shifts_MR_STAR_Align(g);
 
     for( Int k=0; k<m; k+=bsize )
@@ -220,7 +220,7 @@ void LLNMedium
         // X1^T[MR,* ] := X1^T[MR,* ] L11^-T[* ,* ]
         //              = (L11^-1[* ,* ] X1[* ,MR])^T
         shifts_MR_STAR_Align.AlignWith( X1Trans_MR_STAR );
-        shifts_MR_STAR_Align = shifts_MR_STAR; 
+        shifts_MR_STAR_Align = shifts_MR_STAR;
         LocalMultiShiftQuasiTrsm
         ( RIGHT, LOWER, TRANSPOSE,
           F(1), L11_STAR_STAR, shifts_MR_STAR_Align, X1Trans_MR_STAR );
@@ -228,7 +228,7 @@ void LLNMedium
         Transpose( X1Trans_MR_STAR, X1 );
         L21_MC_STAR.AlignWith( X2 );
         L21_MC_STAR = L21;                   // L21[MC,* ] <- L21[MC,MR]
-        
+
         // X2[MC,MR] -= L21[MC,* ] X1[* ,MR]
         LocalGemm
         ( NORMAL, TRANSPOSE, F(-1), L21_MC_STAR, X1Trans_MR_STAR, F(1), X2 );
@@ -238,9 +238,9 @@ void LLNMedium
 // For small numbers of RHS's, e.g., width(X) < p
 template<typename F,Dist colDist,Dist shiftColDist,Dist shiftRowDist>
 void LLNSmall
-( const DistMatrix<F,     colDist,STAR        >& L, 
-  const DistMatrix<F,shiftColDist,shiftRowDist>& shifts, 
-        DistMatrix<F,     colDist,STAR        >& X )
+( const DistMatrix<F,     colDist,Dist::STAR        >& L,
+  const DistMatrix<F,shiftColDist,shiftRowDist>& shifts,
+        DistMatrix<F,     colDist,Dist::STAR        >& X )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -251,7 +251,7 @@ void LLNSmall
     const Int bsize = Blocksize();
     const Grid& g = L.Grid();
 
-    DistMatrix<F,STAR,STAR> L11_STAR_STAR(g), X1_STAR_STAR(g),
+    DistMatrix<F,Dist::STAR,Dist::STAR> L11_STAR_STAR(g), X1_STAR_STAR(g),
                             shifts_STAR_STAR(shifts);
 
     for( Int k=0; k<m; k+=bsize )
@@ -274,7 +274,7 @@ void LLNSmall
 
         // X1[* ,* ] := (L11[* ,* ])^-1 X1[* ,* ]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, LOWER, NORMAL, 
+        ( LEFT, LOWER, NORMAL,
           F(1), L11_STAR_STAR, shifts_STAR_STAR, X1_STAR_STAR );
 
         // X2[VC,* ] -= L21[VC,* ] X1[* ,* ]

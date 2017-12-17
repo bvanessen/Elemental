@@ -5,8 +5,8 @@
    Copyright (c) 2013, The University of Texas at Austin
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRMM_LVAR4_HPP
@@ -15,7 +15,7 @@
 namespace El {
 namespace twotrmm {
 
-// The only reason a field is required is for the existence of 1/2, which is 
+// The only reason a field is required is for the existence of 1/2, which is
 // an artifact of the algorithm...
 template<typename F>
 void LVar4( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
@@ -82,7 +82,7 @@ void LVar4( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
 
 template<typename F>
 void LVar4
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& APre,
   const AbstractDistMatrix<F>& LPre )
 {
@@ -99,19 +99,19 @@ void LVar4
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> LProx( LPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
     auto& A = AProx.Get();
     auto& L = LProx.GetLocked();
 
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), L11_STAR_STAR(g);
-    DistMatrix<F,STAR,MC  > A10_STAR_MC(g), L10_STAR_MC(g);
-    DistMatrix<F,STAR,MR  > A10_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > A10_STAR_VR(g), L10_STAR_VR(g), Y10_STAR_VR(g);
-    DistMatrix<F,MC,  STAR> A21_MC_STAR(g);
-    DistMatrix<F,MR,  STAR> L10Adj_MR_STAR(g);
-    DistMatrix<F,VC,  STAR> A21_VC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), L11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > A10_STAR_MC(g), L10_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > A10_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > A10_STAR_VR(g), L10_STAR_VR(g), Y10_STAR_VR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> A21_MC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> L10Adj_MR_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> A21_VC_STAR(g);
 
     for( Int k=0; k<n; k+=bsize )
     {
@@ -158,8 +158,8 @@ void LVar4
         L10_STAR_MC = L10_STAR_VR;
         LocalTrr2k
         ( LOWER, ADJOINT, ADJOINT, ADJOINT, NORMAL,
-          F(1), A10_STAR_MC, L10Adj_MR_STAR, 
-          F(1), L10_STAR_MC, A10_STAR_MR, 
+          F(1), A10_STAR_MC, L10Adj_MR_STAR,
+          F(1), L10_STAR_MC, A10_STAR_MR,
           F(1), A00 );
 
         // A10 := A10 + 1/2 Y10

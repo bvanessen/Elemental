@@ -53,7 +53,7 @@ void Exchange
     else if( contigB )
     {
         // Pack A's data
-        vector<T> buf;
+        std::vector<T> buf;
         FastResize( buf, sendSize );
         copy::util::InterleaveMatrix
         ( localHeightA, localWidthA,
@@ -68,7 +68,7 @@ void Exchange
     else if( contigA )
     {
         // Exchange with the partner
-        vector<T> buf;
+        std::vector<T> buf;
         FastResize( buf, recvSize );
         mpi::SendRecv
         ( A.LockedBuffer(), sendSize, sendRank,
@@ -83,7 +83,7 @@ void Exchange
     else
     {
         // Pack A's data
-        vector<T> sendBuf;
+        std::vector<T> sendBuf;
         FastResize( sendBuf, sendSize );
         copy::util::InterleaveMatrix
         ( localHeightA, localWidthA,
@@ -91,7 +91,7 @@ void Exchange
           sendBuf.data(),   1, localHeightA );
 
         // Exchange with the partner
-        vector<T> recvBuf;
+        std::vector<T> recvBuf;
         FastResize( recvBuf, recvSize );
         mpi::SendRecv
         ( sendBuf.data(), sendSize, sendRank,
@@ -107,8 +107,8 @@ void Exchange
 
 template<typename T,Dist U,Dist V>
 void ColwiseVectorExchange
-( const DistMatrix<T,ProductDist<U,V>(),STAR>& A,
-        DistMatrix<T,ProductDist<V,U>(),STAR>& B )
+( const DistMatrix<T,ProductDist<U,V>(),Dist::STAR>& A,
+        DistMatrix<T,ProductDist<V,U>(),Dist::STAR>& B )
 {
     EL_DEBUG_CSE
     AssertSameGrids( A, B );
@@ -127,8 +127,8 @@ void ColwiseVectorExchange
 
 template<typename T,Dist U,Dist V>
 void RowwiseVectorExchange
-( const DistMatrix<T,STAR,ProductDist<U,V>()>& A,
-        DistMatrix<T,STAR,ProductDist<V,U>()>& B )
+( const DistMatrix<T,Dist::STAR,ProductDist<U,V>()>& A,
+        DistMatrix<T,Dist::STAR,ProductDist<V,U>()>& B )
 {
     EL_DEBUG_CSE
     AssertSameGrids( A, B );

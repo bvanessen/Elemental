@@ -83,15 +83,15 @@ LVar3( UnitOrNonUnit diag, AbstractDistMatrix<Field>& LPre )
           LogicError("Nonsquare matrices cannot be triangular");
     )
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> LProx( LPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> LProx( LPre );
     auto& L = LProx.Get();
 
     const Grid& g = L.Grid();
-    DistMatrix<Field,STAR,MR  > L10_STAR_MR(g);
-    DistMatrix<Field,STAR,VR  > L10_STAR_VR(g);
-    DistMatrix<Field,STAR,STAR> L11_STAR_STAR(g);
-    DistMatrix<Field,MC,  STAR> L21_MC_STAR(g);
-    DistMatrix<Field,VC,  STAR> L21_VC_STAR(g);
+    DistMatrix<Field,Dist::STAR,Dist::MR  > L10_STAR_MR(g);
+    DistMatrix<Field,Dist::STAR,Dist::VR  > L10_STAR_VR(g);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> L11_STAR_STAR(g);
+    DistMatrix<Field,Dist::MC,  Dist::STAR> L21_MC_STAR(g);
+    DistMatrix<Field,Dist::VC,  Dist::STAR> L21_VC_STAR(g);
 
     const Int n = L.Height();
     const Int bsize = Blocksize();

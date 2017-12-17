@@ -9,7 +9,10 @@
 #ifndef EL_BLAS_GIVENS_HPP
 #define EL_BLAS_GIVENS_HPP
 
-namespace El {
+#include "El/core/limits.hpp"
+
+namespace El
+{
 
 // CITATION
 //

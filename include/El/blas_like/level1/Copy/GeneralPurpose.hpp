@@ -37,8 +37,8 @@ void Helper
     auto& BLoc = B.Matrix();
 
     // TODO: Break into smaller pieces to avoid excessive memory usage?
-    vector<Entry<S>> remoteEntries;
-    vector<int> distOwners;
+    std::vector<Entry<S>> remoteEntries;
+    std::vector<int> distOwners;
     if( A.RedundantRank() == 0 )
     {
         const bool noRedundant = B.RedundantSize() == 1;
@@ -46,8 +46,8 @@ void Helper
         const int rowRank = B.RowRank();
         const int colRank = B.ColRank();
 
-        vector<Int> globalRows(localHeight), localRows(localHeight);
-        vector<int> ownerRows(localHeight);
+        std::vector<Int> globalRows(localHeight), localRows(localHeight);
+        std::vector<int> ownerRows(localHeight);
         for( Int iLoc=0; iLoc<localHeight; ++iLoc )
         {
             const Int i = A.GlobalRow(iLoc);
@@ -92,14 +92,14 @@ void Helper
     // ====================
     const Int totalSend = remoteEntries.size();
     mpi::Comm comm;
-    vector<int> sendCounts, owners(totalSend);
+    std::vector<int> sendCounts, owners(totalSend);
     if( includeViewers )
     {
         comm = g.ViewingComm();
         const int viewingSize = mpi::Size( g.ViewingComm() );
         const int distBSize = mpi::Size( B.DistComm() );
 
-        vector<int> distBToViewing(distBSize);
+        std::vector<int> distBToViewing(distBSize);
         for( int distBRank=0; distBRank<distBSize; ++distBRank )
         {
             const int vcOwner =
@@ -122,7 +122,7 @@ void Helper
         comm = g.VCComm();
 
         const int distBSize = mpi::Size( B.DistComm() );
-        vector<int> distBToVC(distBSize);
+        std::vector<int> distBToVC(distBSize);
         for( int distBRank=0; distBRank<distBSize; ++distBRank )
         {
             distBToVC[distBRank] =
@@ -142,9 +142,9 @@ void Helper
 
     // Pack the data
     // =============
-    vector<int> sendOffs;
+    std::vector<int> sendOffs;
     Scan( sendCounts, sendOffs );
-    vector<Entry<S>> sendBuf;
+    std::vector<Entry<S>> sendBuf;
     FastResize( sendBuf, totalSend );
     auto offs = sendOffs;
     for( Int k=0; k<totalSend; ++k )
@@ -207,8 +207,8 @@ void GeneralPurpose
 #ifdef EL_HAVE_SCALAPACK
     const bool useBLACSRedist = true;
     if( useBLACSRedist &&
-        A.ColDist() == MC && A.RowDist() == MR &&
-        B.ColDist() == MC && B.RowDist() == MR &&
+        A.ColDist() == Dist::MC && A.RowDist() == Dist::MR &&
+        B.ColDist() == Dist::MC && B.RowDist() == Dist::MR &&
         A.ColCut() == 0 && A.RowCut() == 0 &&
         B.ColCut() == 0 && B.RowCut() == 0 )
     {

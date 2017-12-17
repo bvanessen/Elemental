@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include <El/matrices.hpp>
 
@@ -32,7 +31,7 @@ template<typename T>
 void DynamicRegCounter( ElementalMatrix<T>& APre, Int n )
 {
     EL_DEBUG_CSE
-    DistMatrixWriteProxy<T,T,MC,MR> AProx( APre );
+    DistMatrixWriteProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     Zeros( A, 2*n, 2*n );

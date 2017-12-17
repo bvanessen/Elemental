@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRMM_LVAR5_HPP
@@ -12,9 +12,9 @@
 namespace El {
 namespace twotrmm {
 
-// The only reason a field is required is for the existence of 1/2, which is 
+// The only reason a field is required is for the existence of 1/2, which is
 // an artifact of the algorithm...
-template<typename F> 
+template<typename F>
 void LVar5( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
 {
     EL_DEBUG_CSE
@@ -72,9 +72,9 @@ void LVar5( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
     }
 }
 
-template<typename F> 
+template<typename F>
 void LVar5
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& APre,
   const AbstractDistMatrix<F>& LPre )
 {
@@ -91,17 +91,17 @@ void LVar5
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> LProx( LPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
     auto& A = AProx.Get();
     auto& L = LProx.GetLocked();
-    
+
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), L11_STAR_STAR(g);
-    DistMatrix<F,STAR,MC  > A10_STAR_MC(g), L10_STAR_MC(g);
-    DistMatrix<F,STAR,MR  > L10_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > A10_STAR_VR(g), L10_STAR_VR(g), Y10_STAR_VR(g);
-    DistMatrix<F,MR,  STAR> A10Trans_MR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), L11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > A10_STAR_MC(g), L10_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > L10_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > A10_STAR_VR(g), L10_STAR_VR(g), Y10_STAR_VR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> A10Trans_MR_STAR(g);
     DistMatrix<F> Y10(g);
 
     for( Int k=0; k<n; k+=bsize )
@@ -127,7 +127,7 @@ void LVar5
         Y10_STAR_VR.Resize( nb, k );
         Zero( Y10_STAR_VR );
         Hemm
-        ( LEFT, LOWER, 
+        ( LEFT, LOWER,
           F(1), A11_STAR_STAR.Matrix(), L10_STAR_VR.Matrix(),
           F(0), Y10_STAR_VR.Matrix() );
         Y10.AlignWith( A10 );
@@ -152,8 +152,8 @@ void LVar5
         L10_STAR_MC = L10_STAR_VR;
         LocalTrr2k
         ( LOWER, ADJOINT, TRANSPOSE, ADJOINT, NORMAL,
-          F(1), L10_STAR_MC, A10Trans_MR_STAR, 
-          F(1), A10_STAR_MC, L10_STAR_MR, 
+          F(1), L10_STAR_MC, A10Trans_MR_STAR,
+          F(1), A10_STAR_MC, L10_STAR_MR,
           F(1), A00 );
 
         // A10 := A10 + 1/2 Y10

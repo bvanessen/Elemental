@@ -12,7 +12,7 @@
 namespace El {
 
 template<typename T>
-void EntrywiseMap( Matrix<T>& A, function<T(const T&)> func )
+void EntrywiseMap( Matrix<T>& A, std::function<T(const T&)> func )
 {
     EL_DEBUG_CSE
     const Int m = A.Height();
@@ -45,12 +45,12 @@ void EntrywiseMap( Matrix<T>& A, function<T(const T&)> func )
 }
 
 template<typename T>
-void EntrywiseMap( AbstractDistMatrix<T>& A, function<T(const T&)> func )
+void EntrywiseMap( AbstractDistMatrix<T>& A, std::function<T(const T&)> func )
 { EntrywiseMap( A.Matrix(), func ); }
 
 template<typename S,typename T>
 void EntrywiseMap
-( const Matrix<S>& A, Matrix<T>& B, function<T(const S&)> func )
+( const Matrix<S>& A, Matrix<T>& B, std::function<T(const S&)> func )
 {
     EL_DEBUG_CSE
     const Int m = A.Height();
@@ -76,7 +76,7 @@ template<typename S,typename T>
 void EntrywiseMap
 ( const AbstractDistMatrix<S>& A,
         AbstractDistMatrix<T>& B,
-        function<T(const S&)> func )
+        std::function<T(const S&)> func )
 {
     if( A.DistData().colDist == B.DistData().colDist &&
         A.DistData().rowDist == B.DistData().rowDist &&
@@ -112,18 +112,18 @@ void EntrywiseMap
 #define PROTO(T) \
   EL_EXTERN template void EntrywiseMap \
   ( Matrix<T>& A, \
-    function<T(const T&)> func ); \
+    std::function<T(const T&)> func ); \
   EL_EXTERN template void EntrywiseMap \
   ( AbstractDistMatrix<T>& A, \
-    function<T(const T&)> func ); \
+    std::function<T(const T&)> func ); \
   EL_EXTERN template void EntrywiseMap \
   ( const Matrix<T>& A, \
           Matrix<T>& B, \
-          function<T(const T&)> func ); \
+          std::function<T(const T&)> func ); \
   EL_EXTERN template void EntrywiseMap \
   ( const AbstractDistMatrix<T>& A, \
           AbstractDistMatrix<T>& B, \
-          function<T(const T&)> func );
+          std::function<T(const T&)> func );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

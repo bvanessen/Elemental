@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_APPLYPACKEDREFLECTORS_LUHB_HPP
@@ -14,15 +14,15 @@ namespace apply_packed_reflectors {
 
 //
 // Since applying Householder transforms from vectors stored bottom-to-top
-// implies that we will be forming a generalization of 
+// implies that we will be forming a generalization of
 //
-//  (I - tau_0 v_0^T conj(v_0)) (I - tau_1 v_1^T conj(v_1)) = 
+//  (I - tau_0 v_0^T conj(v_0)) (I - tau_1 v_1^T conj(v_1)) =
 //  I - [ v_0^T, v_1^T ] [  tau_0, -tau_0 tau_1 conj(v_0) v_1^T ] [ conj(v_0) ]
 //                       [  0,      tau_1                       ] [ conj(v_1) ],
 //
-// which has a upper-triangular center matrix, say S, we will form S as 
+// which has a upper-triangular center matrix, say S, we will form S as
 // the inverse of a matrix T, which can easily be formed as
-// 
+//
 //   triu(T,1) = triu( conj(V V^H) ),
 //   diag(T) = 1/householderScalars or 1/conj(householderScalars),
 //
@@ -32,7 +32,7 @@ namespace apply_packed_reflectors {
 // V is stored row-wise in the matrix.
 //
 
-template<typename F> 
+template<typename F>
 void LUHBUnblocked
 ( Conjugation conjugation,
   Int offset,
@@ -45,7 +45,7 @@ void LUHBUnblocked
       if( H.Width() != A.Height() )
           LogicError("H's width and A's height must match");
     )
-    const Int nH = H.Width(); 
+    const Int nH = H.Width();
     const Int diagLength = H.DiagonalLength(offset);
     EL_DEBUG_ONLY(
       if( householderScalars.Height() != diagLength )
@@ -71,14 +71,14 @@ void LUHBUnblocked
         hPanCopy = hPan;
         hPanCopy(0,0) = 1;
 
-        // z := ABot' hPan^T 
+        // z := ABot' hPan^T
         Gemv( ADJOINT, F(1), ABot, hPanCopy, z );
         // ABot := (I - gamma hPan^T conj(hPan)) ABot = ABot - gamma hPan^T z'
         Ger( -gamma, hPanCopy, z, ABot );
     }
 }
 
-template<typename F> 
+template<typename F>
 void LUHBBlocked
 ( Conjugation conjugation,
   Int offset,
@@ -91,7 +91,7 @@ void LUHBBlocked
       if( H.Width() != A.Height() )
           LogicError("H's width and A's height must match");
     )
-    const Int nH = H.Width(); 
+    const Int nH = H.Width();
     const Int diagLength = H.DiagonalLength(offset);
     EL_DEBUG_ONLY(
       if( householderScalars.Height() != diagLength )
@@ -133,7 +133,7 @@ void LUHBBlocked
     }
 }
 
-template<typename F> 
+template<typename F>
 void LUHB
 ( Conjugation conjugation,
   Int offset,
@@ -154,7 +154,7 @@ void LUHB
     }
 }
 
-template<typename F> 
+template<typename F>
 void LUHBUnblocked
 ( Conjugation conjugation,
   Int offset,
@@ -167,11 +167,11 @@ void LUHBUnblocked
 
     // We gather the entire set of Householder scalars at the start rather than
     // continually paying the latency cost of the broadcasts in a 'Get' call
-    DistMatrixReadProxy<F,F,STAR,STAR>
+    DistMatrixReadProxy<F,F,Dist::STAR,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& householderScalars = householderScalarsProx.GetLocked();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int nH = H.Width();
@@ -183,8 +183,8 @@ void LUHBUnblocked
     )
     const Grid& g = H.Grid();
     auto hPan = unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
-    DistMatrix<F,STAR,MC> hPan_STAR_MC(g);
-    DistMatrix<F,MR,STAR> z_MR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC> hPan_STAR_MC(g);
+    DistMatrix<F,Dist::MR,Dist::STAR> z_MR_STAR(g);
 
     const Int iOff = ( offset>=0 ? 0      : -offset );
     const Int jOff = ( offset>=0 ? offset : 0       );
@@ -215,7 +215,7 @@ void LUHBUnblocked
     }
 }
 
-template<typename F> 
+template<typename F>
 void LUHBBlocked
 ( Conjugation conjugation,
   Int offset,
@@ -226,11 +226,11 @@ void LUHBBlocked
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(AssertSameGrids( H, householderScalarsPre, APre ))
 
-    DistMatrixReadProxy<F,F,MC,STAR>
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& householderScalars = householderScalarsProx.GetLocked();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int nH = H.Width();
@@ -243,12 +243,12 @@ void LUHBBlocked
     const Grid& g = H.Grid();
     auto HPan = unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
     DistMatrix<F> HPanConj(g);
-    DistMatrix<F,STAR,VR  > HPan_STAR_VR(g);
-    DistMatrix<F,STAR,MC  > HPan_STAR_MC(g);
-    DistMatrix<F,STAR,STAR> householderScalars1_STAR_STAR(g);
-    DistMatrix<F,STAR,STAR> SInv_STAR_STAR(g);
-    DistMatrix<F,STAR,MR  > Z_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > Z_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > HPan_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > HPan_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> householderScalars1_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> SInv_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > Z_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > Z_STAR_VR(g);
 
     const Int iOff = ( offset>=0 ? 0      : -offset );
     const Int jOff = ( offset>=0 ? offset : 0       );
@@ -301,10 +301,10 @@ void LUHBBlocked
     }
 }
 
-template<typename F> 
+template<typename F>
 void LUHB
 ( Conjugation conjugation,
-  Int offset, 
+  Int offset,
   const AbstractDistMatrix<F>& H,
   const AbstractDistMatrix<F>& householderScalars,
         AbstractDistMatrix<F>& A )

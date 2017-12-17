@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include <El/lapack_like/factor.hpp>
 #include <El/matrices.hpp>
@@ -40,13 +39,13 @@ void NormalUniformSpectrum
 
 template<typename Real>
 void NormalUniformSpectrum
-( ElementalMatrix<Complex<Real>>& APre, Int n, 
+( ElementalMatrix<Complex<Real>>& APre, Int n,
   Complex<Real> center, Real radius )
 {
     EL_DEBUG_CSE
     typedef Complex<Real> C;
 
-    DistMatrixWriteProxy<C,C,MC,MR> AProx( APre );
+    DistMatrixWriteProxy<C,C,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Grid& grid = A.Grid();
@@ -62,8 +61,8 @@ void NormalUniformSpectrum
 
     // Apply a Haar matrix from both sides
     DistMatrix<C> Q(grid);
-    DistMatrix<C,MD,STAR> t(grid);
-    DistMatrix<Real,MD,STAR> s(grid);
+    DistMatrix<C,Dist::MD,Dist::STAR> t(grid);
+    DistMatrix<Real,Dist::MD,Dist::STAR> s(grid);
     ImplicitHaar( Q, t, s, n );
 
     // Copy the result into the correct distribution

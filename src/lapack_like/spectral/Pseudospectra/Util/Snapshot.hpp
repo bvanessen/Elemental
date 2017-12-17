@@ -150,9 +150,9 @@ void FinalSnapshot
 
 template<typename Real>
 void Snapshot
-( const DistMatrix<Int, VR,STAR>& preimage,
-  const DistMatrix<Real,MR,STAR>& estimates,
-  const DistMatrix<Int, VR,STAR>& itCounts,
+( const DistMatrix<Int, Dist::VR,Dist::STAR>& preimage,
+  const DistMatrix<Real,Dist::MR,Dist::STAR>& estimates,
+  const DistMatrix<Int, Dist::VR,Dist::STAR>& itCounts,
         Int numIts,
         bool deflate,
         SnapshotCtrl& snapCtrl )
@@ -170,9 +170,9 @@ void Snapshot
         const bool imgDisp =
             ( snapCtrl.imgDispFreq > 0 &&
               snapCtrl.imgDispCount >= snapCtrl.imgDispFreq );
-        DistMatrix<Real,VR,STAR> invNorms(estimates.Grid());
+        DistMatrix<Real,Dist::VR,Dist::STAR> invNorms(estimates.Grid());
         DistMatrix<Real> estMap(estimates.Grid());
-        DistMatrix<Int, VR,STAR> itCountsReord(itCounts.Grid());
+        DistMatrix<Int, Dist::VR,Dist::STAR> itCountsReord(itCounts.Grid());
         DistMatrix<Int> itCountMap(itCounts.Grid());
         if( numSave || imgSave || imgDisp )
         {
@@ -230,8 +230,8 @@ void Snapshot
 
 template<typename Real>
 void FinalSnapshot
-( const DistMatrix<Real,VR,STAR>& estimates,
-  const DistMatrix<Int, VR,STAR>& itCounts,
+( const DistMatrix<Real,Dist::VR,Dist::STAR>& estimates,
+  const DistMatrix<Int, Dist::VR,Dist::STAR>& itCounts,
         SnapshotCtrl& snapCtrl )
 {
     EL_DEBUG_CSE

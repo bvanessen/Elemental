@@ -2,21 +2,20 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/matrices.hpp>
 
 namespace El {
 
-// Generate the "random Green's matrix" from 
+// Generate the "random Green's matrix" from
 //   A. Goetschy and S. E. Skipetrov's "Non-Hermitian Euclidean random matrix
 //   theory".
 // It is essentially the 3D Helmholtz Green's function restricted to a set
 // of points chosen uniformly from the unit ball. The behaviour of the spectrum
-// is known to change dramatically dependinging upon the number of points 
+// is known to change dramatically dependinging upon the number of points
 // sampled per wavelength-cubed.
 
 template<typename Real>
@@ -35,7 +34,7 @@ void UniformHelmholtzGreens( Matrix<Complex<Real>>& A, Int n, Real lambda )
         // Sample uniformly from [-1,+1]^3 until a point is drawn from the ball
         while( true )
         {
-            x0 = SampleUniform( Real(-1), Real(1) ); 
+            x0 = SampleUniform( Real(-1), Real(1) );
             x1 = SampleUniform( Real(-1), Real(1) );
             x2 = SampleUniform( Real(-1), Real(1) );
             const Real radiusSq = x0*x0 + x1*x1 + x2*x2;
@@ -46,7 +45,7 @@ void UniformHelmholtzGreens( Matrix<Complex<Real>>& A, Int n, Real lambda )
         X(1,j) = x1;
         X(2,j) = x2;
     }
-    
+
     A.Resize( n, n );
     for( Int j=0; j<n; ++j )
     {
@@ -55,7 +54,7 @@ void UniformHelmholtzGreens( Matrix<Complex<Real>>& A, Int n, Real lambda )
         const Real xj2 = X(2,j);
         for( Int i=0; i<n; ++i )
         {
-            if( i == j ) 
+            if( i == j )
             {
                 A(i,j) = 0;
             }
@@ -84,7 +83,7 @@ void UniformHelmholtzGreens
     const Grid& g = A.Grid();
 
     // Generate a list of n uniform samples from the 3D unit ball
-    DistMatrix<Real,STAR,VR> X_STAR_VR(3,n,g);
+    DistMatrix<Real,Dist::STAR,Dist::VR> X_STAR_VR(3,n,g);
     for( Int jLoc=0; jLoc<X_STAR_VR.LocalWidth(); ++jLoc )
     {
         Real x0, x1, x2;
@@ -102,7 +101,7 @@ void UniformHelmholtzGreens
         X_STAR_VR.SetLocal( 1, jLoc, x1 );
         X_STAR_VR.SetLocal( 2, jLoc, x2 );
     }
-    DistMatrix<Real,STAR,STAR> X_STAR_STAR( X_STAR_VR );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> X_STAR_STAR( X_STAR_VR );
 
     A.Resize( n, n );
     for( Int jLoc=0; jLoc<A.LocalWidth(); ++jLoc )

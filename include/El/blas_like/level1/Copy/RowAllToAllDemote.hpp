@@ -46,7 +46,7 @@ void RowAllToAllDemote
         }
         else
         {
-            vector<T> buffer;
+            std::vector<T> buffer;
             FastResize( buffer, 2*rowStrideUnion*portionSize );
             T* firstBuf  = &buffer[0];
             T* secondBuf = &buffer[rowStrideUnion*portionSize];
@@ -82,7 +82,7 @@ void RowAllToAllDemote
         const Int sendRowRankPart = Mod( rowRankPart+rowDiff, rowStridePart );
         const Int recvRowRankPart = Mod( rowRankPart-rowDiff, rowStridePart );
 
-        vector<T> buffer;
+        std::vector<T> buffer;
         FastResize( buffer, 2*rowStrideUnion*portionSize );
         T* firstBuf  = &buffer[0];
         T* secondBuf = &buffer[rowStrideUnion*portionSize];
@@ -118,8 +118,8 @@ void RowAllToAllDemote
 
 template<typename T,Dist U,Dist V>
 void RowAllToAllDemote
-  ( const DistMatrix<T,PartialUnionCol<U,V>(),Partial<V>(),BLOCK>& A,
-          DistMatrix<T,                U,             V   ,BLOCK>& B )
+  ( const DistMatrix<T,PartialUnionCol<U,V>(),Partial<V>(),DistWrap::BLOCK>& A,
+          DistMatrix<T,                U,             V   ,DistWrap::BLOCK>& B )
 {
     EL_DEBUG_CSE
     AssertSameGrids( A, B );

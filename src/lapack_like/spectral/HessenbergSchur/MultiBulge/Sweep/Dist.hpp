@@ -82,8 +82,8 @@ struct DistChaseState
 
 template<typename Field>
 DistChaseState BuildDistChaseState
-( const DistMatrix<Field,MC,MR,BLOCK>& H,
-  const DistMatrix<Complex<Base<Field>>,STAR,STAR>& shifts,
+( const DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+  const DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& shifts,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE
@@ -189,7 +189,7 @@ DistChaseState BuildDistChaseState
 // intrablock chase.
 template<typename Field>
 void AdvanceChaseState
-( const DistMatrix<Field,MC,MR,BLOCK>& H,
+( const DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
         DistChaseState& state )
 {
     EL_DEBUG_CSE

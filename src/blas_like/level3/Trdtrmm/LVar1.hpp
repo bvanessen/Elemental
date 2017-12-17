@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -34,7 +34,7 @@ void LVar1( Matrix<F>& L, bool conjugate=false )
         auto L10 = L( ind1, ind0 );
         auto L11 = L( ind1, ind1 );
         auto d1 = GetDiagonal(L11);
-       
+
         S10 = L10;
         DiagonalSolve( LEFT, NORMAL, d1, L10, true );
         Trrk( LOWER, orientation, NORMAL, F(1), S10, L10, F(1), L00 );
@@ -95,14 +95,14 @@ void LVar1( AbstractDistMatrix<F>& LPre, bool conjugate=false )
     const Grid& g = LPre.Grid();
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> LProx( LPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
     auto& L = LProx.Get();
 
-    DistMatrix<F,STAR,VR  > L10_STAR_VR(g);
-    DistMatrix<F,STAR,VC  > S10_STAR_VC(g);
-    DistMatrix<F,STAR,MC  > S10_STAR_MC(g);
-    DistMatrix<F,STAR,MR  > L10_STAR_MR(g);
-    DistMatrix<F,STAR,STAR> L11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > L10_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::VC  > S10_STAR_VC(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > S10_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > L10_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> L11_STAR_STAR(g);
 
     L10_STAR_VR.AlignWith( L );
     S10_STAR_VC.AlignWith( L );
@@ -142,7 +142,7 @@ void LVar1( AbstractDistMatrix<F>& LPre, bool conjugate=false )
 template<typename F>
 void LVar1
 (       AbstractDistMatrix<F>& LPre,
-  const AbstractDistMatrix<F>& dSubPre, 
+  const AbstractDistMatrix<F>& dSubPre,
   bool conjugate=false )
 {
     EL_DEBUG_CSE
@@ -155,16 +155,16 @@ void LVar1
     const Grid& g = LPre.Grid();
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> LProx( LPre );
-    DistMatrixReadProxy<F,F,MD,STAR> dSubProx( dSubPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadProxy<F,F,Dist::MD,Dist::STAR> dSubProx( dSubPre );
     auto& L = LProx.Get();
     auto& dSub = dSubProx.GetLocked();
 
-    DistMatrix<F,STAR,VR  > L10_STAR_VR(g);
-    DistMatrix<F,STAR,VC  > S10_STAR_VC(g);
-    DistMatrix<F,STAR,MC  > S10_STAR_MC(g);
-    DistMatrix<F,STAR,MR  > L10_STAR_MR(g);
-    DistMatrix<F,STAR,STAR> L11_STAR_STAR(g), 
+    DistMatrix<F,Dist::STAR,Dist::VR  > L10_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::VC  > S10_STAR_VC(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > S10_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > L10_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> L11_STAR_STAR(g),
                             d1_STAR_STAR(g), dSub1_STAR_STAR(g);
 
     L10_STAR_VR.AlignWith( L );
@@ -197,7 +197,7 @@ void LVar1
         // TODO: LocalQuasiDiagonalSolve?
         QuasiDiagonalSolve
         ( LEFT, LOWER,
-          d1_STAR_STAR.LockedMatrix(), dSub1_STAR_STAR.LockedMatrix(), 
+          d1_STAR_STAR.LockedMatrix(), dSub1_STAR_STAR.LockedMatrix(),
           L10_STAR_VR.Matrix(), conjugate );
         L10_STAR_MR = L10_STAR_VR;
         LocalTrrk

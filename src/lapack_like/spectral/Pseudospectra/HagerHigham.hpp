@@ -83,13 +83,13 @@ OneNormConvergenceTest
 }
 
 template<typename Real>
-DistMatrix<Int,MR,STAR>
+DistMatrix<Int,Dist::MR,Dist::STAR>
 OneNormConvergenceTest
 (       DistMatrix<Complex<Real>>& activeX,
   const DistMatrix<Complex<Real>>& activeY,
   const DistMatrix<Complex<Real>>& activeZ,
-        DistMatrix<Real,MR,STAR>& activeEsts,
-        DistMatrix<Int ,VR,STAR>& activeItCounts,
+        DistMatrix<Real,Dist::MR,Dist::STAR>& activeEsts,
+        DistMatrix<Int ,Dist::VR,Dist::STAR>& activeItCounts,
         Int numIts )
 {
     EL_DEBUG_CSE
@@ -116,7 +116,7 @@ OneNormConvergenceTest
     const Int nLoc = activeX.LocalHeight();
 
     const Int numActiveShifts=activeEsts.Height();
-    DistMatrix<Int,MR,STAR> activeConverged( activeEsts.Grid() );
+    DistMatrix<Int,Dist::MR,Dist::STAR> activeConverged( activeEsts.Grid() );
     activeConverged.AlignWith( activeEsts );
     Zeros( activeConverged, numActiveShifts, 1 );
 
@@ -522,7 +522,7 @@ HagerHigham
 }
 
 template<typename Real>
-DistMatrix<Int,VR,STAR>
+DistMatrix<Int,Dist::VR,Dist::STAR>
 HagerHigham
 ( const AbstractDistMatrix<Complex<Real>>& UPre,
   const AbstractDistMatrix<Complex<Real>>& shiftsPre,
@@ -532,9 +532,9 @@ HagerHigham
     EL_DEBUG_CSE
     typedef Complex<Real> C;
 
-    DistMatrixReadProxy<C,C,MC,MR> UProx( UPre );
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixWriteProxy<Real,Real,VR,STAR> invNormsProx( invNormsPre );
+    DistMatrixReadProxy<C,C,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> invNormsProx( invNormsPre );
     auto& U = UProx.GetLocked();
     auto& shifts = shiftsProx.GetLocked();
     auto& invNorms = invNormsProx.Get();
@@ -551,12 +551,12 @@ HagerHigham
     const bool progress = psCtrl.progress;
 
     // Keep track of the number of iterations per shift
-    DistMatrix<Int,VR,STAR> itCounts(g);
+    DistMatrix<Int,Dist::VR,Dist::STAR> itCounts(g);
     Ones( itCounts, numShifts, 1 );
 
     // Keep track of the pivoting history if deflation is requested
-    DistMatrix<Int,VR,STAR> preimage(g);
-    DistMatrix<C,  VR,STAR> pivShifts( shifts );
+    DistMatrix<Int,Dist::VR,Dist::STAR> preimage(g);
+    DistMatrix<C,  Dist::VR,Dist::STAR> pivShifts( shifts );
     if( deflate )
     {
         preimage.AlignWith( shifts );
@@ -571,7 +571,7 @@ HagerHigham
     psCtrl.snapCtrl.ResetCounts();
 
     // The Hessenberg case currently requires explicit access to the adjoint
-    DistMatrix<C,VC,STAR> U_VC_STAR(g), UAdj_VC_STAR(g);
+    DistMatrix<C,Dist::VC,Dist::STAR> U_VC_STAR(g), UAdj_VC_STAR(g);
     if( !psCtrl.schur )
     {
         U_VC_STAR = U;
@@ -587,10 +587,10 @@ HagerHigham
     Ones( X, n, numShifts );
     X *= C(1)/C(n);
     Int numIts=0, numDone=0;
-    DistMatrix<Real,MR,STAR> estimates(g);
+    DistMatrix<Real,Dist::MR,Dist::STAR> estimates(g);
     estimates.AlignWith( shifts );
     Zeros( estimates, numShifts, 1 );
-    DistMatrix<Int,VR,STAR> activePreimage(g);
+    DistMatrix<Int,Dist::VR,Dist::STAR> activePreimage(g);
     while( true )
     {
         const Int numActive = ( deflate ? numShifts-numDone : numShifts );
@@ -624,7 +624,7 @@ HagerHigham
         else
         {
             // Solve against (H - zI)
-            DistMatrix<C,STAR,VR>  activeV_STAR_VR( activeX );
+            DistMatrix<C,Dist::STAR,Dist::VR>  activeV_STAR_VR( activeX );
             MultiShiftHessSolve
             ( UPPER, NORMAL, C(1), U_VC_STAR, activeShifts, activeV_STAR_VR );
             activeY = activeV_STAR_VR;
@@ -634,7 +634,7 @@ HagerHigham
 
             // Solve against (H - zI)^H
             activeV_STAR_VR = activeZ;
-            DistMatrix<C,VR,STAR> activeShiftsConj(g);
+            DistMatrix<C,Dist::VR,Dist::STAR> activeShiftsConj(g);
             Conjugate( activeShifts, activeShiftsConj );
             MultiShiftHessSolve
             ( LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
@@ -695,7 +695,7 @@ HagerHigham
         MultiShiftTrsm( LEFT, UPPER, NORMAL, C(1), U, shifts, X );
     else
     {
-        DistMatrix<C,STAR,VR> X_STAR_VR(X);
+        DistMatrix<C,Dist::STAR,Dist::VR> X_STAR_VR(X);
         MultiShiftHessSolve( UPPER, NORMAL, C(1), U, shifts, X_STAR_VR );
         X = X_STAR_VR;
     }
@@ -703,7 +703,7 @@ HagerHigham
     for( Int jLoc=0; jLoc<numLocShifts; ++jLoc )
         oneNorms[jLoc] = blas::Nrm1( nLoc, X.LockedBuffer(0,jLoc), 1 );
     mpi::AllReduce( oneNorms.data(), numLocShifts, mpi::SUM, g.ColComm() );
-    DistMatrix<Real,MR,STAR> invNorms_MR_STAR(g);
+    DistMatrix<Real,Dist::MR,Dist::STAR> invNorms_MR_STAR(g);
     invNorms_MR_STAR.AlignWith( X );
     invNorms_MR_STAR = invNorms;
     auto& invNormsLoc = invNorms_MR_STAR.Matrix();
@@ -720,7 +720,7 @@ HagerHigham
 }
 
 template<typename Real>
-DistMatrix<Int,VR,STAR>
+DistMatrix<Int,Dist::VR,Dist::STAR>
 HagerHigham
 ( const AbstractDistMatrix<Complex<Real>>& UPre,
   const AbstractDistMatrix<Complex<Real>>& QPre,
@@ -732,9 +732,9 @@ HagerHigham
     using namespace pspec;
     typedef Complex<Real> C;
 
-    DistMatrixReadProxy<C,C,MC,MR> UProx( UPre ), QProx( QPre );
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixWriteProxy<Real,Real,VR,STAR> invNormsProx( invNormsPre );
+    DistMatrixReadProxy<C,C,Dist::MC,Dist::MR> UProx( UPre ), QProx( QPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> invNormsProx( invNormsPre );
     auto& U = UProx.GetLocked();
     auto& Q = QProx.GetLocked();
     auto& shifts = shiftsProx.GetLocked();
@@ -751,12 +751,12 @@ HagerHigham
     const bool progress = psCtrl.progress;
 
     // Keep track of the number of iterations per shift
-    DistMatrix<Int,VR,STAR> itCounts(g);
+    DistMatrix<Int,Dist::VR,Dist::STAR> itCounts(g);
     Ones( itCounts, numShifts, 1 );
 
     // Keep track of the pivoting history if deflation is requested
-    DistMatrix<Int,VR,STAR> preimage(g);
-    DistMatrix<C,  VR,STAR> pivShifts( shifts );
+    DistMatrix<Int,Dist::VR,Dist::STAR> preimage(g);
+    DistMatrix<C,  Dist::VR,Dist::STAR> pivShifts( shifts );
     if( deflate )
     {
         preimage.AlignWith( shifts );
@@ -771,7 +771,7 @@ HagerHigham
     psCtrl.snapCtrl.ResetCounts();
 
     // The Hessenberg case currently requires explicit access to the adjoint
-    DistMatrix<C,VC,STAR> U_VC_STAR(g), UAdj_VC_STAR(g);
+    DistMatrix<C,Dist::VC,Dist::STAR> U_VC_STAR(g), UAdj_VC_STAR(g);
     if( !psCtrl.schur )
     {
         U_VC_STAR = U;
@@ -787,10 +787,10 @@ HagerHigham
     Ones( X, n, numShifts );
     X *= C(1)/C(n);
     Int numIts=0, numDone=0;
-    DistMatrix<Real,MR,STAR> estimates(g);
+    DistMatrix<Real,Dist::MR,Dist::STAR> estimates(g);
     estimates.AlignWith( shifts );
     Zeros( estimates, numShifts, 1 );
-    DistMatrix<Int,VR,STAR> activePreimage(g);
+    DistMatrix<Int,Dist::VR,Dist::STAR> activePreimage(g);
     while( true )
     {
         const Int numActive = ( deflate ? numShifts-numDone : numShifts );
@@ -829,7 +829,7 @@ HagerHigham
         {
             // Solve against Q (H - zI) Q^H
             Gemm( ADJOINT, NORMAL, C(1), Q, activeX, activeV );
-            DistMatrix<C,STAR,VR> activeV_STAR_VR( activeV );
+            DistMatrix<C,Dist::STAR,Dist::VR> activeV_STAR_VR( activeV );
             MultiShiftHessSolve
             ( UPPER, NORMAL, C(1), U_VC_STAR, activeShifts, activeV_STAR_VR );
             activeV = activeV_STAR_VR;
@@ -841,7 +841,7 @@ HagerHigham
             // Solve against Q (H - zI)^H Q^H
             Gemm( ADJOINT, NORMAL, C(1), Q, activeZ, activeV );
             activeV_STAR_VR = activeV;
-            DistMatrix<C,VR,STAR> activeShiftsConj(g);
+            DistMatrix<C,Dist::VR,Dist::STAR> activeShiftsConj(g);
             Conjugate( activeShifts, activeShiftsConj );
             MultiShiftHessSolve
             ( LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
@@ -904,7 +904,7 @@ HagerHigham
     Gemv( ADJOINT, C(1), Q, x, yRep );
     DistMatrix<C> Y(n,numShifts,g);
     Y.AlignWith( X );
-    DistMatrix<C,MC,STAR> yRep_MC_STAR(g);
+    DistMatrix<C,Dist::MC,Dist::STAR> yRep_MC_STAR(g);
     yRep_MC_STAR.AlignWith( X );
     yRep_MC_STAR = yRep;
     for( Int jLoc=0; jLoc<numLocShifts; ++jLoc )
@@ -919,7 +919,7 @@ HagerHigham
     }
     else
     {
-        DistMatrix<C,STAR,VR> Y_STAR_VR( Y );
+        DistMatrix<C,Dist::STAR,Dist::VR> Y_STAR_VR( Y );
         MultiShiftHessSolve( UPPER, NORMAL, C(1), U, shifts, Y_STAR_VR );
         Y = Y_STAR_VR;
     }
@@ -928,7 +928,7 @@ HagerHigham
     for( Int jLoc=0; jLoc<numLocShifts; ++jLoc )
         oneNorms[jLoc] = blas::Nrm1( nLoc, X.LockedBuffer(0,jLoc), 1 );
     mpi::AllReduce( oneNorms.data(), numLocShifts, mpi::SUM, g.ColComm() );
-    DistMatrix<Real,MR,STAR> invNorms_MR_STAR(g);
+    DistMatrix<Real,Dist::MR,Dist::STAR> invNorms_MR_STAR(g);
     invNorms_MR_STAR.AlignWith( X );
     invNorms_MR_STAR = invNorms;
     auto& invNormsLoc = invNorms_MR_STAR.Matrix();

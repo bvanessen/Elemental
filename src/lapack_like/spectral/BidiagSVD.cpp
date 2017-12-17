@@ -343,9 +343,9 @@ template<typename Real>
 BidiagSVDInfo
 Helper
 ( UpperOrLower uplo,
-  DistMatrix<Real,STAR,STAR>& mainDiag,
-  DistMatrix<Real,STAR,STAR>& offDiag,
-  DistMatrix<Real,STAR,STAR>& s,
+  DistMatrix<Real,Dist::STAR,Dist::STAR>& mainDiag,
+  DistMatrix<Real,Dist::STAR,Dist::STAR>& offDiag,
+  DistMatrix<Real,Dist::STAR,Dist::STAR>& s,
   const BidiagSVDCtrl<Real>& ctrl )
 {
     EL_DEBUG_CSE
@@ -511,8 +511,8 @@ Helper
   const BidiagSVDCtrl<Real>& ctrl )
 {
     EL_DEBUG_CSE
-    DistMatrix<Real,STAR,STAR> mainDiag(mainDiagPre), offDiag(offDiagPre);
-    DistMatrixWriteProxy<Real,Real,STAR,STAR> sProx( sPre );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> mainDiag(mainDiagPre), offDiag(offDiagPre);
+    DistMatrixWriteProxy<Real,Real,Dist::STAR,Dist::STAR> sProx( sPre );
     auto& s = sProx.Get();
     return Helper( uplo, mainDiag, offDiag, s, ctrl );
 }
@@ -549,7 +549,7 @@ Helper
   const BidiagSVDCtrl<Real>& ctrl )
 {
     EL_DEBUG_CSE
-    DistMatrix<Complex<Real>,VC,STAR>
+    DistMatrix<Complex<Real>,Dist::VC,Dist::STAR>
       mainDiag(mainDiagPre), offDiag(offDiagPre);
     const Grid& g = mainDiag.Grid();
 
@@ -563,7 +563,7 @@ Helper
     for( Int iLoc=0; iLoc<offDiagLocHeight; ++iLoc )
         offDiagLoc(iLoc) = Abs(offDiagLoc(iLoc));
 
-    DistMatrix<Real,STAR,STAR> mainDiagReal(g), offDiagReal(g);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> mainDiagReal(g), offDiagReal(g);
     return Helper( uplo, mainDiagReal, offDiagReal, s, ctrl );
 }
 
@@ -860,11 +860,11 @@ template<typename Real>
 BidiagSVDInfo
 Helper
 ( UpperOrLower uplo,
-  DistMatrix<Real,STAR,STAR>& mainDiag,
-  DistMatrix<Real,STAR,STAR>& offDiag,
-  DistMatrix<Real,VC,STAR>& U,
-  DistMatrix<Real,STAR,STAR>& s,
-  DistMatrix<Real,VC,STAR>& V,
+  DistMatrix<Real,Dist::STAR,Dist::STAR>& mainDiag,
+  DistMatrix<Real,Dist::STAR,Dist::STAR>& offDiag,
+  DistMatrix<Real,Dist::VC,Dist::STAR>& U,
+  DistMatrix<Real,Dist::STAR,Dist::STAR>& s,
+  DistMatrix<Real,Dist::VC,Dist::STAR>& V,
   const BidiagSVDCtrl<Real>& ctrl )
 {
     EL_DEBUG_CSE
@@ -1001,7 +1001,7 @@ Helper
         // We were non-square and lower bidiagonal. The last column of U has
         // been (at least implicitly) deflated.
         auto offDiag0 = offDiag( IR(0,n-1), ALL );
-        DistMatrix<Real,VC,STAR> U0(g);
+        DistMatrix<Real,Dist::VC,Dist::STAR> U0(g);
         if( ctrlMod.wantU )
         {
             if( !ctrlMod.accumulateU )
@@ -1057,7 +1057,7 @@ Helper
         // We were non-square and upper bidiagonal. The last column of V has
         // been (at least implicitly) deflated.
         auto offDiag0 = offDiag( IR(0,m-1), ALL );
-        DistMatrix<Real,VC,STAR> V0(g);
+        DistMatrix<Real,Dist::VC,Dist::STAR> V0(g);
         if( ctrlMod.wantV )
         {
             if( !ctrlMod.accumulateV )
@@ -1166,7 +1166,7 @@ Helper
         {
             // Undo the flip from lower to upper bidiagonal.
             sFlipList *= Real(-1);
-            DistMatrix<Real,STAR,VR> U_STAR_VR( U );
+            DistMatrix<Real,Dist::STAR,Dist::VR> U_STAR_VR( U );
             ApplyGivensSequence
             ( LEFT, VARIABLE_GIVENS_SEQUENCE, BACKWARD,
               cFlipList, sFlipList, U_STAR_VR.Matrix() );
@@ -1183,7 +1183,7 @@ Helper
         if( uplo == UPPER && !square )
         {
             sDeflateList *= Real(-1);
-            DistMatrix<Real,STAR,VR> V_STAR_VR( V );
+            DistMatrix<Real,Dist::STAR,Dist::VR> V_STAR_VR( V );
             ApplyGivensSequence
             ( LEFT, VARIABLE_GIVENS_SEQUENCE, BACKWARD,
               cDeflateList, sDeflateList, V_STAR_VR.Matrix() );
@@ -1244,11 +1244,11 @@ Helper
   const BidiagSVDCtrl<Real>& ctrl )
 {
     EL_DEBUG_CSE
-    DistMatrix<Real,STAR,STAR> mainDiag( mainDiagOrig );
-    DistMatrix<Real,STAR,STAR> offDiag( offDiagOrig );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> mainDiag( mainDiagOrig );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> offDiag( offDiagOrig );
 
-    DistMatrixWriteProxy<Real,Real,STAR,STAR> sProx( sPre );
-    DistMatrixReadWriteProxy<Real,Real,VC,STAR> UProx( UPre ), VProx( VPre );
+    DistMatrixWriteProxy<Real,Real,Dist::STAR,Dist::STAR> sProx( sPre );
+    DistMatrixReadWriteProxy<Real,Real,Dist::VC,Dist::STAR> UProx( UPre ), VProx( VPre );
     auto& s = sProx.Get();
     auto& U = UProx.Get();
     auto& V = VProx.Get();
@@ -1318,11 +1318,11 @@ template<typename Real>
 BidiagSVDInfo
 Helper
 ( UpperOrLower uplo,
-  DistMatrix<Real,STAR,STAR>& mainDiag,
-  DistMatrix<Real,STAR,STAR>& offDiag,
-  DistMatrix<Complex<Real>,VC,STAR>& U,
-  DistMatrix<Real,STAR,STAR>& s,
-  DistMatrix<Complex<Real>,VC,STAR>& V,
+  DistMatrix<Real,Dist::STAR,Dist::STAR>& mainDiag,
+  DistMatrix<Real,Dist::STAR,Dist::STAR>& offDiag,
+  DistMatrix<Complex<Real>,Dist::VC,Dist::STAR>& U,
+  DistMatrix<Real,Dist::STAR,Dist::STAR>& s,
+  DistMatrix<Complex<Real>,Dist::VC,Dist::STAR>& V,
   const BidiagSVDCtrl<Real>& ctrl )
 {
     EL_DEBUG_CSE
@@ -1403,11 +1403,11 @@ Helper
 {
     EL_DEBUG_CSE
     typedef Complex<Real> Field;
-    DistMatrix<Real,STAR,STAR> mainDiag( mainDiagOrig ),
+    DistMatrix<Real,Dist::STAR,Dist::STAR> mainDiag( mainDiagOrig ),
       offDiag( offDiagOrig );
 
-    DistMatrixWriteProxy<Real,Real,STAR,STAR> sProx( sPre );
-    DistMatrixReadWriteProxy<Field,Field,VC,STAR> UProx( UPre ), VProx( VPre );
+    DistMatrixWriteProxy<Real,Real,Dist::STAR,Dist::STAR> sProx( sPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::VC,Dist::STAR> UProx( UPre ), VProx( VPre );
     auto& s = sProx.Get();
     auto& U = UProx.Get();
     auto& V = VProx.Get();
@@ -1504,11 +1504,11 @@ Helper
     typedef Complex<Real> Field;
     const Grid& g = mainDiagOrig.Grid();
 
-    DistMatrix<Field,STAR,STAR> mainDiag( mainDiagOrig ),
+    DistMatrix<Field,Dist::STAR,Dist::STAR> mainDiag( mainDiagOrig ),
       offDiag( offDiagOrig );
 
-    DistMatrixWriteProxy<Real,Real,STAR,STAR> sProx( sPre );
-    DistMatrixReadWriteProxy<Field,Field,VC,STAR> UProx( UPre ), VProx( VPre );
+    DistMatrixWriteProxy<Real,Real,Dist::STAR,Dist::STAR> sProx( sPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::VC,Dist::STAR> UProx( UPre ), VProx( VPre );
     auto& s = sProx.Get();
     auto& U = UProx.Get();
     auto& V = VProx.Get();
@@ -1522,7 +1522,7 @@ Helper
 
     auto& mainDiagLoc = mainDiag.Matrix();
     auto& offDiagLoc = offDiag.Matrix();
-    DistMatrix<Field,STAR,STAR> UPhase(g), VPhase(g);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> UPhase(g), VPhase(g);
     if( ctrl.wantU || ctrl.wantV )
     {
         Ones( UPhase, m, 1 );
@@ -1559,7 +1559,7 @@ Helper
         }
         Conjugate( VPhase );
     }
-    DistMatrix<Real,STAR,STAR> mainDiagReal(mainDiagHeight,1,g),
+    DistMatrix<Real,Dist::STAR,Dist::STAR> mainDiagReal(mainDiagHeight,1,g),
                                offDiagReal(offDiagHeight,1,g);
     auto& mainDiagRealLoc = mainDiagReal.Matrix();
     auto& offDiagRealLoc = offDiagReal.Matrix();

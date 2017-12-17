@@ -62,7 +62,7 @@ void Sort( AbstractDistMatrix<Real>& X, SortType sort, bool stable )
         // TODO(poulson): Distributed sort
 
         // Get a copy on a single process, sort, and then redistribute
-        DistMatrix<Real,CIRC,CIRC> X_CIRC_CIRC( X );
+        DistMatrix<Real,Dist::CIRC,Dist::CIRC> X_CIRC_CIRC( X );
         if( X_CIRC_CIRC.Participating() )
             Sort( X_CIRC_CIRC.Matrix(), sort, stable );
 
@@ -127,7 +127,7 @@ TaggedSort( const AbstractDistMatrix<Real>& x, SortType sort, bool stable )
     }
     else
     {
-        DistMatrix<Real,STAR,STAR> x_STAR_STAR( x );
+        DistMatrix<Real,Dist::STAR,Dist::STAR> x_STAR_STAR( x );
         return TaggedSort( x_STAR_STAR.LockedMatrix(), sort, stable );
     }
 }
@@ -175,8 +175,8 @@ void ApplyTaggedSortToEachRow
     EL_DEBUG_CSE
     const Int m = Z.Height();
     const Int n = Z.Width();
-    DistMatrix<Field,VC,STAR> Z_VC_STAR( Z );
-    DistMatrix<Field,VC,STAR> ZPerm_VC_STAR(Z.Grid());
+    DistMatrix<Field,Dist::VC,Dist::STAR> Z_VC_STAR( Z );
+    DistMatrix<Field,Dist::VC,Dist::STAR> ZPerm_VC_STAR(Z.Grid());
     ZPerm_VC_STAR.AlignWith( Z_VC_STAR );
     ZPerm_VC_STAR.Resize( m, n );
     const Int mLocal = Z_VC_STAR.LocalHeight();
@@ -199,8 +199,8 @@ void ApplyTaggedSortToEachColumn
     EL_DEBUG_CSE
     const Int m = Z.Height();
     const Int n = Z.Width();
-    DistMatrix<Field,STAR,VR> Z_STAR_VR( Z );
-    DistMatrix<Field,STAR,VR> ZPerm_STAR_VR(Z.Grid());
+    DistMatrix<Field,Dist::STAR,Dist::VR> Z_STAR_VR( Z );
+    DistMatrix<Field,Dist::STAR,Dist::VR> ZPerm_STAR_VR(Z.Grid());
     ZPerm_STAR_VR.AlignWith( Z_STAR_VR );
     ZPerm_STAR_VR.Resize( m, n );
     const Int nLocal = Z_STAR_VR.LocalWidth();

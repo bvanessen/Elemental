@@ -59,8 +59,8 @@ void Helper
     EL_DEBUG_CSE
     typedef Complex<Real> C;
 
-    DistMatrixReadProxy<Real,Real,MC,MR> AProxy( APre );
-    DistMatrixWriteProxy<C,C,MC,MR> XProxy( XPre );
+    DistMatrixReadProxy<Real,Real,Dist::MC,Dist::MR> AProxy( APre );
+    DistMatrixWriteProxy<C,C,Dist::MC,Dist::MR> XProxy( XPre );
     auto& A = AProxy.Get();
     auto& X = XProxy.Get();
 
@@ -86,8 +86,8 @@ void Helper
     EL_DEBUG_CSE
     typedef Complex<Real> C;
 
-    DistMatrixReadProxy<C,C,MC,MR> AProxy( APre );
-    DistMatrixWriteProxy<C,C,MC,MR> XProxy( XPre );
+    DistMatrixReadProxy<C,C,Dist::MC,Dist::MR> AProxy( APre );
+    DistMatrixWriteProxy<C,C,Dist::MC,Dist::MR> XProxy( XPre );
     auto& A = AProxy.Get();
     auto& X = XProxy.Get();
 

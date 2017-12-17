@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRMM_UVAR5_HPP
@@ -12,9 +12,9 @@
 namespace El {
 namespace twotrmm {
 
-// The only requirement that this is a field comes from the necessity for 
+// The only requirement that this is a field comes from the necessity for
 // the existence of 1/2, which is artifact of the algorithm...
-template<typename F> 
+template<typename F>
 void UVar5( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
 {
     EL_DEBUG_CSE
@@ -72,9 +72,9 @@ void UVar5( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
     }
 }
 
-template<typename F> 
+template<typename F>
 void UVar5
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& APre,
   const AbstractDistMatrix<F>& UPre )
 {
@@ -91,16 +91,16 @@ void UVar5
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
     auto& A = AProx.Get();
     auto& U = UProx.GetLocked();
 
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), U11_STAR_STAR(g);
-    DistMatrix<F,MC,  STAR> A01_MC_STAR(g), U01_MC_STAR(g);
-    DistMatrix<F,MR,  STAR> A01_MR_STAR(g), U01_MR_STAR(g);
-    DistMatrix<F,VC,  STAR> A01_VC_STAR(g), U01_VC_STAR(g), Y01_VC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), U11_STAR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> A01_MC_STAR(g), U01_MC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> A01_MR_STAR(g), U01_MR_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> A01_VC_STAR(g), U01_VC_STAR(g), Y01_VC_STAR(g);
     DistMatrix<F> Y01(g);
 
     for( Int k=0; k<n; k+=bsize )
@@ -151,7 +151,7 @@ void UVar5
         U01_MR_STAR = U01_MC_STAR;
         LocalTrr2k
         ( UPPER, NORMAL, ADJOINT, NORMAL, ADJOINT,
-          F(1), U01_MC_STAR, A01_MR_STAR, 
+          F(1), U01_MC_STAR, A01_MR_STAR,
           F(1), A01_MC_STAR, U01_MR_STAR,
           F(1), A00 );
 

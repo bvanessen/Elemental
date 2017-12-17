@@ -5,8 +5,8 @@
    Copyright (c) 2013, The University of Texas at Austin
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRMM_RUT_HPP
@@ -20,8 +20,8 @@ void LocalAccumulateRUT
 ( UnitOrNonUnit diag,
   T alpha,
   const DistMatrix<T>& U,
-  const DistMatrix<T,MR,STAR>& XTrans,
-        DistMatrix<T,MC,STAR>& ZTrans )
+  const DistMatrix<T,Dist::MR,Dist::STAR>& XTrans,
+        DistMatrix<T,Dist::MC,Dist::STAR>& ZTrans )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -52,7 +52,7 @@ void LocalAccumulateRUT
         auto U11 = U( IR(k,k+nb), IR(k,k+nb) );
 
         auto X1Trans = XTrans( IR(k,k+nb), ALL );
-   
+
         auto Z0Trans = ZTrans( IR(0,k),    ALL );
         auto Z1Trans = ZTrans( IR(k,k+nb), ALL );
 
@@ -83,15 +83,15 @@ void RUTA
     const Grid& g = UPre.Grid();
     const bool conjugate = ( orientation == ADJOINT );
 
-    DistMatrixReadProxy<T,T,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,MR,  STAR> X1Trans_MR_STAR(g);
-    DistMatrix<T,MC,  STAR> Z1Trans_MC_STAR(g);
-    DistMatrix<T,MC,  MR  > Z1Trans(g);
-    DistMatrix<T,MR,  MC  > Z1Trans_MR_MC(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> X1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> Z1Trans_MC_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::MR  > Z1Trans(g);
+    DistMatrix<T,Dist::MR,  Dist::MC  > Z1Trans_MR_MC(g);
 
     X1Trans_MR_STAR.AlignWith( U );
     Z1Trans_MC_STAR.AlignWith( U );
@@ -136,16 +136,16 @@ void RUTC
     const Grid& g = UPre.Grid();
     const bool conjugate = ( orientation == ADJOINT );
 
-    DistMatrixReadProxy<T,T,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<T,MR,  STAR> U12Trans_MR_STAR(g);
-    DistMatrix<T,VC,  STAR> X1_VC_STAR(g);
-    DistMatrix<T,MC,  STAR> D1_MC_STAR(g);
-    
+    DistMatrix<T,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> U12Trans_MR_STAR(g);
+    DistMatrix<T,Dist::VC,  Dist::STAR> X1_VC_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> D1_MC_STAR(g);
+
     for( Int k=0; k<n; k+=bsize )
     {
         const Int nb = Min(bsize,n-k);
@@ -161,7 +161,7 @@ void RUTC
         LocalTrmm
         ( RIGHT, UPPER, orientation, diag, T(1), U11_STAR_STAR, X1_VC_STAR );
         X1 = X1_VC_STAR;
- 
+
         U12Trans_MR_STAR.AlignWith( X2 );
         Transpose( U12, U12Trans_MR_STAR, conjugate );
         D1_MC_STAR.AlignWith( X1 );
@@ -171,7 +171,7 @@ void RUTC
 }
 
 // Right Upper Adjoint/Transpose (Non)Unit Trmm
-//   X := X triu(U)^T, 
+//   X := X triu(U)^T,
 //   X := X triu(U)^H,
 //   X := X triuu(U)^T, or
 //   X := X triuu(U)^H

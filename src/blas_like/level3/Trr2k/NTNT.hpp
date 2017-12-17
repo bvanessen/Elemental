@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRR2K_NTNT_HPP
@@ -35,15 +35,15 @@ void Trr2kNTNT
           LogicError("Nonconformal Trr2kNTNT");
     )
     const Int r = APre.Width();
-    const Int bsize = Blocksize(); 
+    const Int bsize = Blocksize();
     const Grid& g = EPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR>
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR>
       AProx( APre ),
       BProx( BPre ),
       CProx( CPre ),
       DProx( DPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR>
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR>
       EProx( EPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
@@ -51,9 +51,9 @@ void Trr2kNTNT
     auto& D = DProx.GetLocked();
     auto& E = EProx.Get();
 
-    DistMatrix<T,MC,  STAR> A1_MC_STAR(g), C1_MC_STAR(g);
-    DistMatrix<T,VR,  STAR> B1_VR_STAR(g), D1_VR_STAR(g);
-    DistMatrix<T,STAR,MR  > B1Trans_STAR_MR(g), D1Trans_STAR_MR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> A1_MC_STAR(g), C1_MC_STAR(g);
+    DistMatrix<T,Dist::VR,  Dist::STAR> B1_VR_STAR(g), D1_VR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MR  > B1Trans_STAR_MR(g), D1Trans_STAR_MR(g);
 
     A1_MC_STAR.AlignWith( E );
     B1_VR_STAR.AlignWith( E );
@@ -81,7 +81,7 @@ void Trr2kNTNT
         Transpose( D1_VR_STAR, D1Trans_STAR_MR, (orientD==ADJOINT) );
         LocalTrr2k
         ( uplo, NORMAL, NORMAL, NORMAL, NORMAL,
-          alpha, A1_MC_STAR, B1Trans_STAR_MR, 
+          alpha, A1_MC_STAR, B1Trans_STAR_MR,
           beta,  C1_MC_STAR, D1Trans_STAR_MR, T(1), E );
     }
 }

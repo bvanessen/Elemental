@@ -5,8 +5,8 @@
    Copyright (c) 2015-2016, Tim Moon
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -20,7 +20,7 @@ namespace safemstrsm {
 
 /*   Note: See "Robust Triangular Solves for Use in Condition
  *   Estimation" by Edward Anderson for notation and bounds.
- *   Entries in U are assumed to be less (in magnitude) than 
+ *   Entries in U are assumed to be less (in magnitude) than
  *   bigNum.
  */
 template<typename F>
@@ -47,14 +47,14 @@ void LUNBlock
     auto overflowPair = OverflowParameters<Real>();
     const Real smallNum = overflowPair.first;
     const Real bigNum = overflowPair.second;
-    
+
     const Real oneHalf = Real(1)/Real(2);
     const Real oneQuarter = Real(1)/Real(4);
 
     // Default scale is 1
     scales.Resize( numShifts, 1 );
     Fill( scales, F(1) );
-    
+
     // Compute infinity norms of columns of U (excluding diagonal)
     Matrix<Real> cNorm( n, 1 );
     cNorm(0) = 0;
@@ -164,7 +164,7 @@ void LUNBlock
                     }
                 }
                 xj(i) = Xij;
-                
+
                 if( i > 0 )
                 {
 
@@ -208,7 +208,7 @@ void LUNBlock
 
 /*   Note: See "Robust Triangular Solves for Use in Condition
  *   Estimation" by Edward Anderson for notation and bounds.
- *   Entries in U are assumed to be less (in magnitude) than 
+ *   Entries in U are assumed to be less (in magnitude) than
  *   bigNum.
  */
 template<typename F>
@@ -216,7 +216,7 @@ void LUN
 (       Matrix<F>& U,
   const Matrix<F>& shifts,
         Matrix<F>& X,
-        Matrix<F>& scales ) 
+        Matrix<F>& scales )
 {
     EL_DEBUG_CSE
     typedef Base<F> Real;
@@ -244,7 +244,7 @@ void LUN
       if( MaxNorm(U) >= bigNum )
           LogicError("Entries in matrix are too large");
     )
-    
+
     scales.Resize( n, 1 );
     Fill( scales, F(1) );
 
@@ -266,7 +266,7 @@ void LUN
         xjMax = Max( xjMax, 2*smallNum );
         XMax(j) = xjMax;
     }
-        
+
     // Perform block triangular solve
     for( Int k=kLast; k>=0; k-=bsize )
     {
@@ -349,14 +349,14 @@ void LUN
 
 template<typename F>
 void LUN
-( const AbstractDistMatrix<F>& UPre, 
+( const AbstractDistMatrix<F>& UPre,
   const AbstractDistMatrix<F>& shiftsPre,
         AbstractDistMatrix<F>& XPre,
-        AbstractDistMatrix<F>& scalesPre ) 
+        AbstractDistMatrix<F>& scalesPre )
 {
     EL_DEBUG_CSE
     typedef Base<F> Real;
-  
+
     EL_DEBUG_ONLY(
       if( UPre.Height() != UPre.Width() )
           LogicError("Triangular matrix must be square");
@@ -371,22 +371,22 @@ void LUN
     const Int bsize = Blocksize();
     const Int kLast = LastOffset( m, bsize );
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
-    DistMatrixReadProxy<F,F,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
-    DistMatrixWriteProxy<F,F,VR,STAR> scalesProx( scalesPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadProxy<F,F,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
+    DistMatrixWriteProxy<F,F,Dist::VR,Dist::STAR> scalesProx( scalesPre );
     auto& U = UProx.GetLocked();
     auto& shifts = shiftsProx.GetLocked();
     auto& X = XProx.Get();
     auto& scales = scalesProx.Get();
-    
+
     const Grid& g = U.Grid();
-    DistMatrix<F,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<F,STAR,MR  > X1_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > X1_STAR_VR(g);
-    DistMatrix<F,VR,  STAR> scalesUpdate_VR_STAR(g);
-    DistMatrix<F,MR,  STAR> scalesUpdate_MR_STAR( X.Grid() );
+    DistMatrix<F,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > X1_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
+    DistMatrix<F,Dist::VR,  Dist::STAR> scalesUpdate_VR_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> scalesUpdate_MR_STAR( X.Grid() );
 
     scales.Resize( n, 1 );
     Fill( scales, F(1) );
@@ -394,7 +394,7 @@ void LUN
     scalesUpdate_VR_STAR.Resize( n, 1 );
 
     const Int XLocalWidth = X.LocalWidth();
-    
+
     for( Int k=kLast; k>=0; k-=bsize )
     {
         const Int nb = Min(bsize,m-k);
@@ -417,7 +417,7 @@ void LUN
         X1_STAR_VR = X1; // X1[* ,VR] <- X1[MC,MR]
         scalesUpdate_VR_STAR.AlignWith( shifts );
         LUN
-        ( U11_STAR_STAR.Matrix(), shifts.LockedMatrix(), 
+        ( U11_STAR_STAR.Matrix(), shifts.LockedMatrix(),
           X1_STAR_VR.Matrix(), scalesUpdate_VR_STAR.Matrix() );
         X1_STAR_MR.AlignWith( X0 );
         X1_STAR_MR = X1_STAR_VR; // X1[* ,MR]  <- X1[* ,VR]
@@ -439,7 +439,7 @@ void LUN
             }
         }
         DiagonalScale( LEFT,  NORMAL, scalesUpdate_VR_STAR, scales );
-        
+
         if( k > 0 )
         {
             // Update RHS with GEMM
@@ -451,6 +451,6 @@ void LUN
         }
     }
 }
-  
+
 } // namespace safemstrsm
 } // namespace El

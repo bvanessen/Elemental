@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -21,12 +21,12 @@ void LUNUnb( const Matrix<F>& U, Matrix<F>& X, bool checkIfSingular )
     const Int m = X.Height();
     const Int n = X.Width();
     typedef Base<F> Real;
-    
+
     const F* UBuf = U.LockedBuffer();
           F* XBuf = X.Buffer();
     const Int ldu = U.LDim();
     const Int ldx = X.LDim();
-    
+
     Int k=m-1;
     while( k >= 0 )
     {
@@ -36,7 +36,7 @@ void LUNUnb( const Matrix<F>& U, Matrix<F>& X, bool checkIfSingular )
             --k;
             // Solve the 2x2 linear systems via a 2x2 QR decomposition produced
             // by the Givens rotation
-            //    | c        s | | U(k,  k) | = | gamma11 | 
+            //    | c        s | | U(k,  k) | = | gamma11 |
             //    | -conj(s) c | | U(k+1,k) |   | 0       |
             //
             // and by also forming the right two entries of the 2x2 resulting
@@ -134,7 +134,7 @@ void LUN( const Matrix<F>& U, Matrix<F>& X, bool checkIfSingular )
 template<typename F>
 void LUNLarge
 ( const AbstractDistMatrix<F>& UPre,
-        AbstractDistMatrix<F>& XPre, 
+        AbstractDistMatrix<F>& XPre,
   bool checkIfSingular )
 {
     EL_DEBUG_CSE
@@ -142,15 +142,15 @@ void LUNLarge
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<F,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<F,STAR,MR  > X1_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > X1_STAR_VR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > X1_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
 
     const Int kLast = LastOffset( m, bsize );
     Int k=kLast, kOld=m;
@@ -172,7 +172,7 @@ void LUNLarge
 
         U11_STAR_STAR = U11; // U11[* ,* ] <- U11[MC,MR]
         X1_STAR_VR    = X1;  // X1[* ,VR] <- X1[MC,MR]
-        
+
         // X1[* ,VR] := U11^-1[* ,* ] X1[* ,VR]
         LocalQuasiTrsm
         ( LEFT, UPPER, NORMAL, F(1), U11_STAR_STAR, X1_STAR_VR,
@@ -196,7 +196,7 @@ void LUNLarge
 
 template<typename F>
 void LUNMedium
-( const AbstractDistMatrix<F>& UPre, AbstractDistMatrix<F>& XPre, 
+( const AbstractDistMatrix<F>& UPre, AbstractDistMatrix<F>& XPre,
   bool checkIfSingular )
 {
     EL_DEBUG_CSE
@@ -204,14 +204,14 @@ void LUNMedium
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<F,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<F,MR,  STAR> X1Trans_MR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> X1Trans_MR_STAR(g);
 
     const Int kLast = LastOffset( m, bsize );
     Int k=kLast, kOld=m;
@@ -234,7 +234,7 @@ void LUNMedium
         U11_STAR_STAR = U11; // U11[* ,* ] <- U11[MC,MR]
         X1Trans_MR_STAR.AlignWith( X0 );
         Transpose( X1, X1Trans_MR_STAR );
-        
+
         // X1^T[MR,* ] := X1^T[MR,* ] U11^-T[* ,* ]
         //              = (U11^-1[* ,* ] X1[* ,MR])^T
         LocalQuasiTrsm
@@ -258,8 +258,8 @@ void LUNMedium
 
 template<typename F,Dist colDist>
 void LUNSmall
-( const DistMatrix<F,colDist,STAR>& U,
-        DistMatrix<F,colDist,STAR>& X,
+( const DistMatrix<F,colDist,Dist::STAR>& U,
+        DistMatrix<F,colDist,Dist::STAR>& X,
   bool checkIfSingular )
 {
     EL_DEBUG_CSE
@@ -275,7 +275,7 @@ void LUNSmall
     const Int bsize = Blocksize();
     const Grid& g = U.Grid();
 
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g), X1_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g), X1_STAR_STAR(g);
 
     const Int kLast = LastOffset( m, bsize );
     Int k=kLast, kOld=m;
@@ -297,10 +297,10 @@ void LUNSmall
 
         U11_STAR_STAR = U11; // U11[* ,* ] <- U11[VC,* ]
         X1_STAR_STAR = X1;   // X1[* ,* ] <- X1[VC,* ]
-        
+
         // X1[* ,* ] := U11^-1[* ,* ] X1[* ,* ]
         LocalQuasiTrsm
-        ( LEFT, UPPER, NORMAL, 
+        ( LEFT, UPPER, NORMAL,
           F(1), U11_STAR_STAR, X1_STAR_STAR, checkIfSingular );
         X1 = X1_STAR_STAR;
 

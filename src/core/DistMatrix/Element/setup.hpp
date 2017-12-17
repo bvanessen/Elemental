@@ -86,7 +86,7 @@ DM::DistMatrix( const AbstractDistMatrix<T>& A )
       A.ColDist() == CDIST && A.RowDist() == RDIST && A.Wrap() == WRAP
     #define PAYLOAD(CDIST,RDIST,WRAP) \
       auto& ACast = static_cast<const DistMatrix<T,CDIST,RDIST,WRAP>&>(A); \
-      if( COLDIST != CDIST || ROWDIST != RDIST || ELEMENT != WRAP || \
+      if( COLDIST != CDIST || ROWDIST != RDIST || DistWrap::ELEMENT != WRAP || \
           reinterpret_cast<const DM*>(&A) != this ) \
           *this = ACast; \
       else \
@@ -104,7 +104,7 @@ DM::DistMatrix( const ElementalMatrix<T>& A )
     this->SetShifts();
     #define GUARD(CDIST,RDIST,WRAP) \
       A.DistData().colDist == CDIST && A.DistData().rowDist == RDIST && \
-      ELEMENT == WRAP
+      DistWrap::ELEMENT == WRAP
     #define PAYLOAD(CDIST,RDIST,WRAP) \
       auto& ACast = static_cast<const DistMatrix<T,CDIST,RDIST>&>(A); \
       if( COLDIST != CDIST || ROWDIST != RDIST || \
@@ -117,7 +117,7 @@ DM::DistMatrix( const ElementalMatrix<T>& A )
 
 template<typename T>
 template<Dist U,Dist V>
-DM::DistMatrix( const DistMatrix<T,U,V,BLOCK>& A )
+DM::DistMatrix( const DistMatrix<T,U,V,DistWrap::BLOCK>& A )
 : EM(A.Grid())
 {
     EL_DEBUG_CSE
@@ -228,7 +228,7 @@ DM& DM::operator=( const AbstractDistMatrix<T>& A )
 
 template<typename T>
 template<Dist U,Dist V>
-DM& DM::operator=( const DistMatrix<T,U,V,BLOCK>& A )
+DM& DM::operator=( const DistMatrix<T,U,V,DistWrap::BLOCK>& A )
 {
     EL_DEBUG_CSE
     // TODO(poulson):

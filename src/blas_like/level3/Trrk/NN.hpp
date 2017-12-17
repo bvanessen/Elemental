@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRRK_NN_HPP
@@ -23,7 +23,7 @@ void TrrkNN
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( CPre.Height() != CPre.Width() || APre.Height() != CPre.Height() || 
+      if( CPre.Height() != CPre.Width() || APre.Height() != CPre.Height() ||
           BPre.Width() != CPre.Width() || APre.Width() != BPre.Height() )
           LogicError("Nonconformal TrrkNN");
     )
@@ -31,14 +31,14 @@ void TrrkNN
     const Int bsize = Blocksize();
     const Grid& g = CPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre ), BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre ), BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
-    DistMatrix<T,MC,STAR> A1_MC_STAR(g);
-    DistMatrix<T,MR,STAR> B1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> A1_MC_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> B1Trans_MR_STAR(g);
 
     A1_MC_STAR.AlignWith( C );
     B1Trans_MR_STAR.AlignWith( C );

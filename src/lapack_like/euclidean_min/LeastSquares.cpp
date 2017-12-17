@@ -47,11 +47,11 @@ void Overwrite
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
-    DistMatrix<F,MD,STAR> phase(A.Grid());
-    DistMatrix<Base<F>,MD,STAR> signature(A.Grid());
+    DistMatrix<F,Dist::MD,Dist::STAR> phase(A.Grid());
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(A.Grid());
 
     const Int m = A.Height();
     const Int n = A.Width();

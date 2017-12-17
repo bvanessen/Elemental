@@ -557,8 +557,8 @@ QRAlg
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Real,Real,STAR,STAR> mainDiagProx( mainDiagPre );
-    DistMatrixReadProxy<Real,Real,STAR,STAR> subDiagProx( subDiagPre );
+    DistMatrixReadWriteProxy<Real,Real,Dist::STAR,Dist::STAR> mainDiagProx( mainDiagPre );
+    DistMatrixReadProxy<Real,Real,Dist::STAR,Dist::STAR> subDiagProx( subDiagPre );
     auto& mainDiag = mainDiagProx.Get();
     auto& subDiag = subDiagProx.Get();
 
@@ -656,14 +656,14 @@ QRAlg
     EL_DEBUG_CSE
     const Int n = mainDiagPre.Height();
 
-    DistMatrixReadWriteProxy<Real,Real,STAR,STAR> mainDiagProx( mainDiagPre );
-    DistMatrixReadProxy<Real,Real,STAR,STAR> subDiagProx( subDiagPre );
+    DistMatrixReadWriteProxy<Real,Real,Dist::STAR,Dist::STAR> mainDiagProx( mainDiagPre );
+    DistMatrixReadProxy<Real,Real,Dist::STAR,Dist::STAR> subDiagProx( subDiagPre );
     auto& mainDiag = mainDiagProx.Get();
     auto& subDiag = subDiagProx.Get();
 
     if( ctrl.accumulateEigVecs )
     {
-        DistMatrixReadWriteProxy<Real,Real,VC,STAR> QProx( QPre );
+        DistMatrixReadWriteProxy<Real,Real,Dist::VC,Dist::STAR> QProx( QPre );
         auto& Q = QProx.Get();
         if( Q.Width() != n )
             LogicError("Q was an invalid size");
@@ -676,7 +676,7 @@ QRAlg
     }
     else
     {
-        DistMatrixWriteProxy<Real,Real,VC,STAR> QProx(QPre);
+        DistMatrixWriteProxy<Real,Real,Dist::VC,Dist::STAR> QProx(QPre);
         auto& Q = QProx.Get();
         Identity( Q, n, n );
 
@@ -700,14 +700,14 @@ QRAlg
     const Int n = mainDiagPre.Height();
     typedef Complex<Real> Field;
 
-    DistMatrixReadWriteProxy<Real,Real,STAR,STAR> mainDiagProx( mainDiagPre );
-    DistMatrixReadProxy<Real,Real,STAR,STAR> subDiagProx( subDiagPre );
+    DistMatrixReadWriteProxy<Real,Real,Dist::STAR,Dist::STAR> mainDiagProx( mainDiagPre );
+    DistMatrixReadProxy<Real,Real,Dist::STAR,Dist::STAR> subDiagProx( subDiagPre );
     auto& mainDiag = mainDiagProx.Get();
     auto& subDiag = subDiagProx.Get();
 
     if( ctrl.accumulateEigVecs )
     {
-        DistMatrixReadWriteProxy<Field,Field,VC,STAR> QProx( QPre );
+        DistMatrixReadWriteProxy<Field,Field,Dist::VC,Dist::STAR> QProx( QPre );
         auto& Q = QProx.Get();
         if( Q.Width() != n )
             LogicError("Q was an invalid size");
@@ -720,7 +720,7 @@ QRAlg
     }
     else
     {
-        DistMatrix<Real,VC,STAR> QReal(QPre.Grid());
+        DistMatrix<Real,Dist::VC,Dist::STAR> QReal(QPre.Grid());
         Identity( QReal, n, n );
 
         // WARNING: Forward instability can easily yield non-determinism and

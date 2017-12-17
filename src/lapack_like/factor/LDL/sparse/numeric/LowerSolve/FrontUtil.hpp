@@ -1,20 +1,20 @@
 /*
-   Copyright (c) 2009-2012, Jack Poulson, Lexing Ying, and 
+   Copyright (c) 2009-2012, Jack Poulson, Lexing Ying, and
    The University of Texas at Austin.
    All rights reserved.
 
    Copyright (c) 2013, Jack Poulson, Lexing Ying, and Stanford University.
    All rights reserved.
 
-   Copyright (c) 2013-2014, Jack Poulson and 
+   Copyright (c) 2013-2014, Jack Poulson and
    The Georgia Institute of Technology.
    All rights reserved.
 
    Copyright (c) 2014-2015, Jack Poulson and Stanford University.
    All rights reserved.
-   
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_FACTOR_LDL_NUMERIC_LOWERSOLVE_FRONTUTIL_HPP
@@ -25,7 +25,7 @@ namespace ldl {
 
 template<typename F>
 void FormDiagonalBlocks
-( const DistMatrix<F,VC,STAR>& L, DistMatrix<F,STAR,STAR>& D, bool conjugate )
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L, DistMatrix<F,Dist::STAR,Dist::STAR>& D, bool conjugate )
 {
     const Int height = L.Width();
     auto LT = L( IR(0,height), IR(0,height) );
@@ -52,10 +52,10 @@ void FormDiagonalBlocks
 
     vector<F> recvBuf( portionSize*colStride );
     mpi::AllGather
-    ( sendBuf.data(), portionSize, 
+    ( sendBuf.data(), portionSize,
       recvBuf.data(), portionSize, L.ColComm() );
     SwapClear( sendBuf );
-    
+
     D.Resize( blocksize, height );
     for( Int q=0; q<colStride; ++q )
     {
@@ -71,7 +71,7 @@ void FormDiagonalBlocks
 }
 
 template<typename F>
-void AccumulateRHS( const DistMatrix<F,VC,STAR>& X, DistMatrix<F,STAR,STAR>& Z )
+void AccumulateRHS( const DistMatrix<F,Dist::VC,Dist::STAR>& X, DistMatrix<F,Dist::STAR,Dist::STAR>& Z )
 {
     const Int height = X.Height();
     const Int width = X.Width();

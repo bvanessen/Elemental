@@ -9,9 +9,15 @@
 #ifndef EL_BLAS_COPY_UTIL_HPP
 #define EL_BLAS_COPY_UTIL_HPP
 
-namespace El {
-namespace copy {
-namespace util {
+#include "El/core/imports/lapack.hpp"
+#include "El/Typedefs.hpp"
+
+namespace El
+{
+namespace copy
+{
+namespace util
+{
 
 template<typename T>
 void InterleaveMatrix

@@ -71,10 +71,10 @@ Householder
     const Int iOff = m-minDim;
     const Int jOff = n-minDim;
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,MD,STAR>
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::MD,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
-    DistMatrixWriteProxy<Base<F>,Base<F>,MD,STAR> signatureProx( signaturePre );
+    DistMatrixWriteProxy<Base<F>,Base<F>,Dist::MD,Dist::STAR> signatureProx( signaturePre );
     auto& A = AProx.Get();
     auto& householderScalars = householderScalarsProx.Get();
     auto& signature = signatureProx.Get();

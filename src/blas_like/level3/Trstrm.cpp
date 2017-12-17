@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include <El/blas_like/level3.hpp>
 
@@ -71,7 +70,7 @@ void Trstrm
 
 template<typename F>
 void Trstrm
-( LeftOrRight side, UpperOrLower uplo, 
+( LeftOrRight side, UpperOrLower uplo,
   Orientation orientation, UnitOrNonUnit diag,
   F alpha, const AbstractDistMatrix<F>& A, AbstractDistMatrix<F>& X,
   bool checkIfSingular )
@@ -122,7 +121,7 @@ template<typename F>
 void Trstrm
 ( LeftOrRight side, UpperOrLower uplo,
   Orientation orientation, UnitOrNonUnit diag,
-  F alpha, const DistMatrix<F,STAR,STAR>& A, DistMatrix<F,STAR,STAR>& X,
+  F alpha, const DistMatrix<F,Dist::STAR,Dist::STAR>& A, DistMatrix<F,Dist::STAR,Dist::STAR>& X,
   bool checkIfSingular )
 {
     Trstrm
@@ -143,7 +142,7 @@ void Trstrm
   template void Trstrm \
   ( LeftOrRight side, UpperOrLower uplo, \
     Orientation orientation, UnitOrNonUnit diag, \
-    F alpha, const DistMatrix<F,STAR,STAR>& A, DistMatrix<F,STAR,STAR>& X, \
+    F alpha, const DistMatrix<F,Dist::STAR,Dist::STAR>& A, DistMatrix<F,Dist::STAR,Dist::STAR>& X, \
     bool checkIfSingular );
 
 #define EL_NO_INT_PROTO

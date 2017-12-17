@@ -15,9 +15,9 @@ namespace util {
 
 template<typename Field>
 void GatherSubdiagonal
-( const DistMatrix<Field,MC,MR,BLOCK>& H,
+( const DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
   const IR& winInd,
-        DistMatrix<Field,STAR,STAR>& hSubWin )
+        DistMatrix<Field,Dist::STAR,Dist::STAR>& hSubWin )
 {
     EL_DEBUG_CSE
     const Int winSize = winInd.end - winInd.beg;
@@ -103,10 +103,10 @@ void GatherSubdiagonal
 
 template<typename Field>
 void GatherBidiagonal
-( const DistMatrix<Field,MC,MR,BLOCK>& H,
+( const DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
   const IR& winInd,
-        DistMatrix<Field,STAR,STAR>& hMainWin,
-        DistMatrix<Field,STAR,STAR>& hSubWin )
+        DistMatrix<Field,Dist::STAR,Dist::STAR>& hMainWin,
+        DistMatrix<Field,Dist::STAR,Dist::STAR>& hSubWin )
 {
     EL_DEBUG_CSE
     const Int winSize = winInd.end - winInd.beg;
@@ -198,11 +198,11 @@ void GatherBidiagonal
 
 template<typename Field>
 void GatherTridiagonal
-( const DistMatrix<Field,MC,MR,BLOCK>& H,
+( const DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
   const IR& winInd,
-        DistMatrix<Field,STAR,STAR>& hMainWin,
-        DistMatrix<Field,STAR,STAR>& hSubWin,
-        DistMatrix<Field,STAR,STAR>& hSuperWin )
+        DistMatrix<Field,Dist::STAR,Dist::STAR>& hMainWin,
+        DistMatrix<Field,Dist::STAR,Dist::STAR>& hSubWin,
+        DistMatrix<Field,Dist::STAR,Dist::STAR>& hSuperWin )
 {
     EL_DEBUG_CSE
     const Int winSize = winInd.end - winInd.beg;

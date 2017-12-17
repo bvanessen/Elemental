@@ -13,7 +13,7 @@ namespace El {
 
 template<typename T>
 void ConjugateSubmatrix
-( Matrix<T>& A, const vector<Int>& I, const vector<Int>& J )
+( Matrix<T>& A, const std::vector<Int>& I, const std::vector<Int>& J )
 {
     EL_DEBUG_CSE
     const Int m = I.size();
@@ -33,7 +33,7 @@ void ConjugateSubmatrix
 
 template<typename T>
 void ConjugateSubmatrix
-( AbstractDistMatrix<T>& A, const vector<Int>& I, const vector<Int>& J )
+( AbstractDistMatrix<T>& A, const std::vector<Int>& I, const std::vector<Int>& J )
 {
     EL_DEBUG_CSE
     const Int m = I.size();
@@ -70,9 +70,9 @@ void ConjugateSubmatrix
 
 #define PROTO(T) \
   EL_EXTERN template void ConjugateSubmatrix \
-  ( Matrix<T>& A, const vector<Int>& I, const vector<Int>& J ); \
+  ( Matrix<T>& A, const std::vector<Int>& I, const std::vector<Int>& J ); \
   EL_EXTERN template void ConjugateSubmatrix \
-  ( AbstractDistMatrix<T>& A, const vector<Int>& I, const vector<Int>& J );
+  ( AbstractDistMatrix<T>& A, const std::vector<Int>& I, const std::vector<Int>& J );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

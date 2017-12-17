@@ -55,7 +55,7 @@ void ColFilter( const ElementalMatrix<T>& A, ElementalMatrix<T>& B )
         const Int localWidthA = A.LocalWidth();
         const Int sendSize = localHeight*localWidthA;
         const Int recvSize = localHeight*localWidth;
-        vector<T> buffer;
+        std::vector<T> buffer;
         FastResize( buffer, sendSize+recvSize );
         T* sendBuf = &buffer[0];
         T* recvBuf = &buffer[sendSize];
@@ -139,7 +139,7 @@ void ColFilter
         const Int localWidthA = A.LocalWidth();
         const Int sendSize = localHeight*localWidthA;
         const Int recvSize = localHeight*localWidth;
-        vector<T> buffer;
+        std::vector<T> buffer;
         FastResize( buffer, sendSize+recvSize );
         T* sendBuf = &buffer[0];
         T* recvBuf = &buffer[sendSize];

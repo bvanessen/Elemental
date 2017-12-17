@@ -24,7 +24,7 @@ void MakeSymmetric( UpperOrLower uplo, Matrix<T>& A, bool conjugate )
 
     T* ABuf = A.Buffer();
     const Int ldim = A.LDim();
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         for( Int j=0; j<n; ++j )
         {
@@ -64,12 +64,12 @@ void MakeSymmetric
     if( conjugate )
         MakeDiagonalReal(A);
 
-    unique_ptr<ElementalMatrix<T>> ATrans( A.Construct(A.Grid(),A.Root()) );
+    std::unique_ptr<ElementalMatrix<T>> ATrans( A.Construct(A.Grid(),A.Root()) );
     Transpose( A, *ATrans, conjugate );
-    if( uplo == LOWER )
-        AxpyTrapezoid( UPPER, T(1), *ATrans, A, 1 );
+    if( uplo == UpperOrLower::LOWER )
+        AxpyTrapezoid( UpperOrLower::UPPER, T(1), *ATrans, A, 1 );
     else
-        AxpyTrapezoid( LOWER, T(1), *ATrans, A, -1 );
+        AxpyTrapezoid( UpperOrLower::LOWER, T(1), *ATrans, A, -1 );
 }
 
 template<typename T>

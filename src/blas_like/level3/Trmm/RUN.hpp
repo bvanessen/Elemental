@@ -5,8 +5,8 @@
    Copyright (c) 2013, The University of Texas at Austin
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRMM_RUN_HPP
@@ -19,9 +19,9 @@ template<typename T>
 void LocalAccumulateRUN
 ( Orientation orientation,
   UnitOrNonUnit diag, T alpha,
-  const DistMatrix<T,MC,  MR  >& U,
-  const DistMatrix<T,STAR,MC  >& X,
-        DistMatrix<T,MR,  STAR>& ZTrans )
+  const DistMatrix<T,Dist::MC,  Dist::MR  >& U,
+  const DistMatrix<T,Dist::STAR,Dist::MC  >& X,
+        DistMatrix<T,Dist::MR,  Dist::STAR>& ZTrans )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -50,7 +50,7 @@ void LocalAccumulateRUN
 
         auto X0 = X( ALL, IR(0,k)    );
         auto X1 = X( ALL, IR(k,k+nb) );
-        
+
         auto Z1Trans = ZTrans( IR(k,k+nb), ALL );
 
         D11.AlignWith( U11 );
@@ -65,7 +65,7 @@ void LocalAccumulateRUN
 
 template<typename T>
 void RUNA
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<T>& UPre,
         AbstractDistMatrix<T>& XPre )
 {
@@ -78,15 +78,15 @@ void RUNA
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,STAR,VC  > X1_STAR_VC(g);
-    DistMatrix<T,STAR,MC  > X1_STAR_MC(g);
-    DistMatrix<T,MR,  STAR> Z1Trans_MR_STAR(g);
-    DistMatrix<T,MR,  MC  > Z1Trans_MR_MC(g);
+    DistMatrix<T,Dist::STAR,Dist::VC  > X1_STAR_VC(g);
+    DistMatrix<T,Dist::STAR,Dist::MC  > X1_STAR_MC(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> Z1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::MR,  Dist::MC  > Z1Trans_MR_MC(g);
 
     X1_STAR_VC.AlignWith( U );
     X1_STAR_MC.AlignWith( U );
@@ -113,7 +113,7 @@ void RUNA
 
 template<typename T>
 void RUNCOld
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<T>& UPre,
         AbstractDistMatrix<T>& XPre )
 {
@@ -128,16 +128,16 @@ void RUNCOld
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,MR,  STAR> U01_MR_STAR(g);
-    DistMatrix<T,STAR,STAR> U11_STAR_STAR(g); 
-    DistMatrix<T,VC,  STAR> X1_VC_STAR(g);    
-    DistMatrix<T,MC,  STAR> D1_MC_STAR(g);
-    
+    DistMatrix<T,Dist::MR,  Dist::STAR> U01_MR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<T,Dist::VC,  Dist::STAR> X1_VC_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> D1_MC_STAR(g);
+
     const Int kLast = LastOffset( n, bsize );
     for( Int k=kLast; k>=0; k-=bsize )
     {
@@ -154,7 +154,7 @@ void RUNCOld
         LocalTrmm
         ( RIGHT, UPPER, NORMAL, diag, T(1), U11_STAR_STAR, X1_VC_STAR );
         X1 = X1_VC_STAR;
- 
+
         U01_MR_STAR.AlignWith( X0 );
         U01_MR_STAR = U01;
         D1_MC_STAR.AlignWith( X1 );
@@ -165,7 +165,7 @@ void RUNCOld
 
 template<typename T>
 void RUNC
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<T>& UPre,
         AbstractDistMatrix<T>& XPre )
 {
@@ -180,16 +180,16 @@ void RUNC
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,MR,  STAR> U12Trans_MR_STAR(g);
-    DistMatrix<T,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<T,VC,  STAR> X1_VC_STAR(g);
-    DistMatrix<T,MC,  STAR> X1_MC_STAR(g);
-    
+    DistMatrix<T,Dist::MR,  Dist::STAR> U12Trans_MR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<T,Dist::VC,  Dist::STAR> X1_VC_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> X1_MC_STAR(g);
+
     const Int kLast = LastOffset( n, bsize );
     for( Int k=kLast; k>=0; k-=bsize )
     {

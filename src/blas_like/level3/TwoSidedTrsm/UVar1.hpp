@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRSM_UVAR1_HPP
@@ -12,7 +12,7 @@
 namespace El {
 namespace twotrsm {
 
-template<typename F> 
+template<typename F>
 void UVar1( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
 {
     EL_DEBUG_CSE
@@ -70,9 +70,9 @@ void UVar1( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
     }
 }
 
-template<typename F> 
+template<typename F>
 void UVar1
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& APre,
   const AbstractDistMatrix<F>& UPre )
 {
@@ -89,20 +89,20 @@ void UVar1
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
     auto& A = AProx.Get();
     auto& U = UProx.GetLocked();
 
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), U11_STAR_STAR(g), 
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), U11_STAR_STAR(g),
                             X11_STAR_STAR(g);
-    DistMatrix<F,STAR,MR  > U01Adj_STAR_MR(g);
-    DistMatrix<F,VC,  STAR> A01_VC_STAR(g), U01_VC_STAR(g);
-    DistMatrix<F,VR,  STAR> U01_VR_STAR(g);
-    DistMatrix<F,MC,  STAR> U01_MC_STAR(g), Z01_MC_STAR(g);
-    DistMatrix<F,MR,  STAR> Z01_MR_STAR(g);
-    DistMatrix<F,MR,  MC  > Z01_MR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > U01Adj_STAR_MR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> A01_VC_STAR(g), U01_VC_STAR(g);
+    DistMatrix<F,Dist::VR,  Dist::STAR> U01_VR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> U01_MC_STAR(g), Z01_MC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> Z01_MR_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::MC  > Z01_MR_MC(g);
     DistMatrix<F> Y01(g);
 
     for( Int k=0; k<n; k+=bsize )
@@ -134,7 +134,7 @@ void UVar1
         Zero( Z01_MC_STAR );
         Zero( Z01_MR_STAR );
         symm::LocalAccumulateLU
-        ( ADJOINT, 
+        ( ADJOINT,
           F(1), A00, U01_MC_STAR, U01Adj_STAR_MR, Z01_MC_STAR, Z01_MR_STAR );
         Z01_MR_MC.AlignWith( A01 );
         Contract( Z01_MR_STAR, Z01_MR_MC );

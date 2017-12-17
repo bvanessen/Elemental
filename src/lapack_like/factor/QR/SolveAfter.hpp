@@ -89,8 +89,8 @@ void SolveAfter
     if( m < n )
         LogicError("Must have full column rank");
 
-    DistMatrixReadProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& A = AProx.GetLocked();
     auto& X = XProx.Get();
 

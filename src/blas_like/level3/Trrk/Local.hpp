@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRRK_LOCAL_HPP
@@ -19,7 +19,7 @@ namespace trrk {
 
 template<typename T>
 void EnsureConformal
-( const DistMatrix<T,MC,STAR>& A, const DistMatrix<T>& C, string name )
+( const DistMatrix<T,Dist::MC,Dist::STAR>& A, const DistMatrix<T>& C, string name )
 {
     if( A.Height() != C.Height() || A.ColAlign() != C.ColAlign() )
         LogicError(name," not conformal with C");
@@ -27,7 +27,7 @@ void EnsureConformal
 
 template<typename T>
 void EnsureConformal
-( const DistMatrix<T,STAR,MC>& A, const DistMatrix<T>& C, string name )
+( const DistMatrix<T,Dist::STAR,Dist::MC>& A, const DistMatrix<T>& C, string name )
 {
     if( A.Width() != C.Height() || A.RowAlign() != C.ColAlign() )
         LogicError(name," not conformal with C");
@@ -35,7 +35,7 @@ void EnsureConformal
 
 template<typename T>
 void EnsureConformal
-( const DistMatrix<T,MR,STAR>& A, const DistMatrix<T>& C, string name )
+( const DistMatrix<T,Dist::MR,Dist::STAR>& A, const DistMatrix<T>& C, string name )
 {
     if( A.Height() != C.Width() || A.ColAlign() != C.RowAlign() )
         LogicError(name," not conformal with C");
@@ -43,7 +43,7 @@ void EnsureConformal
 
 template<typename T>
 void EnsureConformal
-( const DistMatrix<T,STAR,MR>& A, const DistMatrix<T>& C, string name )
+( const DistMatrix<T,Dist::STAR,Dist::MR>& A, const DistMatrix<T>& C, string name )
 {
     if( A.Width() != C.Width() || A.RowAlign() != C.RowAlign() )
         LogicError(name," not conformal with C");
@@ -123,7 +123,7 @@ void CheckInputTT
 // Local C := alpha A B + C
 template<typename T>
 void TrrkNNKernel
-( UpperOrLower uplo, 
+( UpperOrLower uplo,
   T alpha, const Matrix<T>& A, const Matrix<T>& B,
                  Matrix<T>& C )
 {
@@ -166,9 +166,9 @@ void TrrkNNKernel
 // Distributed C := alpha A B + C
 template<typename T>
 void LocalTrrkKernel
-( UpperOrLower uplo, 
-  T alpha, const DistMatrix<T,MC,  STAR>& A,
-           const DistMatrix<T,STAR,MR  >& B,
+( UpperOrLower uplo,
+  T alpha, const DistMatrix<T,Dist::MC,  Dist::STAR>& A,
+           const DistMatrix<T,Dist::STAR,Dist::MR  >& B,
                  DistMatrix<T>& C )
 {
     EL_DEBUG_CSE
@@ -259,8 +259,8 @@ template<typename T>
 void LocalTrrkKernel
 ( UpperOrLower uplo,
   Orientation orientationOfB,
-  T alpha, const DistMatrix<T,MC,STAR>& A,
-           const DistMatrix<T,MR,STAR>& B,
+  T alpha, const DistMatrix<T,Dist::MC,Dist::STAR>& A,
+           const DistMatrix<T,Dist::MR,Dist::STAR>& B,
                  DistMatrix<T>& C )
 {
     EL_DEBUG_CSE
@@ -351,8 +351,8 @@ template<typename T>
 void LocalTrrkKernel
 ( UpperOrLower uplo,
   Orientation orientationOfA,
-  T alpha, const DistMatrix<T,STAR,MC>& A,
-           const DistMatrix<T,STAR,MR>& B,
+  T alpha, const DistMatrix<T,Dist::STAR,Dist::MC>& A,
+           const DistMatrix<T,Dist::STAR,Dist::MR>& B,
                  DistMatrix<T>& C )
 {
     EL_DEBUG_CSE
@@ -445,8 +445,8 @@ void LocalTrrkKernel
 ( UpperOrLower uplo,
   Orientation orientationOfA,
   Orientation orientationOfB,
-  T alpha, const DistMatrix<T,STAR,MC  >& A,
-           const DistMatrix<T,MR,  STAR>& B,
+  T alpha, const DistMatrix<T,Dist::STAR,Dist::MC  >& A,
+           const DistMatrix<T,Dist::MR,  Dist::STAR>& B,
                  DistMatrix<T>& C )
 {
     EL_DEBUG_CSE
@@ -681,8 +681,8 @@ void TrrkTT
 template<typename T>
 void LocalTrrk
 ( UpperOrLower uplo,
-  T alpha, const DistMatrix<T,MC,  STAR>& A,
-           const DistMatrix<T,STAR,MR  >& B,
+  T alpha, const DistMatrix<T,Dist::MC,  Dist::STAR>& A,
+           const DistMatrix<T,Dist::STAR,Dist::MR  >& B,
   T beta,        DistMatrix<T>& C )
 {
     EL_DEBUG_CSE
@@ -732,8 +732,8 @@ template<typename T>
 void LocalTrrk
 ( UpperOrLower uplo,
   Orientation orientationOfB,
-  T alpha, const DistMatrix<T,MC,STAR>& A,
-           const DistMatrix<T,MR,STAR>& B,
+  T alpha, const DistMatrix<T,Dist::MC,Dist::STAR>& A,
+           const DistMatrix<T,Dist::MR,Dist::STAR>& B,
   T beta,        DistMatrix<T>& C )
 {
     EL_DEBUG_CSE
@@ -783,8 +783,8 @@ template<typename T>
 void LocalTrrk
 ( UpperOrLower uplo,
   Orientation orientationOfA,
-  T alpha, const DistMatrix<T,STAR,MC>& A,
-           const DistMatrix<T,STAR,MR>& B,
+  T alpha, const DistMatrix<T,Dist::STAR,Dist::MC>& A,
+           const DistMatrix<T,Dist::STAR,Dist::MR>& B,
   T beta,        DistMatrix<T>& C )
 {
     EL_DEBUG_CSE
@@ -834,8 +834,8 @@ template<typename T>
 void LocalTrrk
 ( UpperOrLower uplo,
   Orientation orientationOfA, Orientation orientationOfB,
-  T alpha, const DistMatrix<T,STAR,MC  >& A,
-           const DistMatrix<T,MR,  STAR>& B,
+  T alpha, const DistMatrix<T,Dist::STAR,Dist::MC  >& A,
+           const DistMatrix<T,Dist::MR,  Dist::STAR>& B,
   T beta,        DistMatrix<T>& C )
 {
     EL_DEBUG_CSE

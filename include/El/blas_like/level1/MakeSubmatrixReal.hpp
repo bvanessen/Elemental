@@ -14,8 +14,8 @@ namespace El {
 template<typename T>
 void MakeSubmatrixReal
 (       Matrix<T>& A,
-  const vector<Int>& I,
-  const vector<Int>& J )
+  const std::vector<Int>& I,
+  const std::vector<Int>& J )
 {
     EL_DEBUG_CSE
     const Int m = I.size();
@@ -36,8 +36,8 @@ void MakeSubmatrixReal
 template<typename T>
 void MakeSubmatrixReal
 (       AbstractDistMatrix<T>& A,
-  const vector<Int>& I,
-  const vector<Int>& J )
+  const std::vector<Int>& I,
+  const std::vector<Int>& J )
 {
     EL_DEBUG_CSE
     const Int m = I.size();
@@ -74,9 +74,9 @@ void MakeSubmatrixReal
 
 #define PROTO(T) \
   EL_EXTERN template void MakeSubmatrixReal \
-  ( Matrix<T>& A, const vector<Int>& I, const vector<Int>& J ); \
+  ( Matrix<T>& A, const std::vector<Int>& I, const std::vector<Int>& J ); \
   EL_EXTERN template void MakeSubmatrixReal \
-  ( AbstractDistMatrix<T>& A, const vector<Int>& I, const vector<Int>& J );
+  ( AbstractDistMatrix<T>& A, const std::vector<Int>& I, const std::vector<Int>& J );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

@@ -83,14 +83,14 @@ void UpperUpdate
       AssertSameGrids( UPre, VPre );
     )
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> UProx( UPre ), VProx( VPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> UProx( UPre ), VProx( VPre );
     auto& U = UProx.Get();
     auto& V = VProx.Get();
 
     const Int m = V.Height();
     const Grid& g = U.Grid();
-    DistMatrix<F,STAR,MC> z12_STAR_MC(g), b12_STAR_MC(g);
-    DistMatrix<F,STAR,MR> v1_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC> z12_STAR_MC(g), b12_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR> v1_STAR_MR(g);
 
     for( Int k=0; k<m; ++k )
     {
@@ -207,14 +207,14 @@ void UpperDowndate
       AssertSameGrids( UPre, VPre );
     )
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> UProx( UPre ), VProx( VPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> UProx( UPre ), VProx( VPre );
     auto& U = UProx.Get();
     auto& V = VProx.Get();
 
     const Int m = V.Height();
     const Grid& g = U.Grid();
-    DistMatrix<F,STAR,MC> z12_STAR_MC(g), b12_STAR_MC(g);
-    DistMatrix<F,STAR,MR> v1_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC> z12_STAR_MC(g), b12_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR> v1_STAR_MR(g);
 
     for( Int k=0; k<m; ++k )
     {

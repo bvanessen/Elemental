@@ -116,7 +116,7 @@ SVDInfo GolubReinsch
 
     // Bidiagonalize A
     Timer timer;
-    DistMatrix<Field,STAR,STAR> householderScalarsP(g), householderScalarsQ(g);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> householderScalarsP(g), householderScalarsQ(g);
     if( ctrl.time && g.Rank() == 0 )
         timer.Start();
     Bidiag( A, householderScalarsP, householderScalarsQ );
@@ -190,9 +190,9 @@ void GolubReinsch
   const SVDCtrl<Base<Field>>& ctrl )
 {
     EL_DEBUG_CSE
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> UProx( UPre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> VProx( VPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> VProx( VPre );
     auto& A = AProx.Get();
     auto& U = UProx.Get();
     auto& V = VProx.Get();
@@ -248,7 +248,7 @@ SVDInfo GolubReinsch
 
     // Bidiagonalize A
     Timer timer;
-    DistMatrix<Field,STAR,STAR> householderScalarsP(g), householderScalarsQ(g);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> householderScalarsP(g), householderScalarsQ(g);
     if( ctrl.time && g.Rank() == 0 )
         timer.Start();
     Bidiag( A, householderScalarsP, householderScalarsQ );
@@ -277,7 +277,7 @@ SVDInfo GolubReinsch
   const SVDCtrl<Base<Field>>& ctrl )
 {
     EL_DEBUG_CSE
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
     return GolubReinsch( A, s, ctrl );
 }

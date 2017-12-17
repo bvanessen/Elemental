@@ -86,7 +86,7 @@ void Copy( const ElementalMatrix<S>& A, DistMatrix<T,U,V>& B )
 }
 
 template<typename T,Dist U,Dist V>
-void Copy( const BlockMatrix<T>& A, DistMatrix<T,U,V,BLOCK>& B )
+void Copy( const BlockMatrix<T>& A, DistMatrix<T,U,V,DistWrap::BLOCK>& B )
 {
     EL_DEBUG_CSE
     B = A;
@@ -95,7 +95,7 @@ void Copy( const BlockMatrix<T>& A, DistMatrix<T,U,V,BLOCK>& B )
 // Datatype conversions should not be very common, and so it is likely best to
 // avoid explicitly instantiating every combination
 template<typename S,typename T,Dist U,Dist V>
-void Copy( const BlockMatrix<S>& A, DistMatrix<T,U,V,BLOCK>& B )
+void Copy( const BlockMatrix<S>& A, DistMatrix<T,U,V,DistWrap::BLOCK>& B )
 {
     EL_DEBUG_CSE
     if( A.Grid() == B.Grid() && A.ColDist() == U && A.RowDist() == V )
@@ -117,7 +117,7 @@ void Copy( const BlockMatrix<S>& A, DistMatrix<T,U,V,BLOCK>& B )
             return;
         }
     }
-    DistMatrix<S,U,V,BLOCK> BOrig(A.Grid());
+    DistMatrix<S,U,V,DistWrap::BLOCK> BOrig(A.Grid());
     BOrig.AlignWith( B );
     BOrig = A;
     B.Resize( A.Height(), A.Width() );
@@ -130,9 +130,9 @@ void Copy( const ElementalMatrix<S>& A, ElementalMatrix<T>& B )
 {
     EL_DEBUG_CSE
     #define GUARD(CDIST,RDIST,WRAP) \
-      B.ColDist() == CDIST && B.RowDist() == RDIST && ELEMENT == WRAP
+      B.ColDist() == CDIST && B.RowDist() == RDIST && DistWrap::ELEMENT == WRAP
     #define PAYLOAD(CDIST,RDIST,WRAP) \
-        auto& BCast = static_cast<DistMatrix<T,CDIST,RDIST,ELEMENT>&>(B); \
+        auto& BCast = static_cast<DistMatrix<T,CDIST,RDIST,DistWrap::ELEMENT>&>(B); \
         Copy( A, BCast );
     #include <El/macros/GuardAndPayload.h>
 }
@@ -142,13 +142,13 @@ void Copy( const AbstractDistMatrix<T>& A, AbstractDistMatrix<T>& B )
 {
     EL_DEBUG_CSE
     const DistWrap wrapA=A.Wrap(), wrapB=B.Wrap();
-    if( wrapA == ELEMENT && wrapB == ELEMENT )
+    if( wrapA == DistWrap::ELEMENT && wrapB == DistWrap::ELEMENT )
     {
         auto& ACast = static_cast<const ElementalMatrix<T>&>(A);
         auto& BCast = static_cast<ElementalMatrix<T>&>(B);
         Copy( ACast, BCast );
     }
-    else if( wrapA == BLOCK && wrapB == BLOCK )
+    else if( wrapA == DistWrap::BLOCK && wrapB == DistWrap::BLOCK )
     {
         auto& ACast = static_cast<const BlockMatrix<T>&>(A);
         auto& BCast = static_cast<BlockMatrix<T>&>(B);
@@ -166,13 +166,13 @@ void Copy( const AbstractDistMatrix<S>& A, AbstractDistMatrix<T>& B )
 {
     EL_DEBUG_CSE
     const DistWrap wrapA=A.Wrap(), wrapB=B.Wrap();
-    if( wrapA == ELEMENT && wrapB == ELEMENT )
+    if( wrapA == DistWrap::ELEMENT && wrapB == DistWrap::ELEMENT )
     {
         auto& ACast = static_cast<const ElementalMatrix<S>&>(A);
         auto& BCast = static_cast<ElementalMatrix<T>&>(B);
         Copy( ACast, BCast );
     }
-    else if( wrapA == BLOCK && wrapB == BLOCK )
+    else if( wrapA == DistWrap::BLOCK && wrapB == DistWrap::BLOCK )
     {
         auto& ACast = static_cast<const BlockMatrix<S>&>(A);
         auto& BCast = static_cast<BlockMatrix<T>&>(B);
@@ -190,16 +190,16 @@ void Copy( const BlockMatrix<S>& A, BlockMatrix<T>& B )
 {
     EL_DEBUG_CSE
     #define GUARD(CDIST,RDIST,WRAP) \
-      B.ColDist() == CDIST && B.RowDist() == RDIST && BLOCK == WRAP
+      B.ColDist() == CDIST && B.RowDist() == RDIST && DistWrap::BLOCK == WRAP
     #define PAYLOAD(CDIST,RDIST,WRAP) \
-      auto& BCast = static_cast<DistMatrix<T,CDIST,RDIST,BLOCK>&>(B); \
+      auto& BCast = static_cast<DistMatrix<T,CDIST,RDIST,DistWrap::BLOCK>&>(B); \
       Copy( A, BCast );
     #include <El/macros/GuardAndPayload.h>
 }
 
 template<typename T>
 void CopyFromRoot
-( const Matrix<T>& A, DistMatrix<T,CIRC,CIRC>& B, bool includingViewers )
+( const Matrix<T>& A, DistMatrix<T,Dist::CIRC,Dist::CIRC>& B, bool includingViewers )
 {
     EL_DEBUG_CSE
     if( B.CrossRank() != B.Root() )
@@ -210,7 +210,7 @@ void CopyFromRoot
 }
 
 template<typename T>
-void CopyFromNonRoot( DistMatrix<T,CIRC,CIRC>& B, bool includingViewers )
+void CopyFromNonRoot( DistMatrix<T,Dist::CIRC,Dist::CIRC>& B, bool includingViewers )
 {
     EL_DEBUG_CSE
     if( B.CrossRank() == B.Root() )
@@ -220,7 +220,7 @@ void CopyFromNonRoot( DistMatrix<T,CIRC,CIRC>& B, bool includingViewers )
 
 template<typename T>
 void CopyFromRoot
-( const Matrix<T>& A, DistMatrix<T,CIRC,CIRC,BLOCK>& B,
+( const Matrix<T>& A, DistMatrix<T,Dist::CIRC,Dist::CIRC,DistWrap::BLOCK>& B,
   bool includingViewers )
 {
     EL_DEBUG_CSE
@@ -233,7 +233,7 @@ void CopyFromRoot
 
 template<typename T>
 void CopyFromNonRoot
-( DistMatrix<T,CIRC,CIRC,BLOCK>& B, bool includingViewers )
+( DistMatrix<T,Dist::CIRC,Dist::CIRC,DistWrap::BLOCK>& B, bool includingViewers )
 {
     EL_DEBUG_CSE
     if( B.CrossRank() == B.Root() )
@@ -253,14 +253,14 @@ void CopyFromNonRoot
   EL_EXTERN template void Copy \
   ( const AbstractDistMatrix<T>& A, AbstractDistMatrix<T>& B ); \
   EL_EXTERN template void CopyFromRoot \
-  ( const Matrix<T>& A, DistMatrix<T,CIRC,CIRC>& B, bool includingViewers ); \
+  ( const Matrix<T>& A, DistMatrix<T,Dist::CIRC,Dist::CIRC>& B, bool includingViewers ); \
   EL_EXTERN template void CopyFromNonRoot \
-  ( DistMatrix<T,CIRC,CIRC>& B, bool includingViewers ); \
+  ( DistMatrix<T,Dist::CIRC,Dist::CIRC>& B, bool includingViewers ); \
   EL_EXTERN template void CopyFromRoot \
-  ( const Matrix<T>& A, DistMatrix<T,CIRC,CIRC,BLOCK>& B, \
+  ( const Matrix<T>& A, DistMatrix<T,Dist::CIRC,Dist::CIRC,DistWrap::BLOCK>& B, \
     bool includingViewers ); \
   EL_EXTERN template void CopyFromNonRoot \
-  ( DistMatrix<T,CIRC,CIRC,BLOCK>& B, bool includingViewers );
+  ( DistMatrix<T,Dist::CIRC,Dist::CIRC,DistWrap::BLOCK>& B, bool includingViewers );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

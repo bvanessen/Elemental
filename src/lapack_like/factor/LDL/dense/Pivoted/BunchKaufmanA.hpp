@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_LDL_PIVOTED_BUNCHKAUFMANA_HPP
@@ -57,7 +57,7 @@ BunchKaufmanA( const Matrix<F>& A, Base<F> gamma )
     }
 
     if( Abs(A(r,r)) >= gamma*rowMaxVal )
-    { 
+    {
         pivot.nb = 1;
         pivot.from[0] = r;
         return pivot;
@@ -151,7 +151,7 @@ PanelBunchKaufmanA
         auto XB0 = X( indB, ind0 );
         auto y10 = Y( ind1, ind0 );
         Gemv( NORMAL, F(-1), XB0, y10, F(1), zB1 );
-    } 
+    }
 
     const Real alpha11Abs = Abs(zB1(0));
     const auto a21Max = VectorMaxAbsLoc( zB1(ind2Off,ind1Off) );
@@ -174,7 +174,7 @@ PanelBunchKaufmanA
                      indrB( r, n   );
     auto aLeft   = A( indr1, indrM );
     auto aBottom = A( indrB, indr1 );
-        
+
     auto zLeft( aLeft );
     auto zBottom( aBottom );
     auto zStrictBottom = zBottom( indr2Off, indr1Off );
@@ -194,7 +194,7 @@ PanelBunchKaufmanA
         auto XrB0 = X( indrB, ind0 );
         auto yr10 = Y( indr1, ind0 );
         Gemv( NORMAL, F(-1), XrB0, yr10, F(1), zBottom );
-    } 
+    }
 
     const auto leftMax   = VectorMaxAbsLoc( zLeft );
     const auto bottomMax = VectorMaxAbsLoc( zStrictBottom );
@@ -224,9 +224,9 @@ PanelBunchKaufmanA
 template<typename F>
 LDLPivot
 PanelBunchKaufmanA
-( const DistMatrix<F>& A, 
-  const DistMatrix<F,MC,STAR>& X,
-  const DistMatrix<F,MR,STAR>& Y, 
+( const DistMatrix<F>& A,
+  const DistMatrix<F,Dist::MC,Dist::STAR>& X,
+  const DistMatrix<F,Dist::MR,Dist::STAR>& Y,
   Base<F> gamma )
 {
     EL_DEBUG_CSE
@@ -251,7 +251,7 @@ PanelBunchKaufmanA
         auto XB0 = X( indB, ind0 );
         auto y10 = Y( ind1, ind0 );
         LocalGemv( NORMAL, F(-1), XB0, y10, F(1), zB1 );
-    } 
+    }
 
     const Real alpha11Abs = Abs(zB1.Get(0,0));
     const auto a21Max = VectorMaxAbsLoc( zB1(ind2Off,ind1Off) );
@@ -274,7 +274,7 @@ PanelBunchKaufmanA
                      indrB( r, n   );
     auto aLeft   = A( indr1, indrM );
     auto aBottom = A( indrB, indr1 );
-        
+
     auto zLeft( aLeft );
     auto zBottom( aBottom );
     auto zStrictBottom = zBottom( indr2Off, indr1Off );
@@ -296,7 +296,7 @@ PanelBunchKaufmanA
         auto XrB0 = X( indrB, ind0 );
         auto yr10 = Y( indr1, ind0 );
         LocalGemv( NORMAL, F(-1), XrB0, yr10, F(1), zBottom );
-    } 
+    }
 
     const auto leftMax   = VectorMaxAbsLoc( zLeft );
     const auto bottomMax = VectorMaxAbsLoc( zStrictBottom );
@@ -319,7 +319,7 @@ PanelBunchKaufmanA
     // Default to a 2x2 pivot with k and r
     pivot.nb = 2;
     pivot.from[0] = k;
-    pivot.from[1] = r; 
+    pivot.from[1] = r;
     return pivot;
 }
 

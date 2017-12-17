@@ -227,8 +227,8 @@ void InvertPermutation
     if( n == 0 )
         return;
 
-    DistMatrixReadProxy<Int,Int,VC,STAR> pProx( pPre );
-    DistMatrixWriteProxy<Int,Int,VC,STAR> pInvProx( pInvPre );
+    DistMatrixReadProxy<Int,Int,Dist::VC,Dist::STAR> pProx( pPre );
+    DistMatrixWriteProxy<Int,Int,Dist::VC,Dist::STAR> pInvProx( pInvPre );
     auto& p = pProx.GetLocked();
     auto& pInv = pInvProx.Get();
     auto& pLoc = p.LockedMatrix();
@@ -442,7 +442,7 @@ void DistPermutation::SwapSequence( const DistPermutation& P, Int offset )
         const Int numSwapAppends = P.numSwaps_;
         auto activeInd = IR(0,numSwapAppends);
 
-        DistMatrix<Int,STAR,STAR> swapDests_STAR_STAR =
+        DistMatrix<Int,Dist::STAR,Dist::STAR> swapDests_STAR_STAR =
           P.swapDests_(activeInd,ALL);
         auto& swapDestsLoc = swapDests_STAR_STAR.Matrix();
 
@@ -453,7 +453,7 @@ void DistPermutation::SwapSequence( const DistPermutation& P, Int offset )
         }
         else
         {
-            DistMatrix<Int,STAR,STAR> swapOrigins_STAR_STAR =
+            DistMatrix<Int,Dist::STAR,Dist::STAR> swapOrigins_STAR_STAR =
               P.swapOrigins_(activeInd,ALL);
             auto& swapOriginsLoc = swapOrigins_STAR_STAR.Matrix();
             for( Int j=0; j<numSwapAppends; ++j )
@@ -478,7 +478,7 @@ void DistPermutation::SwapSequence
   Int offset )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Int,Int,STAR,STAR>
+    DistMatrixReadProxy<Int,Int,Dist::STAR,Dist::STAR>
       swapOriginsProx( swapOriginsPre ),
       swapDestsProx( swapDestsPre );
     auto& swapOrigins = swapOriginsProx.GetLocked();
@@ -498,7 +498,7 @@ void DistPermutation::ImplicitSwapSequence
   Int offset )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Int,Int,STAR,STAR> swapDestsProx( swapDestsPre );
+    DistMatrixReadProxy<Int,Int,Dist::STAR,Dist::STAR> swapDestsProx( swapDestsPre );
     auto& swapDests = swapDestsProx.GetLocked();
     auto& swapDestsLoc = swapDests.LockedMatrix();
 
@@ -666,7 +666,7 @@ bool DistPermutation::Parity() const
             staleInverse_ = false;
         }
 
-        DistMatrix<Int,STAR,STAR> permCopy(perm_), invPermCopy(invPerm_);
+        DistMatrix<Int,Dist::STAR,Dist::STAR> permCopy(perm_), invPermCopy(invPerm_);
         auto& permCopyLoc = permCopy.Matrix();
         auto& invPermCopyLoc = invPermCopy.Matrix();
 
@@ -704,7 +704,7 @@ bool DistPermutation::IsSwapSequence() const
 bool DistPermutation::IsImplicitSwapSequence() const
 { return implicitSwapOrigins_; }
 
-const DistMatrix<Int,VC,STAR> DistPermutation::SwapOrigins() const
+const DistMatrix<Int,Dist::VC,Dist::STAR> DistPermutation::SwapOrigins() const
 {
     EL_DEBUG_CSE
     if( !swapSequence_ || !implicitSwapOrigins_ )
@@ -712,7 +712,7 @@ const DistMatrix<Int,VC,STAR> DistPermutation::SwapOrigins() const
     return swapOrigins_(IR(0,numSwaps_),ALL);
 }
 
-const DistMatrix<Int,VC,STAR> DistPermutation::SwapDestinations() const
+const DistMatrix<Int,Dist::VC,Dist::STAR> DistPermutation::SwapDestinations() const
 {
     EL_DEBUG_CSE
     if( !swapSequence_ )
@@ -740,7 +740,7 @@ void DistPermutation::PermuteCols( AbstractDistMatrix<T>& A, Int offset ) const
         // TODO(poulson): Decide on the data structure; an std::vector of pivot
         // origins and destinations?
 
-        DistMatrix<Int,STAR,STAR> dests_STAR_STAR( swapDests_(activeInd,ALL) );
+        DistMatrix<Int,Dist::STAR,Dist::STAR> dests_STAR_STAR( swapDests_(activeInd,ALL) );
         auto& destsLoc = dests_STAR_STAR.Matrix();
         if( implicitSwapOrigins_ )
         {
@@ -753,7 +753,7 @@ void DistPermutation::PermuteCols( AbstractDistMatrix<T>& A, Int offset ) const
         }
         else
         {
-            DistMatrix<Int,STAR,STAR> origins_STAR_STAR =
+            DistMatrix<Int,Dist::STAR,Dist::STAR> origins_STAR_STAR =
               swapOrigins_(activeInd,ALL);
             auto& originsLoc = origins_STAR_STAR.Matrix();
             for( Int j=0; j<numSwaps_; ++j )
@@ -819,7 +819,7 @@ void DistPermutation::InversePermuteCols
 
         auto activeInd = IR(0,numSwaps_);
 
-        DistMatrix<Int,STAR,STAR> dests_STAR_STAR( swapDests_(activeInd,ALL) );
+        DistMatrix<Int,Dist::STAR,Dist::STAR> dests_STAR_STAR( swapDests_(activeInd,ALL) );
         auto& destsLoc = dests_STAR_STAR.Matrix();
         if( implicitSwapOrigins_ )
         {
@@ -832,7 +832,7 @@ void DistPermutation::InversePermuteCols
         }
         else
         {
-            DistMatrix<Int,STAR,STAR> origins_STAR_STAR =
+            DistMatrix<Int,Dist::STAR,Dist::STAR> origins_STAR_STAR =
               swapOrigins_(activeInd,ALL);
             auto& originsLoc = origins_STAR_STAR.Matrix();
             for( Int j=numSwaps_-1; j>=0; --j )
@@ -897,7 +897,7 @@ void DistPermutation::PermuteRows( AbstractDistMatrix<T>& A, Int offset ) const
 
         auto activeInd = IR(0,numSwaps_);
 
-        DistMatrix<Int,STAR,STAR> dests_STAR_STAR = swapDests_(activeInd,ALL);
+        DistMatrix<Int,Dist::STAR,Dist::STAR> dests_STAR_STAR = swapDests_(activeInd,ALL);
         auto& destsLoc = dests_STAR_STAR.Matrix();
         if( implicitSwapOrigins_ )
         {
@@ -910,7 +910,7 @@ void DistPermutation::PermuteRows( AbstractDistMatrix<T>& A, Int offset ) const
         }
         else
         {
-            DistMatrix<Int,STAR,STAR> origins_STAR_STAR =
+            DistMatrix<Int,Dist::STAR,Dist::STAR> origins_STAR_STAR =
               swapOrigins_(activeInd,ALL);
             auto& originsLoc = origins_STAR_STAR.Matrix();
             for( Int j=0; j<numSwaps_; ++j )
@@ -977,7 +977,7 @@ void DistPermutation::InversePermuteRows
 
         auto activeInd = IR(0,numSwaps_);
 
-        DistMatrix<Int,STAR,STAR> dests_STAR_STAR = swapDests_(activeInd,ALL);
+        DistMatrix<Int,Dist::STAR,Dist::STAR> dests_STAR_STAR = swapDests_(activeInd,ALL);
         auto& destsLoc = dests_STAR_STAR.Matrix();
         if( implicitSwapOrigins_ )
         {
@@ -990,7 +990,7 @@ void DistPermutation::InversePermuteRows
         }
         else
         {
-            DistMatrix<Int,STAR,STAR> origins_STAR_STAR =
+            DistMatrix<Int,Dist::STAR,Dist::STAR> origins_STAR_STAR =
               swapOrigins_(activeInd,ALL);
             auto& originsLoc = origins_STAR_STAR.Matrix();
             for( Int j=numSwaps_-1; j>=0; --j )
@@ -1059,7 +1059,7 @@ void DistPermutation::PermuteSymmetrically
 
         auto activeInd = IR(0,numSwaps_);
 
-        DistMatrix<Int,STAR,STAR> dests_STAR_STAR = swapDests_(activeInd,ALL);
+        DistMatrix<Int,Dist::STAR,Dist::STAR> dests_STAR_STAR = swapDests_(activeInd,ALL);
         auto& destsLoc = dests_STAR_STAR.Matrix();
         if( implicitSwapOrigins_ )
         {
@@ -1072,7 +1072,7 @@ void DistPermutation::PermuteSymmetrically
         }
         else
         {
-            DistMatrix<Int,STAR,STAR> origins_STAR_STAR =
+            DistMatrix<Int,Dist::STAR,Dist::STAR> origins_STAR_STAR =
               swapOrigins_(activeInd,ALL);
             auto& originsLoc = origins_STAR_STAR.Matrix();
             for( Int j=0; j<numSwaps_; ++j )
@@ -1124,7 +1124,7 @@ void DistPermutation::InversePermuteSymmetrically
 
         auto activeInd = IR(0,numSwaps_);
 
-        DistMatrix<Int,STAR,STAR> dests_STAR_STAR = swapDests_(activeInd,ALL);
+        DistMatrix<Int,Dist::STAR,Dist::STAR> dests_STAR_STAR = swapDests_(activeInd,ALL);
         auto& destsLoc = dests_STAR_STAR.Matrix();
         if( implicitSwapOrigins_ )
         {
@@ -1137,7 +1137,7 @@ void DistPermutation::InversePermuteSymmetrically
         }
         else
         {
-            DistMatrix<Int,STAR,STAR> origins_STAR_STAR =
+            DistMatrix<Int,Dist::STAR,Dist::STAR> origins_STAR_STAR =
               swapOrigins_(activeInd,ALL);
             auto& originsLoc = origins_STAR_STAR.Matrix();
             for( Int j=numSwaps_-1; j>=0; --j )
@@ -1195,9 +1195,9 @@ void DistPermutation::ExplicitMatrix( AbstractDistMatrix<Int>& P ) const
     EL_DEBUG_CSE
     P.SetGrid( *grid_ );
 
-    DistMatrix<Int,VC,STAR> p_VC_STAR(*grid_);
+    DistMatrix<Int,Dist::VC,Dist::STAR> p_VC_STAR(*grid_);
     ExplicitVector( p_VC_STAR );
-    DistMatrix<Int,STAR,STAR> p( p_VC_STAR );
+    DistMatrix<Int,Dist::STAR,Dist::STAR> p( p_VC_STAR );
     auto& pLoc = p.LockedMatrix();
 
     Zeros( P, size_, size_ );

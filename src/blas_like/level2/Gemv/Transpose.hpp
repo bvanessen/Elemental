@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -34,42 +34,42 @@ void Transpose
     )
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> yProx( yPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> yProx( yPre );
     auto& A = AProx.GetLocked();
     auto& y = yProx.Get();
 
     Scale( beta, y );
     if( x.Width() == 1 && y.Width() == 1 )
     {
-        DistMatrix<T,MC,STAR> x_MC_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
         x_MC_STAR.AlignWith( A );
         x_MC_STAR = x;
 
-        DistMatrix<T,MR,STAR> z_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> z_MR_STAR(g);
         z_MR_STAR.AlignWith( A );
         z_MR_STAR.Resize( A.Width(), 1 );
         Zero( z_MR_STAR );
         LocalGemv( orientation, alpha, A, x_MC_STAR, T(0), z_MR_STAR );
 
-        DistMatrix<T,MR,MC> z_MR_MC(g);
+        DistMatrix<T,Dist::MR,Dist::MC> z_MR_MC(g);
         z_MR_MC.AlignWith( y );
         Contract( z_MR_STAR, z_MR_MC );
         Axpy( T(1), z_MR_MC, y );
     }
     else if( x.Width() == 1 )
     {
-        DistMatrix<T,MC,STAR> x_MC_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
         x_MC_STAR.AlignWith( A );
         x_MC_STAR = x;
 
-        DistMatrix<T,MR,STAR> z_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> z_MR_STAR(g);
         z_MR_STAR.AlignWith( A );
         z_MR_STAR.Resize( A.Width(), 1 );
         Zero( z_MR_STAR );
         LocalGemv( orientation, alpha, A, x_MC_STAR, T(0), z_MR_STAR );
 
-        DistMatrix<T,MR,MC> z_MR_MC(g);
+        DistMatrix<T,Dist::MR,Dist::MC> z_MR_MC(g);
         z_MR_MC.AlignWith( y );
         Contract( z_MR_STAR, z_MR_MC );
 
@@ -80,34 +80,34 @@ void Transpose
     }
     else if( y.Width() == 1 )
     {
-        DistMatrix<T,STAR,MC> x_STAR_MC(g);
+        DistMatrix<T,Dist::STAR,Dist::MC> x_STAR_MC(g);
         x_STAR_MC.AlignWith( A );
         x_STAR_MC = x;
 
-        DistMatrix<T,MR,STAR> z_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> z_MR_STAR(g);
         z_MR_STAR.AlignWith( A );
         z_MR_STAR.Resize( A.Width(), 1 );
         Zero( z_MR_STAR );
         LocalGemv( orientation, alpha, A, x_STAR_MC, T(0), z_MR_STAR );
 
-        DistMatrix<T,MR,MC> z_MR_MC(g);
+        DistMatrix<T,Dist::MR,Dist::MC> z_MR_MC(g);
         z_MR_MC.AlignWith( y );
         Contract( z_MR_STAR, z_MR_MC );
         Axpy( T(1), z_MR_MC, y );
     }
     else
     {
-        DistMatrix<T,STAR,MC> x_STAR_MC(g);
+        DistMatrix<T,Dist::STAR,Dist::MC> x_STAR_MC(g);
         x_STAR_MC.AlignWith( A );
         x_STAR_MC = x;
 
-        DistMatrix<T,MR,STAR> z_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> z_MR_STAR(g);
         z_MR_STAR.AlignWith( A );
         z_MR_STAR.Resize( A.Width(), 1 );
         Zero( z_MR_STAR );
         LocalGemv( orientation, alpha, A, x_STAR_MC, T(0), z_MR_STAR );
 
-        DistMatrix<T,MR,MC> z_MR_MC(g);
+        DistMatrix<T,Dist::MR,Dist::MC> z_MR_MC(g);
         z_MR_MC.AlignWith( y );
         Contract( z_MR_STAR, z_MR_MC );
 
@@ -125,7 +125,7 @@ void Transpose
   const DistMatrix<T>& A,
   const AbstractDistMatrix<T>& x,
   T beta,
-        DistMatrix<T,VC,STAR>& y )
+        DistMatrix<T,Dist::VC,Dist::STAR>& y )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -140,17 +140,17 @@ void Transpose
     const Grid& g = A.Grid();
     Scale( beta, y );
 
-    DistMatrix<T,MC,STAR> x_MC_STAR(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
     x_MC_STAR.AlignWith( A );
     x_MC_STAR = x;
 
-    DistMatrix<T,MR,STAR> z_MR_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> z_MR_STAR(g);
     z_MR_STAR.AlignWith( A );
     z_MR_STAR.Resize( A.Width(), 1 );
     Zero( z_MR_STAR );
     LocalGemv( orientation, alpha, A, x_MC_STAR, T(0), z_MR_STAR );
 
-    DistMatrix<T,VR,STAR> z_VR_STAR(g);
+    DistMatrix<T,Dist::VR,Dist::STAR> z_VR_STAR(g);
     z_VR_STAR.AlignWith( A );
     Contract( z_MR_STAR, z_VR_STAR );
     Axpy( T(1), z_VR_STAR, y );

@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_BIDIAG_UPPER_UNBLOCKED_HPP
@@ -63,7 +63,7 @@ void UpperUnblocked
         //      = (I - tauQ aB1 aB1^H) AB2
         Ger( -tauQ, aB1, x12Adj, AB2 );
 
-        // Put epsilonQ back 
+        // Put epsilonQ back
         alpha11(0) = epsilonQ;
 
         if( k+1 < n )
@@ -78,7 +78,7 @@ void UpperUnblocked
             const F tauP = RightReflector( alpha12L, a12R );
             householderScalarsP(k) = tauP;
 
-            // Temporarily set a12^T = | 1 | 
+            // Temporarily set a12^T = | 1 |
             //                         | v |
             const F epsilonP = alpha12L(0);
             alpha12L(0) = F(1);
@@ -94,15 +94,15 @@ void UpperUnblocked
             // A22 := A22 - tauP w21 conj(a12)
             Ger( -tauP, w21, a12, A22 );
 
-            // Put epsilonP back 
+            // Put epsilonP back
             alpha12L(0) = epsilonP;
         }
     }
 }
 
-template<typename F> 
+template<typename F>
 void UpperUnblocked
-( AbstractDistMatrix<F>& APre, 
+( AbstractDistMatrix<F>& APre,
   AbstractDistMatrix<F>& householderScalarsPPre,
   AbstractDistMatrix<F>& householderScalarsQPre )
 {
@@ -110,9 +110,9 @@ void UpperUnblocked
     EL_DEBUG_ONLY(
       AssertSameGrids( APre, householderScalarsPPre, householderScalarsQPre )
     )
-    DistMatrixReadWriteProxy<F,F,MC,MR>
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR>
       AProx( APre );
-    DistMatrixWriteProxy<F,F,STAR,STAR>
+    DistMatrixWriteProxy<F,F,Dist::STAR,Dist::STAR>
       householderScalarsPProx( householderScalarsPPre ),
       householderScalarsQProx( householderScalarsQPre );
     auto& A = AProx.Get();
@@ -131,10 +131,10 @@ void UpperUnblocked
     householderScalarsP.Resize( householderScalarsPHeight, 1 );
     householderScalarsQ.Resize( householderScalarsQHeight, 1 );
 
-    DistMatrix<F,STAR,MR  > a12_STAR_MR(g);
-    DistMatrix<F,MC,  STAR> aB1_MC_STAR(g);
-    DistMatrix<F,MR,  STAR> x12Adj_MR_STAR(g);
-    DistMatrix<F,MC,  STAR> w21_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > a12_STAR_MR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> aB1_MC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> x12Adj_MR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> w21_MC_STAR(g);
 
     for( Int k=0; k<n; ++k )
     {
@@ -172,7 +172,7 @@ void UpperUnblocked
         // AB2 := AB2 - tauQ aB1 x12
         LocalGer( -tauQ, aB1_MC_STAR, x12Adj_MR_STAR, AB2 );
 
-        // Put epsilonQ back 
+        // Put epsilonQ back
         if( alpha11.IsLocal(0,0) )
             alpha11.SetLocal(0,0,epsilonQ);
 

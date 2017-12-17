@@ -87,7 +87,7 @@ void Axpy( S alphaS, const ElementalMatrix<T>& X, ElementalMatrix<T>& Y )
         // TODO(poulson):
         // Consider what happens if one is a row vector and the other
         // is a column vector...
-        unique_ptr<ElementalMatrix<T>> XCopy( Y.Construct(Y.Grid(),Y.Root()) );
+        std::unique_ptr<ElementalMatrix<T>> XCopy( Y.Construct(Y.Grid(),Y.Root()) );
         XCopy->AlignWith( YDistData );
         Copy( X, *XCopy );
         Axpy( alpha, XCopy->LockedMatrix(), Y.Matrix() );
@@ -110,7 +110,7 @@ void Axpy( S alphaS, const BlockMatrix<T>& X, BlockMatrix<T>& Y )
     }
     else
     {
-        unique_ptr<BlockMatrix<T>>
+        std::unique_ptr<BlockMatrix<T>>
           XCopy( Y.Construct(Y.Grid(),Y.Root()) );
         XCopy->AlignWith( YDistData );
         Copy( X, *XCopy );
@@ -125,23 +125,23 @@ void Axpy( S alphaS, const AbstractDistMatrix<T>& X, AbstractDistMatrix<T>& Y )
     EL_DEBUG_ONLY(AssertSameGrids( X, Y ))
     const T alpha = T(alphaS);
 
-    if( X.Wrap() == ELEMENT && Y.Wrap() == ELEMENT )
+    if( X.Wrap() == DistWrap::ELEMENT && Y.Wrap() == DistWrap::ELEMENT )
     {
         const auto& XCast = static_cast<const ElementalMatrix<T>&>(X);
               auto& YCast = static_cast<      ElementalMatrix<T>&>(Y);
         Axpy( alpha, XCast, YCast );
     }
-    else if( X.Wrap() == BLOCK && Y.Wrap() == BLOCK )
+    else if( X.Wrap() == DistWrap::BLOCK && Y.Wrap() == DistWrap::BLOCK )
     {
         const auto& XCast = static_cast<const BlockMatrix<T>&>(X);
               auto& YCast = static_cast<      BlockMatrix<T>&>(Y);
         Axpy( alpha, XCast, YCast );
     }
-    else if( X.Wrap() == ELEMENT )
+    else if( X.Wrap() == DistWrap::ELEMENT )
     {
         const auto& XCast = static_cast<const ElementalMatrix<T>&>(X);
               auto& YCast = static_cast<      BlockMatrix<T>&>(Y);
-        unique_ptr<BlockMatrix<T>>
+        std::unique_ptr<BlockMatrix<T>>
           XCopy( YCast.Construct(Y.Grid(),Y.Root()) );
         XCopy->AlignWith( YCast.DistData() );
         Copy( XCast, *XCopy );
@@ -151,7 +151,7 @@ void Axpy( S alphaS, const AbstractDistMatrix<T>& X, AbstractDistMatrix<T>& Y )
     {
         const auto& XCast = static_cast<const BlockMatrix<T>&>(X);
               auto& YCast = static_cast<      ElementalMatrix<T>&>(Y);
-        unique_ptr<ElementalMatrix<T>>
+        std::unique_ptr<ElementalMatrix<T>>
           XCopy( YCast.Construct(Y.Grid(),Y.Root()) );
         XCopy->AlignWith( YCast.DistData() );
         Copy( XCast, *XCopy );

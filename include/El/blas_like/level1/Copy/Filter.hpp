@@ -34,8 +34,8 @@ void Filter
 
 template<typename T,Dist U,Dist V>
 void Filter
-( const DistMatrix<T,Collect<U>(),Collect<V>(),BLOCK>& A,
-        DistMatrix<T,        U,           V   ,BLOCK>& B )
+( const DistMatrix<T,Collect<U>(),Collect<V>(),DistWrap::BLOCK>& A,
+        DistMatrix<T,        U,           V   ,DistWrap::BLOCK>& B )
 {
     EL_DEBUG_CSE
     // TODO(poulson): More efficient implementation

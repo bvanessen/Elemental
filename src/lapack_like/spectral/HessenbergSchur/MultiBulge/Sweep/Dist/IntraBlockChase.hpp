@@ -98,8 +98,8 @@ namespace intrablock {
 //
 template<typename Field>
 void LocalChase
-(       DistMatrix<Field,MC,MR,BLOCK>& H,
-  const DistMatrix<Complex<Base<Field>>,STAR,STAR>& shifts,
+(       DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+  const DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& shifts,
   const DistChaseState& state,
   const HessenbergSchurCtrl& ctrl,
         vector<Matrix<Field>>& UList )
@@ -227,9 +227,9 @@ void LocalChase
 
 template<typename Field>
 void ApplyAccumulatedReflections
-(       DistMatrix<Field,MC,MR,BLOCK>& H,
-        DistMatrix<Field,MC,MR,BLOCK>& Z,
-  const DistMatrix<Complex<Base<Field>>,STAR,STAR>& shifts,
+(       DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
+  const DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& shifts,
   const DistChaseState& state,
   const HessenbergSchurCtrl& ctrl,
   const vector<Matrix<Field>>& UList )
@@ -368,9 +368,9 @@ void ApplyAccumulatedReflections
 
 template<typename Field>
 void IntraBlockChase
-(       DistMatrix<Field,MC,MR,BLOCK>& H,
-        DistMatrix<Field,MC,MR,BLOCK>& Z,
-  const DistMatrix<Complex<Base<Field>>,STAR,STAR>& shifts,
+(       DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
+  const DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& shifts,
   const DistChaseState& state,
   const HessenbergSchurCtrl& ctrl )
 {

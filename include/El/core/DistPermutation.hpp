@@ -58,14 +58,14 @@ struct PermutationMeta
     { }
 
     PermutationMeta
-    ( const DistMatrix<Int,STAR,STAR>& p,
-      const DistMatrix<Int,STAR,STAR>& pInv,
+    ( const DistMatrix<Int,Dist::STAR,Dist::STAR>& p,
+      const DistMatrix<Int,Dist::STAR,Dist::STAR>& pInv,
             Int permAlign,
             mpi::Comm permComm );
 
     void Update
-    ( const DistMatrix<Int,STAR,STAR>& p,
-      const DistMatrix<Int,STAR,STAR>& pInv,
+    ( const DistMatrix<Int,Dist::STAR,Dist::STAR>& p,
+      const DistMatrix<Int,Dist::STAR,Dist::STAR>& pInv,
             Int permAlign,
             mpi::Comm permComm );
 };
@@ -120,9 +120,9 @@ public:
 
     // NOTE: This is only valid if IsImplicitSwapSequence() is true, otherwise
     //       it is implicitly [0,...,numSwaps-1]
-    const DistMatrix<Int,VC,STAR> SwapOrigins() const;
+    const DistMatrix<Int,Dist::VC,Dist::STAR> SwapOrigins() const;
     // NOTE: This is only valid if IsSwapSequence() is true
-    const DistMatrix<Int,VC,STAR> SwapDestinations() const;
+    const DistMatrix<Int,Dist::VC,Dist::STAR> SwapDestinations() const;
 
     template<typename T>
     void PermuteCols
@@ -177,12 +177,12 @@ private:
     //       then an explicit list is then maintained.
     mutable Int numSwaps_=0;
     mutable bool implicitSwapOrigins_=true;
-    mutable DistMatrix<Int,VC,STAR> swapDests_, swapOrigins_;
+    mutable DistMatrix<Int,Dist::VC,Dist::STAR> swapDests_, swapOrigins_;
 
     // Only used if swapSequence_=false
     // --------------------------------
-    mutable DistMatrix<Int,VC,STAR> perm_;
-    mutable DistMatrix<Int,VC,STAR> invPerm_;
+    mutable DistMatrix<Int,Dist::VC,Dist::STAR> perm_;
+    mutable DistMatrix<Int,Dist::VC,Dist::STAR> invPerm_;
     mutable bool staleInverse_=true;
 
     // Use the alignment and communicator as a key

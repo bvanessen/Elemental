@@ -72,7 +72,7 @@ BusingerGolub
     EL_DEBUG_CSE
     typedef Base<F> Real;
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     auto ctrlCopy = ctrl;
@@ -92,8 +92,8 @@ BusingerGolub
     }
 
     // Perform an adaptive pivoted QR factorization
-    DistMatrix<F,MD,STAR> householderScalars(A.Grid());
-    DistMatrix<Base<F>,MD,STAR> signature(A.Grid());
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(A.Grid());
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(A.Grid());
     QR( A, householderScalars, signature, Omega, ctrlCopy );
     const Int numSteps = householderScalars.Height();
 

@@ -169,7 +169,7 @@ QDWHInner
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     typedef Base<F> Real;
@@ -267,7 +267,7 @@ QDWH( AbstractDistMatrix<F>& APre, const QDWHCtrl& ctrl )
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     typedef Base<F> Real;
@@ -310,8 +310,8 @@ QDWH
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,MC,MR> PProx( PPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR> PProx( PPre );
     auto& A = AProx.Get();
     auto& P = PProx.Get();
 
@@ -487,7 +487,7 @@ QDWHInner
     if( APre.Height() != APre.Width() )
         LogicError("Height must be same as width");
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     typedef Base<F> Real;
@@ -588,7 +588,7 @@ QDWH( UpperOrLower uplo, AbstractDistMatrix<F>& APre, const QDWHCtrl& ctrl )
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     typedef Base<F> Real;
@@ -621,8 +621,8 @@ QDWH
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,MC,MR> PProx( PPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR> PProx( PPre );
     auto& A = AProx.Get();
     auto& P = PProx.Get();
 

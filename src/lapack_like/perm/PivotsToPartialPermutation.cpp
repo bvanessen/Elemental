@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El.hpp>
@@ -13,7 +13,7 @@ namespace El {
 void PivotsToPartialPermutation
 ( const Matrix<Int>& pivots,
         Matrix<Int>& p,
-        Matrix<Int>& pInv, 
+        Matrix<Int>& pInv,
   Int offset )
 {
     EL_DEBUG_CSE
@@ -28,12 +28,12 @@ void PivotsToPartialPermutation
     pInv.Resize( b, 1 );
     Int* pBuf = p.Buffer();
     Int* pInvBuf = pInv.Buffer();
- 
+
     // Assume that an O(1) number of pivots is supplied and run an algorithm
     // which is quadratic in the number of pivots, but with a low coefficient.
     // A log-linear algorithm with a higher coefficient is also possible.
 
-    for( Int i=0; i<b; ++i ) 
+    for( Int i=0; i<b; ++i )
     {
         Int k = pivotsBuf[i] - offset;
         for( Int j=i-1; j>=0; --j )
@@ -55,7 +55,7 @@ void PivotsToPartialPermutation
         {
             const Int relSwap = pivotsBuf[j] - offset;
             if( k == relSwap )
-                k = j; 
+                k = j;
             else if( k == j )
                 k = relSwap;
         }
@@ -64,8 +64,8 @@ void PivotsToPartialPermutation
 }
 
 void PivotsToPartialPermutation
-( const DistMatrix<Int,STAR,STAR>& pivots, 
-        AbstractDistMatrix<Int>& p, 
+( const DistMatrix<Int,Dist::STAR,Dist::STAR>& pivots,
+        AbstractDistMatrix<Int>& p,
         AbstractDistMatrix<Int>& pInv,
   Int offset )
 {
@@ -82,12 +82,12 @@ void PivotsToPartialPermutation
     p.Resize( b, 1 );
 
     const Int* pivotsBuf = pivots.LockedBuffer();
- 
+
     // Assume that an O(1) number of pivots is supplied and run an algorithm
     // which is quadratic in the number of pivots, but with a low coefficient.
     // A log-linear algorithm with a higher coefficient is also possible.
 
-    for( Int i=0; i<b; ++i ) 
+    for( Int i=0; i<b; ++i )
     {
         Int k = pivotsBuf[i] - offset;
         for( Int j=i-1; j>=0; --j )
@@ -109,7 +109,7 @@ void PivotsToPartialPermutation
         {
             const Int relSwap = pivotsBuf[j] - offset;
             if( k == relSwap )
-                k = j; 
+                k = j;
             else if( k == j )
                 k = relSwap;
         }
@@ -119,12 +119,12 @@ void PivotsToPartialPermutation
 
 void PivotsToPartialPermutation
 ( const AbstractDistMatrix<Int>& pivotsPre,
-        AbstractDistMatrix<Int>& p, 
+        AbstractDistMatrix<Int>& p,
         AbstractDistMatrix<Int>& pInv,
   Int offset )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Int,Int,STAR,STAR> pivotsProx( pivotsPre );
+    DistMatrixReadProxy<Int,Int,Dist::STAR,Dist::STAR> pivotsProx( pivotsPre );
     auto& pivots = pivotsProx.GetLocked();
     PivotsToPartialPermutation( pivots, p, pInv, offset );
 }

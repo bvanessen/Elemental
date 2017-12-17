@@ -1,20 +1,20 @@
 /*
-   Copyright (c) 2009-2012, Jack Poulson, Lexing Ying, and 
+   Copyright (c) 2009-2012, Jack Poulson, Lexing Ying, and
    The University of Texas at Austin.
    All rights reserved.
 
    Copyright (c) 2013, Jack Poulson, Lexing Ying, and Stanford University.
    All rights reserved.
 
-   Copyright (c) 2013-2014, Jack Poulson and 
+   Copyright (c) 2013-2014, Jack Poulson and
    The Georgia Institute of Technology.
    All rights reserved.
 
    Copyright (c) 2014-2015, Jack Poulson and Stanford University.
    All rights reserved.
-   
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTBACKWARD_HPP
@@ -68,8 +68,8 @@ void FrontLowerBackwardMultiply
 
 template<typename F>
 void FrontVanillaLowerBackwardMultiply
-( const DistMatrix<F,VC,STAR>& L,
-        DistMatrix<F,VC,STAR>& X,
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -91,7 +91,7 @@ void FrontVanillaLowerBackwardMultiply
         return;
     }
 
-    DistMatrix<F,VC,STAR> LT(g), LB(g), XT(g), XB(g);
+    DistMatrix<F,Dist::VC,Dist::STAR> LT(g), LB(g), XT(g), XB(g);
     LockedPartitionDown( L, LT, LB, L.Width() );
     PartitionDown( X, XT, XB, L.Width() );
 
@@ -101,7 +101,7 @@ void FrontVanillaLowerBackwardMultiply
     if( XB.Height() != 0 )
     {
         // Subtract off the parent updates
-        DistMatrix<F,STAR,STAR> Z(g);
+        DistMatrix<F,Dist::STAR,Dist::STAR> Z(g);
         LocalGemm( orientation, NORMAL, F(1), LB, XB, Z );
         AxpyContract( F(1), Z, XT );
     }
@@ -155,7 +155,7 @@ void FrontLowerBackwardMultiply
 
 template<typename F>
 void FrontLowerBackwardMultiply
-( const DistFront<F>& front, DistMatrix<F,VC,STAR>& W, bool conjugate )
+( const DistFront<F>& front, DistMatrix<F,Dist::VC,Dist::STAR>& W, bool conjugate )
 {
     EL_DEBUG_CSE
     if( Unfactored(front.type) )

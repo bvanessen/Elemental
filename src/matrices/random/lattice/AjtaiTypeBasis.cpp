@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include <El/matrices.hpp>
 
@@ -41,7 +40,7 @@ void AjtaiTypeBasis( AbstractDistMatrix<T>& APre, Int n, Base<T> alpha )
 {
     EL_DEBUG_CSE
     typedef Base<T> Real;
-    DistMatrixWriteProxy<T,T,MC,MR> AProx( APre );
+    DistMatrixWriteProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Grid& g = A.Grid();
@@ -49,12 +48,12 @@ void AjtaiTypeBasis( AbstractDistMatrix<T>& APre, Int n, Base<T> alpha )
     const Int ALocHeight = A.LocalHeight();
     const Int ALocWidth = A.LocalWidth();
 
-    DistMatrix<Real,MR,STAR> d(g);
+    DistMatrix<Real,Dist::MR,Dist::STAR> d(g);
     d.AlignWith( A );
     d.Resize( n, 1 );
     for( Int jLoc=0; jLoc<ALocWidth; ++jLoc )
     {
-        const Int j = A.GlobalCol( jLoc ); 
+        const Int j = A.GlobalCol( jLoc );
         const Real exponent = Pow(Real(2)*n-j+1,alpha);
         const Real beta = Round(Pow(Real(2),exponent));
         d.Set( j, 0, beta );

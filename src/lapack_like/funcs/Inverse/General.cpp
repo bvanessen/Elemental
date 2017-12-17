@@ -27,7 +27,7 @@ void Inverse( AbstractDistMatrix<Field>& A )
 }
 
 template<typename Field>
-void LocalInverse( DistMatrix<Field,STAR,STAR>& A )
+void LocalInverse( DistMatrix<Field,Dist::STAR,Dist::STAR>& A )
 {
     EL_DEBUG_CSE
     Inverse( A.Matrix() );
@@ -36,7 +36,7 @@ void LocalInverse( DistMatrix<Field,STAR,STAR>& A )
 #define PROTO(Field) \
   template void Inverse( Matrix<Field>& A ); \
   template void Inverse( AbstractDistMatrix<Field>& A ); \
-  template void LocalInverse( DistMatrix<Field,STAR,STAR>& A ); \
+  template void LocalInverse( DistMatrix<Field,Dist::STAR,Dist::STAR>& A ); \
   template void inverse::AfterLUPartialPiv \
   ( Matrix<Field>& A, const Permutation& P ); \
   template void inverse::AfterLUPartialPiv \

@@ -56,16 +56,16 @@ void UpperVariant2Blocked( AbstractDistMatrix<F>& APre )
     )
     const Grid& grid = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
-    DistMatrix<F,MC,  STAR> A01_MC_STAR(grid);
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(grid);
-    DistMatrix<F,STAR,VR  > A12_STAR_VR(grid);
-    DistMatrix<F,MR,  STAR> X11Adj_MR_STAR(grid);
-    DistMatrix<F,MR,  MC  > X11Adj_MR_MC(grid);
-    DistMatrix<F,MR,  STAR> X12Adj_MR_STAR(grid);
-    DistMatrix<F,MR,  MC  > X12Adj_MR_MC(grid);
+    DistMatrix<F,Dist::MC,  Dist::STAR> A01_MC_STAR(grid);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(grid);
+    DistMatrix<F,Dist::STAR,Dist::VR  > A12_STAR_VR(grid);
+    DistMatrix<F,Dist::MR,  Dist::STAR> X11Adj_MR_STAR(grid);
+    DistMatrix<F,Dist::MR,  Dist::MC  > X11Adj_MR_MC(grid);
+    DistMatrix<F,Dist::MR,  Dist::STAR> X12Adj_MR_STAR(grid);
+    DistMatrix<F,Dist::MR,  Dist::MC  > X12Adj_MR_MC(grid);
     DistMatrix<F> X11(grid), X12(grid);
 
     const Int n = A.Height();

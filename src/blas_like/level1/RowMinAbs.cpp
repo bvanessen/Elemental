@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 
 namespace El {
@@ -56,7 +55,7 @@ void RowMinAbsNonzero
 
 template<typename Ring,Dist U,Dist V>
 void RowMinAbs
-( const DistMatrix<Ring,U,V>& A, DistMatrix<Base<Ring>,U,STAR>& mins )
+( const DistMatrix<Ring,U,V>& A, DistMatrix<Base<Ring>,U,Dist::STAR>& mins )
 {
     EL_DEBUG_CSE
     mins.AlignWith( A );
@@ -68,8 +67,8 @@ void RowMinAbs
 template<typename Ring,Dist U,Dist V>
 void RowMinAbsNonzero
 ( const DistMatrix<Ring,U,V>& A,
-  const DistMatrix<Base<Ring>,U,STAR>& upperBounds,
-        DistMatrix<Base<Ring>,U,STAR>& mins )
+  const DistMatrix<Base<Ring>,U,Dist::STAR>& upperBounds,
+        DistMatrix<Base<Ring>,U,Dist::STAR>& mins )
 {
     EL_DEBUG_CSE
     if( upperBounds.ColAlign() != A.ColAlign() )
@@ -84,11 +83,11 @@ void RowMinAbsNonzero
 
 #define PROTO_DIST(Ring,U,V) \
   template void RowMinAbs \
-  ( const DistMatrix<Ring,U,V>& X, DistMatrix<Base<Ring>,U,STAR>& mins ); \
+  ( const DistMatrix<Ring,U,V>& X, DistMatrix<Base<Ring>,U,Dist::STAR>& mins ); \
   template void RowMinAbsNonzero \
   ( const DistMatrix<Ring,U,V>& X, \
-    const DistMatrix<Base<Ring>,U,STAR>& upperBounds, \
-          DistMatrix<Base<Ring>,U,STAR>& mins );
+    const DistMatrix<Base<Ring>,U,Dist::STAR>& upperBounds, \
+          DistMatrix<Base<Ring>,U,Dist::STAR>& mins );
 
 #define PROTO(Ring) \
   template void RowMinAbs \
@@ -97,19 +96,19 @@ void RowMinAbsNonzero
   ( const Matrix<Ring>& X, \
     const Matrix<Base<Ring>>& upperBounds, \
           Matrix<Base<Ring>>& mins ); \
-  PROTO_DIST(Ring,MC,  MR  ) \
-  PROTO_DIST(Ring,MC,  STAR) \
-  PROTO_DIST(Ring,MD,  STAR) \
-  PROTO_DIST(Ring,MR,  MC  ) \
-  PROTO_DIST(Ring,MR,  STAR) \
-  PROTO_DIST(Ring,STAR,MC  ) \
-  PROTO_DIST(Ring,STAR,MD  ) \
-  PROTO_DIST(Ring,STAR,MR  ) \
-  PROTO_DIST(Ring,STAR,STAR) \
-  PROTO_DIST(Ring,STAR,VC  ) \
-  PROTO_DIST(Ring,STAR,VR  ) \
-  PROTO_DIST(Ring,VC,  STAR) \
-  PROTO_DIST(Ring,VR,  STAR)
+  PROTO_DIST(Ring,Dist::MC,  Dist::MR  ) \
+  PROTO_DIST(Ring,Dist::MC,  Dist::STAR) \
+  PROTO_DIST(Ring,Dist::MD,  Dist::STAR) \
+  PROTO_DIST(Ring,Dist::MR,  Dist::MC  ) \
+  PROTO_DIST(Ring,Dist::MR,  Dist::STAR) \
+  PROTO_DIST(Ring,Dist::STAR,Dist::MC  ) \
+  PROTO_DIST(Ring,Dist::STAR,Dist::MD  ) \
+  PROTO_DIST(Ring,Dist::STAR,Dist::MR  ) \
+  PROTO_DIST(Ring,Dist::STAR,Dist::STAR) \
+  PROTO_DIST(Ring,Dist::STAR,Dist::VC  ) \
+  PROTO_DIST(Ring,Dist::STAR,Dist::VR  ) \
+  PROTO_DIST(Ring,Dist::VC,  Dist::STAR) \
+  PROTO_DIST(Ring,Dist::VR,  Dist::STAR)
 
 #define EL_NO_INT_PROTO
 #define EL_ENABLE_DOUBLEDOUBLE

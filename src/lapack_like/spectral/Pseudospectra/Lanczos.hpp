@@ -55,7 +55,7 @@ template<typename Real>
 void ComputeNewEstimates
 ( const vector<Matrix<Real>>& HDiagList,
   const vector<Matrix<Real>>& HSubdiagList,
-  DistMatrix<Real,MR,STAR>& activeEsts )
+  DistMatrix<Real,Dist::MR,Dist::STAR>& activeEsts )
 {
     EL_DEBUG_CSE
     ComputeNewEstimates( HDiagList, HSubdiagList, activeEsts.Matrix() );
@@ -106,13 +106,13 @@ template<typename Real>
 void Deflate
 ( vector<Matrix<Real>>& HDiagList,
   vector<Matrix<Real>>& HSubdiagList,
-  DistMatrix<Complex<Real>,VR,STAR>& activeShifts,
-  DistMatrix<Int,          VR,STAR>& activePreimage,
+  DistMatrix<Complex<Real>,Dist::VR,Dist::STAR>& activeShifts,
+  DistMatrix<Int,          Dist::VR,Dist::STAR>& activePreimage,
   DistMatrix<Complex<Real>        >& activeXOld,
   DistMatrix<Complex<Real>        >& activeX,
-  DistMatrix<Real,         MR,STAR>& activeEsts,
-  DistMatrix<Int,          MR,STAR>& activeConverged,
-  DistMatrix<Int,          VR,STAR>& activeItCounts,
+  DistMatrix<Real,         Dist::MR,Dist::STAR>& activeEsts,
+  DistMatrix<Int,          Dist::MR,Dist::STAR>& activeConverged,
+  DistMatrix<Int,          Dist::VR,Dist::STAR>& activeItCounts,
   bool progress=false )
 {
     EL_DEBUG_CSE
@@ -122,12 +122,12 @@ void Deflate
     const Int numActive = activeX.Width();
     Int swapTo = numActive-1;
 
-    DistMatrix<Complex<Real>,STAR,STAR> shiftsCopy( activeShifts );
-    DistMatrix<Int,STAR,STAR> preimageCopy( activePreimage );
-    DistMatrix<Real,STAR,STAR> estimatesCopy( activeEsts );
-    DistMatrix<Int, STAR,STAR> itCountsCopy( activeItCounts );
-    DistMatrix<Int, STAR,STAR> convergedCopy( activeConverged );
-    DistMatrix<Complex<Real>,VC,STAR> XOldCopy( activeXOld ), XCopy( activeX );
+    DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR> shiftsCopy( activeShifts );
+    DistMatrix<Int,Dist::STAR,Dist::STAR> preimageCopy( activePreimage );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> estimatesCopy( activeEsts );
+    DistMatrix<Int, Dist::STAR,Dist::STAR> itCountsCopy( activeItCounts );
+    DistMatrix<Int, Dist::STAR,Dist::STAR> convergedCopy( activeConverged );
+    DistMatrix<Complex<Real>,Dist::VC,Dist::STAR> XOldCopy( activeXOld ), XCopy( activeX );
 
     auto& convergedLoc = convergedCopy.Matrix();
 
@@ -406,7 +406,7 @@ Lanczos
 }
 
 template<typename Real>
-DistMatrix<Int,VR,STAR>
+DistMatrix<Int,Dist::VR,Dist::STAR>
 Lanczos
 ( const AbstractDistMatrix<Complex<Real>>& UPre,
   const AbstractDistMatrix<Complex<Real>>& shiftsPre,
@@ -417,9 +417,9 @@ Lanczos
     using namespace pspec;
     typedef Complex<Real> C;
 
-    DistMatrixReadProxy<C,C,MC,MR> UProx( UPre );
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixWriteProxy<Real,Real,VR,STAR> invNormsProx( invNormsPre );
+    DistMatrixReadProxy<C,C,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> invNormsProx( invNormsPre );
     auto& U = UProx.GetLocked();
     auto& shifts = shiftsProx.GetLocked();
     auto& invNorms = invNormsProx.Get();
@@ -436,12 +436,12 @@ Lanczos
         cerr << "NOTE: Deflation swaps not yet optimized!" << endl;
 
     // Keep track of the number of iterations per shift
-    DistMatrix<Int,VR,STAR> itCounts(g);
+    DistMatrix<Int,Dist::VR,Dist::STAR> itCounts(g);
     Ones( itCounts, numShifts, 1 );
 
     // Keep track of the pivoting history if deflation is requested
-    DistMatrix<Int,VR,STAR> preimage(g);
-    DistMatrix<C,  VR,STAR> pivShifts( shifts );
+    DistMatrix<Int,Dist::VR,Dist::STAR> preimage(g);
+    DistMatrix<C,  Dist::VR,Dist::STAR> pivShifts( shifts );
     if( deflate )
     {
         preimage.AlignWith( shifts );
@@ -456,7 +456,7 @@ Lanczos
     }
 
     // The Hessenberg case currently requires explicit access to the adjoint
-    DistMatrix<C,VC,STAR> U_VC_STAR(g), UAdj_VC_STAR(g);
+    DistMatrix<C,Dist::VC,Dist::STAR> U_VC_STAR(g), UAdj_VC_STAR(g);
     if( !psCtrl.schur )
     {
         U_VC_STAR = U;
@@ -481,13 +481,13 @@ Lanczos
 
     Timer timer, subtimer;
     Int numIts=0, numDone=0;
-    DistMatrix<Real,MR,STAR> estimates(g);
+    DistMatrix<Real,Dist::MR,Dist::STAR> estimates(g);
     estimates.AlignWith( shifts );
     Zeros( estimates, numShifts, 1 );
     auto lastActiveEsts = estimates;
-    DistMatrix<Int,VR,STAR> activePreimage(g);
+    DistMatrix<Int,Dist::VR,Dist::STAR> activePreimage(g);
     Matrix<Real> components;
-    DistMatrix<Real,MR,STAR> colNorms(g);
+    DistMatrix<Real,Dist::MR,Dist::STAR> colNorms(g);
     while( true )
     {
         const Int numActive = ( deflate ? numShifts-numDone : numShifts );
@@ -543,11 +543,11 @@ Lanczos
                     subtimer.Start();
             }
             // NOTE: This redistribution sequence might not be necessary
-            DistMatrix<C,STAR,VR> activeXNew_STAR_VR( activeXNew );
+            DistMatrix<C,Dist::STAR,Dist::VR> activeXNew_STAR_VR( activeXNew );
             MultiShiftHessSolve
             ( UPPER, NORMAL, C(1), U_VC_STAR, activeShifts,
               activeXNew_STAR_VR );
-            DistMatrix<C,VR,STAR> activeShiftsConj(g);
+            DistMatrix<C,Dist::VR,Dist::STAR> activeShiftsConj(g);
             Conjugate( activeShifts, activeShiftsConj );
             MultiShiftHessSolve
             ( LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,

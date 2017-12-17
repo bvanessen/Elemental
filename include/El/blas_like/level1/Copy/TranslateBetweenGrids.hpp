@@ -24,8 +24,8 @@ void TranslateBetweenGrids
 // TODO(poulson): Compare against copy::GeneralPurpose
 template<typename T>
 void TranslateBetweenGrids
-( const DistMatrix<T,MC,MR>& A,
-        DistMatrix<T,MC,MR>& B )
+( const DistMatrix<T,Dist::MC,Dist::MR>& A,
+        DistMatrix<T,Dist::MC,Dist::MR>& B )
 {
     EL_DEBUG_CSE
     const Int m = A.Height();
@@ -76,7 +76,7 @@ void TranslateBetweenGrids
     // necessarily defined on every process, we instead work with A's owning
     // group and account for row-major ordering if necessary.
     const int sizeA = A.Grid().Size();
-    vector<int> rankMap(sizeA), ranks(sizeA);
+    std::vector<int> rankMap(sizeA), ranks(sizeA);
     if( A.Grid().Order() == COLUMN_MAJOR )
     {
         for( int j=0; j<sizeA; ++j )
@@ -107,7 +107,7 @@ void TranslateBetweenGrids
         requiredMemory += maxSendSize;
     if( inBGrid )
         requiredMemory += maxSendSize;
-    vector<T> auxBuf;
+    std::vector<T> auxBuf;
     FastResize( auxBuf, requiredMemory );
     Int offset = 0;
     T* sendBuf = &auxBuf[offset];
@@ -220,8 +220,8 @@ void TranslateBetweenGrids
 
 template<typename T>
 void TranslateBetweenGrids
-( const DistMatrix<T,STAR,STAR>& A,
-        DistMatrix<T,STAR,STAR>& B )
+( const DistMatrix<T,Dist::STAR,Dist::STAR>& A,
+        DistMatrix<T,Dist::STAR,Dist::STAR>& B )
 {
     EL_DEBUG_CSE
     const Int height = A.Height();
@@ -290,7 +290,7 @@ void TranslateBetweenGrids
         requiredMemory += height*width;
     if( B.Participating() )
         requiredMemory += height*width;
-    vector<T> buffer;
+    std::vector<T> buffer;
     FastResize( buffer, requiredMemory );
     Int offset = 0;
     T* sendBuf = &buffer[offset];

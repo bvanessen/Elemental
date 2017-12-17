@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_HERMITIANTRIDIAG_UPPER_BLOCKED_HPP
@@ -40,7 +40,7 @@ void UpperBlocked( Matrix<F>& A, Matrix<F>& householderScalars )
         auto A00      = A( ind0, ind0 );
         auto a01      = A( ind0, ind1 );
 
-        auto a01T     = A( IR(0,k-1), ind1 ); 
+        auto a01T     = A( IR(0,k-1), ind1 );
         auto alpha01B = A( IR(k-1),   ind1 );
 
         const F tau = LeftReflector( alpha01B, a01T );
@@ -73,8 +73,8 @@ void UpperBlocked
           LogicError("A must be square");
     )
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,STAR,STAR>
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::STAR,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& A = AProx.Get();
     auto& householderScalars = householderScalarsProx.Get();
@@ -86,17 +86,17 @@ void UpperBlocked
         householderScalars.Resize( 0, 1 );
         return;
     }
-    DistMatrix<F,MD,STAR> householderScalarsDiag(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalarsDiag(g);
     householderScalarsDiag.SetRoot( A.DiagonalRoot(1) );
     householderScalarsDiag.AlignCols( A.DiagonalAlign(1) );
     householderScalarsDiag.Resize( n-1, 1 );
 
     DistMatrix<F> WPan(g);
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g),
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g),
       householderScalars1_STAR_STAR(g);
-    DistMatrix<F,MC,  STAR> APan_MC_STAR(g), WPan_MC_STAR(g);
-    DistMatrix<F,MR,  STAR> APan_MR_STAR(g), WPan_MR_STAR(g);
-    
+    DistMatrix<F,Dist::MC,  Dist::STAR> APan_MC_STAR(g), WPan_MC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> APan_MR_STAR(g), WPan_MR_STAR(g);
+
     const Int bsize = Blocksize();
     const Int kLast = LastOffset( n, bsize );
     for( Int k=kLast; k>=0; k-=bsize )
@@ -111,7 +111,7 @@ void UpperBlocked
         auto A01 = A( ind0, ind1 );
         auto A11 = A( ind1, ind1 );
         auto ATL = A( indT, indL );
-        
+
         if( k > 0 )
         {
             auto householderScalars1 =
@@ -129,7 +129,7 @@ void UpperBlocked
 
             UpperPanel
             ( ATL, WPan, householderScalars1,
-              APan_MC_STAR, APan_MR_STAR, 
+              APan_MC_STAR, APan_MR_STAR,
               WPan_MC_STAR, WPan_MR_STAR, ctrl );
 
             auto A01_MC_STAR = APan_MC_STAR( ind0, ind1-k );

@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -12,7 +12,7 @@ namespace trsv {
 
 template<typename F>
 void LN
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<F>& LPre,
         AbstractDistMatrix<F>& xPre )
 {
@@ -23,7 +23,7 @@ void LN
           LogicError("L must be square");
       if( xPre.Width() != 1 && xPre.Height() != 1 )
           LogicError("x must be a vector");
-      const Int xLength = 
+      const Int xLength =
           ( xPre.Width() == 1 ? xPre.Height() : xPre.Width() );
       if( LPre.Width() != xLength )
           LogicError("Nonconformal");
@@ -32,24 +32,24 @@ void LN
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> LProx( LPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> xProx( xPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> xProx( xPre );
     auto& L = LProx.GetLocked();
     auto& x = xProx.Get();
 
-    // Matrix views 
+    // Matrix views
     DistMatrix<F> L11(g), L21(g), x1(g);
 
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> L11_STAR_STAR(g), x1_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> L11_STAR_STAR(g), x1_STAR_STAR(g);
 
     if( x.Width() == 1 )
     {
-        DistMatrix<F,MR,STAR> x1_MR_STAR(g);
-        DistMatrix<F,MC,STAR> z_MC_STAR(g);
+        DistMatrix<F,Dist::MR,Dist::STAR> x1_MR_STAR(g);
+        DistMatrix<F,Dist::MC,Dist::STAR> z_MC_STAR(g);
 
         // Views of z[MC,* ], which will store updates to x
-        DistMatrix<F,MC,STAR> z1_MC_STAR(g), z2_MC_STAR(g);
+        DistMatrix<F,Dist::MC,Dist::STAR> z1_MC_STAR(g), z2_MC_STAR(g);
 
         z_MC_STAR.AlignWith( L );
         z_MC_STAR.Resize( m, 1 );
@@ -84,12 +84,12 @@ void LN
     }
     else
     {
-        DistMatrix<F,STAR,MR> x1_STAR_MR(g);
-        DistMatrix<F,MR,  MC> z1_MR_MC(g);
-        DistMatrix<F,STAR,MC> z_STAR_MC(g);
+        DistMatrix<F,Dist::STAR,Dist::MR> x1_STAR_MR(g);
+        DistMatrix<F,Dist::MR,  Dist::MC> z1_MR_MC(g);
+        DistMatrix<F,Dist::STAR,Dist::MC> z_STAR_MC(g);
 
         // Views of z[* ,MC]
-        DistMatrix<F,STAR,MC> z1_STAR_MC(g), z2_STAR_MC(g);
+        DistMatrix<F,Dist::STAR,Dist::MC> z1_STAR_MC(g), z2_STAR_MC(g);
 
         z_STAR_MC.AlignWith( L );
         z_STAR_MC.Resize( 1, m );

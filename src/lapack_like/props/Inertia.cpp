@@ -35,11 +35,11 @@ InertiaType Inertia
     if( uplo == UPPER )
         LogicError("This option not yet supported");
 
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     DistPermutation p( A.Grid() );
-    DistMatrix<Field,MD,STAR> dSub( A.Grid() );
+    DistMatrix<Field,Dist::MD,Dist::STAR> dSub( A.Grid() );
     LDL( A, dSub, p, true, ctrl );
     return ldl::Inertia( GetRealPartOfDiagonal(A), dSub );
 }

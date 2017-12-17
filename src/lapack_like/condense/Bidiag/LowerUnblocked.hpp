@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_BIDIAG_LOWER_UNBLOCKED_HPP
@@ -66,7 +66,7 @@ void LowerUnblocked
         // A2R := A2R - tauP w21 conj(a1R)
         Ger( -tauP, w21, a1R, A2R );
 
-        // Put epsilonP back 
+        // Put epsilonP back
         alpha11(0) = epsilonP;
 
         if( A22.Height() != 0 )
@@ -92,7 +92,7 @@ void LowerUnblocked
             // x12^H := (a21^H A22)^H = A22^H a21
             Zeros( x12Adj, a12.Width(), 1 );
             Gemv( ADJOINT, F(1), A22, a21, F(0), x12Adj );
-            // A22 := A22 - tauQ a21 x12 
+            // A22 := A22 - tauQ a21 x12
             //      = (I - tauQ a21 a21^H) A22
             Ger( -tauQ, a21, x12Adj, A22 );
 
@@ -102,9 +102,9 @@ void LowerUnblocked
     }
 }
 
-template<typename F> 
+template<typename F>
 void LowerUnblocked
-( AbstractDistMatrix<F>& APre, 
+( AbstractDistMatrix<F>& APre,
   AbstractDistMatrix<F>& householderScalarsPPre,
   AbstractDistMatrix<F>& householderScalarsQPre )
 {
@@ -115,9 +115,9 @@ void LowerUnblocked
           LogicError("A must be at least as wide as it is tall");
     )
 
-    DistMatrixReadWriteProxy<F,F,MC,MR>
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR>
       AProx( APre );
-    DistMatrixWriteProxy<F,F,STAR,STAR>
+    DistMatrixWriteProxy<F,F,Dist::STAR,Dist::STAR>
       householderScalarsPProx( householderScalarsPPre ),
       householderScalarsQProx( householderScalarsQPre );
     auto& A = AProx.Get();
@@ -132,10 +132,10 @@ void LowerUnblocked
     householderScalarsP.Resize( householderScalarsPHeight, 1 );
     householderScalarsQ.Resize( householderScalarsQHeight, 1 );
 
-    DistMatrix<F,MC,  STAR> a21_MC_STAR(g);
-    DistMatrix<F,STAR,MR  > a1R_STAR_MR(g);
-    DistMatrix<F,MR,  STAR> x12Adj_MR_STAR(g);
-    DistMatrix<F,MC,  STAR> w21_MC_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> a21_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > a1R_STAR_MR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> x12Adj_MR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> w21_MC_STAR(g);
 
     for( Int k=0; k<m; ++k )
     {
@@ -174,7 +174,7 @@ void LowerUnblocked
         // A2R := A2R - tauP w21 conj(a1R)
         LocalGer( -tauP, w21_MC_STAR, a1R_STAR_MR, A2R );
 
-        // Put epsilonP back 
+        // Put epsilonP back
         if( alpha11.IsLocal(0,0) )
             alpha11.SetLocal(0,0,epsilonP);
 

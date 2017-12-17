@@ -5,8 +5,8 @@
    Copyright (c) 2013, The University of Texas at Austin
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRMM_LUT_HPP
@@ -21,8 +21,8 @@ void LocalAccumulateLUT
   UnitOrNonUnit diag,
   T alpha,
   const DistMatrix<T>& U,
-  const DistMatrix<T,MC,STAR>& X,
-        DistMatrix<T,MR,STAR>& Z )
+  const DistMatrix<T,Dist::MC,Dist::STAR>& X,
+        DistMatrix<T,Dist::MR,Dist::STAR>& Z )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -52,7 +52,7 @@ void LocalAccumulateLUT
 
         auto X0 = X( IR(0,k),    ALL );
         auto X1 = X( IR(k,k+nb), ALL );
- 
+
         auto Z1 = Z( IR(k,k+nb), ALL );
 
         D11.AlignWith( U11 );
@@ -86,14 +86,14 @@ void LUTA
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,MC,STAR> X1_MC_STAR(g);
-    DistMatrix<T,MR,STAR> Z1_MR_STAR(g);
-    DistMatrix<T,MR,MC  > Z1_MR_MC(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> X1_MC_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> Z1_MR_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::MC  > Z1_MR_MC(g);
 
     X1_MC_STAR.AlignWith( U );
     Z1_MR_STAR.AlignWith( U );
@@ -137,17 +137,17 @@ void LUTCOld
     const Grid& g = UPre.Grid();
     const bool conjugate = ( orientation == ADJOINT );
 
-    DistMatrixReadProxy<T,T,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<T,STAR,STAR> U11_STAR_STAR(g); 
-    DistMatrix<T,STAR,VR  > X1_STAR_VR(g);
-    DistMatrix<T,MR,  STAR> D1Trans_MR_STAR(g);
-    DistMatrix<T,MR,  MC  > D1Trans_MR_MC(g);
-    DistMatrix<T,MC,  MR  > D1(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> D1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::MR,  Dist::MC  > D1Trans_MR_MC(g);
+    DistMatrix<T,Dist::MC,  Dist::MR  > D1(g);
 
     const Int kLast = LastOffset( m, bsize );
     for( Int k=kLast; k>=0; k-=bsize )
@@ -165,7 +165,7 @@ void LUTCOld
         LocalTrmm
         ( LEFT, UPPER, orientation, diag, T(1), U11_STAR_STAR, X1_STAR_VR );
         X1 = X1_STAR_VR;
-        
+
         U01_MC_STAR.AlignWith( X0 );
         U01_MC_STAR = U01;
         D1Trans_MR_STAR.AlignWith( X1 );
@@ -201,15 +201,15 @@ void LUTC
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,STAR,MC  > U12_STAR_MC(g);
-    DistMatrix<T,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<T,STAR,VR  > X1_STAR_VR(g);
-    DistMatrix<T,MR,  STAR> X1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MC  > U12_STAR_MC(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> X1Trans_MR_STAR(g);
 
     const Int kLast = LastOffset( m, bsize );
     for( Int k=kLast; k>=0; k-=bsize )
@@ -224,10 +224,10 @@ void LUTC
 
         U12_STAR_MC.AlignWith( X2 );
         U12_STAR_MC = U12;
-        X1Trans_MR_STAR.AlignWith( X2 ); 
+        X1Trans_MR_STAR.AlignWith( X2 );
         Transpose( X1, X1Trans_MR_STAR );
         LocalGemm
-        ( orientation, TRANSPOSE, 
+        ( orientation, TRANSPOSE,
           T(1), U12_STAR_MC, X1Trans_MR_STAR, T(1), X2 );
 
         U11_STAR_STAR = U11;
@@ -240,7 +240,7 @@ void LUTC
 }
 
 // Left Upper (Conjugate)Transpose (Non)Unit Trmm
-//   X := triu(U)^T  X, 
+//   X := triu(U)^T  X,
 //   X := triu(U)^H  X,
 //   X := triuu(U)^T X, or
 //   X := triuu(U)^H X

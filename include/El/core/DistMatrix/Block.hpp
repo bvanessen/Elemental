@@ -130,7 +130,7 @@ public:
 
     // Basic queries
     // =============
-    DistWrap Wrap() const override EL_NO_EXCEPT { return BLOCK; }
+    DistWrap Wrap() const override EL_NO_EXCEPT { return DistWrap::BLOCK; }
 
     // Distribution information
     // ------------------------

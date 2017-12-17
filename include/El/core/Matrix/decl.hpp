@@ -6,12 +6,45 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#ifndef EL_MATRIX_DECL_HPP
-#define EL_MATRIX_DECL_HPP
+#ifndef EL_CORE_MATRIX_DECL_HPP_
+#define EL_CORE_MATRIX_DECL_HPP_
 
-#include <El/core/Grid.hpp>
+#include <vector>
 
-namespace El {
+#include "El/core/Grid.hpp"
+#include "El/core/Memory/decl.hpp"
+#include "El/Types/Range.hpp"
+
+namespace El
+{
+
+enum class ViewType
+{
+    OWNER = 0x0,
+    VIEW = 0x1,
+    OWNER_FIXED = 0x2,
+    VIEW_FIXED = 0x3,
+    LOCKED_OWNER = 0x4, // unused
+    LOCKED_VIEW = 0x5,
+    LOCKED_OWNER_FIXED = 0x6, // unused
+    LOCKED_VIEW_FIXED = 0x7
+};
+
+static inline bool IsViewing(ViewType v) EL_NO_EXCEPT
+{
+    using T = std::underlying_type<ViewType>::type;
+    return (static_cast<T>(v) & static_cast<T>(ViewType::VIEW)) != 0;
+}
+static inline bool IsFixedSize(ViewType v) EL_NO_EXCEPT
+{
+    using T = std::underlying_type<ViewType>::type;
+    return (static_cast<T>(v) & static_cast<T>(ViewType::OWNER_FIXED)) != 0;
+}
+static inline bool IsLocked(ViewType v) EL_NO_EXCEPT
+{
+    using T = std::underlying_type<ViewType>::type;
+    return (static_cast<T>(v) & static_cast<T>(ViewType::LOCKED_OWNER)) != 0;
+}
 
 // Matrix base for arbitrary rings
 template<typename Ring>
@@ -82,11 +115,11 @@ public:
     // Return a copy of (potentially non-contiguous) subset of indices
     // ---------------------------------------------------------------
     Matrix<Ring>
-    operator()( Range<Int> I, const vector<Int>& J ) const;
+    operator()( Range<Int> I, const std::vector<Int>& J ) const;
     Matrix<Ring>
-    operator()( const vector<Int>& I, Range<Int> J ) const;
+    operator()( const std::vector<Int>& I, Range<Int> J ) const;
     Matrix<Ring>
-    operator()( const vector<Int>& I, const vector<Int>& J ) const;
+    operator()( const std::vector<Int>& I, const std::vector<Int>& J ) const;
 
     // Make a copy
     // -----------
@@ -172,7 +205,7 @@ public:
 private:
     // Member variables
     // ================
-    El::ViewType viewType_=OWNER;
+    El::ViewType viewType_=ViewType::OWNER;
     Int height_=0, width_=0, leadingDimension_=1;
 
     Memory<Ring> memory_;
@@ -234,8 +267,46 @@ private:
     // These always return 0.
     int ColAlign() const EL_NO_EXCEPT;
     int RowAlign() const EL_NO_EXCEPT;
-};
+};// class Matrix
+
+// Return a reference to a single entry without error-checking
+// ===========================================================
+template<typename Ring>
+inline const Ring& Matrix<Ring>::CRef( Int i, Int j ) const
+EL_NO_RELEASE_EXCEPT
+{
+    return data_[i+j*leadingDimension_];
+}
+
+template<typename Ring>
+inline const Ring& Matrix<Ring>::operator()( Int i, Int j ) const
+EL_NO_RELEASE_EXCEPT
+{
+    EL_DEBUG_CSE
+    EL_DEBUG_ONLY(AssertValidEntry( i, j ))
+    return data_[i+j*leadingDimension_];
+}
+
+template<typename Ring>
+inline Ring& Matrix<Ring>::Ref( Int i, Int j )
+EL_NO_RELEASE_EXCEPT
+{
+    return data_[i+j*leadingDimension_];
+}
+
+template<typename Ring>
+inline Ring& Matrix<Ring>::operator()( Int i, Int j )
+EL_NO_RELEASE_EXCEPT
+{
+    EL_DEBUG_CSE
+    EL_DEBUG_ONLY(
+      AssertValidEntry( i, j );
+      if( Locked() )
+          LogicError("Cannot modify data of locked matrices");
+    )
+    return data_[i+j*leadingDimension_];
+}
 
 } // namespace El
 
-#endif // ifndef EL_MATRIX_DECL_HPP
+#endif // ifndef EL_CORE_MATRIX_DECL_HPP_

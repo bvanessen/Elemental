@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -25,20 +25,20 @@ void SUMMA_TTA
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,STAR,MC  > B1_STAR_MC(g);
-    DistMatrix<T,MR,  MC  > D1_MR_MC(g);
-    DistMatrix<T,MR,  STAR> D1_MR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MC  > B1_STAR_MC(g);
+    DistMatrix<T,Dist::MR,  Dist::MC  > D1_MR_MC(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> D1_MR_STAR(g);
 
-    B1_STAR_MC.AlignWith( A ); 
-    D1_MR_STAR.AlignWith( A );  
+    B1_STAR_MC.AlignWith( A );
+    D1_MR_STAR.AlignWith( A );
 
     for( Int k=0; k<n; k+=bsize )
     {
@@ -72,20 +72,20 @@ void SUMMA_TTB
     const Int m = CPre.Height();
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
-    const bool conjugateA = ( orientA == ADJOINT ); 
+    const bool conjugateA = ( orientA == ADJOINT );
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,VR,  STAR> A1_VR_STAR(g);
-    DistMatrix<T,STAR,MR  > A1Trans_STAR_MR(g);
-    DistMatrix<T,STAR,MC  > D1_STAR_MC(g);
-    DistMatrix<T,MR,  MC  > D1_MR_MC(g);
+    DistMatrix<T,Dist::VR,  Dist::STAR> A1_VR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MR  > A1Trans_STAR_MR(g);
+    DistMatrix<T,Dist::STAR,Dist::MC  > D1_STAR_MC(g);
+    DistMatrix<T,Dist::MR,  Dist::MC  > D1_MR_MC(g);
 
     A1_VR_STAR.AlignWith( B );
     A1Trans_STAR_MR.AlignWith( B );
@@ -125,29 +125,29 @@ void SUMMA_TTC
     const Grid& g = APre.Grid();
     const bool conjugateB = ( orientB == ADJOINT );
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,STAR,MC  > A1_STAR_MC(g);
-    DistMatrix<T,VR,  STAR> B1_VR_STAR(g);
-    DistMatrix<T,STAR,MR  > B1Trans_STAR_MR(g);
+    DistMatrix<T,Dist::STAR,Dist::MC  > A1_STAR_MC(g);
+    DistMatrix<T,Dist::VR,  Dist::STAR> B1_VR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MR  > B1Trans_STAR_MR(g);
 
     A1_STAR_MC.AlignWith( C );
     B1_VR_STAR.AlignWith( C );
     B1Trans_STAR_MR.AlignWith( C );
-    
+
     for( Int k=0; k<sumDim; k+=bsize )
     {
         const Int nb = Min(bsize,sumDim-k);
         auto A1 = A( IR(k,k+nb), ALL        );
         auto B1 = B( ALL,        IR(k,k+nb) );
 
-        A1_STAR_MC = A1; 
+        A1_STAR_MC = A1;
         B1_VR_STAR = B1;
         Transpose( B1_VR_STAR, B1Trans_STAR_MR, conjugateB );
 
@@ -173,24 +173,24 @@ void SUMMA_TTDot
         AbstractDistMatrix<T>& CPre,
   Int blockSize=2000 )
 {
-    EL_DEBUG_CSE 
+    EL_DEBUG_CSE
     const Int m = CPre.Height();
     const Int n = CPre.Width();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,VC,STAR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::VC,Dist::STAR> AProx( APre );
     auto& A = AProx.GetLocked();
 
     ElementalProxyCtrl BCtrl;
     BCtrl.rowConstrain = true;
     BCtrl.rowAlign = A.ColAlign();
-    DistMatrixReadProxy<T,T,STAR,VC> BProx( BPre, BCtrl );
+    DistMatrixReadProxy<T,T,Dist::STAR,Dist::VC> BProx( BPre, BCtrl );
     auto& B = BProx.GetLocked();
 
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& C = CProx.Get();
 
-    DistMatrix<T,STAR,STAR> C11_STAR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> C11_STAR_STAR(g);
     for( Int kOuter=0; kOuter<m; kOuter+=blockSize )
     {
         const Int nbOuter = Min(blockSize,m-kOuter);

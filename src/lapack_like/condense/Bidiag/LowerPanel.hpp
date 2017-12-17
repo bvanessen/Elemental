@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_BIDIAG_LOWER_PANEL_HPP
@@ -31,7 +31,7 @@ LowerPanel
           householderScalarsQ.Width() != 1 )
           LogicError("householderScalarsQ was not the right size");
       if( A.Height() > A.Width() )
-          LogicError("A must be at least as wide as it is tall"); 
+          LogicError("A must be at least as wide as it is tall");
       if( A.Height() != X.Height() )
           LogicError("A and X must have the same height");
       if( A.Width() != Y.Width() )
@@ -44,7 +44,7 @@ LowerPanel
     typedef Base<F> Real;
 
     Matrix<F> zT1, z01, z21;
-    
+
     Matrix<Real> d, e;
     d.Resize( nX, 1 );
     e.Resize( nX, 1 );
@@ -81,7 +81,7 @@ LowerPanel
         auto Y02 = Y( ind0, ind2 );
         auto y12 = Y( ind1, ind2 );
 
-        // Apply all previous reflectors to a1R:    
+        // Apply all previous reflectors to a1R:
         //   a1R := a1R - a10 Y0R         - x10 conj(A0R)
         //        = a1R - (Y0R^T a10^T)^T - (A0R^H x10^T)^T
         Gemv( TRANSPOSE, F(-1), Y0R, a10, F(1), a1R );
@@ -104,7 +104,7 @@ LowerPanel
         // x21 := A2R a1R^T
         Zeros( x21, A2R.Height(), 1 );
         Gemv( NORMAL, F(1), A2R, a1R, F(0), x21 );
-        // x21 := x21 - A20 (Y0R a1R^T) 
+        // x21 := x21 - A20 (Y0R a1R^T)
         Gemv( NORMAL, F(1),  Y0R, a1R, z01 );
         Gemv( NORMAL, F(-1), A20, z01, F(1), x21 );
         // x21 := x21 - X20 (conj(A0R) a1R^T)
@@ -166,12 +166,12 @@ template<typename F>
 void
 LowerPanel
 ( DistMatrix<F>& A,
-  DistMatrix<F,STAR,STAR>& householderScalarsP,
-  DistMatrix<F,STAR,STAR>& householderScalarsQ,
+  DistMatrix<F,Dist::STAR,Dist::STAR>& householderScalarsP,
+  DistMatrix<F,Dist::STAR,Dist::STAR>& householderScalarsQ,
   DistMatrix<F>& X,
   DistMatrix<F>& Y,
-  DistMatrix<F,MC,  STAR>& AL_MC_STAR,
-  DistMatrix<F,STAR,MR  >& AT_STAR_MR )
+  DistMatrix<F,Dist::MC,  Dist::STAR>& AL_MC_STAR,
+  DistMatrix<F,Dist::STAR,Dist::MR  >& AT_STAR_MR )
 {
     EL_DEBUG_CSE
     const Int nX = X.Width();
@@ -192,7 +192,7 @@ LowerPanel
           householderScalarsQ.Width() != 1 )
           LogicError("householderScalarsQ was not the right size");
       if( A.Height() > A.Width() )
-          LogicError("A must be at least as wide as it is tall"); 
+          LogicError("A must be at least as wide as it is tall");
       if( A.Height() != X.Height() )
           LogicError("A and X must have the same height");
       if( A.Width() != Y.Width() )
@@ -205,19 +205,19 @@ LowerPanel
     typedef Base<F> Real;
     const Grid& g = A.Grid();
 
-    DistMatrix<F,MC,  STAR> z01_MC_STAR(g),
+    DistMatrix<F,Dist::MC,  Dist::STAR> z01_MC_STAR(g),
                             zT1_MC_STAR(g),
                             z21_MC_STAR(g);
-    DistMatrix<F,MR,  STAR> a01_MR_STAR(g),
+    DistMatrix<F,Dist::MR,  Dist::STAR> a01_MR_STAR(g),
                             y01_MR_STAR(g),
                             z01_MR_STAR(g),
                             zT1_MR_STAR(g),
-                            z21_MR_STAR(g); 
-    DistMatrix<F,STAR,MC  > a10_STAR_MC(g),
+                            z21_MR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > a10_STAR_MC(g),
                             x10_STAR_MC(g);
-    DistMatrix<F,STAR,MR  > z1R_STAR_MR(g);
-    
-    DistMatrix<Real,MD,STAR> d(g), e(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > z1R_STAR_MR(g);
+
+    DistMatrix<Real,Dist::MD,Dist::STAR> d(g), e(g);
     d.SetRoot( A.DiagonalRoot( 0) );
     e.SetRoot( A.DiagonalRoot(-1) );
     d.AlignCols( A.DiagonalAlign( 0) );
@@ -258,12 +258,12 @@ LowerPanel
         auto y12 = Y( ind1, ind2 );
 
         auto a1R_STAR_MR = AT_STAR_MR( ind1, indR );
-        auto a21_MC_STAR = AL_MC_STAR( ind2, ind1 ); 
+        auto a21_MC_STAR = AL_MC_STAR( ind2, ind1 );
 
         auto delta1   = d( ind1, ALL );
         auto epsilon1 = e( ind1, ALL );
 
-        // Apply all previous reflectors to a1R:    
+        // Apply all previous reflectors to a1R:
         //   a1R := a1R - a10 Y0R         - x10 conj(A0R)
         //        = a1R - (Y0R^T a10^T)^T - (A0R^H x10^T)^T
         if( k > 0 )
@@ -278,7 +278,7 @@ LowerPanel
             // z1R[* ,MR] := (Y0R^T[MR,MC] a10^T[MC,* ])^T +
             //               (A0R^H[MR,MC] x10^T[MC,* ])^T
             LocalGemv( TRANSPOSE, F(1), Y0R, a10_STAR_MC, F(0), z1R_STAR_MR );
-            LocalGemv( ADJOINT,   F(1), A0R, x10_STAR_MC, F(1), z1R_STAR_MR ); 
+            LocalGemv( ADJOINT,   F(1), A0R, x10_STAR_MC, F(1), z1R_STAR_MR );
             // Sum the partial contributions and subtract from a1R
             AxpyContract( F(-1), z1R_STAR_MR, a1R );
         }
@@ -328,7 +328,7 @@ LowerPanel
         Conjugate( z01_MC_STAR );
         z01_MR_STAR.AlignWith( X20 );
         z01_MR_STAR = z01_MC_STAR;
-        // z21[MC,* ] -= X20[MC,MR] z01[MR,* ] 
+        // z21[MC,* ] -= X20[MC,MR] z01[MR,* ]
         LocalGemv( NORMAL, F(-1), X20, z01_MR_STAR, F(1), z21_MC_STAR );
 
         // Finally perform the row summation and then scale by tauP
@@ -405,7 +405,7 @@ LowerPanel
         LocalGemv( ADJOINT, F(1), X2L, a21_MC_STAR, F(0), zT1_MR_STAR );
         El::AllReduce( zT1_MR_STAR, X2L.ColComm() );
         zT1_MC_STAR.AlignWith( AT2 );
-        zT1_MC_STAR = zT1_MR_STAR; 
+        zT1_MC_STAR = zT1_MR_STAR;
         // z21[MR,* ] -= AT2^T[MR,MC] (X2L^H a21)[MC,* ]
         LocalGemv( TRANSPOSE, F(-1), AT2, zT1_MC_STAR, F(1), z21_MR_STAR );
 

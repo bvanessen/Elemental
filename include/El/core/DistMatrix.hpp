@@ -9,7 +9,8 @@
 #ifndef EL_CORE_DISTMATRIX_HPP
 #define EL_CORE_DISTMATRIX_HPP
 
-namespace El {
+namespace El
+{
 
 template<typename DistTypeA,typename DistTypeB>
 inline void AssertSameDist( const DistTypeA& distA, const DistTypeB& distB )
@@ -63,7 +64,7 @@ namespace blacs {
 template<typename scalarType>
 inline int Context( const AbstractDistMatrix<scalarType>& A )
 {
-    if( A.ColDist() != MC || A.RowDist() != MR )
+    if( A.ColDist() != Dist::MC || A.RowDist() != Dist::MR )
         LogicError
         ("Only (MC,MR) distributions are currently supported with ScaLAPACK");
     return A.Grid().BlacsMCMRContext();

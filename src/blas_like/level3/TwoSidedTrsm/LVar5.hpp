@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRSM_LVAR5_HPP
@@ -12,7 +12,7 @@
 namespace El {
 namespace twotrsm {
 
-template<typename F> 
+template<typename F>
 void LVar5( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
 {
     EL_DEBUG_CSE
@@ -69,9 +69,9 @@ void LVar5( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
     }
 }
 
-template<typename F> 
+template<typename F>
 void LVar5
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& APre,
   const AbstractDistMatrix<F>& LPre )
 {
@@ -88,17 +88,17 @@ void LVar5
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> LProx( LPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
     auto& A = AProx.Get();
     auto& L = LProx.GetLocked();
-    
+
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), L11_STAR_STAR(g);
-    DistMatrix<F,MC,  STAR> A21_MC_STAR(g), L21_MC_STAR(g);
-    DistMatrix<F,VC,  STAR> A21_VC_STAR(g), L21_VC_STAR(g), Y21_VC_STAR(g);
-    DistMatrix<F,VR,  STAR> A21_VR_STAR(g), L21_VR_STAR(g);
-    DistMatrix<F,STAR,MR  > A21Adj_STAR_MR(g), L21Adj_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), L11_STAR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> A21_MC_STAR(g), L21_MC_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> A21_VC_STAR(g), L21_VC_STAR(g), Y21_VC_STAR(g);
+    DistMatrix<F,Dist::VR,  Dist::STAR> A21_VR_STAR(g), L21_VR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > A21Adj_STAR_MR(g), L21Adj_STAR_MR(g);
     DistMatrix<F> Y21(g);
 
     for( Int k=0; k<n; k+=bsize )
@@ -128,8 +128,8 @@ void LVar5
         Y21_VC_STAR.Resize( A21.Height(), A21.Width() );
         Zero( Y21_VC_STAR );
         Hemm
-        ( RIGHT, LOWER, 
-          F(1), A11_STAR_STAR.Matrix(), L21_VC_STAR.Matrix(), 
+        ( RIGHT, LOWER,
+          F(1), A11_STAR_STAR.Matrix(), L21_VC_STAR.Matrix(),
           F(0), Y21_VC_STAR.Matrix() );
         Y21.AlignWith( A21 );
         Y21 = Y21_VC_STAR;

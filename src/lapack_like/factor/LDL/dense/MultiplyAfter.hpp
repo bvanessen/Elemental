@@ -43,7 +43,7 @@ void MultiplyAfter
     )
     const Orientation orientation = ( conjugated ? ADJOINT : TRANSPOSE );
 
-    DistMatrixReadProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.GetLocked();
 
     const auto d = GetDiagonal(A);
@@ -98,8 +98,8 @@ void MultiplyAfter
     )
     const Orientation orientation = ( conjugated ? ADJOINT : TRANSPOSE );
 
-    DistMatrixReadProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> BProx( BPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> BProx( BPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.Get();
 

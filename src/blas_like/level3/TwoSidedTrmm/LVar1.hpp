@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRMM_LVAR1_HPP
@@ -12,9 +12,9 @@
 namespace El {
 namespace twotrmm {
 
-// The only reason a field is required is for the existence of 1/2, which is 
+// The only reason a field is required is for the existence of 1/2, which is
 // an artifact of the algorithm...
-template<typename F> 
+template<typename F>
 void LVar1( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
 {
     EL_DEBUG_CSE
@@ -72,9 +72,9 @@ void LVar1( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
     }
 }
 
-template<typename F> 
+template<typename F>
 void LVar1
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& APre,
   const AbstractDistMatrix<F>& LPre )
 {
@@ -91,19 +91,19 @@ void LVar1
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> LProx( LPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
     auto& A = AProx.Get();
     auto& L = LProx.GetLocked();
 
     // Temporary distributions
-    DistMatrix<F,STAR,MR  > L21Adj_STAR_MR(g), Z21_MR_STAR(g);
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), L11_STAR_STAR(g), 
+    DistMatrix<F,Dist::STAR,Dist::MR  > L21Adj_STAR_MR(g), Z21_MR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), L11_STAR_STAR(g),
                             X11_STAR_STAR(g);
-    DistMatrix<F,MC,  STAR> L21_MC_STAR(g), Z21_MC_STAR(g);
-    DistMatrix<F,VC,  STAR> A21_VC_STAR(g), L21_VC_STAR(g);
-    DistMatrix<F,VR,  STAR> L21_VR_STAR(g);
-    DistMatrix<F,MR,  MC  > Z21_MR_MC(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> L21_MC_STAR(g), Z21_MC_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> A21_VC_STAR(g), L21_VC_STAR(g);
+    DistMatrix<F,Dist::VR,  Dist::STAR> L21_VR_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::MC  > Z21_MR_MC(g);
     DistMatrix<F> Y21(g);
 
     for( Int k=0; k<n; k+=bsize )
@@ -137,11 +137,11 @@ void LVar1
         Zero( Z21_MC_STAR );
         Zero( Z21_MR_STAR );
         symm::LocalAccumulateLL
-        ( ADJOINT, 
+        ( ADJOINT,
           F(1), A22, L21_MC_STAR, L21Adj_STAR_MR, Z21_MC_STAR, Z21_MR_STAR );
         Z21_MR_MC.AlignWith( A21 );
         Contract( Z21_MR_STAR, Z21_MR_MC );
-        Y21.AlignWith( A21 ); 
+        Y21.AlignWith( A21 );
         Y21 = Z21_MR_MC;
         AxpyContract( F(1), Z21_MC_STAR, Y21 );
 

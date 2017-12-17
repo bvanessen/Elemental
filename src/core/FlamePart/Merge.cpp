@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 
 namespace El {
 
@@ -32,7 +31,7 @@ void Merge1x2( Matrix<T>& A, Matrix<T>& BL, Matrix<T>& BR )
 
 template<typename T>
 void Merge1x2
-( ElementalMatrix<T>& A, 
+( ElementalMatrix<T>& A,
   ElementalMatrix<T>& BL,
   ElementalMatrix<T>& BR )
 {
@@ -43,7 +42,7 @@ void Merge1x2
       AssertConforming1x2( BL, BR );
     )
     A.Attach
-    ( BL.Height(), BL.Width()+BR.Width(), BL.Grid(), 
+    ( BL.Height(), BL.Width()+BR.Width(), BL.Grid(),
       BL.ColAlign(), BL.RowAlign(), BL.Buffer(), BL.LDim(), BL.Root() );
 }
 
@@ -75,7 +74,7 @@ void LockedMerge1x2
       AssertConforming1x2( BL, BR );
     )
     A.LockedAttach
-    ( BL.Height(), BL.Width()+BR.Width(), BL.Grid(), 
+    ( BL.Height(), BL.Width()+BR.Width(), BL.Grid(),
       BL.ColAlign(), BL.RowAlign(), BL.LockedBuffer(), BL.LDim(), BL.Root() );
 }
 
@@ -137,7 +136,7 @@ void Merge2x1( Matrix<T>& A, Matrix<T>& BT, Matrix<T>& BB )
 
 template<typename T>
 void Merge2x1
-( ElementalMatrix<T>& A, 
+( ElementalMatrix<T>& A,
   ElementalMatrix<T>& BT,
   ElementalMatrix<T>& BB )
 {
@@ -148,7 +147,7 @@ void Merge2x1
       AssertConforming2x1( BT, BB );
     )
     A.Attach
-    ( BT.Height()+BB.Height(), BT.Width(), BT.Grid(), 
+    ( BT.Height()+BB.Height(), BT.Width(), BT.Grid(),
       BT.ColAlign(), BT.RowAlign(), BT.Buffer(), BT.LDim(), BT.Root() );
 }
 
@@ -181,7 +180,7 @@ void LockedMerge2x1
       AssertConforming2x1( BT, BB );
     )
     A.LockedAttach
-    ( BT.Height()+BB.Height(), BT.Width(), BT.Grid(), 
+    ( BT.Height()+BB.Height(), BT.Width(), BT.Grid(),
       BT.ColAlign(), BT.RowAlign(), BT.LockedBuffer(), BT.LDim(), BT.Root() );
 }
 
@@ -251,7 +250,7 @@ void Merge2x2
           LogicError("2x2 must have contiguous memory");
     )
     A.Attach
-    ( BTL.Height()+BBL.Height(), BTL.Width()+BTR.Width(), 
+    ( BTL.Height()+BBL.Height(), BTL.Width()+BTR.Width(),
       BTL.Buffer(), BTL.LDim() );
 }
 
@@ -299,7 +298,7 @@ void LockedMerge2x2
           LogicError("2x2 must have contiguous memory");
     )
     A.LockedAttach
-    ( BTL.Height()+BBL.Height(), BTL.Width()+BTR.Width(), 
+    ( BTL.Height()+BBL.Height(), BTL.Width()+BTR.Width(),
       BTL.LockedBuffer(), BTL.LDim() );
 }
 
@@ -428,20 +427,20 @@ DistMatrix<T,U,V> LockedMerge2x2
   template Matrix<T> LockedMerge2x2 \
   ( const Matrix<T>& BTL, const Matrix<T>& BTR, \
     const Matrix<T>& BBL, const Matrix<T>& BBR ); \
-  PROTO_DIST(T,CIRC,CIRC) \
-  PROTO_DIST(T,MC,  MR  ) \
-  PROTO_DIST(T,MC,  STAR) \
-  PROTO_DIST(T,MD,  STAR) \
-  PROTO_DIST(T,MR,  MC  ) \
-  PROTO_DIST(T,MR,  STAR) \
-  PROTO_DIST(T,STAR,MC  ) \
-  PROTO_DIST(T,STAR,MD  ) \
-  PROTO_DIST(T,STAR,MR  ) \
-  PROTO_DIST(T,STAR,STAR) \
-  PROTO_DIST(T,STAR,VC  ) \
-  PROTO_DIST(T,STAR,VR  ) \
-  PROTO_DIST(T,VC,  STAR) \
-  PROTO_DIST(T,VR,  STAR)
+  PROTO_DIST(T,Dist::CIRC,CIRC) \
+  PROTO_DIST(T,Dist::MC,  MR  ) \
+  PROTO_DIST(T,Dist::MC,  STAR) \
+  PROTO_DIST(T,Dist::MD,  STAR) \
+  PROTO_DIST(T,Dist::MR,  MC  ) \
+  PROTO_DIST(T,Dist::MR,  STAR) \
+  PROTO_DIST(T,Dist::STAR,MC  ) \
+  PROTO_DIST(T,Dist::STAR,MD  ) \
+  PROTO_DIST(T,Dist::STAR,MR  ) \
+  PROTO_DIST(T,Dist::STAR,STAR) \
+  PROTO_DIST(T,Dist::STAR,VC  ) \
+  PROTO_DIST(T,Dist::STAR,VR  ) \
+  PROTO_DIST(T,Dist::VC,  STAR) \
+  PROTO_DIST(T,Dist::VR,  STAR)
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

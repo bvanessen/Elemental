@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_APPLYPACKEDREFLECTORS_RLVB_HPP
@@ -16,14 +16,14 @@ namespace apply_packed_reflectors {
 // Since applying Householder transforms from vectors stored right-to-left
 // implies that we will be forming a generalization of
 //
-//   (I - tau_1 u_1 u_1^H) (I - tau_0 u_0 u_0^H) = 
+//   (I - tau_1 u_1 u_1^H) (I - tau_0 u_0 u_0^H) =
 //   I - tau_0 u_0 u_0^H - tau_1 u_1 u_1^H + (tau_0 tau_1 u_1^H u_0) u_1 u_0^H =
 //   I - [ u_0, u_1 ] [  tau_0,                 0     ] [ u_0^H ]
 //                    [ -tau_0 tau_1 u_1^H u_0, tau_1 ] [ u_1^H ],
 //
-// which has a lower-triangular center matrix, say S, we will form S as 
+// which has a lower-triangular center matrix, say S, we will form S as
 // the inverse of a matrix T, which can easily be formed as
-// 
+//
 //   tril(T,-1) = tril( U^H U ),
 //   diag(T) = 1/householderScalars or 1/conj(householderScalars),
 //
@@ -31,7 +31,7 @@ namespace apply_packed_reflectors {
 // vector of Householder reflection coefficients.
 //
 
-template<typename F> 
+template<typename F>
 void
 RLVBUnblocked
 ( Conjugation conjugation,
@@ -76,9 +76,9 @@ RLVBUnblocked
         // ARight := ARight (I - gamma hPan hPan')
         Ger( -gamma, z, hPanCopy, ARight );
     }
-} 
+}
 
-template<typename F> 
+template<typename F>
 void
 RLVBBlocked
 ( Conjugation conjugation,
@@ -134,7 +134,7 @@ RLVBBlocked
     }
 }
 
-template<typename F> 
+template<typename F>
 void
 RLVB
 ( Conjugation conjugation,
@@ -156,7 +156,7 @@ RLVB
     }
 }
 
-template<typename F> 
+template<typename F>
 void
 RLVBUnblocked
 ( Conjugation conjugation,
@@ -170,11 +170,11 @@ RLVBUnblocked
 
     // We gather the entire set of Householder scalars at the start rather than
     // continually paying the latency cost of the broadcasts in a 'Get' call
-    DistMatrixReadProxy<F,F,STAR,STAR>
+    DistMatrixReadProxy<F,F,Dist::STAR,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& householderScalars = householderScalarsProx.GetLocked();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int nA = A.Width();
@@ -186,8 +186,8 @@ RLVBUnblocked
     )
     const Grid& g = H.Grid();
     auto hPan = unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
-    DistMatrix<F,MR,STAR> hPan_MR_STAR(g);
-    DistMatrix<F,MC,STAR> z_MC_STAR(g);
+    DistMatrix<F,Dist::MR,Dist::STAR> hPan_MR_STAR(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> z_MC_STAR(g);
 
     const Int iOff = ( offset>=0 ? 0      : -offset );
     const Int jOff = ( offset>=0 ? offset : 0       );
@@ -197,7 +197,7 @@ RLVBUnblocked
         const Int ki = k+iOff;
         const Int kj = k+jOff;
 
-        auto ARight = A( ALL, IR(ki,nA) ); 
+        auto ARight = A( ALL, IR(ki,nA) );
         const F tau = householderScalars.GetLocal( k, 0 );
         const F gamma = ( conjugation == CONJUGATED ? Conj(tau) : tau );
 
@@ -212,13 +212,13 @@ RLVBUnblocked
         Zeros( z_MC_STAR, ARight.Height(), 1 );
         LocalGemv( NORMAL, F(1), ARight, hPan_MR_STAR, F(0), z_MC_STAR );
         El::AllReduce( z_MC_STAR, ARight.RowComm() );
- 
+
         // ARight := ARight (I - hPan inv(SInv) hPan')
         LocalGer( -gamma, z_MC_STAR, hPan_MR_STAR, ARight );
     }
 }
 
-template<typename F> 
+template<typename F>
 void
 RLVBBlocked
 ( Conjugation conjugation,
@@ -230,11 +230,11 @@ RLVBBlocked
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(AssertSameGrids( H, householderScalarsPre, APre ))
 
-    DistMatrixReadProxy<F,F,MC,STAR>
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& householderScalars = householderScalarsProx.GetLocked();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int nA = A.Width();
@@ -247,12 +247,12 @@ RLVBBlocked
     const Grid& g = H.Grid();
     auto HPan = unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
     DistMatrix<F> HPanCopy(g);
-    DistMatrix<F,VC,  STAR> HPan_VC_STAR(g);
-    DistMatrix<F,MR,  STAR> HPan_MR_STAR(g);
-    DistMatrix<F,STAR,STAR> householderScalars1_STAR_STAR(g);
-    DistMatrix<F,STAR,STAR> SInv_STAR_STAR(g);
-    DistMatrix<F,STAR,MC  > ZAdj_STAR_MC(g);
-    DistMatrix<F,STAR,VC  > ZAdj_STAR_VC(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> HPan_VC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> HPan_MR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> householderScalars1_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> SInv_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > ZAdj_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::VC  > ZAdj_STAR_VC(g);
 
     const Int iOff = ( offset>=0 ? 0      : -offset );
     const Int jOff = ( offset>=0 ? offset : 0       );
@@ -265,7 +265,7 @@ RLVBBlocked
         const Int ki = k+iOff;
         const Int kj = k+jOff;
 
-        auto ARight = A( ALL, IR(ki,nA) ); 
+        auto ARight = A( ALL, IR(ki,nA) );
         auto householderScalars1 = householderScalars( IR(k,k+nb), ALL );
 
         // Convert to an explicit matrix of (scaled) Householder vectors
@@ -278,9 +278,9 @@ RLVBBlocked
         HPan_VC_STAR = HPanCopy;
         Zeros( SInv_STAR_STAR, nb, nb );
         Herk
-        ( LOWER, ADJOINT, 
+        ( LOWER, ADJOINT,
           Base<F>(1), HPan_VC_STAR.LockedMatrix(),
-          Base<F>(0), SInv_STAR_STAR.Matrix() );     
+          Base<F>(0), SInv_STAR_STAR.Matrix() );
         El::AllReduce( SInv_STAR_STAR, HPan_VC_STAR.ColComm() );
         householderScalars1_STAR_STAR = householderScalars1;
         FixDiagonal
@@ -293,7 +293,7 @@ RLVBBlocked
         LocalGemm( ADJOINT, ADJOINT, F(1), HPan_MR_STAR, ARight, ZAdj_STAR_MC );
         ZAdj_STAR_VC.AlignWith( ARight );
         Contract( ZAdj_STAR_MC, ZAdj_STAR_VC );
- 
+
         // Z := ARight HPan inv(SInv)
         LocalTrsm
         ( LEFT, LOWER, ADJOINT, NON_UNIT, F(1), SInv_STAR_STAR, ZAdj_STAR_VC );
@@ -305,7 +305,7 @@ RLVBBlocked
     }
 }
 
-template<typename F> 
+template<typename F>
 void
 RLVB
 ( Conjugation conjugation,

@@ -57,7 +57,7 @@ void ColAllGather( const ElementalMatrix<T>& A, ElementalMatrix<T>& B )
                 const Int localWidth = A.LocalWidth();
                 const Int portionSize = mpi::Pad( maxLocalHeight*localWidth );
 
-                vector<T> buffer;
+                std::vector<T> buffer;
                 FastResize( buffer, (colStride+1)*portionSize );
                 T* sendBuf = &buffer[0];
                 T* recvBuf = &buffer[portionSize];
@@ -91,7 +91,7 @@ void ColAllGather( const ElementalMatrix<T>& A, ElementalMatrix<T>& B )
             if( height == 1 )
             {
                 const Int localWidthB = B.LocalWidth();
-                vector<T> buffer;
+                std::vector<T> buffer;
                 T* bcastBuf;
 
                 if( A.ColRank() == A.ColAlign() )
@@ -132,7 +132,7 @@ void ColAllGather( const ElementalMatrix<T>& A, ElementalMatrix<T>& B )
                 const Int portionSize =
                     mpi::Pad( maxLocalHeight*maxLocalWidth );
 
-                vector<T> buffer;
+                std::vector<T> buffer;
                 FastResize( buffer, (colStride+1)*portionSize );
                 T* firstBuf  = &buffer[0];
                 T* secondBuf = &buffer[portionSize];
@@ -225,7 +225,7 @@ void ColAllGather
                   MaxBlockedLength(height,blockHeight,colCut,colStride);
 
                 const Int portionSize = mpi::Pad( localWidth*maxLocalHeight );
-                vector<T> buffer;
+                std::vector<T> buffer;
                 FastResize( buffer, (colStride+1)*portionSize );
                 T* sendBuf = &buffer[0];
                 T* recvBuf = &buffer[portionSize];
@@ -277,7 +277,7 @@ void ColAllGather
                   MaxBlockedLength(height,blockHeight,colCut,colStride);
 
                 const Int portionSize = mpi::Pad(maxLocalHeight*maxLocalWidth);
-                vector<T> buffer;
+                std::vector<T> buffer;
                 FastResize( buffer, (colStride+1)*portionSize );
                 T* firstBuf = &buffer[0];
                 T* secondBuf = &buffer[portionSize];

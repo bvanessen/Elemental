@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like.hpp>
 
 #define COLDIST MR
@@ -25,7 +24,7 @@ namespace El {
 // Make a copy
 // -----------
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,MC,MR>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::MC,Dist::MR>& A )
 {
     EL_DEBUG_CSE
     const Grid& grid = A.Grid();
@@ -46,11 +45,11 @@ DM& DM::operator=( const DistMatrix<T,MC,MR>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,MC,STAR>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::MC,Dist::STAR>& A )
 {
     EL_DEBUG_CSE
-    DistMatrix<T,VC,STAR> A_VC_STAR( A );
-    DistMatrix<T,VR,STAR> A_VR_STAR( this->Grid() );
+    DistMatrix<T,Dist::VC,Dist::STAR> A_VC_STAR( A );
+    DistMatrix<T,Dist::VR,Dist::STAR> A_VR_STAR( this->Grid() );
     A_VR_STAR.AlignColsWith(*this);
     A_VR_STAR = A_VC_STAR;
     A_VC_STAR.Empty();
@@ -59,11 +58,11 @@ DM& DM::operator=( const DistMatrix<T,MC,STAR>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,STAR,MR>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::MR>& A )
 {
     EL_DEBUG_CSE
-    DistMatrix<T,STAR,VR> A_STAR_VR( A );
-    DistMatrix<T,STAR,VC> A_STAR_VC( this->Grid() );
+    DistMatrix<T,Dist::STAR,Dist::VR> A_STAR_VR( A );
+    DistMatrix<T,Dist::STAR,Dist::VC> A_STAR_VC( this->Grid() );
     A_STAR_VC.AlignRowsWith(*this);
     A_STAR_VC = A_STAR_VR;
     A_STAR_VR.Empty();
@@ -72,7 +71,7 @@ DM& DM::operator=( const DistMatrix<T,STAR,MR>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,MD,STAR>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::MD,Dist::STAR>& A )
 {
     EL_DEBUG_CSE
     // TODO: More efficient implementation
@@ -81,7 +80,7 @@ DM& DM::operator=( const DistMatrix<T,MD,STAR>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,STAR,MD>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::MD>& A )
 {
     EL_DEBUG_CSE
     // TODO: More efficient implementation
@@ -90,7 +89,7 @@ DM& DM::operator=( const DistMatrix<T,STAR,MD>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,MR,STAR>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::MR,Dist::STAR>& A )
 {
     EL_DEBUG_CSE
     copy::RowFilter( A, *this );
@@ -98,7 +97,7 @@ DM& DM::operator=( const DistMatrix<T,MR,STAR>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,STAR,MC>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::MC>& A )
 {
     EL_DEBUG_CSE
     copy::ColFilter( A, *this );
@@ -106,16 +105,16 @@ DM& DM::operator=( const DistMatrix<T,STAR,MC>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,VC,STAR>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::VC,Dist::STAR>& A )
 {
     EL_DEBUG_CSE
-    DistMatrix<T,VR,STAR> A_VR_STAR( A );
+    DistMatrix<T,Dist::VR,Dist::STAR> A_VR_STAR( A );
     *this = A_VR_STAR;
     return *this;
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,STAR,VC>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::VC>& A )
 {
     EL_DEBUG_CSE
     copy::RowAllToAllPromote( A, *this );
@@ -123,7 +122,7 @@ DM& DM::operator=( const DistMatrix<T,STAR,VC>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,VR,STAR>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::VR,Dist::STAR>& A )
 {
     EL_DEBUG_CSE
     copy::ColAllToAllPromote( A, *this );
@@ -131,16 +130,16 @@ DM& DM::operator=( const DistMatrix<T,VR,STAR>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,STAR,VR>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::VR>& A )
 {
     EL_DEBUG_CSE
-    DistMatrix<T,STAR,VC> A_STAR_VC( A );
+    DistMatrix<T,Dist::STAR,Dist::VC> A_STAR_VC( A );
     *this = A_STAR_VC;
     return *this;
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,STAR,STAR>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::STAR>& A )
 {
     EL_DEBUG_CSE
     copy::Filter( A, *this );
@@ -148,7 +147,7 @@ DM& DM::operator=( const DistMatrix<T,STAR,STAR>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,CIRC,CIRC>& A )
+DM& DM::operator=( const DistMatrix<T,Dist::CIRC,Dist::CIRC>& A )
 {
     EL_DEBUG_CSE
     copy::Scatter( A, *this );
@@ -161,7 +160,7 @@ DM& DM::operator=( const ElementalMatrix<T>& A )
     EL_DEBUG_CSE
     #define GUARD(CDIST,RDIST,WRAP) \
       A.DistData().colDist == CDIST && A.DistData().rowDist == RDIST && \
-      ELEMENT == WRAP
+      DistWrap::ELEMENT == WRAP
     #define PAYLOAD(CDIST,RDIST,WRAP) \
       auto& ACast = static_cast<const DistMatrix<T,CDIST,RDIST>&>(A); \
       *this = ACast;
@@ -248,29 +247,29 @@ int DM::PartialUnionRowRank() const EL_NO_EXCEPT
   ( const DistMatrix<T,U,V>& A );
 #define OTHER(T,U,V) \
   template DistMatrix<T,COLDIST,ROWDIST>::DistMatrix \
-  ( const DistMatrix<T,U,V,BLOCK>& A ); \
+  ( const DistMatrix<T,U,V,DistWrap::BLOCK>& A ); \
   template DistMatrix<T,COLDIST,ROWDIST>& \
            DistMatrix<T,COLDIST,ROWDIST>::operator= \
-           ( const DistMatrix<T,U,V,BLOCK>& A )
+           ( const DistMatrix<T,U,V,DistWrap::BLOCK>& A )
 #define BOTH(T,U,V) \
   SELF(T,U,V) \
   OTHER(T,U,V)
 #define PROTO(T) \
   template class DistMatrix<T,COLDIST,ROWDIST>; \
-  BOTH( T,CIRC,CIRC); \
-  BOTH( T,MC,  MR  ); \
-  BOTH( T,MC,  STAR); \
-  BOTH( T,MD,  STAR); \
-  OTHER(T,MR,  MC  ); \
-  BOTH( T,MR,  STAR); \
-  BOTH( T,STAR,MC  ); \
-  BOTH( T,STAR,MD  ); \
-  BOTH( T,STAR,MR  ); \
-  BOTH( T,STAR,STAR); \
-  BOTH( T,STAR,VC  ); \
-  BOTH( T,STAR,VR  ); \
-  BOTH( T,VC,  STAR); \
-  BOTH( T,VR,  STAR);
+  BOTH( T,Dist::CIRC,CIRC); \
+  BOTH( T,Dist::MC,  MR  ); \
+  BOTH( T,Dist::MC,  STAR); \
+  BOTH( T,Dist::MD,  STAR); \
+  OTHER(T,Dist::MR,  MC  ); \
+  BOTH( T,Dist::MR,  STAR); \
+  BOTH( T,Dist::STAR,MC  ); \
+  BOTH( T,Dist::STAR,MD  ); \
+  BOTH( T,Dist::STAR,MR  ); \
+  BOTH( T,Dist::STAR,STAR); \
+  BOTH( T,Dist::STAR,VC  ); \
+  BOTH( T,Dist::STAR,VR  ); \
+  BOTH( T,Dist::VC,  STAR); \
+  BOTH( T,Dist::VR,  STAR);
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

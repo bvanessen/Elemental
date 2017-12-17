@@ -77,14 +77,14 @@ void LowerVariant3Blocked( AbstractDistMatrix<F>& APre )
     )
     const Grid& grid = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(grid);
-    DistMatrix<F,VC,  STAR> A21_VC_STAR(grid);
-    DistMatrix<F,VR,  STAR> A21_VR_STAR(grid);
-    DistMatrix<F,STAR,MC  > A21Trans_STAR_MC(grid);
-    DistMatrix<F,STAR,MR  > A21Adj_STAR_MR(grid);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(grid);
+    DistMatrix<F,Dist::VC,  Dist::STAR> A21_VC_STAR(grid);
+    DistMatrix<F,Dist::VR,  Dist::STAR> A21_VR_STAR(grid);
+    DistMatrix<F,Dist::STAR,Dist::MC  > A21Trans_STAR_MC(grid);
+    DistMatrix<F,Dist::STAR,Dist::MR  > A21Adj_STAR_MR(grid);
 
     const Int n = A.Height();
     const Int bsize = Blocksize();

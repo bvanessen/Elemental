@@ -112,7 +112,7 @@ public:
 
     // Basic queries
     // =============
-    DistWrap Wrap() const override EL_NO_EXCEPT { return ELEMENT; }
+    DistWrap Wrap() const override EL_NO_EXCEPT { return DistWrap::ELEMENT; }
 
     Int BlockHeight() const override EL_NO_EXCEPT { return 1; }
     Int BlockWidth()  const override EL_NO_EXCEPT { return 1; }

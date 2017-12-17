@@ -55,7 +55,7 @@ void TriangularInverse
 
 template<typename Field>
 void LocalTriangularInverse
-( UpperOrLower uplo, UnitOrNonUnit diag, DistMatrix<Field,STAR,STAR>& A )
+( UpperOrLower uplo, UnitOrNonUnit diag, DistMatrix<Field,Dist::STAR,Dist::STAR>& A )
 {
     EL_DEBUG_CSE
     TriangularInverse( uplo, diag, A.Matrix() );
@@ -67,7 +67,7 @@ void LocalTriangularInverse
   template void TriangularInverse \
   ( UpperOrLower uplo, UnitOrNonUnit diag, AbstractDistMatrix<Field>& A ); \
   template void LocalTriangularInverse \
-  ( UpperOrLower uplo, UnitOrNonUnit diag, DistMatrix<Field,STAR,STAR>& A );
+  ( UpperOrLower uplo, UnitOrNonUnit diag, DistMatrix<Field,Dist::STAR,Dist::STAR>& A );
 
 #define EL_NO_INT_PROTO
 #define EL_ENABLE_DOUBLEDOUBLE

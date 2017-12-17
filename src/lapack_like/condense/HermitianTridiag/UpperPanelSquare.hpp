@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_HERMITIANTRIDIAG_UPPER_PANEL_SQUARE_HPP
@@ -16,11 +16,11 @@ template<typename F>
 void UpperPanelSquare
 ( DistMatrix<F>& A,
   DistMatrix<F>& W,
-  DistMatrix<F,MD,STAR>& t,
-  DistMatrix<F,MC,STAR>& B_MC_STAR, 
-  DistMatrix<F,MR,STAR>& B_MR_STAR,
-  DistMatrix<F,MC,STAR>& W_MC_STAR,
-  DistMatrix<F,MR,STAR>& W_MR_STAR,
+  DistMatrix<F,Dist::MD,Dist::STAR>& t,
+  DistMatrix<F,Dist::MC,Dist::STAR>& B_MC_STAR,
+  DistMatrix<F,Dist::MR,Dist::STAR>& B_MR_STAR,
+  DistMatrix<F,Dist::MC,Dist::STAR>& W_MC_STAR,
+  DistMatrix<F,Dist::MR,Dist::STAR>& W_MR_STAR,
   const SymvCtrl<F>& ctrl )
 {
     EL_DEBUG_CSE
@@ -59,7 +59,7 @@ void UpperPanelSquare
 
     // Create a distributed matrix for storing the superdiagonal
     auto expandedABR = A( IR(off-1,n), IR(off-1,n) );
-    DistMatrix<Real,MD,STAR> e(g);
+    DistMatrix<Real,Dist::MD,Dist::STAR> e(g);
     e.SetRoot( expandedABR.DiagonalRoot(1) );
     e.AlignCols( expandedABR.DiagonalAlign(1) );
     e.Resize( nW, 1 );
@@ -68,9 +68,9 @@ void UpperPanelSquare
     FastResize( w01LastBuf, n/r+1 );
 
     DistMatrix<F> w01Last(g);
-    DistMatrix<F,MC,STAR> a01_MC(g), p01_MC(g),
+    DistMatrix<F,Dist::MC,Dist::STAR> a01_MC(g), p01_MC(g),
                           a01Last_MC(g), w01Last_MC(g);
-    DistMatrix<F,MR,STAR> a01_MR(g), q01_MR(g),
+    DistMatrix<F,Dist::MR,Dist::STAR> a01_MR(g), q01_MR(g),
                           a01Last_MR(g), w01Last_MR(g),
                           x21_MR(g), y21_MR(g);
 
@@ -115,7 +115,7 @@ void UpperPanelSquare
 
         // View the portions of A02 and W0T outside of this panel's square
         auto a01T_MC = a01_MC( IR(0,off), ALL );
-        auto p01T_MC = p01_MC( IR(0,off), ALL ); 
+        auto p01T_MC = p01_MC( IR(0,off), ALL );
 
         if( !firstIteration )
         {
@@ -136,7 +136,7 @@ void UpperPanelSquare
                 const F* a01Last_MC_Buf = a01Last_MC.Buffer();
                 for( Int i=0; i<aT1LocalHeight; ++i )
                     aT1Buffer[i] -=
-                        w01LastBuf[i] + 
+                        w01LastBuf[i] +
                         a01Last_MC_Buf[i]*Conj(w01LastBottomEntry);
             }
             // Compute the Householder reflector
@@ -145,13 +145,13 @@ void UpperPanelSquare
                 tau1.SetLocal(0,0,tau);
         }
 
-        // Store the subdiagonal value and turn a01 into a proper scaled 
+        // Store the subdiagonal value and turn a01 into a proper scaled
         // reflector by explicitly placing the implicit one in its first entry.
         GetRealPartOfDiagonal( alpha01B, epsilon1 );
         alpha01B.Set( 0, 0, F(1) );
 
-        // If this is the first iteration, have each member of the owning 
-        // process column broadcast tau and a01 within its process row. 
+        // If this is the first iteration, have each member of the owning
+        // process column broadcast tau and a01 within its process row.
         // Otherwise, also add w01 into the broadcast.
         if( firstIteration )
         {
@@ -168,7 +168,7 @@ void UpperPanelSquare
             }
             // Broadcast a01 and tau across the process row
             mpi::Broadcast
-            ( rowBcastBuf.data(), 
+            ( rowBcastBuf.data(),
               a01LocalHeight+1, a01.RowAlign(), g.RowComm() );
             // Store a01[MC] into its DistMatrix class and also store a copy
             // for the next iteration
@@ -176,11 +176,11 @@ void UpperPanelSquare
             ( a01_MC.Buffer(), rowBcastBuf.data(), a01LocalHeight );
             // Store a01[MC] into B[MC,* ]
             MemCopy
-            ( B_MC_STAR.Buffer(0,k), 
+            ( B_MC_STAR.Buffer(0,k),
               rowBcastBuf.data(), a01LocalHeight );
             // Store tau
             tau = rowBcastBuf[a01LocalHeight];
-            
+
             // Take advantage of the square process grid in order to form
             // a01[MR,* ] from a01[MC,* ]
             if( onDiagonal )
@@ -210,34 +210,34 @@ void UpperPanelSquare
             vector<F> rowBcastBuf;
             FastResize( rowBcastBuf, a01LocalHeight+w01LastLocalHeight+1 );
 
-            if( thisIsMyCol ) 
+            if( thisIsMyCol )
             {
                 // Pack the broadcast buffer with a01, w01Last, and tau
                 MemCopy( rowBcastBuf.data(), a01.Buffer(), a01LocalHeight );
                 MemCopy
-                ( &rowBcastBuf[a01LocalHeight], 
+                ( &rowBcastBuf[a01LocalHeight],
                   w01LastBuf.data(), w01LastLocalHeight );
                 rowBcastBuf[a01LocalHeight+w01LastLocalHeight] = tau;
             }
             // Broadcast a01, w01Last, and tau across the process row
             mpi::Broadcast
-            ( rowBcastBuf.data(), 
-              a01LocalHeight+w01LastLocalHeight+1, 
+            ( rowBcastBuf.data(),
+              a01LocalHeight+w01LastLocalHeight+1,
               a01.RowAlign(), g.RowComm() );
-            // Store a01[MC] into its DistMatrix class 
+            // Store a01[MC] into its DistMatrix class
             MemCopy
             ( a01_MC.Buffer(), rowBcastBuf.data(), a01LocalHeight );
             // Store a01[MC] into B[MC,* ]
             MemCopy
-            ( B_MC_STAR.Buffer(0,k), 
+            ( B_MC_STAR.Buffer(0,k),
               rowBcastBuf.data(), a01LocalHeight );
             // Store w01Last[MC] into its DistMatrix class
             w01Last_MC.AlignWith( A00 );
             w01Last_MC.Resize( a01.Height()+1, 1 );
             MemCopy
-            ( w01Last_MC.Buffer(), 
+            ( w01Last_MC.Buffer(),
               &rowBcastBuf[a01LocalHeight], w01LastLocalHeight );
-            // Store the bottom part of w01Last[MC] into WB[MC,* ] and, 
+            // Store the bottom part of w01Last[MC] into WB[MC,* ] and,
             // if necessary, w01.
             MemCopy
             ( W_MC_STAR.Buffer(0,k+1),
@@ -303,9 +303,9 @@ void UpperPanelSquare
             ( B_MR_STAR.Buffer(0,k),
               a01_MR.Buffer(), a01_MR.LocalHeight() );
 
-            // Update the portion of A00 that is in our current panel with 
+            // Update the portion of A00 that is in our current panel with
             // w01Last and a01Last using two gers. We do not need their bottom
-            // entries. We trash the lower triangle of our panel of A since we 
+            // entries. We trash the lower triangle of our panel of A since we
             // are only doing slightly more work and we can replace it
             // afterwards.
             auto a01Last_MC_Top = a01Last_MC( ind0, ALL );
@@ -353,7 +353,7 @@ void UpperPanelSquare
             MemCopy
             ( x21_MR.Buffer(), colSumRecvBuf.data(), x21LocalHeight );
             MemCopy
-            ( y21_MR.Buffer(), 
+            ( y21_MR.Buffer(),
               &colSumRecvBuf[x21LocalHeight], y21LocalHeight );
         }
 
@@ -361,7 +361,7 @@ void UpperPanelSquare
         LocalGemv( NORMAL, F(-1), W02T, y21_MR, F(1), p01T_MC );
 
         // Fast transpose the unsummed q01[MR] -> q01[MC], so that
-        // it needs to be summed over process rows instead of process 
+        // it needs to be summed over process rows instead of process
         // columns. We immediately add it onto p01[MC], which also needs
         // to be summed within process rows.
         if( onDiagonal )
@@ -392,7 +392,7 @@ void UpperPanelSquare
 
         if( k > 0 )
         {
-            // This is not the last iteration of the panel factorization, 
+            // This is not the last iteration of the panel factorization,
             // Reduce to one p01[MC] to the next process column.
             const Int a01LocalHeight = a01.LocalHeight();
 
@@ -407,16 +407,16 @@ void UpperPanelSquare
               a01LocalHeight, nextProcCol, g.RowComm() );
             if( g.Col() == nextProcCol )
             {
-                // Finish computing w01. During its computation, ensure that 
+                // Finish computing w01. During its computation, ensure that
                 // every process has a copy of the last element of the w01.
                 // We know a priori that the last element of a01 is one.
                 const F* a01_MC_Buf = a01_MC.Buffer();
                 F myDotProduct = blas::Dot
-                    ( a01LocalHeight, reduceToOneRecvBuf.data(), 1, 
+                    ( a01LocalHeight, reduceToOneRecvBuf.data(), 1,
                                       a01_MC_Buf,                1 );
                 F sendBuf[2], recvBuf[2];
                 sendBuf[0] = myDotProduct;
-                sendBuf[1] = ( g.Row()==nextProcRow ? 
+                sendBuf[1] = ( g.Row()==nextProcRow ?
                                reduceToOneRecvBuf[a01LocalHeight-1] : 0 );
                 mpi::AllReduce( sendBuf, recvBuf, 2, g.ColComm() );
                 F dotProduct = recvBuf[0];
@@ -442,15 +442,15 @@ void UpperPanelSquare
             FastResize( allReduceRecvBuf, a01LocalHeight );
 
             mpi::AllReduce
-            ( p01_MC.Buffer(), allReduceRecvBuf.data(), 
+            ( p01_MC.Buffer(), allReduceRecvBuf.data(),
               a01LocalHeight, g.RowComm() );
 
-            // Finish computing w01. During its computation, ensure that 
+            // Finish computing w01. During its computation, ensure that
             // every process has a copy of the last element of the w01.
             // We know a priori that the last element of a01 is one.
             const F* a01_MC_Buf = a01_MC.Buffer();
             F myDotProduct = blas::Dot
-                ( a01LocalHeight, allReduceRecvBuf.data(), 1, 
+                ( a01LocalHeight, allReduceRecvBuf.data(), 1,
                                   a01_MC_Buf,              1 );
             const F dotProduct = mpi::AllReduce( myDotProduct, g.ColComm() );
 

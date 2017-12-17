@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El.hpp>
@@ -73,7 +73,7 @@ void ScaLAPACKHelper( UpperOrLower uplo, AbstractDistMatrix<F>& A )
     AssertScaLAPACKSupport();
 #ifdef EL_HAVE_SCALAPACK
     // TODO: Add support for optionally timing the proxy redistribution
-    DistMatrixReadWriteProxy<F,F,MC,MR,BLOCK> ABlockProx( A );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR,BLOCK> ABlockProx( A );
     auto& ABlock = ABlockProx.Get();
 
     const Int n = ABlock.Height();
@@ -92,7 +92,7 @@ void ScaLAPACKHelper( UpperOrLower uplo, AbstractDistMatrix<F>& A )
 
 } // anonymous namespace
 
-template<typename F> 
+template<typename F>
 void Cholesky( UpperOrLower uplo, AbstractDistMatrix<F>& A, bool scalapack )
 {
     EL_DEBUG_CSE
@@ -109,7 +109,7 @@ void Cholesky( UpperOrLower uplo, AbstractDistMatrix<F>& A, bool scalapack )
     }
 }
 
-template<typename F> 
+template<typename F>
 void Cholesky
 ( UpperOrLower uplo, AbstractDistMatrix<F>& A, DistPermutation& p )
 {
@@ -122,10 +122,10 @@ void Cholesky
 
 template<typename F>
 void Cholesky
-( UpperOrLower uplo, DistMatrix<F,STAR,STAR>& A )
+( UpperOrLower uplo, DistMatrix<F,Dist::STAR,Dist::STAR>& A )
 { Cholesky( uplo, A.Matrix() ); }
 
-template<typename F> 
+template<typename F>
 void ReverseCholesky( UpperOrLower uplo, AbstractDistMatrix<F>& A )
 {
     EL_DEBUG_CSE
@@ -137,10 +137,10 @@ void ReverseCholesky( UpperOrLower uplo, AbstractDistMatrix<F>& A )
 
 template<typename F>
 void ReverseCholesky
-( UpperOrLower uplo, DistMatrix<F,STAR,STAR>& A )
+( UpperOrLower uplo, DistMatrix<F,Dist::STAR,Dist::STAR>& A )
 { ReverseCholesky( uplo, A.Matrix() ); }
 
-// Either 
+// Either
 //         L' L'^H := L L^H + alpha V V^H
 // or
 //         U'^H U' := U^H U + alpha V V^H
@@ -159,7 +159,7 @@ void CholeskyMod( UpperOrLower uplo, Matrix<F>& T, Base<F> alpha, Matrix<F>& V )
 template<typename F>
 void CholeskyMod
 ( UpperOrLower uplo,
-  AbstractDistMatrix<F>& T, 
+  AbstractDistMatrix<F>& T,
   Base<F> alpha,
   AbstractDistMatrix<F>& V )
 {
@@ -191,7 +191,7 @@ void HPSDCholesky( UpperOrLower uplo, AbstractDistMatrix<F>& APre )
     EL_DEBUG_CSE
 
     // NOTE: This should be removed once HPSD, LQ, and QR have been generalized
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     HPSDSquareRoot( uplo, A );
@@ -207,12 +207,12 @@ void HPSDCholesky( UpperOrLower uplo, AbstractDistMatrix<F>& APre )
   template void Cholesky( UpperOrLower uplo, Matrix<F>& A ); \
   template void Cholesky \
   ( UpperOrLower uplo, AbstractDistMatrix<F>& A, bool scalapack ); \
-  template void Cholesky( UpperOrLower uplo, DistMatrix<F,STAR,STAR>& A ); \
+  template void Cholesky( UpperOrLower uplo, DistMatrix<F,Dist::STAR,Dist::STAR>& A ); \
   template void ReverseCholesky( UpperOrLower uplo, Matrix<F>& A ); \
   template void ReverseCholesky \
   ( UpperOrLower uplo, AbstractDistMatrix<F>& A ); \
   template void ReverseCholesky \
-  ( UpperOrLower uplo, DistMatrix<F,STAR,STAR>& A ); \
+  ( UpperOrLower uplo, DistMatrix<F,Dist::STAR,Dist::STAR>& A ); \
   template void Cholesky( UpperOrLower uplo, Matrix<F>& A, Permutation& p ); \
   template void Cholesky \
   ( UpperOrLower uplo, \
@@ -242,7 +242,7 @@ void HPSDCholesky( UpperOrLower uplo, AbstractDistMatrix<F>& APre )
   ( UpperOrLower uplo, Orientation orientation, \
     const AbstractDistMatrix<F>& A, \
     const DistPermutation& p, \
-          AbstractDistMatrix<F>& B ); 
+          AbstractDistMatrix<F>& B );
 
 #define PROTO(F) \
   PROTO_BASE(F) \

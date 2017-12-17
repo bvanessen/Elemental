@@ -117,11 +117,11 @@ void Overwrite
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR>
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR>
       AProx( APre ),
       BProx( BPre ),
       DProx( DPre );
-    DistMatrixWriteProxy<F,F,MC,MR>
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR>
       YProx( YPre );
     auto& A = AProx.Get();
     auto& B = BProx.Get();
@@ -145,8 +145,8 @@ void Overwrite
     const bool checkIfSingular = true;
 
     // Compute the implicit Generalized QR decomposition of (A,B)
-    DistMatrix<F,MD,STAR> tA(g), tB(g);
-    DistMatrix<Base<F>,MD,STAR> dA(g), dB(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> tA(g), tB(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> dA(g), dB(g);
     GQR( A, tA, dA, B, tB, dB );
 
     // G := Q^H D

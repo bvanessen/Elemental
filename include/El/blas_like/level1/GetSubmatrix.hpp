@@ -33,7 +33,7 @@ void GetSubmatrix
         ElementalMatrix<T>& ASub )
 {
     EL_DEBUG_CSE
-    unique_ptr<ElementalMatrix<T>>
+    std::unique_ptr<ElementalMatrix<T>>
       ASubView( A.Construct(A.Grid(),A.Root()) );
     LockedView( *ASubView, A, I, J );
     Copy( *ASubView, ASub );
@@ -45,7 +45,7 @@ template<typename T>
 void GetSubmatrix
 ( const Matrix<T>& A,
   const Range<Int> I,
-  const vector<Int>& J,
+  const std::vector<Int>& J,
         Matrix<T>& ASub )
 {
     EL_DEBUG_CSE
@@ -68,7 +68,7 @@ void GetSubmatrix
 template<typename T>
 void GetSubmatrix
 ( const Matrix<T>& A,
-  const vector<Int>& I,
+  const std::vector<Int>& I,
   const Range<Int> J,
         Matrix<T>& ASub )
 {
@@ -96,8 +96,8 @@ void GetSubmatrix
 template<typename T>
 void GetSubmatrix
 ( const Matrix<T>& A,
-  const vector<Int>& I,
-  const vector<Int>& J,
+  const std::vector<Int>& I,
+  const std::vector<Int>& J,
         Matrix<T>& ASub )
 {
     EL_DEBUG_CSE
@@ -125,7 +125,7 @@ template<typename T>
 void GetSubmatrix
 ( const AbstractDistMatrix<T>& A,
         Range<Int> I,
-  const vector<Int>& J,
+  const std::vector<Int>& J,
         AbstractDistMatrix<T>& ASub )
 {
     EL_DEBUG_CSE
@@ -180,7 +180,7 @@ void GetSubmatrix
 template<typename T>
 void GetSubmatrix
 ( const AbstractDistMatrix<T>& A,
-  const vector<Int>& I,
+  const std::vector<Int>& I,
         Range<Int> J,
         AbstractDistMatrix<T>& ASub )
 {
@@ -236,8 +236,8 @@ void GetSubmatrix
 template<typename T>
 void GetSubmatrix
 ( const AbstractDistMatrix<T>& A,
-  const vector<Int>& I,
-  const vector<Int>& J,
+  const std::vector<Int>& I,
+  const std::vector<Int>& J,
         AbstractDistMatrix<T>& ASub )
 {
     EL_DEBUG_CSE
@@ -309,32 +309,32 @@ void GetSubmatrix
   EL_EXTERN template void GetSubmatrix \
   ( const Matrix<T>& A, \
     const Range<Int> I, \
-    const vector<Int>& J,  \
+    const std::vector<Int>& J,  \
           Matrix<T>& ASub ); \
   EL_EXTERN template void GetSubmatrix \
   ( const Matrix<T>& A, \
-    const vector<Int>& I, \
+    const std::vector<Int>& I, \
     const Range<Int> J, \
           Matrix<T>& ASub ); \
   EL_EXTERN template void GetSubmatrix \
   ( const Matrix<T>& A, \
-    const vector<Int>& I, \
-    const vector<Int>& J, \
+    const std::vector<Int>& I, \
+    const std::vector<Int>& J, \
           Matrix<T>& ASub ); \
   EL_EXTERN template void GetSubmatrix \
   ( const AbstractDistMatrix<T>& A, \
           Range<Int> I, \
-    const vector<Int>& J, \
+    const std::vector<Int>& J, \
           AbstractDistMatrix<T>& ASub ); \
   EL_EXTERN template void GetSubmatrix \
   ( const AbstractDistMatrix<T>& A, \
-    const vector<Int>& I, \
+    const std::vector<Int>& I, \
           Range<Int> J, \
           AbstractDistMatrix<T>& ASub ); \
   EL_EXTERN template void GetSubmatrix \
   ( const AbstractDistMatrix<T>& A, \
-    const vector<Int>& I, \
-    const vector<Int>& J, \
+    const std::vector<Int>& I, \
+    const std::vector<Int>& J, \
           AbstractDistMatrix<T>& ASub );
 
 #define EL_ENABLE_DOUBLEDOUBLE

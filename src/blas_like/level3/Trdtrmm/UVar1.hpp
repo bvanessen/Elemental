@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -58,14 +58,14 @@ void UVar1( AbstractDistMatrix<F>& UPre, bool conjugate=false )
     const Grid& g = UPre.Grid();
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.Get();
 
-    DistMatrix<F,MC,  STAR> S01_MC_STAR(g);
-    DistMatrix<F,VC,  STAR> S01_VC_STAR(g);
-    DistMatrix<F,VR,  STAR> U01_VR_STAR(g);
-    DistMatrix<F,STAR,MR  > U01Trans_STAR_MR(g);
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> S01_MC_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> S01_VC_STAR(g);
+    DistMatrix<F,Dist::VR,  Dist::STAR> U01_VR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > U01Trans_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
 
     S01_MC_STAR.AlignWith( U );
     S01_VC_STAR.AlignWith( U );

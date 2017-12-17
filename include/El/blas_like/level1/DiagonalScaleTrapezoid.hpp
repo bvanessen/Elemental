@@ -22,9 +22,9 @@ void DiagonalScaleTrapezoid
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( side==LEFT && (d.Height()!=A.Height() || d.Width()!=1) )
+      if( side==LeftOrRight::LEFT && (d.Height()!=A.Height() || d.Width()!=1) )
           LogicError("d should have been a vector of the height of A");
-      if( side==RIGHT && (d.Height()!=A.Width() || d.Width()!=1) )
+      if( side==LeftOrRight::RIGHT && (d.Height()!=A.Width() || d.Width()!=1) )
           LogicError("d should have been a vector of the width of A");
     )
     const Int m = A.Height();
@@ -37,7 +37,7 @@ void DiagonalScaleTrapezoid
     const Int iOff = ( offset>=0 ? 0      : -offset );
     const Int jOff = ( offset>=0 ? offset : 0       );
 
-    if( uplo == LOWER && side == LEFT )
+    if( uplo == UpperOrLower::LOWER && side == LeftOrRight::LEFT )
     {
         // Scale from the left up to the diagonal
         for( Int i=iOff; i<m; ++i )
@@ -48,7 +48,7 @@ void DiagonalScaleTrapezoid
             blas::Scal( Min(j+1,n), alpha, &ABuf[i], ldim );
         }
     }
-    else if( uplo == UPPER && side == LEFT )
+    else if( uplo == UpperOrLower::UPPER && side == LeftOrRight::LEFT )
     {
         // Scale from the diagonal to the right
         for( Int i=0; i<iOff+diagLength; ++i )
@@ -60,7 +60,7 @@ void DiagonalScaleTrapezoid
             blas::Scal( n-jLeft, alpha, &ABuf[i+jLeft*ldim], ldim );
         }
     }
-    else if( uplo == LOWER && side == RIGHT )
+    else if( uplo == UpperOrLower::LOWER && side == LeftOrRight::RIGHT )
     {
         // Scale from the diagonal downwards
         for( Int j=0; j<jOff+diagLength; ++j )
@@ -72,7 +72,7 @@ void DiagonalScaleTrapezoid
             blas::Scal( m-iTop, alpha, &ABuf[iTop+j*ldim], 1 );
         }
     }
-    else /* uplo == UPPER && side == RIGHT */
+    else /* uplo == UpperOrLower::UPPER && side == LeftOrRight::RIGHT */
     {
         // Scale downward to the diagonal
         for( Int j=jOff; j<n; ++j )
@@ -108,7 +108,7 @@ void DiagonalScaleTrapezoid
     const Int iOff = ( offset>=0 ? 0      : -offset );
     const Int jOff = ( offset>=0 ? offset : 0       );
 
-    if( side == LEFT )
+    if( side == LeftOrRight::LEFT )
     {
         ElementalProxyCtrl ctrl;
         ctrl.rootConstrain = true;
@@ -119,7 +119,7 @@ void DiagonalScaleTrapezoid
         DistMatrixReadProxy<TDiag,TDiag,U,Collect<V>()> dProx( dPre, ctrl );
         auto& d = dProx.GetLocked();
 
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             // Scale from the left up to the diagonal
             for( Int iLoc=0; iLoc<mLoc; ++iLoc )
@@ -170,7 +170,7 @@ void DiagonalScaleTrapezoid
         DistMatrixReadProxy<TDiag,TDiag,V,Collect<U>()> dProx( dPre, ctrl );
         auto& d = dProx.GetLocked();
 
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             // Scale from the diagonal downwards
             for( Int jLoc=0; jLoc<nLoc; ++jLoc )
@@ -218,7 +218,7 @@ void DiagonalScaleTrapezoid
   UpperOrLower uplo,
   Orientation orientation,
   const AbstractDistMatrix<TDiag>& dPre,
-        DistMatrix<T,U,V,BLOCK>& A,
+        DistMatrix<T,U,V,DistWrap::BLOCK>& A,
   Int offset )
 {
     EL_DEBUG_CSE
@@ -235,7 +235,7 @@ void DiagonalScaleTrapezoid
     const Int iOff = ( offset>=0 ? 0      : -offset );
     const Int jOff = ( offset>=0 ? offset : 0       );
 
-    if( side == LEFT )
+    if( side == LeftOrRight::LEFT )
     {
         ProxyCtrl ctrl;
         ctrl.rootConstrain = true;
@@ -245,11 +245,11 @@ void DiagonalScaleTrapezoid
         ctrl.blockHeight = A.BlockHeight();
         ctrl.colCut = A.ColCut();
 
-        DistMatrixReadProxy<TDiag,TDiag,U,Collect<V>(),BLOCK>
+        DistMatrixReadProxy<TDiag,TDiag,U,Collect<V>(),DistWrap::BLOCK>
           dProx( dPre, ctrl );
         auto& d = dProx.GetLocked();
 
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             // Scale from the left up to the diagonal
             for( Int iLoc=0; iLoc<mLoc; ++iLoc )
@@ -299,11 +299,11 @@ void DiagonalScaleTrapezoid
         ctrl.blockHeight = A.BlockWidth();
         ctrl.colCut = A.RowCut();
 
-        DistMatrixReadProxy<TDiag,TDiag,V,Collect<U>(),BLOCK>
+        DistMatrixReadProxy<TDiag,TDiag,V,Collect<U>(),DistWrap::BLOCK>
           dProx( dPre, ctrl );
         auto& d = dProx.GetLocked();
 
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             // Scale from the diagonal downwards
             for( Int jLoc=0; jLoc<nLoc; ++jLoc )

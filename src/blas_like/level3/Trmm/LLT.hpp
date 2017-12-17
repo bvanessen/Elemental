@@ -5,8 +5,8 @@
    Copyright (c) 2013, The University of Texas at Austin
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRMM_LLT_HPP
@@ -21,8 +21,8 @@ void LocalAccumulateLLT
   UnitOrNonUnit diag,
   T alpha,
   const DistMatrix<T>& L,
-  const DistMatrix<T,MC,STAR>& X,
-        DistMatrix<T,MR,STAR>& Z )
+  const DistMatrix<T,Dist::MC,Dist::STAR>& X,
+        DistMatrix<T,Dist::MR,Dist::STAR>& Z )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -38,7 +38,7 @@ void LocalAccumulateLLT
     const Int m = Z.Height();
     const Int bsize = Blocksize();
     const Grid& g = L.Grid();
-    
+
     DistMatrix<T> D11(g);
 
     const Int ratio = Max( g.Height(), g.Width() );
@@ -85,14 +85,14 @@ void LLTA
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> LProx( LPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& L = LProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,MC,STAR> X1_MC_STAR(g);
-    DistMatrix<T,MR,STAR> Z1_MR_STAR(g);
-    DistMatrix<T,MR,MC  > Z1_MR_MC(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> X1_MC_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> Z1_MR_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::MC  > Z1_MR_MC(g);
 
     X1_MC_STAR.AlignWith( L );
     Z1_MR_STAR.AlignWith( L );
@@ -113,7 +113,7 @@ void LLTA
         X1 = Z1_MR_MC;
     }
 }
-   
+
 template<typename T>
 void LLTCOld
 ( Orientation orientation,
@@ -136,17 +136,17 @@ void LLTCOld
     const Grid& g = LPre.Grid();
     const bool conjugate = ( orientation == ADJOINT );
 
-    DistMatrixReadProxy<T,T,MC,MR> LProx( LPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& L = LProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,STAR,STAR> L11_STAR_STAR(g);
-    DistMatrix<T,MC,  STAR> L21_MC_STAR(g);
-    DistMatrix<T,STAR,VR  > X1_STAR_VR(g);
-    DistMatrix<T,MR,  STAR> D1Trans_MR_STAR(g);
-    DistMatrix<T,MR,  MC  > D1Trans_MR_MC(g);
-    DistMatrix<T,MC,  MR  > D1(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> L11_STAR_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> L21_MC_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> D1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::MR,  Dist::MC  > D1Trans_MR_MC(g);
+    DistMatrix<T,Dist::MC,  Dist::MR  > D1(g);
 
     for( Int k=0; k<m; k+=bsize )
     {
@@ -163,7 +163,7 @@ void LLTCOld
         LocalTrmm
         ( LEFT, LOWER, orientation, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
         X1 = X1_STAR_VR;
- 
+
         L21_MC_STAR.AlignWith( X2 );
         L21_MC_STAR = L21;
         D1Trans_MR_STAR.AlignWith( X1 );
@@ -199,15 +199,15 @@ void LLTC
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> LProx( LPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& L = LProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,STAR,STAR> L11_STAR_STAR(g);
-    DistMatrix<T,STAR,MC  > L10_STAR_MC(g);
-    DistMatrix<T,STAR,VR  > X1_STAR_VR(g);
-    DistMatrix<T,MR,  STAR> X1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> L11_STAR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MC  > L10_STAR_MC(g);
+    DistMatrix<T,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> X1Trans_MR_STAR(g);
 
     for( Int k=0; k<m; k+=bsize )
     {
@@ -224,7 +224,7 @@ void LLTC
         X1Trans_MR_STAR.AlignWith( X0 );
         Transpose( X1, X1Trans_MR_STAR );
         LocalGemm
-        ( orientation, TRANSPOSE, 
+        ( orientation, TRANSPOSE,
           T(1), L10_STAR_MC, X1Trans_MR_STAR, T(1), X0 );
 
         L11_STAR_STAR = L11;

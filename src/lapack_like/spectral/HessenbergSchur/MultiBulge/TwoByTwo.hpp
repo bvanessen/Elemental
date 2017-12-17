@@ -105,13 +105,13 @@ void TwoByTwo
 
 template<typename Field>
 void TwoByTwo
-(       DistMatrix<Field,MC,MR,BLOCK>& H,
+(       DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
         Field eta00,
         Field eta01,
         Field eta10,
         Field eta11,
-        DistMatrix<Complex<Base<Field>>,STAR,STAR>& w,
-        DistMatrix<Field,MC,MR,BLOCK>& Z,
+        DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& w,
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
         Int offset,
   const HessenbergSchurCtrl& ctrl )
 {

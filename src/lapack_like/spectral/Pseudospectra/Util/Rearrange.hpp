@@ -88,8 +88,8 @@ void RestoreOrdering
         AbstractDistMatrix<T>& x )
 {
     EL_DEBUG_CSE
-    DistMatrix<Int,STAR,STAR> preimageCopy( preimage );
-    DistMatrix<T,STAR,STAR> xCopy( x );
+    DistMatrix<Int,Dist::STAR,Dist::STAR> preimageCopy( preimage );
+    DistMatrix<T,Dist::STAR,Dist::STAR> xCopy( x );
     const Int numShifts = preimage.Height();
     // TODO(poulson): Significantly lower the latency
     for( Int j=0; j<numShifts; ++j )
@@ -106,9 +106,9 @@ void RestoreOrdering
         AbstractDistMatrix<T2>& y )
 {
     EL_DEBUG_CSE
-    DistMatrix<Int,STAR,STAR> preimageCopy( preimage );
-    DistMatrix<T1, STAR,STAR> xCopy( x );
-    DistMatrix<T2, STAR,STAR> yCopy( y );
+    DistMatrix<Int,Dist::STAR,Dist::STAR> preimageCopy( preimage );
+    DistMatrix<T1, Dist::STAR,Dist::STAR> xCopy( x );
+    DistMatrix<T2, Dist::STAR,Dist::STAR> yCopy( y );
     const Int numShifts = preimage.Height();
     // TODO(poulson): Significantly lower the latency
     for( Int j=0; j<numShifts; ++j )

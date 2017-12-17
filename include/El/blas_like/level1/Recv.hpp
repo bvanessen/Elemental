@@ -25,7 +25,7 @@ void Recv( Matrix<T>& A, mpi::Comm comm, int source )
     }
     else
     {
-        vector<T> buf;
+        std::vector<T> buf;
         FastResize( buf, size );
         mpi::Recv( buf.data(), size, source, comm );
 

@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRMM_UVAR1_HPP
@@ -12,9 +12,9 @@
 namespace El {
 namespace twotrmm {
 
-// The only reason a field is required is for the existence of 1/2, which is 
+// The only reason a field is required is for the existence of 1/2, which is
 // an artifact of the algorithm...
-template<typename F> 
+template<typename F>
 void UVar1( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
 {
     EL_DEBUG_CSE
@@ -72,9 +72,9 @@ void UVar1( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
     }
 }
 
-template<typename F> 
+template<typename F>
 void UVar1
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& APre,
   const AbstractDistMatrix<F>& UPre )
 {
@@ -91,20 +91,20 @@ void UVar1
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
     auto& A = AProx.Get();
     auto& U = UProx.GetLocked();
 
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), U11_STAR_STAR(g),
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), U11_STAR_STAR(g),
                             X11_STAR_STAR(g);
-    DistMatrix<F,STAR,VR  > A12_STAR_VR(g), U12_STAR_VR(g);
-    DistMatrix<F,STAR,MC  > U12_STAR_MC(g);
-    DistMatrix<F,MC,  STAR> Z12Adj_MC_STAR(g);
-    DistMatrix<F,MR,  STAR> U12Adj_MR_STAR(g), Z12Adj_MR_STAR(g);
-    DistMatrix<F,VC,  STAR> U12Adj_VC_STAR(g);
-    DistMatrix<F,MR,  MC  > Z12Adj_MR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > A12_STAR_VR(g), U12_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > U12_STAR_MC(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> Z12Adj_MC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> U12Adj_MR_STAR(g), Z12Adj_MR_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> U12Adj_VC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::MC  > Z12Adj_MR_MC(g);
     DistMatrix<F> Z12Adj(g), Y12(g);
 
     for( Int k=0; k<n; k+=bsize )
@@ -136,8 +136,8 @@ void UVar1
         Zero( Z12Adj_MC_STAR );
         Zero( Z12Adj_MR_STAR );
         symm::LocalAccumulateRU
-        ( ADJOINT, 
-          F(1), A22, U12_STAR_MC, U12Adj_MR_STAR, 
+        ( ADJOINT,
+          F(1), A22, U12_STAR_MC, U12Adj_MR_STAR,
           Z12Adj_MC_STAR, Z12Adj_MR_STAR );
         Z12Adj.AlignWith( A12 );
         Contract( Z12Adj_MC_STAR, Z12Adj );

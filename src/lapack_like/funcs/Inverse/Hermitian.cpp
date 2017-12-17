@@ -29,7 +29,7 @@ void HermitianInverse
 
 template<typename Field>
 void LocalHermitianInverse
-( UpperOrLower uplo, DistMatrix<Field,STAR,STAR>& A,
+( UpperOrLower uplo, DistMatrix<Field,Dist::STAR,Dist::STAR>& A,
   const LDLPivotCtrl<Base<Field>>& ctrl )
 {
     EL_DEBUG_CSE
@@ -44,7 +44,7 @@ void LocalHermitianInverse
   ( UpperOrLower uplo, AbstractDistMatrix<Field>& A, \
     const LDLPivotCtrl<Base<Field>>& ctrl ); \
   template void LocalHermitianInverse \
-  ( UpperOrLower uplo, DistMatrix<Field,STAR,STAR>& A, \
+  ( UpperOrLower uplo, DistMatrix<Field,Dist::STAR,Dist::STAR>& A, \
     const LDLPivotCtrl<Base<Field>>& ctrl );
 
 #define EL_NO_INT_PROTO

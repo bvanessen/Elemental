@@ -30,7 +30,7 @@ void SendRecv
     }
     else if( heightA == A.LDim() )
     {
-        vector<T> recvBuf;
+        std::vector<T> recvBuf;
         FastResize( recvBuf, sizeB );
         mpi::SendRecv
         ( A.LockedBuffer(), sizeA, sendRank,
@@ -42,14 +42,14 @@ void SendRecv
     }
     else
     {
-        vector<T> sendBuf;
+        std::vector<T> sendBuf;
         FastResize( sendBuf, sizeA );
         copy::util::InterleaveMatrix
         ( heightA, widthA,
           A.LockedBuffer(), 1, A.LDim(),
           sendBuf.data(),   1, heightA );
 
-        vector<T> recvBuf;
+        std::vector<T> recvBuf;
         FastResize( recvBuf, sizeB );
         mpi::SendRecv
         ( sendBuf.data(), sizeA, sendRank,

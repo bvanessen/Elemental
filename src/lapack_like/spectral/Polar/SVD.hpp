@@ -58,12 +58,12 @@ void SVD( AbstractDistMatrix<Field>& APre )
     EL_DEBUG_CSE
     typedef Base<Field> Real;
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
     const Grid& g = A.Grid();
 
     // Get the SVD of A
-    DistMatrix<Real,VR,STAR> s(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> s(g);
     DistMatrix<Field> U(g), V(g);
     SVDCtrl<Real> ctrl;
     ctrl.overwrite = true;
@@ -79,14 +79,14 @@ void SVD( AbstractDistMatrix<Field>& APre, AbstractDistMatrix<Field>& PPre )
     EL_DEBUG_CSE
     typedef Base<Field> Real;
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> PProx( PPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> PProx( PPre );
     auto& A = AProx.Get();
     auto& P = PProx.Get();
     const Grid& g = A.Grid();
 
     // Get the SVD of A
-    DistMatrix<Real,VR,STAR> s(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> s(g);
     DistMatrix<Field> U(g), V(g);
     SVDCtrl<Real> ctrl;
     ctrl.overwrite = true;

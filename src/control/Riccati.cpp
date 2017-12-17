@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include <El/lapack_like/funcs.hpp>
 #include <El/lapack_like/euclidean_min.hpp>
@@ -41,20 +40,20 @@ void Riccati
 
     // Solve for X in ML X = -MR
     Matrix<F> ML, MR;
-    PartitionRight( W, ML, MR, n );
+    PartitionRight( W, ML, Dist::MR, n );
     MR *= -1;
-    ls::Overwrite( NORMAL, ML, MR, X );
+    ls::Overwrite( NORMAL, ML, Dist::MR, X );
 }
 
 template<typename F>
 void Riccati
 ( ElementalMatrix<F>& WPre,
-  ElementalMatrix<F>& X, 
+  ElementalMatrix<F>& X,
   SignCtrl<Base<F>> ctrl )
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadProxy<F,F,MC,MR> WProx( WPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> WProx( WPre );
     auto& W = WProx.Get();
 
     const Grid& g = W.Grid();
@@ -71,14 +70,14 @@ void Riccati
 
     // Solve for X in ML X = -MR
     DistMatrix<F> ML(g), MR(g);
-    PartitionRight( W, ML, MR, n );
+    PartitionRight( W, ML, Dist::MR, n );
     MR *= -1;
-    ls::Overwrite( NORMAL, ML, MR, X );
+    ls::Overwrite( NORMAL, ML, Dist::MR, X );
 }
 
 template<typename F>
 void Riccati
-( UpperOrLower uplo, 
+( UpperOrLower uplo,
   const Matrix<F>& A,
   const Matrix<F>& K,
   const Matrix<F>& L,
@@ -115,11 +114,11 @@ void Riccati
 
 template<typename F>
 void Riccati
-( UpperOrLower uplo, 
+( UpperOrLower uplo,
   const ElementalMatrix<F>& A,
-  const ElementalMatrix<F>& K, 
+  const ElementalMatrix<F>& K,
   const ElementalMatrix<F>& L,
-        ElementalMatrix<F>& X, 
+        ElementalMatrix<F>& X,
   SignCtrl<Base<F>> ctrl )
 {
     EL_DEBUG_CSE

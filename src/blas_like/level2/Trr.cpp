@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level2.hpp>
 
 namespace El {
@@ -18,7 +17,7 @@ void Trr
   T alpha,
   const Matrix<T>& x,
   const Matrix<T>& y,
-        Matrix<T>& A, 
+        Matrix<T>& A,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -64,7 +63,7 @@ template<typename T>
 void Trr
 ( UpperOrLower uplo,
   T alpha,
-  const AbstractDistMatrix<T>& x, 
+  const AbstractDistMatrix<T>& x,
   const AbstractDistMatrix<T>& y,
         AbstractDistMatrix<T>& APre,
   bool conjugate )
@@ -75,7 +74,7 @@ void Trr
           LogicError("x and y must be of width 1");
     )
 
-    DistMatrixReadWriteProxy<T,T,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Grid& g = A.Grid();
@@ -86,8 +85,8 @@ void Trr
           LogicError("x and y must conform with A");
     )
 
-    DistMatrix<T,MC,STAR> x_MC_STAR(g);
-    DistMatrix<T,MR,STAR> y_MR_STAR(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> y_MR_STAR(g);
     x_MC_STAR.AlignWith( A );
     y_MR_STAR.AlignWith( A );
     x_MC_STAR = x;
@@ -103,7 +102,7 @@ void Trr
             const Int j = A.GlobalCol(jLoc);
             const Int mLocBefore = A.LocalRowOffset(j);
 
-            const T eta = 
+            const T eta =
                 alpha*( conjugate ? Conj(yLocCol[jLoc]) : yLocCol[jLoc] );
             T* ALocCol = A.Buffer(0,jLoc);
             for( Int iLoc=mLocBefore; iLoc<mLocal; ++iLoc )
@@ -119,7 +118,7 @@ void Trr
             const Int j = A.GlobalCol(jLoc);
             const Int mLocBefore = A.LocalRowOffset(j+1);
 
-            const T eta = 
+            const T eta =
                 alpha*( conjugate ? Conj(yLocCol[jLoc]) : yLocCol[jLoc] );
             T* ALocCol = A.Buffer(0,jLoc);
             for( Int iLoc=0; iLoc<mLocBefore; ++iLoc )

@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level3.hpp>
 
 #include "./TwoSidedTrmm/Unblocked.hpp"
@@ -15,7 +14,7 @@
 
 namespace El {
 
-template<typename T> 
+template<typename T>
 void TwoSidedTrmm
 ( UpperOrLower uplo, UnitOrNonUnit diag,
         Matrix<T>& A,
@@ -28,9 +27,9 @@ void TwoSidedTrmm
         twotrmm::UVar4( diag, A, B );
 }
 
-template<typename T> 
+template<typename T>
 void TwoSidedTrmm
-( UpperOrLower uplo, UnitOrNonUnit diag, 
+( UpperOrLower uplo, UnitOrNonUnit diag,
         AbstractDistMatrix<T>& A,
   const AbstractDistMatrix<T>& B )
 {
@@ -44,8 +43,8 @@ void TwoSidedTrmm
 template<typename T>
 void TwoSidedTrmm
 ( UpperOrLower uplo, UnitOrNonUnit diag,
-        DistMatrix<T,STAR,STAR>& A,
-  const DistMatrix<T,STAR,STAR>& B )
+        DistMatrix<T,Dist::STAR,Dist::STAR>& A,
+  const DistMatrix<T,Dist::STAR,Dist::STAR>& B )
 { TwoSidedTrmm( uplo, diag, A.Matrix(), B.LockedMatrix() ); }
 
 namespace twotrmm {
@@ -53,8 +52,8 @@ namespace twotrmm {
 template<typename T,typename=EnableIf<IsBlasScalar<T>>>
 void ScaLAPACKHelper
 ( UpperOrLower uplo, UnitOrNonUnit diag,
-        DistMatrix<T,MC,MR,BLOCK>& A,
-  const DistMatrix<T,MC,MR,BLOCK>& B )
+        DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+  const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& B )
 {
     if( diag == UNIT )
         LogicError("ScaLAPACK does not support unit-diagonal two-sided TRMM");
@@ -75,8 +74,8 @@ void ScaLAPACKHelper
 template<typename T,typename=DisableIf<IsBlasScalar<T>>,typename=void>
 void ScaLAPACKHelper
 ( UpperOrLower uplo, UnitOrNonUnit diag,
-        DistMatrix<T,MC,MR,BLOCK>& A,
-  const DistMatrix<T,MC,MR,BLOCK>& B )
+        DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+  const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& B )
 {
     LogicError("ScaLAPACK does not support this datatype");
 }
@@ -86,8 +85,8 @@ void ScaLAPACKHelper
 template<typename T>
 void TwoSidedTrmm
 ( UpperOrLower uplo, UnitOrNonUnit diag,
-        DistMatrix<T,MC,MR,BLOCK>& A,
-  const DistMatrix<T,MC,MR,BLOCK>& B )
+        DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+  const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& B )
 {
     EL_DEBUG_CSE
     twotrmm::ScaLAPACKHelper( uplo, diag, A, B );
@@ -104,12 +103,12 @@ void TwoSidedTrmm
     const AbstractDistMatrix<T>& B ); \
   template void TwoSidedTrmm \
   ( UpperOrLower uplo, UnitOrNonUnit diag, \
-          DistMatrix<T,STAR,STAR>& A, \
-    const DistMatrix<T,STAR,STAR>& B ); \
+          DistMatrix<T,Dist::STAR,Dist::STAR>& A, \
+    const DistMatrix<T,Dist::STAR,Dist::STAR>& B ); \
   template void TwoSidedTrmm \
   ( UpperOrLower uplo, UnitOrNonUnit diag, \
-          DistMatrix<T,MC,MR,BLOCK>& A, \
-    const DistMatrix<T,MC,MR,BLOCK>& B );
+          DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& A, \
+    const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& B );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

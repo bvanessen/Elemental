@@ -38,8 +38,8 @@ template<typename F>
 inline LDLPivot
 SelectFromPanel
 ( const DistMatrix<F>& A,
-  const DistMatrix<F,MC,STAR>& X,
-  const DistMatrix<F,MR,STAR>& Y,
+  const DistMatrix<F,Dist::MC,Dist::STAR>& X,
+  const DistMatrix<F,Dist::MR,Dist::STAR>& Y,
   LDLPivotType pivotType, Base<F> gamma )
 {
     EL_DEBUG_CSE
@@ -193,8 +193,8 @@ Panel
 ( DistMatrix<F>& AFull,
   AbstractDistMatrix<F>& dSub,
   DistPermutation& PFull,
-  DistMatrix<F,MC,STAR>& X,
-  DistMatrix<F,MR,STAR>& Y,
+  DistMatrix<F,Dist::MC,Dist::STAR>& X,
+  DistMatrix<F,Dist::MR,Dist::STAR>& Y,
   Int bsize,
   Int off=0,
   bool conjugate=false,
@@ -219,7 +219,7 @@ Panel
           LogicError("dSub is the wrong size" );
     )
 
-    DistMatrix<F,STAR,STAR> D11_STAR_STAR( A.Grid() ),
+    DistMatrix<F,Dist::STAR,Dist::STAR> D11_STAR_STAR( A.Grid() ),
                             D11Inv_STAR_STAR( A.Grid() );
 
     Int k=0;

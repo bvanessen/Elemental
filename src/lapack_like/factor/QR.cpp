@@ -36,8 +36,8 @@ namespace qr {
 // TODO(poulson): Provide external wrappers
 template<typename F,typename=EnableIf<IsBlasScalar<F>>>
 void ScaLAPACKHelper
-( DistMatrix<F,MC,MR,BLOCK>& A,
-  DistMatrix<F,MR,STAR,BLOCK>& householderScalars )
+( DistMatrix<F,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+  DistMatrix<F,Dist::MR,Dist::STAR,DistWrap::BLOCK>& householderScalars )
 {
     EL_DEBUG_CSE
     AssertScaLAPACKSupport();
@@ -56,8 +56,8 @@ void ScaLAPACKHelper
 
 template<typename F,typename=DisableIf<IsBlasScalar<F>>,typename=void>
 void ScaLAPACKHelper
-( DistMatrix<F,MC,MR,BLOCK>& A,
-  DistMatrix<F,MR,STAR,BLOCK>& householderScalars )
+( DistMatrix<F,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+  DistMatrix<F,Dist::MR,Dist::STAR,DistWrap::BLOCK>& householderScalars )
 {
     EL_DEBUG_CSE
     LogicError("ScaLAPACK does not support ",TypeName<F>());

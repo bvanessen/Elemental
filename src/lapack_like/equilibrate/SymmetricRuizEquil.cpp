@@ -69,15 +69,15 @@ void SymmetricRuizEquil
     control.colAlign = 0;
     control.rowAlign = 0;
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre, control );
-    DistMatrixWriteProxy<Real,Real,MC,STAR> dProx( dPre, control );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre, control );
+    DistMatrixWriteProxy<Real,Real,Dist::MC,Dist::STAR> dProx( dPre, control );
     auto& A = AProx.Get();
     auto& d = dProx.Get();
 
     const Int n = A.Height();
     Ones( d, n, 1 );
 
-    DistMatrix<Real,MR,STAR> scales(A.Grid());
+    DistMatrix<Real,Dist::MR,Dist::STAR> scales(A.Grid());
     const Int indent = PushIndent();
     for( Int iter=0; iter<maxIter; ++iter )
     {

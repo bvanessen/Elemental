@@ -101,7 +101,7 @@ void HermitianSVD
     HermitianEig( uplo, A, s, V );
 
     typedef Base<Field> Real;
-    DistMatrix<Real,STAR,STAR> sSgn( s );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> sSgn( s );
     auto sgnLambda = []( const Real& sigma ) { return Sgn(sigma,false); };
     EntrywiseMap( sSgn, MakeFunction(sgnLambda) );
 
@@ -110,9 +110,9 @@ void HermitianSVD
     EntrywiseMap( s, MakeFunction(absLambda) );
 
     auto pairs = TaggedSort( s, DESCENDING );
-    DistMatrix<Field,VC,STAR> V_VC_STAR( V );
-    DistMatrix<Field,VC,STAR> VPerm_VC_STAR(A.Grid());
-    DistMatrix<Real,STAR,STAR> sSgnPerm(n,1,A.Grid());
+    DistMatrix<Field,Dist::VC,Dist::STAR> V_VC_STAR( V );
+    DistMatrix<Field,Dist::VC,Dist::STAR> VPerm_VC_STAR(A.Grid());
+    DistMatrix<Real,Dist::STAR,Dist::STAR> sSgnPerm(n,1,A.Grid());
     VPerm_VC_STAR.AlignWith( V_VC_STAR );
     VPerm_VC_STAR.Resize( n, n );
     const Int nLocal = V_VC_STAR.LocalHeight();

@@ -23,7 +23,7 @@ void DiagonalSolve
     const Int m = A.Height();
     const Int n = A.Width();
     const bool conj = ( orientation == ADJOINT );
-    if( side == LEFT )
+    if( side == LeftOrRight::LEFT )
     {
         EL_DEBUG_ONLY(
           if( d.Height() != m )
@@ -84,7 +84,7 @@ void DiagonalSolve
     EL_DEBUG_ONLY(
       AssertSameGrids( dPre, A );
     )
-    if( side == LEFT )
+    if( side == LeftOrRight::LEFT )
     {
         ElementalProxyCtrl ctrl;
         ctrl.rootConstrain = true;
@@ -96,7 +96,7 @@ void DiagonalSolve
         auto& d = dProx.GetLocked();
 
         DiagonalSolve
-        ( LEFT, orientation, d.LockedMatrix(), A.Matrix(), checkIfSingular );
+        ( LeftOrRight::LEFT, orientation, d.LockedMatrix(), A.Matrix(), checkIfSingular );
     }
     else
     {
@@ -110,7 +110,7 @@ void DiagonalSolve
         auto& d = dProx.GetLocked();
 
         DiagonalSolve
-        ( RIGHT, orientation, d.LockedMatrix(), A.Matrix(), checkIfSingular );
+        ( LeftOrRight::RIGHT, orientation, d.LockedMatrix(), A.Matrix(), checkIfSingular );
     }
 }
 
@@ -118,14 +118,14 @@ template<typename FDiag,typename F,Dist U,Dist V>
 void DiagonalSolve
 ( LeftOrRight side, Orientation orientation,
   const AbstractDistMatrix<FDiag>& dPre,
-        DistMatrix<F,U,V,BLOCK>& A,
+        DistMatrix<F,U,V,DistWrap::BLOCK>& A,
   bool checkIfSingular )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( dPre, A );
     )
-    if( side == LEFT )
+    if( side == LeftOrRight::LEFT )
     {
         ProxyCtrl ctrl;
         ctrl.rootConstrain = true;
@@ -135,12 +135,12 @@ void DiagonalSolve
         ctrl.blockHeight = A.BlockHeight();
         ctrl.colCut = A.ColCut();
 
-        DistMatrixReadProxy<FDiag,FDiag,U,Collect<V>(),BLOCK>
+        DistMatrixReadProxy<FDiag,FDiag,U,Collect<V>(),DistWrap::BLOCK>
           dProx( dPre, ctrl );
         auto& d = dProx.GetLocked();
 
         DiagonalSolve
-        ( LEFT, orientation, d.LockedMatrix(), A.Matrix(), checkIfSingular );
+        ( LeftOrRight::LEFT, orientation, d.LockedMatrix(), A.Matrix(), checkIfSingular );
     }
     else
     {
@@ -152,12 +152,12 @@ void DiagonalSolve
         ctrl.blockHeight = A.BlockWidth();
         ctrl.colCut = A.RowCut();
 
-        DistMatrixReadProxy<FDiag,FDiag,V,Collect<U>(),BLOCK>
+        DistMatrixReadProxy<FDiag,FDiag,V,Collect<U>(),DistWrap::BLOCK>
           dProx( dPre, ctrl );
         auto& d = dProx.GetLocked();
 
         DiagonalSolve
-        ( RIGHT, orientation, d.LockedMatrix(), A.Matrix(), checkIfSingular );
+        ( LeftOrRight::RIGHT, orientation, d.LockedMatrix(), A.Matrix(), checkIfSingular );
     }
 }
 

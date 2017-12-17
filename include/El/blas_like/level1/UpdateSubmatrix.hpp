@@ -14,8 +14,8 @@ namespace El {
 template<typename T>
 void UpdateSubmatrix
 (       Matrix<T>& A,
-  const vector<Int>& I,
-  const vector<Int>& J,
+  const std::vector<Int>& I,
+  const std::vector<Int>& J,
         T alpha,
   const Matrix<T>& ASub )
 {
@@ -39,8 +39,8 @@ void UpdateSubmatrix
 template<typename T>
 void UpdateSubmatrix
 (       AbstractDistMatrix<T>& A,
-  const vector<Int>& I,
-  const vector<Int>& J,
+  const std::vector<Int>& I,
+  const std::vector<Int>& J,
         T alpha,
   const AbstractDistMatrix<T>& ASub )
 {
@@ -74,14 +74,14 @@ void UpdateSubmatrix
 #define PROTO(T) \
   EL_EXTERN template void UpdateSubmatrix \
   (       Matrix<T>& A, \
-    const vector<Int>& I, \
-    const vector<Int>& J, \
+    const std::vector<Int>& I, \
+    const std::vector<Int>& J, \
           T alpha, \
     const Matrix<T>& ASub ); \
   EL_EXTERN template void UpdateSubmatrix \
   (       AbstractDistMatrix<T>& A, \
-    const vector<Int>& I, \
-    const vector<Int>& J, \
+    const std::vector<Int>& I, \
+    const std::vector<Int>& J, \
           T alpha, \
     const AbstractDistMatrix<T>& ASub );
 

@@ -216,15 +216,15 @@ void ProcessFrontVanilla
     const Int n = AL.Width();
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrix<F,STAR,STAR> AL11_STAR_STAR(g);
-    DistMatrix<F,STAR,STAR> d1_STAR_STAR(g);
-    DistMatrix<F,VC,  STAR> AL21_VC_STAR(g);
-    DistMatrix<F,VR,  STAR> AL21_VR_STAR(g);
-    DistMatrix<F,STAR,MC  > S21Trans_STAR_MC(g);
-    DistMatrix<F,STAR,MR  > AL21Trans_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> AL11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> d1_STAR_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> AL21_VC_STAR(g);
+    DistMatrix<F,Dist::VR,  Dist::STAR> AL21_VR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > S21Trans_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > AL21Trans_STAR_MR(g);
 
-    DistMatrix<F,STAR,MC> leftL(g), leftR(g);
-    DistMatrix<F,STAR,MR> rightL(g), rightR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC> leftL(g), leftR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR> rightL(g), rightR(g);
     DistMatrix<F> AL22T(g), AL22B(g);
 
     const Int bsize = Blocksize();
@@ -273,7 +273,7 @@ void ProcessFrontVanilla
 template<typename F>
 void ProcessFrontIntraPiv
 ( DistMatrix<F>& AL,
-  DistMatrix<F,MD,STAR>& subdiag,
+  DistMatrix<F,Dist::MD,Dist::STAR>& subdiag,
   DistPermutation& P,
   DistMatrix<F>& ABR,
   bool conjugate )
@@ -291,13 +291,13 @@ void ProcessFrontIntraPiv
 
     P.PermuteCols( ABL );
     Trsm( RIGHT, LOWER, orientation, UNIT, F(1), ATL, ABL );
-    DistMatrix<F,MC,STAR> SBL_MC_STAR(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> SBL_MC_STAR(g);
     SBL_MC_STAR.AlignWith( ABR );
     SBL_MC_STAR = ABL;
 
     QuasiDiagonalSolve( RIGHT, LOWER, diag, subdiag, ABL, conjugate );
-    DistMatrix<F,VR,STAR> ABL_VR_STAR(g);
-    DistMatrix<F,STAR,MR> ABLTrans_STAR_MR(g);
+    DistMatrix<F,Dist::VR,Dist::STAR> ABL_VR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR> ABLTrans_STAR_MR(g);
     ABL_VR_STAR.AlignWith( ABR );
     ABLTrans_STAR_MR.AlignWith( ABR );
     ABL_VR_STAR = ABL;
@@ -324,7 +324,7 @@ void ProcessFrontBlock
     if( intraPiv )
     {
         DistPermutation P( ATL.Grid() );
-        DistMatrix<F,MD,STAR> dSub( ATL.Grid() );
+        DistMatrix<F,Dist::MD,Dist::STAR> dSub( ATL.Grid() );
         // TODO: Expose the pivot type as an option?
         LDL( ATL, dSub, P, conjugate );
 
@@ -375,7 +375,7 @@ void ProcessFront( DistFront<F>& front, LDLFrontType factorType )
     }
     else if( pivoted )
     {
-        DistMatrix<F,MD,STAR> subdiag(grid);
+        DistMatrix<F,Dist::MD,Dist::STAR> subdiag(grid);
         front.p.SetGrid( grid );
         ProcessFrontIntraPiv
         ( front.L2D, subdiag, front.p, front.work, front.isHermitian );

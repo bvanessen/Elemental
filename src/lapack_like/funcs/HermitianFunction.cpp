@@ -44,7 +44,7 @@ void HermitianFunction
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     if( A.Height() != A.Width() )
@@ -53,7 +53,7 @@ void HermitianFunction
 
     // Get the EVD of A
     const Grid& g = A.Grid();
-    DistMatrix<Real,VR,STAR> w(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> w(g);
     DistMatrix<Field> Z(g);
     HermitianEig( uplo, A, w, Z );
 
@@ -104,7 +104,7 @@ void HermitianFunction
     EL_DEBUG_CSE
     typedef Complex<Real> C;
 
-    DistMatrixReadWriteProxy<C,C,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<C,C,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     if( A.Height() != A.Width() )
@@ -112,12 +112,12 @@ void HermitianFunction
 
     // Get the EVD of A
     const Grid& g = A.Grid();
-    DistMatrix<Real,VR,STAR> w(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> w(g);
     DistMatrix<C> Z(g);
     HermitianEig( uplo, A, w, Z );
 
     // Form f(w)
-    DistMatrix<C,VR,STAR> fw(g);
+    DistMatrix<C,Dist::VR,Dist::STAR> fw(g);
     fw.AlignWith( w.DistData() );
     fw.Resize( w.Height(), 1 );
     const Int numLocalEigs = w.LocalHeight();

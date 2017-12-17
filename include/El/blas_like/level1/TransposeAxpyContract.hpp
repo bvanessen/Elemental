@@ -28,7 +28,7 @@ void TransposeAxpyContract
              (A.RowDist() == U && A.ColDist() == Partial(V)) ||
              (A.RowDist() == U && A.ColDist() == Collect(V)) )
     {
-        unique_ptr<ElementalMatrix<T>>
+        std::unique_ptr<ElementalMatrix<T>>
           ASumFilt( B.ConstructTranspose(B.Grid(),B.Root()) );
         if( B.ColConstrained() )
             ASumFilt->AlignRowsWith( B, true );

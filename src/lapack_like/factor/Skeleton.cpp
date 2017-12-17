@@ -68,7 +68,7 @@ void Skeleton
   const QRCtrl<Base<F>>& ctrl )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.GetLocked();
     const Grid& g = A.Grid();
 
@@ -77,8 +77,8 @@ void Skeleton
 
     // Find the row permutation
     DistMatrix<F> B(AAdj);
-    DistMatrix<F,MD,STAR> householderScalars(g);
-    DistMatrix<Base<F>,MD,STAR> signature(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(g);
     QR( B, householderScalars, signature, PR, ctrl );
     const Int numSteps = householderScalars.Height();
     B.Resize( B.Height(), numSteps );

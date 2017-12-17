@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -11,7 +11,7 @@ namespace El {
 namespace quasitrsm {
 
 // Left Upper (Conjugate)Transpose (Non)Unit QuasiTrsm
-//   X := triu(U)^-T  X, 
+//   X := triu(U)^-T  X,
 //   X := triu(U)^-H  X,
 //   X := triuu(U)^-T X, or
 //   X := triuu(U)^-H X
@@ -43,7 +43,7 @@ void LUTUnb
         {
             // Solve the 2x2 linear systems via a 2x2 QR decomposition produced
             // by the Givens rotation
-            //    | c        s | | U(k,  k) | = | gamma11 | 
+            //    | c        s | | U(k,  k) | = | gamma11 |
             //    | -conj(s) c | | U(k+1,k) |   | 0       |
             //
             // and by also forming the right two entries of the 2x2 resulting
@@ -152,7 +152,7 @@ void LUT
 // width(X) >> p
 template<typename F>
 void LUTLarge
-( Orientation orientation, 
+( Orientation orientation,
   const AbstractDistMatrix<F>& UPre,
         AbstractDistMatrix<F>& XPre,
   bool checkIfSingular )
@@ -166,15 +166,15 @@ void LUTLarge
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g); 
-    DistMatrix<F,STAR,MC  > U12_STAR_MC(g);
-    DistMatrix<F,STAR,MR  > X1_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > X1_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > U12_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > X1_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > X1_STAR_VR(g);
 
     for( Int k=0; k<m; k+=bsize )
     {
@@ -193,7 +193,7 @@ void LUTLarge
 
         U11_STAR_STAR = U11; // U11[* ,* ] <- U11[MC,MR]
         X1_STAR_VR    = X1;  // X1[* ,VR] <- X1[MC,MR]
-        
+
         // X1[* ,VR] := U11^-[T/H][*,*] X1[* ,VR]
         LocalQuasiTrsm
         ( LEFT, UPPER, orientation, F(1), U11_STAR_STAR, X1_STAR_VR,
@@ -215,9 +215,9 @@ void LUTLarge
 // width(X) ~= p
 template<typename F>
 void LUTMedium
-( Orientation orientation, 
+( Orientation orientation,
   const AbstractDistMatrix<F>& UPre,
-        AbstractDistMatrix<F>& XPre, 
+        AbstractDistMatrix<F>& XPre,
   bool checkIfSingular )
 {
     EL_DEBUG_CSE
@@ -229,14 +229,14 @@ void LUTMedium
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g); 
-    DistMatrix<F,STAR,MC  > U12_STAR_MC(g);
-    DistMatrix<F,MR,  STAR> X1Trans_MR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > U12_STAR_MC(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> X1Trans_MR_STAR(g);
 
     for( Int k=0; k<m; k+=bsize )
     {
@@ -257,11 +257,11 @@ void LUTMedium
         // X1[* ,VR] <- X1[MC,MR]
         X1Trans_MR_STAR.AlignWith( X2 );
         Transpose( X1, X1Trans_MR_STAR, (orientation==ADJOINT) );
-        
+
         // X1[* ,MR] := U11^-[T/H][*,*] X1[* ,MR]
         // X1^[T/H][MR,* ] := X1^[T/H][MR,* ] U11^-1[* ,* ]
         LocalQuasiTrsm
-        ( RIGHT, UPPER, NORMAL, 
+        ( RIGHT, UPPER, NORMAL,
           F(1), U11_STAR_STAR, X1Trans_MR_STAR, checkIfSingular );
 
         Transpose( X1Trans_MR_STAR, X1, (orientation==ADJOINT) );
@@ -271,7 +271,7 @@ void LUTMedium
         // X2[MC,MR] -= (U12[* ,MC])^[T/H] X1[* ,MR]
         //            = U12^[T/H][MC,*] X1[* ,MR]
         LocalGemm
-        ( orientation, orientation, 
+        ( orientation, orientation,
           F(-1), U12_STAR_MC, X1Trans_MR_STAR, F(1), X2 );
     }
 }
@@ -279,9 +279,9 @@ void LUTMedium
 // width(X) << p
 template<typename F,Dist rowDist>
 void LUTSmall
-( Orientation orientation, 
-  const DistMatrix<F,STAR,rowDist>& U,
-        DistMatrix<F,rowDist,STAR>& X,
+( Orientation orientation,
+  const DistMatrix<F,Dist::STAR,rowDist>& U,
+        DistMatrix<F,rowDist,Dist::STAR>& X,
   bool checkIfSingular )
 {
     EL_DEBUG_CSE
@@ -299,7 +299,7 @@ void LUTSmall
     const Int bsize = Blocksize();
     const Grid& g = U.Grid();
 
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g), X1_STAR_STAR(g); 
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g), X1_STAR_STAR(g);
 
     for( Int k=0; k<m; k+=bsize )
     {
@@ -318,7 +318,7 @@ void LUTSmall
 
         U11_STAR_STAR = U11; // U11[* ,* ] <- U11[* ,VR]
         X1_STAR_STAR = X1;   // X1[* ,* ] <- X1[VR,* ]
-        
+
         // X1[* ,* ] := U11^-[T/H][* ,* ] X1[* ,* ]
         LocalQuasiTrsm
         ( LEFT, UPPER, orientation,

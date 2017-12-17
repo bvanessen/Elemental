@@ -81,7 +81,7 @@ void AfterLUPartialPiv
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     if( A.Height() != A.Width() )
@@ -90,11 +90,11 @@ void AfterLUPartialPiv
     TriangularInverse( UPPER, NON_UNIT, A );
 
     const Grid& g = A.Grid();
-    DistMatrix<Field,VC,  STAR> A1_VC_STAR(g);
-    DistMatrix<Field,STAR,STAR> L11_STAR_STAR(g);
-    DistMatrix<Field,VR,  STAR> L21_VR_STAR(g);
-    DistMatrix<Field,STAR,MR  > L21Trans_STAR_MR(g);
-    DistMatrix<Field,MC,  STAR> Z1(g);
+    DistMatrix<Field,Dist::VC,  Dist::STAR> A1_VC_STAR(g);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> L11_STAR_STAR(g);
+    DistMatrix<Field,Dist::VR,  Dist::STAR> L21_VR_STAR(g);
+    DistMatrix<Field,Dist::STAR,Dist::MR  > L21Trans_STAR_MR(g);
+    DistMatrix<Field,Dist::MC,  Dist::STAR> Z1(g);
 
     const Int n = A.Height();
 

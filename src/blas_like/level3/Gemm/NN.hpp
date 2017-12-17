@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -24,15 +24,15 @@ void Cannon_NN
         LogicError("Process grid must be square for Cannon's");
 
     // Force A, B, and C to be in [MC,MR] distributions aligned with C
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& C = CProx.Get();
 
     ElementalProxyCtrl ctrlA, ctrlB;
     ctrlA.colConstrain = true; ctrlA.colAlign = C.ColAlign();
     ctrlB.rowConstrain = true; ctrlB.rowAlign = C.RowAlign();
-    
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre, ctrlA );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre, ctrlB );
+
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre, ctrlA );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre, ctrlB );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
 
@@ -40,7 +40,7 @@ void Cannon_NN
     const Int col = g.Col();
     const Int pSqrt = g.Height();
     mpi::Comm rowComm = g.RowComm();
-    mpi::Comm colComm = g.ColComm(); 
+    mpi::Comm colComm = g.ColComm();
     if( A.Width() % pSqrt != 0 )
         LogicError("For now, width(A) must be integer multiple of sqrt(p)");
 
@@ -49,7 +49,7 @@ void Cannon_NN
     const Int localHeightB = B.LocalHeight();
     const Int localWidthA = A.LocalWidth();
     const Int localWidthB = B.LocalWidth();
-    Matrix<T> pkgA(localHeightA,localWidthA,localHeightA), 
+    Matrix<T> pkgA(localHeightA,localWidthA,localHeightA),
               pkgB(localHeightB,localWidthB,localHeightB);
     for( Int jLoc=0; jLoc<localWidthA; ++jLoc )
         MemCopy
@@ -92,7 +92,7 @@ void Cannon_NN
 template<typename T>
 void SUMMA_NNA
 ( T alpha,
-  const AbstractDistMatrix<T>& APre, 
+  const AbstractDistMatrix<T>& APre,
   const AbstractDistMatrix<T>& BPre,
         AbstractDistMatrix<T>& CPre )
 {
@@ -101,17 +101,17 @@ void SUMMA_NNA
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,VR,STAR> B1_VR_STAR(g);
-    DistMatrix<T,STAR,MR> B1Trans_STAR_MR(g);
-    DistMatrix<T,MC,STAR> D1_MC_STAR(g);
+    DistMatrix<T,Dist::VR,Dist::STAR> B1_VR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MR> B1Trans_STAR_MR(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> D1_MC_STAR(g);
 
     B1_VR_STAR.AlignWith( A );
     B1Trans_STAR_MR.AlignWith( A );
@@ -146,16 +146,16 @@ void SUMMA_NNB
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,STAR,MC> A1_STAR_MC(g);
-    DistMatrix<T,MR,STAR> D1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MC> A1_STAR_MC(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> D1Trans_MR_STAR(g);
 
     A1_STAR_MC.AlignWith( B );
     D1Trans_MR_STAR.AlignWith( B );
@@ -188,16 +188,16 @@ void SUMMA_NNC
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,MC,STAR> A1_MC_STAR(g);
-    DistMatrix<T,MR,STAR> B1Trans_MR_STAR(g); 
+    DistMatrix<T,Dist::MC,Dist::STAR> A1_MC_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> B1Trans_MR_STAR(g);
 
     A1_MC_STAR.AlignWith( C );
     B1Trans_MR_STAR.AlignWith( C );
@@ -210,7 +210,7 @@ void SUMMA_NNC
 
         // C[MC,MR] += alpha A1[MC,*] (B1^T[MR,*])^T
         //           = alpha A1[MC,*] B1[*,MR]
-        A1_MC_STAR = A1; 
+        A1_MC_STAR = A1;
         Transpose( B1, B1Trans_MR_STAR );
         LocalGemm
         ( NORMAL, TRANSPOSE, alpha, A1_MC_STAR, B1Trans_MR_STAR, T(1), C );
@@ -235,19 +235,19 @@ void SUMMA_NNDot
     const Int n = CPre.Width();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,STAR,VC> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::STAR,Dist::VC> AProx( APre );
     auto& A = AProx.GetLocked();
 
     ElementalProxyCtrl BCtrl;
     BCtrl.colConstrain = true;
     BCtrl.colAlign = A.RowAlign();
-    DistMatrixReadProxy<T,T,VC,STAR> BProx( BPre, BCtrl );
+    DistMatrixReadProxy<T,T,Dist::VC,Dist::STAR> BProx( BPre, BCtrl );
     auto& B = BProx.GetLocked();
 
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& C = CProx.Get();
 
-    DistMatrix<T,STAR,STAR> C11_STAR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> C11_STAR_STAR(g);
     for( Int kOuter=0; kOuter<m; kOuter+=blockSize )
     {
         const Int nbOuter = Min(blockSize,m-kOuter);
@@ -280,7 +280,7 @@ void SUMMA_NN
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( A, B, C );
-      if( A.Height() != C.Height() || 
+      if( A.Height() != C.Height() ||
           B.Width() != C.Width() ||
           A.Width() != B.Height() )
           LogicError
@@ -305,7 +305,7 @@ void SUMMA_NN
         if( weightAwayFromDot*m <= sumDim && weightAwayFromDot*n <= sumDim )
             SUMMA_NNDot( alpha, A, B, C, blockSizeDot );
         else if( m <= n && weightTowardsC*m <= sumDim )
-            SUMMA_NNB( alpha, A, B, C );    
+            SUMMA_NNB( alpha, A, B, C );
         else if( n <= m && weightTowardsC*n <= sumDim )
             SUMMA_NNA( alpha, A, B, C );
         else

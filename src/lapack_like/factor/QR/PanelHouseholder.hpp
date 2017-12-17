@@ -77,8 +77,8 @@ void PanelHouseholder
     EL_DEBUG_ONLY(AssertSameGrids( A, householderScalars, signature ))
     typedef Base<F> Real;
     const Grid& g = A.Grid();
-    DistMatrix<F,MC,STAR> aB1_MC_STAR(g);
-    DistMatrix<F,MR,STAR> z21_MR_STAR(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> aB1_MC_STAR(g);
+    DistMatrix<F,Dist::MR,Dist::STAR> z21_MR_STAR(g);
 
     const Int m = A.Height();
     const Int n = A.Width();

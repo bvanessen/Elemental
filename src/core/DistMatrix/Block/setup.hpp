@@ -12,7 +12,7 @@
 namespace El {
 
 #define DM DistMatrix<T,COLDIST,ROWDIST>
-#define BDM DistMatrix<T,COLDIST,ROWDIST,BLOCK>
+#define BDM DistMatrix<T,COLDIST,ROWDIST,DistWrap::BLOCK>
 #define BCM BlockMatrix<T>
 #define ADM AbstractDistMatrix<T>
 
@@ -79,7 +79,7 @@ BDM::DistMatrix( const BDM& A )
 
 template<typename T>
 template<Dist U,Dist V>
-BDM::DistMatrix( const DistMatrix<T,U,V,BLOCK>& A )
+BDM::DistMatrix( const DistMatrix<T,U,V,DistWrap::BLOCK>& A )
 : BCM(A.Grid())
 {
     EL_DEBUG_CSE
@@ -123,8 +123,8 @@ BDM::DistMatrix( const BlockMatrix<T>& A )
       A.Wrap() == WRAP
     #define PAYLOAD(CDIST,RDIST,WRAP) \
       auto& ACast = \
-        static_cast<const DistMatrix<T,CDIST,RDIST,BLOCK>&>(A); \
-      if( COLDIST != CDIST || ROWDIST != RDIST || BLOCK != WRAP || \
+        static_cast<const DistMatrix<T,CDIST,RDIST,DistWrap::BLOCK>&>(A); \
+      if( COLDIST != CDIST || ROWDIST != RDIST || DistWrap::BLOCK != WRAP || \
           reinterpret_cast<const BDM*>(&A) != this ) \
           *this = ACast; \
       else \
@@ -151,23 +151,23 @@ template<typename T> BDM::~DistMatrix() { }
 
 template<typename T>
 BDM* BDM::Copy() const
-{ return new DistMatrix<T,COLDIST,ROWDIST,BLOCK>(*this); }
+{ return new DistMatrix<T,COLDIST,ROWDIST,DistWrap::BLOCK>(*this); }
 
 template<typename T>
 BDM* BDM::Construct( const El::Grid& g, int root ) const
-{ return new DistMatrix<T,COLDIST,ROWDIST,BLOCK>(g,root); }
+{ return new DistMatrix<T,COLDIST,ROWDIST,DistWrap::BLOCK>(g,root); }
 
 template<typename T>
-DistMatrix<T,ROWDIST,COLDIST,BLOCK>* BDM::ConstructTranspose
+DistMatrix<T,ROWDIST,COLDIST,DistWrap::BLOCK>* BDM::ConstructTranspose
 ( const El::Grid& g, int root ) const
-{ return new DistMatrix<T,ROWDIST,COLDIST,BLOCK>(g,root); }
+{ return new DistMatrix<T,ROWDIST,COLDIST,DistWrap::BLOCK>(g,root); }
 
 template<typename T>
 typename BDM::diagType*
 BDM::ConstructDiagonal
 ( const El::Grid& g, int root ) const
 { return new DistMatrix<T,DiagCol<COLDIST,ROWDIST>(),
-                          DiagRow<COLDIST,ROWDIST>(),BLOCK>(g,root); }
+                          DiagRow<COLDIST,ROWDIST>(),DistWrap::BLOCK>(g,root); }
 
 // Operator overloading
 // ====================

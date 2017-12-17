@@ -1,20 +1,20 @@
 /*
-   Copyright (c) 2009-2012, Jack Poulson, Lexing Ying, and 
+   Copyright (c) 2009-2012, Jack Poulson, Lexing Ying, and
    The University of Texas at Austin.
    All rights reserved.
 
    Copyright (c) 2013, Jack Poulson, Lexing Ying, and Stanford University.
    All rights reserved.
 
-   Copyright (c) 2013-2014, Jack Poulson and 
+   Copyright (c) 2013-2014, Jack Poulson and
    The Georgia Institute of Technology.
    All rights reserved.
 
    Copyright (c) 2014-2015, Jack Poulson and Stanford University.
    All rights reserved.
-   
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_FACTOR_LDL_NUMERIC_LOWERSOLVE_FRONTFORWARD_HPP
@@ -108,7 +108,7 @@ void FrontLowerForwardSolve( const Front<F>& front, Matrix<F>& W )
 
         const bool onLeft = true;
         suite_sparse::ldl::LSolveMulti
-        ( onLeft, WT.Height(), WT.Width(), WT.Buffer(), WT.LDim(), 
+        ( onLeft, WT.Height(), WT.Width(), WT.Buffer(), WT.LDim(),
           LOffsetBuf, LColBuf, LValBuf );
 
         Gemm( NORMAL, NORMAL, F(-1), front.LDense, WT, F(1), WB );
@@ -128,8 +128,8 @@ namespace internal {
 
 template<typename F>
 void ForwardMany
-( const DistMatrix<F,VC,STAR>& L,
-        DistMatrix<F,VC,STAR>& X )
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X )
 {
     const Grid& g = L.Grid();
     if( g.Size() == 1 )
@@ -143,16 +143,16 @@ void ForwardMany
     const Int numRHS = X.Width();
     const Int bsize = Blocksize();
 
-    DistMatrix<F,STAR,STAR> L11_STAR_STAR(g), X1_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> L11_STAR_STAR(g), X1_STAR_STAR(g);
 
     for( Int k=0; k<n; k+=bsize )
     {
         const Int nb = Min(bsize,n-k);
         const Range<Int> ind1(k,k+nb), ind2(k+nb,m);
-         
+
         auto L11 = L( ind1, ind1 );
         auto L21 = L( ind2, ind1 );
-        auto X1 = X( ind1, IR(0,numRHS) ); 
+        auto X1 = X( ind1, IR(0,numRHS) );
         auto X2 = X( ind2, IR(0,numRHS) );
 
         L11_STAR_STAR = L11;
@@ -170,8 +170,8 @@ void ForwardMany
 
 template<typename F>
 void ForwardSingle
-( const DistMatrix<F,VC,STAR>& L,
-        DistMatrix<F,VC,STAR>& X )
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X )
 {
     const Grid& g = L.Grid();
     if( g.Size() == 1 )
@@ -185,7 +185,7 @@ void ForwardSingle
     const Int numRHS = X.Width();
     const Int bsize = Blocksize();
 
-    DistMatrix<F,STAR,STAR> X1_STAR_STAR(g), D(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> X1_STAR_STAR(g), D(g);
     FormDiagonalBlocks( L, D, false );
 
     for( Int k=0; k<n; k+=bsize )
@@ -198,11 +198,11 @@ void ForwardSingle
         auto X1 = X( ind1, IR(0,numRHS) );
         auto X2 = X( ind2, IR(0,numRHS) );
 
-        AccumulateRHS( X1, X1_STAR_STAR ); 
+        AccumulateRHS( X1, X1_STAR_STAR );
 
         // X1[* ,* ] := (L11[* ,* ])^-1 X1[* ,* ]
         LocalTrsm
-        ( LEFT, UPPER, TRANSPOSE, UNIT, 
+        ( LEFT, UPPER, TRANSPOSE, UNIT,
           F(1), L11Trans_STAR_STAR, X1_STAR_STAR );
         X1 = X1_STAR_STAR;
 
@@ -215,8 +215,8 @@ void ForwardSingle
 
 template<typename F>
 void FrontVanillaLowerForwardSolve
-( const DistMatrix<F,VC,STAR>& L,
-        DistMatrix<F,VC,STAR>& X,
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool singleL11AllGather=true )
 {
     EL_DEBUG_CSE
@@ -238,9 +238,9 @@ void FrontVanillaLowerForwardSolve
 
 template<typename F>
 void FrontIntraPivLowerForwardSolve
-( const DistMatrix<F,VC,STAR>& L,
-  const DistPermutation& P, 
-        DistMatrix<F,VC,STAR>& X,
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
+  const DistPermutation& P,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool singleL11AllGather=true )
 {
     EL_DEBUG_CSE
@@ -291,7 +291,7 @@ void FrontVanillaLowerForwardSolve
 template<typename F>
 void FrontVanillaLowerForwardSolve
 ( const DistMatrix<F>& L,
-        DistMatrix<F,VC,STAR>& XPre )
+        DistMatrix<F,Dist::VC,Dist::STAR>& XPre )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -345,8 +345,8 @@ void FrontIntraPivLowerForwardSolve
 
 template<typename F>
 void FrontFastLowerForwardSolve
-( const DistMatrix<F,VC,STAR>& L,
-        DistMatrix<F,VC,STAR>& X )
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -374,7 +374,7 @@ void FrontFastLowerForwardSolve
     auto XB = X( IR(n,END), ALL );
 
     // XT := LT XT
-    DistMatrix<F,STAR,STAR> XT_STAR_STAR( XT );
+    DistMatrix<F,Dist::STAR,Dist::STAR> XT_STAR_STAR( XT );
     LocalGemm( NORMAL, NORMAL, F(1), LT, XT_STAR_STAR, F(0), XT );
 
     // XB := XB - LB XT
@@ -387,9 +387,9 @@ void FrontFastLowerForwardSolve
 
 template<typename F>
 void FrontFastIntraPivLowerForwardSolve
-( const DistMatrix<F,VC,STAR>& L,
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
   const DistPermutation& P,
-        DistMatrix<F,VC,STAR>& X )
+        DistMatrix<F,Dist::VC,Dist::STAR>& X )
 {
     EL_DEBUG_CSE
 
@@ -403,7 +403,7 @@ void FrontFastIntraPivLowerForwardSolve
 template<typename F>
 void FrontFastLowerForwardSolve
 ( const DistMatrix<F>& L,
-        DistMatrix<F,VC,STAR>& X )
+        DistMatrix<F,Dist::VC,Dist::STAR>& X )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -429,12 +429,12 @@ void FrontFastLowerForwardSolve
     auto XB = X( IR(n,END), ALL );
 
     // Get ready for the local multiply
-    DistMatrix<F,MR,STAR> XT_MR_STAR(g);
+    DistMatrix<F,Dist::MR,Dist::STAR> XT_MR_STAR(g);
     XT_MR_STAR.AlignWith( LT );
 
     {
-        // ZT[MC,* ] := LT[MC,MR] XT[MR,* ], 
-        DistMatrix<F,MC,STAR> ZT_MC_STAR(g);
+        // ZT[MC,* ] := LT[MC,MR] XT[MR,* ],
+        DistMatrix<F,Dist::MC,Dist::STAR> ZT_MC_STAR(g);
         ZT_MC_STAR.AlignWith( LT );
         XT_MR_STAR = XT;
         LocalGemm( NORMAL, NORMAL, F(1), LT, XT_MR_STAR, ZT_MC_STAR );
@@ -448,7 +448,7 @@ void FrontFastLowerForwardSolve
         XT_MR_STAR = XT;
 
         // ZB[MC,* ] := LB[MC,MR] XT[MR,* ]
-        DistMatrix<F,MC,STAR> ZB_MC_STAR(g);
+        DistMatrix<F,Dist::MC,Dist::STAR> ZB_MC_STAR(g);
         ZB_MC_STAR.AlignWith( LB );
         LocalGemm( NORMAL, NORMAL, F(-1), LB, XT_MR_STAR, ZB_MC_STAR );
 
@@ -461,7 +461,7 @@ template<typename F>
 void FrontFastIntraPivLowerForwardSolve
 ( const DistMatrix<F>& L,
   const DistPermutation& P,
-        DistMatrix<F,VC,STAR>& X )
+        DistMatrix<F,Dist::VC,Dist::STAR>& X )
 {
     EL_DEBUG_CSE
 
@@ -525,8 +525,8 @@ void FrontFastIntraPivLowerForwardSolve
 
 template<typename F>
 void FrontBlockLowerForwardSolve
-( const DistMatrix<F,VC,STAR>& L,
-        DistMatrix<F,VC,STAR>& X )
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -554,7 +554,7 @@ void FrontBlockLowerForwardSolve
     auto XB = X( IR(n,END), ALL );
 
     // XT := inv(ATL) XT
-    DistMatrix<F,STAR,STAR> XT_STAR_STAR( XT );
+    DistMatrix<F,Dist::STAR,Dist::STAR> XT_STAR_STAR( XT );
     LocalGemm( NORMAL, NORMAL, F(1), LT, XT_STAR_STAR, F(0), XT );
 
     // XB := XB - LB XT
@@ -568,7 +568,7 @@ void FrontBlockLowerForwardSolve
 template<typename F>
 void FrontBlockLowerForwardSolve
 ( const DistMatrix<F>& L,
-        DistMatrix<F,VC,STAR>& X )
+        DistMatrix<F,Dist::VC,Dist::STAR>& X )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -594,13 +594,13 @@ void FrontBlockLowerForwardSolve
     auto XB = X( IR(n,END), ALL );
 
     // Get ready for the local multiply
-    DistMatrix<F,MR,STAR> XT_MR_STAR(g);
+    DistMatrix<F,Dist::MR,Dist::STAR> XT_MR_STAR(g);
     XT_MR_STAR.AlignWith( LT );
 
     {
-        // ZT[MC,* ] := inv(ATL)[MC,MR] XT[MR,* ], 
+        // ZT[MC,* ] := inv(ATL)[MC,MR] XT[MR,* ],
         XT_MR_STAR = XT;
-        DistMatrix<F,MC,STAR> ZT_MC_STAR(g);
+        DistMatrix<F,Dist::MC,Dist::STAR> ZT_MC_STAR(g);
         ZT_MC_STAR.AlignWith( LT );
         LocalGemm( NORMAL, NORMAL, F(1), LT, XT_MR_STAR, ZT_MC_STAR );
 
@@ -611,7 +611,7 @@ void FrontBlockLowerForwardSolve
     {
         // ZB[MC,* ] := LB[MC,MR] XT[MR,* ]
         XT_MR_STAR = XT;
-        DistMatrix<F,MC,STAR> ZB_MC_STAR(g);
+        DistMatrix<F,Dist::MC,Dist::STAR> ZB_MC_STAR(g);
         ZB_MC_STAR.AlignWith( LB );
         LocalGemm( NORMAL, NORMAL, F(1), LB, XT_MR_STAR, ZB_MC_STAR );
 
@@ -657,10 +657,10 @@ void FrontBlockLowerForwardSolve
 }
 
 template<typename F>
-void 
+void
 FrontLowerForwardSolve
 ( const DistFront<F>& front,
-        DistMatrix<F,VC,STAR>& W )
+        DistMatrix<F,Dist::VC,Dist::STAR>& W )
 {
     EL_DEBUG_CSE
     const LDLFrontType type = front.type;
@@ -687,7 +687,7 @@ FrontLowerForwardSolve
 }
 
 template<typename F>
-void 
+void
 FrontLowerForwardSolve( const DistFront<F>& front, DistMatrix<F>& W )
 {
     EL_DEBUG_CSE

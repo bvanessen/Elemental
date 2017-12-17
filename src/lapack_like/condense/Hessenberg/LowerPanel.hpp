@@ -116,11 +116,11 @@ void LowerPanel
 template<typename F>
 void LowerPanel
 ( DistMatrix<F>& A,
-  DistMatrix<F,STAR,STAR>& householderScalars,
-  DistMatrix<F,MC,  STAR>& U_MC_STAR,
-  DistMatrix<F,MR,  STAR>& U_MR_STAR,
-  DistMatrix<F,MR,  STAR>& V_MR_STAR,
-  DistMatrix<F,STAR,STAR>& G_STAR_STAR )
+  DistMatrix<F,Dist::STAR,Dist::STAR>& householderScalars,
+  DistMatrix<F,Dist::MC,  Dist::STAR>& U_MC_STAR,
+  DistMatrix<F,Dist::MR,  Dist::STAR>& U_MR_STAR,
+  DistMatrix<F,Dist::MR,  Dist::STAR>& V_MR_STAR,
+  DistMatrix<F,Dist::STAR,Dist::STAR>& G_STAR_STAR )
 {
     EL_DEBUG_CSE
     const Int nU = U_MC_STAR.Width();
@@ -154,8 +154,8 @@ void LowerPanel
     Zeros( V_MR_STAR,   n,  nU );
     Zeros( G_STAR_STAR, nU, nU );
 
-    DistMatrix<F,STAR,MR  > a1Conj_MR(g);
-    DistMatrix<F,STAR,STAR> y10_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > a1Conj_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> y10_STAR(g);
 
     for( Int k=0; k<nU; ++k )
     {

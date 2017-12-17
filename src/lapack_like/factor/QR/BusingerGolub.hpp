@@ -324,7 +324,7 @@ void BusingerGolub
     typedef Base<F> Real;
     const Real zero(0), one(1);
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int m = A.Height();
@@ -349,9 +349,9 @@ void BusingerGolub
 
     const Grid& g = A.Grid();
     DistMatrix<F> z21(g);
-    DistMatrix<F,MC,STAR> aB1_MC(g);
-    DistMatrix<F,MR,STAR> z21_MR(g);
-    DistMatrix<F,STAR,MR> a12_MR(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> aB1_MC(g);
+    DistMatrix<F,Dist::MR,Dist::STAR> z21_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR> a12_MR(g);
 
     Int k=0;
     for( ; k<maxSteps; ++k )

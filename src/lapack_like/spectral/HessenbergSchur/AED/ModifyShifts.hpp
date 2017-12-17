@@ -170,10 +170,10 @@ Int ModifyShifts
   Int winBeg,
   Int winEnd,
   Int shiftBeg,
-  const DistMatrix<Real,MC,MR,BLOCK>& H,
+  const DistMatrix<Real,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
   const Matrix<Real>& hMainWin,
   const Matrix<Real>& hSubWin,
-        DistMatrix<Complex<Real>,STAR,STAR>& w,
+        DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR>& w,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE
@@ -443,10 +443,10 @@ Int ModifyShifts
   Int winBeg,
   Int winEnd,
   Int shiftBeg,
-  const DistMatrix<Complex<Real>,MC,MR,BLOCK>& H,
+  const DistMatrix<Complex<Real>,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
   const Matrix<Complex<Real>>& hMainWin,
   const Matrix<Complex<Real>>& hSubWin,
-        DistMatrix<Complex<Real>,STAR,STAR>& w,
+        DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR>& w,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE

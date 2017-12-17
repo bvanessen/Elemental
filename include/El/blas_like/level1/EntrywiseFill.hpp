@@ -12,7 +12,7 @@
 namespace El {
 
 template<typename T>
-void EntrywiseFill( Matrix<T>& A, function<T(void)> func )
+void EntrywiseFill( Matrix<T>& A, std::function<T(void)> func )
 {
     EL_DEBUG_CSE
     const Int m = A.Height();
@@ -23,7 +23,7 @@ void EntrywiseFill( Matrix<T>& A, function<T(void)> func )
 }
 
 template<typename T>
-void EntrywiseFill( AbstractDistMatrix<T>& A, function<T(void)> func )
+void EntrywiseFill( AbstractDistMatrix<T>& A, std::function<T(void)> func )
 { EntrywiseFill( A.Matrix(), func ); }
 
 #ifdef EL_INSTANTIATE_BLAS_LEVEL1
@@ -34,9 +34,9 @@ void EntrywiseFill( AbstractDistMatrix<T>& A, function<T(void)> func )
 
 #define PROTO(T) \
   EL_EXTERN template void EntrywiseFill \
-  ( Matrix<T>& A, function<T(void)> func ); \
+  ( Matrix<T>& A, std::function<T(void)> func ); \
   EL_EXTERN template void EntrywiseFill \
-  ( AbstractDistMatrix<T>& A, function<T(void)> func );
+  ( AbstractDistMatrix<T>& A, std::function<T(void)> func );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

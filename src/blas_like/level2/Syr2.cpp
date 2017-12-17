@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level2.hpp>
 
 namespace El {
@@ -14,7 +13,7 @@ namespace El {
 template<typename T>
 void Syr2
 ( UpperOrLower uplo,
-  T alpha, const Matrix<T>& x, const Matrix<T>& y, Matrix<T>& A, 
+  T alpha, const Matrix<T>& x, const Matrix<T>& y, Matrix<T>& A,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -69,7 +68,7 @@ void Syr2
            DimsString(x,"x"),"\n",DimsString(y,"y"));
     )
 
-    DistMatrixReadWriteProxy<T,T,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Grid& g = A.Grid();
@@ -78,13 +77,13 @@ void Syr2
 
     if( x.Width() == 1 && y.Width() == 1 )
     {
-        DistMatrix<T,MC,STAR> x_MC_STAR(g), y_MC_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g), y_MC_STAR(g);
         x_MC_STAR.AlignWith( A );
         y_MC_STAR.AlignWith( A );
         x_MC_STAR = x;
         y_MC_STAR = y;
 
-        DistMatrix<T,MR,STAR> x_MR_STAR(g), y_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> x_MR_STAR(g), y_MR_STAR(g);
         x_MR_STAR.AlignWith( A );
         y_MR_STAR.AlignWith( A );
         x_MR_STAR = x_MC_STAR;
@@ -127,19 +126,19 @@ void Syr2
     }
     else if( x.Width() == 1 )
     {
-        DistMatrix<T,MC,STAR> x_MC_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
         x_MC_STAR.AlignWith( A );
         x_MC_STAR = x;
 
-        DistMatrix<T,MR,STAR> x_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> x_MR_STAR(g);
         x_MR_STAR.AlignWith( A );
         x_MR_STAR = x_MC_STAR;
 
-        DistMatrix<T,STAR,MR> y_STAR_MR(g);
+        DistMatrix<T,Dist::STAR,Dist::MR> y_STAR_MR(g);
         y_STAR_MR.AlignWith( A );
         y_STAR_MR = y;
 
-        DistMatrix<T,STAR,MC> y_STAR_MC(g);
+        DistMatrix<T,Dist::STAR,Dist::MC> y_STAR_MC(g);
         y_STAR_MC.AlignWith( A );
         y_STAR_MC = y_STAR_MR;
 
@@ -183,19 +182,19 @@ void Syr2
     }
     else if( y.Width() == 1 )
     {
-        DistMatrix<T,STAR,MR> x_STAR_MR(g);
+        DistMatrix<T,Dist::STAR,Dist::MR> x_STAR_MR(g);
         x_STAR_MR.AlignWith( A );
         x_STAR_MR = x;
 
-        DistMatrix<T,STAR,MC> x_STAR_MC(g);
+        DistMatrix<T,Dist::STAR,Dist::MC> x_STAR_MC(g);
         x_STAR_MC.AlignWith( A );
         x_STAR_MC = x_STAR_MR;
 
-        DistMatrix<T,MC,STAR> y_MC_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> y_MC_STAR(g);
         y_MC_STAR.AlignWith( A );
         y_MC_STAR = y;
 
-        DistMatrix<T,MR,STAR> y_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> y_MR_STAR(g);
         y_MR_STAR.AlignWith( A );
         y_MR_STAR = y_MC_STAR;
 
@@ -216,7 +215,7 @@ void Syr2
                 T* ACol = A.Buffer(0,jLoc);
                 for( Int iLoc=heightAboveDiag; iLoc<localHeight; ++iLoc )
                     ACol[iLoc] += gamma*xBuffer[iLoc*incx] +
-                                  delta*yBuffer[iLoc]; 
+                                  delta*yBuffer[iLoc];
             }
         }
         else
@@ -239,13 +238,13 @@ void Syr2
     }
     else
     {
-        DistMatrix<T,STAR,MR> x_STAR_MR(g), y_STAR_MR(g);
+        DistMatrix<T,Dist::STAR,Dist::MR> x_STAR_MR(g), y_STAR_MR(g);
         x_STAR_MR.AlignWith( A );
         y_STAR_MR.AlignWith( A );
         y_STAR_MR = y;
         x_STAR_MR = x;
 
-        DistMatrix<T,STAR,MC> x_STAR_MC(g), y_STAR_MC(g);
+        DistMatrix<T,Dist::STAR,Dist::MC> x_STAR_MC(g), y_STAR_MC(g);
         x_STAR_MC.AlignWith( A );
         y_STAR_MC.AlignWith( A );
         x_STAR_MC = x_STAR_MR;

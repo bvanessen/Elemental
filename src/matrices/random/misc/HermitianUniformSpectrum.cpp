@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include <El/lapack_like/factor.hpp>
 #include <El/matrices.hpp>
@@ -52,7 +51,7 @@ void HermitianUniformSpectrum
     typedef Base<F> Real;
 
     // Switch to [MC,MR] so that qr::ApplyQ is fast
-    DistMatrixWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     // Form d and D
@@ -65,8 +64,8 @@ void HermitianUniformSpectrum
 
     // Apply a Haar matrix from both sides
     DistMatrix<F> Q(grid);
-    DistMatrix<F,MD,STAR> t(grid);
-    DistMatrix<Real,MD,STAR> s(grid);
+    DistMatrix<F,Dist::MD,Dist::STAR> t(grid);
+    DistMatrix<Real,Dist::MD,Dist::STAR> s(grid);
     ImplicitHaar( Q, t, s, n );
 
     // Copy the result into the correct distribution

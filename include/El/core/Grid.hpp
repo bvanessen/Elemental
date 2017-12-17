@@ -7,17 +7,32 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#ifndef EL_GRID_HPP
-#define EL_GRID_HPP
+#ifndef EL_CORE_GRID_HPP_
+#define EL_CORE_GRID_HPP_
 
-namespace El {
+#include <string>
+#include <vector>
+
+#include "El/core/Dist.hpp"
+#include "El/core/environment/decl.hpp" // LogicError
+#include "El/core/imports/mpi.hpp"
+
+namespace El
+{
+
+enum class GridOrder
+{
+    ROW_MAJOR,
+    COLUMN_MAJOR
+};
 
 class Grid
 {
 public:
-    explicit Grid
-    ( mpi::Comm comm=mpi::COMM_WORLD, GridOrder order=COLUMN_MAJOR );
-    explicit Grid( mpi::Comm comm, int height, GridOrder order=COLUMN_MAJOR );
+    explicit Grid(mpi::Comm comm=mpi::COMM_WORLD,
+                  GridOrder order=GridOrder::COLUMN_MAJOR);
+    explicit Grid(mpi::Comm comm, int height,
+                  GridOrder order=GridOrder::COLUMN_MAJOR );
     ~Grid();
 
     // Simple interface (simpler version of distributed-based interface)
@@ -56,9 +71,8 @@ public:
     mpi::Comm MDPerpComm() const EL_NO_EXCEPT;
 
     // Advanced routines
-    explicit Grid
-    ( mpi::Comm viewers, mpi::Group owners, int height,
-      GridOrder order=COLUMN_MAJOR );
+    explicit Grid(mpi::Comm viewers, mpi::Group owners, int height,
+                  GridOrder order=GridOrder::COLUMN_MAJOR);
     // greatest common denominator of grid height and width
     int GCD() const EL_NO_EXCEPT;
     // lowest common multiple of grid height and width
@@ -78,10 +92,9 @@ public:
 
     int VCToVR( int vcRank ) const EL_NO_EXCEPT;
     int VRToVC( int vrRank ) const EL_NO_EXCEPT;
-    int CoordsToVC
-    ( Dist colDist, Dist rowDist,
-      int distRank, int crossRank=0, int redundant=0 ) const
-    EL_NO_RELEASE_EXCEPT;
+    int CoordsToVC(Dist colDist, Dist rowDist,
+                   int distRank, int crossRank=0, int redundant=0) const
+        EL_NO_RELEASE_EXCEPT;
     int VCToViewing( int VCRank ) const EL_NO_EXCEPT;
 
 #ifdef EL_HAVE_SCALAPACK
@@ -110,8 +123,8 @@ private:
     static Grid* defaultGrid;
     static Grid* trivialGrid;
 
-    vector<int> diagsAndRanks_;
-    vector<int> vcToViewing_;
+    std::vector<int> diagsAndRanks_;
+    std::vector<int> vcToViewing_;
 
     mpi::Group viewingGroup_,
                owningGroup_;
@@ -186,4 +199,4 @@ inline bool GridCompare
 
 } // namespace El
 
-#endif // ifndef EL_GRID_HPP
+#endif // EL_CORE_GRID_HPP_

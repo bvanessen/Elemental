@@ -84,8 +84,8 @@ void ApplyQ
     const ForwardOrBackward direction = ( normal==onLeft ? BACKWARD : FORWARD );
     const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
 
-    DistMatrixReadProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> BProx( BPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> BProx( BPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.Get();
 

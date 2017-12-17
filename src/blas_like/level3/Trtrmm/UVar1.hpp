@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRTRMM_UVAR1_HPP
@@ -18,7 +18,7 @@ void UVar1( Matrix<T>& U, bool conjugate=false )
     EL_DEBUG_CSE
     const Int n = U.Height();
     const Int bsize = Blocksize();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE ); 
+    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
 
     for( Int k=0; k<n; k+=bsize )
     {
@@ -46,15 +46,15 @@ void UVar1( AbstractDistMatrix<T>& UPre, bool conjugate=false )
           LogicError("U must be square");
     )
 
-    DistMatrixReadWriteProxy<T,T,MC,MR> UProx( UPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.Get();
 
     const Grid& g = UPre.Grid();
-    DistMatrix<T,MC,  STAR> U01_MC_STAR(g);
-    DistMatrix<T,VC,  STAR> U01_VC_STAR(g);
-    DistMatrix<T,VR,  STAR> U01_VR_STAR(g);
-    DistMatrix<T,STAR,MR  > U01Trans_STAR_MR(g);
-    DistMatrix<T,STAR,STAR> U11_STAR_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> U01_MC_STAR(g);
+    DistMatrix<T,Dist::VC,  Dist::STAR> U01_VC_STAR(g);
+    DistMatrix<T,Dist::VR,  Dist::STAR> U01_VR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MR  > U01Trans_STAR_MR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
 
     U01_MC_STAR.AlignWith( U );
     U01_VC_STAR.AlignWith( U );
@@ -83,7 +83,7 @@ void UVar1( AbstractDistMatrix<T>& UPre, bool conjugate=false )
 
         U11_STAR_STAR = U11;
         LocalTrmm
-        ( RIGHT, UPPER, orientation, NON_UNIT, 
+        ( RIGHT, UPPER, orientation, NON_UNIT,
           T(1), U11_STAR_STAR, U01_VC_STAR );
         U01 = U01_VC_STAR;
 

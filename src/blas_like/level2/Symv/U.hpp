@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -14,8 +14,8 @@ namespace symv {
 // t += alpha A' r
 template<typename T>
 void FusedRowPanelGemvs
-( bool conjugate, T alpha, 
-  const Matrix<T>& A, const Matrix<T>& q, const Matrix<T>& r, 
+( bool conjugate, T alpha,
+  const Matrix<T>& A, const Matrix<T>& q, const Matrix<T>& r,
                             Matrix<T>& s,       Matrix<T>& t,
   Int bsize )
 {
@@ -32,7 +32,7 @@ void FusedRowPanelGemvs
     {
         const Int nb = Min(n-k,bsize);
         blas::Gemv
-        ( 'N', m, nb, alpha, 
+        ( 'N', m, nb, alpha,
           &ABuf[k*ALDim], ALDim, &qBuf[k], 1, T(1), sBuf, 1 );
         blas::Gemv
         ( transChar, m, nb, alpha,
@@ -42,12 +42,12 @@ void FusedRowPanelGemvs
 
 template<typename T>
 void LocalColAccumulateUGeneral
-( T alpha, 
+( T alpha,
   const DistMatrix<T>& A,
-  const DistMatrix<T,MC,STAR>& x_MC_STAR,
-  const DistMatrix<T,MR,STAR>& x_MR_STAR,
-        DistMatrix<T,MC,STAR>& z_MC_STAR,
-        DistMatrix<T,MR,STAR>& z_MR_STAR,
+  const DistMatrix<T,Dist::MC,Dist::STAR>& x_MC_STAR,
+  const DistMatrix<T,Dist::MR,Dist::STAR>& x_MR_STAR,
+        DistMatrix<T,Dist::MC,Dist::STAR>& z_MC_STAR,
+        DistMatrix<T,Dist::MR,Dist::STAR>& z_MR_STAR,
   bool conjugate, const SymvCtrl<T>& ctrl )
 {
     EL_DEBUG_CSE
@@ -56,7 +56,7 @@ void LocalColAccumulateUGeneral
       if( x_MC_STAR.Width() != 1 || x_MR_STAR.Width() != 1 ||
           z_MC_STAR.Width() != 1 || z_MR_STAR.Width() != 1 )
           LogicError("Expected x and z to be column vectors");
-      if( A.Height() != A.Width() || 
+      if( A.Height() != A.Width() ||
           A.Height() != x_MC_STAR.Height() ||
           A.Height() != x_MR_STAR.Height() ||
           A.Height() != z_MC_STAR.Height() ||
@@ -79,15 +79,15 @@ void LocalColAccumulateUGeneral
 
     DistMatrix<T> D11(g);
 
-    // We want our local gemvs to be of width blocksize, so we will 
+    // We want our local gemvs to be of width blocksize, so we will
     // temporarily change to max(r,c) times the current blocksize
     const Int n = A.Height();
     const Int bsize = Max(g.Height(),g.Width())*ctrl.bsize;
     for( Int k=0; k<n; k+=bsize )
     {
-        const Int nb = Min(bsize,n-k); 
+        const Int nb = Min(bsize,n-k);
         const Range<Int> ind1( k, k+nb ), ind2( k+nb, n );
- 
+
         auto A11 = A( ind1, ind1 );
         auto A12 = A( ind1, ind2 );
         auto x1_MC_STAR = x_MC_STAR( ind1, ALL );
@@ -104,13 +104,13 @@ void LocalColAccumulateUGeneral
         LocalGemv( NORMAL,      alpha, D11, x1_MR_STAR, T(1), z1_MC_STAR );
         FillDiagonal( D11, T(0) );
         LocalGemv( orientation, alpha, D11, x1_MC_STAR, T(1), z1_MR_STAR );
-        
+
         // TODO: Expose the fusion blocksize as another parameter
         FusedRowPanelGemvs
         ( conjugate, alpha, A12.LockedMatrix(),
           x2_MR_STAR.LockedMatrix(), x1_MC_STAR.LockedMatrix(),
           z1_MC_STAR.Matrix(),       z2_MR_STAR.Matrix(), ctrl.bsize );
-        // NOTE: The following are mathematically equivalent but should 
+        // NOTE: The following are mathematically equivalent but should
         //       be slower in practice for cache reasons
         //LocalGemv( NORMAL,      alpha, A12, x2_MR_STAR, T(1), z1_MC_STAR );
         //LocalGemv( orientation, alpha, A12, x1_MC_STAR, T(1), z2_MR_STAR );
@@ -119,12 +119,12 @@ void LocalColAccumulateUGeneral
 
 template<typename T>
 void LocalColAccumulateUSquareTwoTrmv
-( T alpha, 
+( T alpha,
   const DistMatrix<T>& A,
-  const DistMatrix<T,MC,STAR>& x_MC_STAR,
-  const DistMatrix<T,MR,STAR>& x_MR_STAR,
-        DistMatrix<T,MC,STAR>& z_MC_STAR,
-        DistMatrix<T,MR,STAR>& z_MR_STAR,
+  const DistMatrix<T,Dist::MC,Dist::STAR>& x_MC_STAR,
+  const DistMatrix<T,Dist::MR,Dist::STAR>& x_MR_STAR,
+        DistMatrix<T,Dist::MC,Dist::STAR>& z_MC_STAR,
+        DistMatrix<T,Dist::MR,Dist::STAR>& z_MR_STAR,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -133,7 +133,7 @@ void LocalColAccumulateUSquareTwoTrmv
       if( x_MC_STAR.Width() != 1 || x_MR_STAR.Width() != 1 ||
           z_MC_STAR.Width() != 1 || z_MR_STAR.Width() != 1 )
           LogicError("Expected x and z to be column vectors");
-      if( A.Height() != A.Width() || 
+      if( A.Height() != A.Width() ||
           A.Height() != x_MC_STAR.Height() ||
           A.Height() != x_MR_STAR.Height() ||
           A.Height() != z_MC_STAR.Height() ||
@@ -158,7 +158,7 @@ void LocalColAccumulateUSquareTwoTrmv
     const Int localWidth = A.LocalWidth();
     if( A.ColShift() < A.RowShift() )
     {
-        // We are above the diagonal, so we can multiply without an 
+        // We are above the diagonal, so we can multiply without an
         // offset for triu(A)[MC,MR] and triu(A,1)'[MR,MC]
         if( localHeight != 0 )
         {
@@ -175,17 +175,17 @@ void LocalColAccumulateUSquareTwoTrmv
           x_MC_STAR.LockedBuffer(), localWidth );
 
         blas::Trmv
-        ( 'U', 'N', 'N', localWidth, 
+        ( 'U', 'N', 'N', localWidth,
           A.LockedBuffer(),   A.LDim(),
           z_MC_STAR.Buffer(), 1 );
         blas::Trmv
-        ( 'U', 'C', 'N', localWidth, 
+        ( 'U', 'C', 'N', localWidth,
           A.LockedBuffer(),   A.LDim(),
           z_MR_STAR.Buffer(), 1 );
     }
     else if( A.ColShift() > A.RowShift() )
     {
-        // We are below the diagonal, so we need to use an offset 
+        // We are below the diagonal, so we need to use an offset
         // for both triu(A)[MC,MR] and triu(A,+1)'[MR,MC]
         if( localHeight != 0 )
         {
@@ -232,7 +232,7 @@ void LocalColAccumulateUSquareTwoTrmv
               x_MC_STAR.LockedBuffer(), localWidth-1 );
 
             blas::Trmv
-            ( 'U', 'N', 'N', localHeight, 
+            ( 'U', 'N', 'N', localHeight,
               A.LockedBuffer(),   A.LDim(),
               z_MC_STAR.Buffer(), 1 );
             blas::Trmv
@@ -247,12 +247,12 @@ void LocalColAccumulateUSquareTwoTrmv
 
 template<typename T>
 void LocalColAccumulateU
-( T alpha, 
+( T alpha,
   const DistMatrix<T>& A,
-  const DistMatrix<T,MC,STAR>& x_MC_STAR,
-  const DistMatrix<T,MR,STAR>& x_MR_STAR,
-        DistMatrix<T,MC,STAR>& z_MC_STAR,
-        DistMatrix<T,MR,STAR>& z_MR_STAR,
+  const DistMatrix<T,Dist::MC,Dist::STAR>& x_MC_STAR,
+  const DistMatrix<T,Dist::MR,Dist::STAR>& x_MR_STAR,
+        DistMatrix<T,Dist::MC,Dist::STAR>& z_MC_STAR,
+        DistMatrix<T,Dist::MR,Dist::STAR>& z_MR_STAR,
   bool conjugate, const SymvCtrl<T>& ctrl )
 {
     EL_DEBUG_CSE
@@ -267,12 +267,12 @@ void LocalColAccumulateU
 
 template<typename T>
 void LocalRowAccumulateU
-( T alpha, 
+( T alpha,
   const DistMatrix<T>& A,
-  const DistMatrix<T,STAR,MC>& x_STAR_MC,
-  const DistMatrix<T,STAR,MR>& x_STAR_MR,
-        DistMatrix<T,STAR,MC>& z_STAR_MC,
-        DistMatrix<T,STAR,MR>& z_STAR_MR,
+  const DistMatrix<T,Dist::STAR,Dist::MC>& x_STAR_MC,
+  const DistMatrix<T,Dist::STAR,Dist::MR>& x_STAR_MR,
+        DistMatrix<T,Dist::STAR,Dist::MC>& z_STAR_MC,
+        DistMatrix<T,Dist::STAR,Dist::MR>& z_STAR_MR,
   bool conjugate, const SymvCtrl<T>& ctrl )
 {
     EL_DEBUG_CSE
@@ -281,7 +281,7 @@ void LocalRowAccumulateU
       if( x_STAR_MC.Height() != 1 || x_STAR_MR.Height() != 1 ||
           z_STAR_MC.Height() != 1 || z_STAR_MR.Height() != 1 )
           LogicError("Expected x and z to be row vectors");
-      if( A.Height() != A.Width() || 
+      if( A.Height() != A.Width() ||
           A.Height() != x_STAR_MC.Width() ||
           A.Height() != x_STAR_MR.Width() ||
           A.Height() != z_STAR_MC.Width() ||
@@ -304,7 +304,7 @@ void LocalRowAccumulateU
 
     DistMatrix<T> D11(g);
 
-    // We want our local gemvs to be of width blocksize, so we will 
+    // We want our local gemvs to be of width blocksize, so we will
     // temporarily change to max(r,c) times the current blocksize
     const Int n = A.Height();
     const Int bsize = Max(g.Height(),g.Width())*ctrl.bsize;

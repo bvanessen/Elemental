@@ -9,24 +9,27 @@
 #ifndef EL_BLAS_AXPYCONTRACT_HPP
 #define EL_BLAS_AXPYCONTRACT_HPP
 
-namespace El {
+#include "El/core/indexing/decl.hpp"
 
-namespace axpy_contract {
+namespace El
+{
+namespace axpy_contract
+{
 
 // (Partial(U),V) -> (U,V)
 template<typename T>
 void PartialColScatter
-( T alpha,
+(T alpha,
   const ElementalMatrix<T>& A,
-        ElementalMatrix<T>& B )
+        ElementalMatrix<T>& B)
 {
     EL_DEBUG_CSE
-    AssertSameGrids( A, B );
-    if( A.Height() != B.Height() || A.Width() != B.Width() )
+    AssertSameGrids(A, B);
+    if(A.Height() != B.Height() || A.Width() != B.Width())
         LogicError("A and B must be the same size");
 
 #ifdef EL_CACHE_WARNINGS
-    if( A.Width() != 1 && A.Grid().Rank() == 0 )
+    if(A.Width() != 1 && A.Grid().Rank() == 0)
     {
         cerr <<
           "axpy_contract::PartialColScatterUpdate potentially causes a large "
@@ -35,7 +38,7 @@ void PartialColScatter
           << endl;
     }
 #endif
-    if( B.ColAlign() % A.ColStride() == A.ColAlign() )
+    if(B.ColAlign() % A.ColStride() == A.ColAlign())
     {
         const Int colStride = B.ColStride();
         const Int colStridePart = B.PartialColStride();
@@ -46,32 +49,32 @@ void PartialColScatter
         const Int height = B.Height();
         const Int width = B.Width();
         const Int localHeight = B.LocalHeight();
-        const Int maxLocalHeight = MaxLength( height, colStride );
-        const Int recvSize = mpi::Pad( maxLocalHeight*width );
+        const Int maxLocalHeight = MaxLength(height, colStride);
+        const Int recvSize = mpi::Pad(maxLocalHeight*width);
         const Int sendSize = colStrideUnion*recvSize;
 
         // We explicitly zero-initialize rather than calling FastResize to avoid
         // inadvertently causing a floating-point exception in the reduction of
         // the padding entries.
-        vector<T> buffer(sendSize, T(0));
+        std::vector<T> buffer(sendSize, T(0));
 
         // Pack
         copy::util::PartialColStridedPack
-        ( height, width,
+        (height, width,
           colAlign, colStride,
           colStrideUnion, colStridePart, colRankPart,
           A.ColShift(),
           A.LockedBuffer(), A.LDim(),
-          buffer.data(),    recvSize );
+          buffer.data(),    recvSize);
 
         // Communicate
-        mpi::ReduceScatter( buffer.data(), recvSize, B.PartialUnionColComm() );
+        mpi::ReduceScatter(buffer.data(), recvSize, B.PartialUnionColComm());
 
         // Unpack our received data
         axpy::util::InterleaveMatrixUpdate
-        ( alpha, localHeight, width,
+        (alpha, localHeight, width,
           buffer.data(), 1, localHeight,
-          B.Buffer(),    1, B.LDim() );
+          B.Buffer(),    1, B.LDim());
     }
     else
         LogicError("Unaligned PartialColScatter not implemented");
@@ -80,18 +83,18 @@ void PartialColScatter
 // (U,Partial(V)) -> (U,V)
 template<typename T>
 void PartialRowScatter
-( T alpha,
+(T alpha,
   const ElementalMatrix<T>& A,
-        ElementalMatrix<T>& B )
+        ElementalMatrix<T>& B)
 {
     EL_DEBUG_CSE
-    AssertSameGrids( A, B );
-    if( A.Height() != B.Height() || A.Width() != B.Width() )
+    AssertSameGrids(A, B);
+    if(A.Height() != B.Height() || A.Width() != B.Width())
         LogicError("Matrix sizes did not match");
-    if( !B.Participating() )
+    if(!B.Participating())
         return;
 
-    if( B.RowAlign() % A.RowStride() == A.RowAlign() )
+    if(B.RowAlign() % A.RowStride() == A.RowAlign())
     {
         const Int rowStride = B.RowStride();
         const Int rowStridePart = B.PartialRowStride();
@@ -100,29 +103,29 @@ void PartialRowScatter
 
         const Int height = B.Height();
         const Int width = B.Width();
-        const Int maxLocalWidth = MaxLength( width, rowStride );
-        const Int recvSize = mpi::Pad( height*maxLocalWidth );
+        const Int maxLocalWidth = MaxLength(width, rowStride);
+        const Int recvSize = mpi::Pad(height*maxLocalWidth);
         const Int sendSize = rowStrideUnion*recvSize;
 
-        vector<T> buffer(sendSize, T(0));
+        std::vector<T> buffer(sendSize, T(0));
 
         // Pack
         copy::util::PartialRowStridedPack
-        ( height, width,
+        (height, width,
           B.RowAlign(), rowStride,
           rowStrideUnion, rowStridePart, rowRankPart,
           A.RowShift(),
           A.LockedBuffer(), A.LDim(),
-          buffer.data(),    recvSize );
+          buffer.data(),    recvSize);
 
         // Communicate
-        mpi::ReduceScatter( buffer.data(), recvSize, B.PartialUnionRowComm() );
+        mpi::ReduceScatter(buffer.data(), recvSize, B.PartialUnionRowComm());
 
         // Unpack our received data
         axpy::util::InterleaveMatrixUpdate
-        ( alpha, height, B.LocalWidth(),
+        (alpha, height, B.LocalWidth(),
           buffer.data(), 1, height,
-          B.Buffer(),    1, B.LDim() );
+          B.Buffer(),    1, B.LDim());
     }
     else
         LogicError("Unaligned PartialRowScatter not implemented");
@@ -131,16 +134,16 @@ void PartialRowScatter
 // (Collect(U),V) -> (U,V)
 template<typename T>
 void ColScatter
-( T alpha,
+(T alpha,
   const ElementalMatrix<T>& A,
-        ElementalMatrix<T>& B )
+        ElementalMatrix<T>& B)
 {
     EL_DEBUG_CSE
-    AssertSameGrids( A, B );
-    if( A.Height() != B.Height() || A.Width() != B.Width() )
+    AssertSameGrids(A, B);
+    if(A.Height() != B.Height() || A.Width() != B.Width())
         LogicError("A and B must be the same size");
 #ifdef EL_VECTOR_WARNINGS
-    if( A.Width() == 1 && B.Grid().Rank() == 0 )
+    if(A.Width() == 1 && B.Grid().Rank() == 0)
     {
         cerr <<
           "The vector version of ColScatter does not"
@@ -150,7 +153,7 @@ void ColScatter
     }
 #endif
 #ifdef EL_CACHE_WARNINGS
-    if( A.Width() != 1 && B.Grid().Rank() == 0 )
+    if(A.Width() != 1 && B.Grid().Rank() == 0)
     {
         cerr <<
           "axpy_contract::ColScatter potentially causes a large "
@@ -158,7 +161,7 @@ void ColScatter
           "(conjugate-)transpose of the [* ,V] matrix instead." << endl;
     }
 #endif
-    if( !B.Participating() )
+    if(!B.Participating())
         return;
     const Int height = B.Height();
     const Int localHeight = B.LocalHeight();
@@ -169,108 +172,108 @@ void ColScatter
 
     const Int rowDiff = B.RowAlign()-A.RowAlign();
     // TODO: Allow for modular equivalence if possible
-    if( rowDiff == 0 )
+    if(rowDiff == 0)
     {
         const Int maxLocalHeight = MaxLength(height,colStride);
 
-        const Int recvSize = mpi::Pad( maxLocalHeight*localWidth );
+        const Int recvSize = mpi::Pad(maxLocalHeight*localWidth);
         const Int sendSize = colStride*recvSize;
-        vector<T> buffer(sendSize, T(0));
+        std::vector<T> buffer(sendSize, T(0));
 
         // Pack
         copy::util::ColStridedPack
-        ( height, localWidth,
+        (height, localWidth,
           colAlign, colStride,
           A.LockedBuffer(), A.LDim(),
-          buffer.data(),    recvSize );
+          buffer.data(),    recvSize);
 
         // Communicate
-        mpi::ReduceScatter( buffer.data(), recvSize, B.ColComm() );
+        mpi::ReduceScatter(buffer.data(), recvSize, B.ColComm());
 
         // Update with our received data
         axpy::util::InterleaveMatrixUpdate
-        ( alpha, localHeight, localWidth,
+        (alpha, localHeight, localWidth,
           buffer.data(), 1, localHeight,
-          B.Buffer(),    1, B.LDim() );
+          B.Buffer(),    1, B.LDim());
     }
     else
     {
 #ifdef EL_UNALIGNED_WARNINGS
-        if( B.Grid().Rank() == 0 )
+        if(B.Grid().Rank() == 0)
             cerr << "Unaligned ColScatter" << endl;
 #endif
         const Int localWidthA = A.LocalWidth();
         const Int maxLocalHeight = MaxLength(height,colStride);
 
-        const Int recvSize_RS = mpi::Pad( maxLocalHeight*localWidthA );
+        const Int recvSize_RS = mpi::Pad(maxLocalHeight*localWidthA);
         const Int sendSize_RS = colStride*recvSize_RS;
         const Int recvSize_SR = localHeight*localWidth;
 
-        vector<T> buffer(recvSize_RS + Max(sendSize_RS,recvSize_SR), T(0));
+        std::vector<T> buffer(recvSize_RS + Max(sendSize_RS,recvSize_SR), T(0));
         T* firstBuf = &buffer[0];
         T* secondBuf = &buffer[recvSize_RS];
 
         // Pack
         copy::util::ColStridedPack
-        ( height, localWidth,
+        (height, localWidth,
           colAlign, colStride,
           A.LockedBuffer(), A.LDim(),
-          secondBuf,        recvSize_RS );
+          secondBuf,        recvSize_RS);
 
         // Reduce-scatter over each col
-        mpi::ReduceScatter( secondBuf, firstBuf, recvSize_RS, B.ColComm() );
+        mpi::ReduceScatter(secondBuf, firstBuf, recvSize_RS, B.ColComm());
 
         // Trade reduced data with the appropriate col
-        const Int sendCol = Mod( B.RowRank()+rowDiff, B.RowStride() );
-        const Int recvCol = Mod( B.RowRank()-rowDiff, B.RowStride() );
+        const Int sendCol = Mod(B.RowRank()+rowDiff, B.RowStride());
+        const Int recvCol = Mod(B.RowRank()-rowDiff, B.RowStride());
         mpi::SendRecv
-        ( firstBuf,  localHeight*localWidthA, sendCol,
-          secondBuf, localHeight*localWidth,  recvCol, B.RowComm() );
+        (firstBuf,  localHeight*localWidthA, sendCol,
+          secondBuf, localHeight*localWidth,  recvCol, B.RowComm());
 
         // Update with our received data
         axpy::util::InterleaveMatrixUpdate
-        ( alpha, localHeight, localWidth,
+        (alpha, localHeight, localWidth,
           secondBuf,  1, localHeight,
-          B.Buffer(), 1, B.LDim() );
+          B.Buffer(), 1, B.LDim());
     }
 }
 
 // (U,Collect(V)) -> (U,V)
 template<typename T>
 void RowScatter
-( T alpha,
+(T alpha,
   const ElementalMatrix<T>& A,
-        ElementalMatrix<T>& B )
+        ElementalMatrix<T>& B)
 {
     EL_DEBUG_CSE
-    AssertSameGrids( A, B );
-    if( A.Height() != B.Height() || A.Width() != B.Width() )
+    AssertSameGrids(A, B);
+    if(A.Height() != B.Height() || A.Width() != B.Width())
         LogicError("Matrix sizes did not match");
-    if( !B.Participating() )
+    if(!B.Participating())
         return;
 
     const Int width = B.Width();
     const Int colDiff = B.ColAlign()-A.ColAlign();
-    if( colDiff == 0 )
+    if(colDiff == 0)
     {
-        if( width == 1 )
+        if(width == 1)
         {
             const Int localHeight = B.LocalHeight();
-            const Int portionSize = mpi::Pad( localHeight );
-            vector<T> buffer(portionSize, T(0));
+            const Int portionSize = mpi::Pad(localHeight);
+            std::vector<T> buffer(portionSize, T(0));
 
             // Reduce to rowAlign
             const Int rowAlign = B.RowAlign();
             mpi::Reduce
-            ( A.LockedBuffer(), buffer.data(), portionSize,
-              rowAlign, B.RowComm() );
+            (A.LockedBuffer(), buffer.data(), portionSize,
+              rowAlign, B.RowComm());
 
-            if( B.RowRank() == rowAlign )
+            if(B.RowRank() == rowAlign)
             {
                 axpy::util::InterleaveMatrixUpdate
-                ( alpha, localHeight, 1,
+                (alpha, localHeight, 1,
                   buffer.data(), 1, localHeight,
-                  B.Buffer(),    1, B.LDim() );
+                  B.Buffer(),    1, B.LDim());
             }
         }
         else
@@ -282,64 +285,64 @@ void RowScatter
             const Int localWidth = B.LocalWidth();
             const Int maxLocalWidth = MaxLength(width,rowStride);
 
-            const Int portionSize = mpi::Pad( localHeight*maxLocalWidth );
+            const Int portionSize = mpi::Pad(localHeight*maxLocalWidth);
             const Int sendSize = rowStride*portionSize;
 
             // Pack
-            vector<T> buffer(sendSize, T(0));
+            std::vector<T> buffer(sendSize, T(0));
             copy::util::RowStridedPack
-            ( localHeight, width,
+            (localHeight, width,
               rowAlign, rowStride,
               A.LockedBuffer(), A.LDim(),
-              buffer.data(), portionSize );
+              buffer.data(), portionSize);
 
             // Communicate
-            mpi::ReduceScatter( buffer.data(), portionSize, B.RowComm() );
+            mpi::ReduceScatter(buffer.data(), portionSize, B.RowComm());
 
             // Update with our received data
             axpy::util::InterleaveMatrixUpdate
-            ( alpha, localHeight, localWidth,
+            (alpha, localHeight, localWidth,
               buffer.data(), 1, localHeight,
-              B.Buffer(),    1, B.LDim() );
+              B.Buffer(),    1, B.LDim());
         }
     }
     else
     {
 #ifdef EL_UNALIGNED_WARNINGS
-        if( B.Grid().Rank() == 0 )
+        if(B.Grid().Rank() == 0)
             cerr << "Unaligned RowScatter" << endl;
 #endif
         const Int colRank = B.ColRank();
         const Int colStride = B.ColStride();
 
-        const Int sendRow = Mod( colRank+colDiff, colStride );
-        const Int recvRow = Mod( colRank-colDiff, colStride );
+        const Int sendRow = Mod(colRank+colDiff, colStride);
+        const Int recvRow = Mod(colRank-colDiff, colStride);
 
         const Int localHeight = B.LocalHeight();
         const Int localHeightA = A.LocalHeight();
 
-        if( width == 1 )
+        if(width == 1)
         {
-            vector<T> buffer(localHeight + localHeightA, T(0));
+            std::vector<T> buffer(localHeight + localHeightA, T(0));
             T* sendBuf = &buffer[0];
             T* recvBuf = &buffer[localHeightA];
 
             // Reduce to rowAlign
             const Int rowAlign = B.RowAlign();
             mpi::Reduce
-            ( A.LockedBuffer(), sendBuf, localHeightA, rowAlign, B.RowComm() );
+            (A.LockedBuffer(), sendBuf, localHeightA, rowAlign, B.RowComm());
 
-            if( B.RowRank() == rowAlign )
+            if(B.RowRank() == rowAlign)
             {
                 // Perform the realignment
                 mpi::SendRecv
-                ( sendBuf, localHeightA, sendRow,
-                  recvBuf, localHeight,  recvRow, B.ColComm() );
+                (sendBuf, localHeightA, sendRow,
+                  recvBuf, localHeight,  recvRow, B.ColComm());
 
                 axpy::util::InterleaveMatrixUpdate
-                ( alpha, localHeight, 1,
+                (alpha, localHeight, 1,
                   recvBuf,    1, localHeight,
-                  B.Buffer(), 1, B.LDim() );
+                  B.Buffer(), 1, B.LDim());
             }
         }
         else
@@ -350,34 +353,34 @@ void RowScatter
             const Int localWidth = B.LocalWidth();
             const Int maxLocalWidth = MaxLength(width,rowStride);
 
-            const Int recvSize_RS = mpi::Pad( localHeightA*maxLocalWidth );
+            const Int recvSize_RS = mpi::Pad(localHeightA*maxLocalWidth);
             const Int sendSize_RS = rowStride * recvSize_RS;
             const Int recvSize_SR = localHeight * localWidth;
 
-            vector<T> buffer(recvSize_RS + Max(sendSize_RS,recvSize_SR), T(0));
+            std::vector<T> buffer(recvSize_RS + Max(sendSize_RS,recvSize_SR), T(0));
             T* firstBuf = &buffer[0];
             T* secondBuf = &buffer[recvSize_RS];
 
             // Pack
             copy::util::RowStridedPack
-            ( localHeightA, width,
+            (localHeightA, width,
               rowAlign, rowStride,
               A.LockedBuffer(), A.LDim(),
-              secondBuf,        recvSize_RS );
+              secondBuf,        recvSize_RS);
 
             // Reduce-scatter over each process row
-            mpi::ReduceScatter( secondBuf, firstBuf, recvSize_RS, B.RowComm() );
+            mpi::ReduceScatter(secondBuf, firstBuf, recvSize_RS, B.RowComm());
 
             // Trade reduced data with the appropriate process row
             mpi::SendRecv
-            ( firstBuf,  localHeightA*localWidth, sendRow,
-              secondBuf, localHeight*localWidth,  recvRow, B.ColComm() );
+            (firstBuf,  localHeightA*localWidth, sendRow,
+              secondBuf, localHeight*localWidth,  recvRow, B.ColComm());
 
             // Update with our received data
             axpy::util::InterleaveMatrixUpdate
-            ( alpha, localHeight, localWidth,
+            (alpha, localHeight, localWidth,
               secondBuf,  1, localHeight,
-              B.Buffer(), 1, B.LDim() );
+              B.Buffer(), 1, B.LDim());
         }
     }
 }
@@ -385,15 +388,15 @@ void RowScatter
 // (Collect(U),Collect(V)) -> (U,V)
 template<typename T>
 void Scatter
-( T alpha,
+(T alpha,
   const ElementalMatrix<T>& A,
-        ElementalMatrix<T>& B )
+        ElementalMatrix<T>& B)
 {
     EL_DEBUG_CSE
-    AssertSameGrids( A, B );
-    if( A.Height() != B.Height() || A.Width() != B.Width() )
+    AssertSameGrids(A, B);
+    if(A.Height() != B.Height() || A.Width() != B.Width())
         LogicError("Sizes of A and B must match");
-    if( !B.Participating() )
+    if(!B.Participating())
         return;
 
     const Int colStride = B.ColStride();
@@ -408,64 +411,64 @@ void Scatter
     const Int maxLocalHeight = MaxLength(height,colStride);
     const Int maxLocalWidth = MaxLength(width,rowStride);
 
-    const Int recvSize = mpi::Pad( maxLocalHeight*maxLocalWidth );
+    const Int recvSize = mpi::Pad(maxLocalHeight*maxLocalWidth);
     const Int sendSize = colStride*rowStride*recvSize;
 
-    vector<T> buffer(sendSize, T(0));
+    std::vector<T> buffer(sendSize, T(0));
 
     // Pack
     copy::util::StridedPack
-    ( height, width,
+    (height, width,
       colAlign, colStride,
       rowAlign, rowStride,
       A.LockedBuffer(), A.LDim(),
-      buffer.data(),    recvSize );
+      buffer.data(),    recvSize);
 
     // Communicate
-    mpi::ReduceScatter( buffer.data(), recvSize, B.DistComm() );
+    mpi::ReduceScatter(buffer.data(), recvSize, B.DistComm());
 
     // Unpack our received data
     axpy::util::InterleaveMatrixUpdate
-    ( alpha, localHeight, localWidth,
+    (alpha, localHeight, localWidth,
       buffer.data(), 1, localHeight,
-      B.Buffer(),    1, B.LDim() );
+      B.Buffer(),    1, B.LDim());
 }
 
 } // namespace axpy_contract
 
 template<typename T>
 void AxpyContract
-( T alpha,
+(T alpha,
   const ElementalMatrix<T>& A,
-        ElementalMatrix<T>& B )
+        ElementalMatrix<T>& B)
 {
     EL_DEBUG_CSE
     const Dist U = B.ColDist();
     const Dist V = B.RowDist();
-    if( A.ColDist() == U && A.RowDist() == V )
-        Axpy( alpha, A, B );
-    else if( A.ColDist() == Partial(U) && A.RowDist() == V )
-        axpy_contract::PartialColScatter( alpha, A, B );
-    else if( A.ColDist() == U && A.RowDist() == Partial(V) )
-        axpy_contract::PartialRowScatter( alpha, A, B );
-    else if( A.ColDist() == Collect(U) && A.RowDist() == V )
-        axpy_contract::ColScatter( alpha, A, B );
-    else if( A.ColDist() == U && A.RowDist() == Collect(V) )
-        axpy_contract::RowScatter( alpha, A, B );
-    else if( A.ColDist() == Collect(U) && A.RowDist() == Collect(V) )
-        axpy_contract::Scatter( alpha, A, B );
+    if(A.ColDist() == U && A.RowDist() == V)
+        Axpy(alpha, A, B);
+    else if(A.ColDist() == Partial(U) && A.RowDist() == V)
+        axpy_contract::PartialColScatter(alpha, A, B);
+    else if(A.ColDist() == U && A.RowDist() == Partial(V))
+        axpy_contract::PartialRowScatter(alpha, A, B);
+    else if(A.ColDist() == Collect(U) && A.RowDist() == V)
+        axpy_contract::ColScatter(alpha, A, B);
+    else if(A.ColDist() == U && A.RowDist() == Collect(V))
+        axpy_contract::RowScatter(alpha, A, B);
+    else if(A.ColDist() == Collect(U) && A.RowDist() == Collect(V))
+        axpy_contract::Scatter(alpha, A, B);
     else
         LogicError("Incompatible distributions");
 }
 
 template<typename T>
 void AxpyContract
-( T alpha,
+(T alpha,
   const BlockMatrix<T>& A,
-        BlockMatrix<T>& B )
+        BlockMatrix<T>& B)
 {
     EL_DEBUG_CSE
-    AssertSameGrids( A, B );
+    AssertSameGrids(A, B);
     LogicError("This routine is not yet written");
 }
 
@@ -477,13 +480,13 @@ void AxpyContract
 
 #define PROTO(T) \
   EL_EXTERN template void AxpyContract \
-  ( T alpha, \
+  (T alpha, \
     const ElementalMatrix<T>& A, \
-          ElementalMatrix<T>& B ); \
+          ElementalMatrix<T>& B); \
   EL_EXTERN template void AxpyContract \
-  ( T alpha, \
+  (T alpha, \
     const BlockMatrix<T>& A, \
-          BlockMatrix<T>& B );
+          BlockMatrix<T>& B);
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

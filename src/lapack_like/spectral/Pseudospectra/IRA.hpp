@@ -56,8 +56,8 @@ void ComputeNewEstimates
 template<typename Real>
 void ComputeNewEstimates
 ( const vector<Matrix<Complex<Real>>>& HList,
-  const DistMatrix<Int,MR,STAR>& activeConverged,
-        DistMatrix<Real,MR,STAR>& activeEsts,
+  const DistMatrix<Int,Dist::MR,Dist::STAR>& activeConverged,
+        DistMatrix<Real,Dist::MR,Dist::STAR>& activeEsts,
         Int n )
 {
     EL_DEBUG_CSE
@@ -182,7 +182,7 @@ void Restart
 template<typename Real>
 void Restart
 ( const vector<Matrix<Complex<Real>>>& HList,
-  const DistMatrix<Int,MR,STAR>& activeConverged,
+  const DistMatrix<Int,Dist::MR,Dist::STAR>& activeConverged,
         vector<DistMatrix<Complex<Real>>>& VList )
 {
     EL_DEBUG_CSE
@@ -196,7 +196,7 @@ void Restart
 template<typename Real>
 void Restart
 ( const vector<Matrix<Complex<Real>>>& HList,
-  const DistMatrix<Int,MR,STAR>& activeConverged,
+  const DistMatrix<Int,Dist::MR,Dist::STAR>& activeConverged,
         vector<DistMatrix<Real>>& VRealList,
         vector<DistMatrix<Real>>& VImagList )
 {
@@ -655,7 +655,7 @@ IRA
 }
 
 template<typename Real>
-DistMatrix<Int,VR,STAR>
+DistMatrix<Int,Dist::VR,Dist::STAR>
 IRA
 ( const AbstractDistMatrix<Complex<Real>>& UPre,
   const AbstractDistMatrix<Complex<Real>>& shiftsPre,
@@ -666,9 +666,9 @@ IRA
     using namespace pspec;
     typedef Complex<Real> C;
 
-    DistMatrixReadProxy<C,C,MC,MR> UProx( UPre );
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixWriteProxy<Real,Real,VR,STAR> invNormsProx( invNormsPre );
+    DistMatrixReadProxy<C,C,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> invNormsProx( invNormsPre );
     auto& U = UProx.GetLocked();
     auto& shifts = shiftsProx.GetLocked();
     auto& invNorms = invNormsProx.Get();
@@ -683,12 +683,12 @@ IRA
     const bool progress = psCtrl.progress;
 
     // Keep track of the number of iterations per shift
-    DistMatrix<Int,VR,STAR> itCounts(g);
+    DistMatrix<Int,Dist::VR,Dist::STAR> itCounts(g);
     Ones( itCounts, numShifts, 1 );
 
     // Keep track of the pivoting history if deflation is requested
-    DistMatrix<Int,VR,STAR> preimage(g);
-    DistMatrix<C,  VR,STAR> pivShifts( shifts );
+    DistMatrix<Int,Dist::VR,Dist::STAR> preimage(g);
+    DistMatrix<C,  Dist::VR,Dist::STAR> pivShifts( shifts );
     if( deflate )
     {
         preimage.AlignWith( shifts );
@@ -702,7 +702,7 @@ IRA
     }
 
     // The Hessenberg case currently requires explicit access to the adjoint
-    DistMatrix<C,VC,STAR> U_VC_STAR(g), UAdj_VC_STAR(g);
+    DistMatrix<C,Dist::VC,Dist::STAR> U_VC_STAR(g), UAdj_VC_STAR(g);
     if( !psCtrl.schur )
     {
         U_VC_STAR = U;
@@ -720,19 +720,19 @@ IRA
     const Int numMRShifts = VList[0].LocalWidth();
     vector<Matrix<Complex<Real>>> HList(numMRShifts);
     Matrix<Complex<Real>> components;
-    DistMatrix<Real,MR,STAR> colNorms(g);
+    DistMatrix<Real,Dist::MR,Dist::STAR> colNorms(g);
 
-    DistMatrix<Int,MR,STAR> activeConverged(g);
+    DistMatrix<Int,Dist::MR,Dist::STAR> activeConverged(g);
     Zeros( activeConverged, numShifts, 1 );
 
     psCtrl.snapCtrl.ResetCounts();
 
     Timer timer, subtimer;
     Int numIts=0, numDone=0;
-    DistMatrix<Real,MR,STAR> estimates(g), lastActiveEsts(g);
+    DistMatrix<Real,Dist::MR,Dist::STAR> estimates(g), lastActiveEsts(g);
     estimates.AlignWith( shifts );
     Zeros( estimates, numShifts, 1 );
-    DistMatrix<Int,VR,STAR> activePreimage(g);
+    DistMatrix<Int,Dist::VR,Dist::STAR> activePreimage(g);
     while( true )
     {
         const Int numActive = ( deflate ? numShifts-numDone : numShifts );
@@ -799,11 +799,11 @@ IRA
                         subtimer.Start();
                 }
                 // NOTE: This redistribution sequence might not be necessary
-                DistMatrix<C,STAR,VR> activeV_STAR_VR( activeVList[j+1] );
+                DistMatrix<C,Dist::STAR,Dist::VR> activeV_STAR_VR( activeVList[j+1] );
                 MultiShiftHessSolve
                 ( UPPER, NORMAL, C(1), U_VC_STAR, activeShifts,
                   activeV_STAR_VR );
-                DistMatrix<C,VR,STAR> activeShiftsConj(g);
+                DistMatrix<C,Dist::VR,Dist::STAR> activeShiftsConj(g);
                 Conjugate( activeShifts, activeShiftsConj );
                 MultiShiftHessSolve
                 ( LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
@@ -933,7 +933,7 @@ IRA
 }
 
 template<typename Real>
-DistMatrix<Int,VR,STAR>
+DistMatrix<Int,Dist::VR,Dist::STAR>
 IRA
 ( const AbstractDistMatrix<Real>& UPre,
   const AbstractDistMatrix<Complex<Real>>& shiftsPre,
@@ -944,9 +944,9 @@ IRA
     using namespace pspec;
     typedef Complex<Real> C;
 
-    DistMatrixReadProxy<Real,Real,MC,MR> UProx( UPre );
-    DistMatrixReadProxy<C,C,VR,STAR> shiftsProx( shiftsPre );
-    DistMatrixWriteProxy<Real,Real,VR,STAR> invNormsProx( invNormsPre );
+    DistMatrixReadProxy<Real,Real,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadProxy<C,C,Dist::VR,Dist::STAR> shiftsProx( shiftsPre );
+    DistMatrixWriteProxy<Real,Real,Dist::VR,Dist::STAR> invNormsProx( invNormsPre );
     auto& U = UProx.GetLocked();
     auto& shifts = shiftsProx.GetLocked();
     auto& invNorms = invNormsProx.Get();
@@ -961,12 +961,12 @@ IRA
     const bool progress = psCtrl.progress;
 
     // Keep track of the number of iterations per shift
-    DistMatrix<Int,VR,STAR> itCounts(g);
+    DistMatrix<Int,Dist::VR,Dist::STAR> itCounts(g);
     Ones( itCounts, numShifts, 1 );
 
     // Keep track of the pivoting history if deflation is requested
-    DistMatrix<Int,VR,STAR> preimage(g);
-    DistMatrix<C,  VR,STAR> pivShifts( shifts );
+    DistMatrix<Int,Dist::VR,Dist::STAR> preimage(g);
+    DistMatrix<C,  Dist::VR,Dist::STAR> pivShifts( shifts );
     if( deflate )
     {
         preimage.AlignWith( shifts );
@@ -997,19 +997,19 @@ IRA
     const Int numMRShifts = VRealList[0].LocalWidth();
     vector<Matrix<Complex<Real>>> HList(numMRShifts);
     Matrix<Complex<Real>> components;
-    DistMatrix<Real,MR,STAR> colNorms(g);
+    DistMatrix<Real,Dist::MR,Dist::STAR> colNorms(g);
 
-    DistMatrix<Int,MR,STAR> activeConverged(g);
+    DistMatrix<Int,Dist::MR,Dist::STAR> activeConverged(g);
     Zeros( activeConverged, numShifts, 1 );
 
     psCtrl.snapCtrl.ResetCounts();
 
     Timer timer, subtimer;
     Int numIts=0, numDone=0;
-    DistMatrix<Real,MR,STAR> estimates(g), lastActiveEsts(g);
+    DistMatrix<Real,Dist::MR,Dist::STAR> estimates(g), lastActiveEsts(g);
     estimates.AlignWith( shifts );
     Zeros( estimates, numShifts, 1 );
-    DistMatrix<Int,VR,STAR> activePreimage(g);
+    DistMatrix<Int,Dist::VR,Dist::STAR> activePreimage(g);
     while( true )
     {
         const Int numActive = ( deflate ? numShifts-numDone : numShifts );

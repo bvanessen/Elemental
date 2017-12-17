@@ -165,8 +165,8 @@ SVDInfo ChanUpper
     {
         if( m > heightRatio*n )
         {
-            DistMatrix<Field,MD,STAR> householderScalars(g);
-            DistMatrix<Real,MD,STAR> signature(g);
+            DistMatrix<Field,Dist::MD,Dist::STAR> householderScalars(g);
+            DistMatrix<Real,Dist::MD,Dist::STAR> signature(g);
             if( ctrl.time && g.Rank() == 0 )
                 timer.Start();
             QR( A, householderScalars, signature );
@@ -192,8 +192,8 @@ SVDInfo ChanUpper
         // This branch handles (avoidU,avoidV) in {(false,false),(false,true)}
         if( m > heightRatio*n )
         {
-            DistMatrix<Field,MD,STAR> householderScalars(g);
-            DistMatrix<Real,MD,STAR> signature(g);
+            DistMatrix<Field,Dist::MD,Dist::STAR> householderScalars(g);
+            DistMatrix<Real,Dist::MD,Dist::STAR> signature(g);
             if( ctrl.time && g.Rank() == 0 )
                 timer.Start();
             QR( A, householderScalars, signature );
@@ -257,9 +257,9 @@ SVDInfo ChanUpper
   const SVDCtrl<Base<Field>>& ctrl )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> UProx( UPre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> VProx( VPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> VProx( VPre );
     auto& A = AProx.Get();
     auto& U = UProx.Get();
     auto& V = VProx.Get();
@@ -318,7 +318,7 @@ SVDInfo ChanUpper
   const SVDCtrl<Base<Field>>& ctrl )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
     return ChanUpper( A, s, ctrl );
 }
@@ -434,9 +434,9 @@ SVDInfo Chan
   const SVDCtrl<Base<Field>>& ctrl )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> UProx( UPre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> VProx( VPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> VProx( VPre );
     auto& A = AProx.Get();
     auto& U = UProx.Get();
     auto& V = VProx.Get();
@@ -530,7 +530,7 @@ SVDInfo Chan
   const SVDCtrl<Base<Field>>& ctrl )
 {
     EL_DEBUG_CSE
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
     return Chan( A, s, ctrl );
 }

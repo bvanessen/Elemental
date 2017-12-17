@@ -9,7 +9,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 #include "./TriangEig/MultiShiftSolve.hpp"
 
 namespace El {
@@ -50,8 +49,8 @@ void TriangEig
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadProxy<Field,Field,MC,MR> UProx( UPre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
@@ -62,7 +61,7 @@ void TriangEig
 
     // Solve multi-shift triangular system
     const Grid& g = U.Grid();
-    DistMatrix<Field,VR,STAR> shifts(g), scales(g);
+    DistMatrix<Field,Dist::VR,Dist::STAR> shifts(g), scales(g);
     GetDiagonal( U, shifts );
     // The following is a specialized alternative to
     //  SafeMultiShiftTrsm
@@ -72,7 +71,7 @@ void TriangEig
 
     // Normalize eigenvectors
     // TODO(poulson): Exploit the upper-triangular structure
-    DistMatrix<Base<Field>,MR,STAR> colNorms(g);
+    DistMatrix<Base<Field>,Dist::MR,Dist::STAR> colNorms(g);
     ColumnTwoNorms( X, colNorms );
     DiagonalSolve( RIGHT, NORMAL, colNorms, X );
 }

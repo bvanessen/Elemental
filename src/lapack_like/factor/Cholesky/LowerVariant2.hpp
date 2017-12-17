@@ -53,15 +53,15 @@ void LowerVariant2Blocked( AbstractDistMatrix<F>& APre )
           LogicError("Can only compute Cholesky factor of square matrices");
     )
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Grid& grid = A.Grid();
-    DistMatrix<F,MR,  STAR> A10Adj_MR_STAR(grid);
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(grid);
-    DistMatrix<F,VC,  STAR> A21_VC_STAR(grid);
-    DistMatrix<F,MC,  STAR> X11_MC_STAR(grid);
-    DistMatrix<F,MC,  STAR> X21_MC_STAR(grid);
+    DistMatrix<F,Dist::MR,  Dist::STAR> A10Adj_MR_STAR(grid);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(grid);
+    DistMatrix<F,Dist::VC,  Dist::STAR> A21_VC_STAR(grid);
+    DistMatrix<F,Dist::MC,  Dist::STAR> X11_MC_STAR(grid);
+    DistMatrix<F,Dist::MC,  Dist::STAR> X21_MC_STAR(grid);
 
     const Int n = A.Height();
     const Int bsize = Blocksize();

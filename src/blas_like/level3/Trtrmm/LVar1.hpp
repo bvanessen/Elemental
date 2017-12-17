@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRTRMM_LVAR1_HPP
@@ -19,10 +19,10 @@ void LVar1( Matrix<T>& L, bool conjugate=false )
     const Int n = L.Height();
     const Int bsize = Blocksize();
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
-    
+
     for( Int k=0; k<n; k+=bsize )
     {
-        const Int nb = Min(bsize,n-k);  
+        const Int nb = Min(bsize,n-k);
 
         const Range<Int> ind0( 0, k    ),
                          ind1( k, k+nb );
@@ -50,15 +50,15 @@ void LVar1( AbstractDistMatrix<T>& LPre, bool conjugate=false )
     const Grid& g = LPre.Grid();
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrixReadWriteProxy<T,T,MC,MR> LProx( LPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> LProx( LPre );
     auto& L = LProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,STAR,VR  > L10_STAR_VR(g);
-    DistMatrix<T,STAR,VC  > L10_STAR_VC(g);
-    DistMatrix<T,STAR,MC  > L10_STAR_MC(g);
-    DistMatrix<T,STAR,MR  > L10_STAR_MR(g);
-    DistMatrix<T,STAR,STAR> L11_STAR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::VR  > L10_STAR_VR(g);
+    DistMatrix<T,Dist::STAR,Dist::VC  > L10_STAR_VC(g);
+    DistMatrix<T,Dist::STAR,Dist::MC  > L10_STAR_MC(g);
+    DistMatrix<T,Dist::STAR,Dist::MR  > L10_STAR_MR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> L11_STAR_STAR(g);
 
     L10_STAR_VR.AlignWith( L );
     L10_STAR_VC.AlignWith( L );
@@ -85,7 +85,7 @@ void LVar1( AbstractDistMatrix<T>& LPre, bool conjugate=false )
 
         L11_STAR_STAR = L11;
         LocalTrmm
-        ( LEFT, LOWER, orientation, NON_UNIT, 
+        ( LEFT, LOWER, orientation, NON_UNIT,
           T(1), L11_STAR_STAR, L10_STAR_VR );
         L10 = L10_STAR_VR;
 

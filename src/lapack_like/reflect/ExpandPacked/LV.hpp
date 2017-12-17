@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_EXPANDPACKEDREFLECTORS_LV_HPP
@@ -18,14 +18,14 @@ namespace expand_packed_reflectors {
 // Since applying Householder transforms from vectors stored right-to-left
 // implies that we will be forming a generalization of
 //
-//   (I - tau_0 u_0 u_0^H) (I - tau_1 u_1 u_1^H) = 
+//   (I - tau_0 u_0 u_0^H) (I - tau_1 u_1 u_1^H) =
 //   I - tau_0 u_0 u_0^H - tau_1 u_1 u_1^H + (tau_0 tau_1 u_0^H u_1) u_0 u_1^H =
 //   I - [ u_0, u_1 ] [ tau_0, -tau_0 tau_1 u_0^H u_1 ] [ u_0^H ]
 //                    [ 0,      tau_1                 ] [ u_1^H ],
 //
-// which has an upper-triangular center matrix, say S, we will form S as 
+// which has an upper-triangular center matrix, say S, we will form S as
 // the inverse of a matrix T, which can easily be formed as
-// 
+//
 //   triu(T,1) = triu( U^H U ),
 //   diag(T) = 1/householderScalars or 1/conj(householderScalars),
 //
@@ -124,7 +124,7 @@ template<typename F>
 void
 LV
 ( Conjugation conjugation,
-  Int offset, 
+  Int offset,
         AbstractDistMatrix<F>& HPre,
   const AbstractDistMatrix<F>& householderScalarsPre )
 {
@@ -138,8 +138,8 @@ LV
           ("householderScalars must be the same length as H's offset diag");
     )
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> HProx( HPre );
-    DistMatrixReadProxy<F,F,MC,STAR>
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> HProx( HPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& H = HProx.Get();
     auto& householderScalars = householderScalarsProx.GetLocked();
@@ -159,12 +159,12 @@ LV
                   HEffectedNew(g), HEffectedOld(g),
                   HEffectedOldT(g), HEffectedOldB(g);
 
-    DistMatrix<F,VC,STAR> HPan_VC_STAR(g);
-    DistMatrix<F,MC,STAR> HPan_MC_STAR(g), HPanT_MC_STAR(g), HPanB_MC_STAR(g);
+    DistMatrix<F,Dist::VC,Dist::STAR> HPan_VC_STAR(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> HPan_MC_STAR(g), HPanT_MC_STAR(g), HPanB_MC_STAR(g);
 
-    DistMatrix<F,STAR,MR> Z_STAR_MR(g), ZNew_STAR_MR(g), ZOld_STAR_MR(g);
-    DistMatrix<F,STAR,VR> Z_STAR_VR(g), ZNew_STAR_VR(g), ZOld_STAR_VR(g);
-    DistMatrix<F,STAR,STAR> householderScalars1_STAR_STAR(g), SInv_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR> Z_STAR_MR(g), ZNew_STAR_MR(g), ZOld_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR> Z_STAR_VR(g), ZNew_STAR_VR(g), ZOld_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> householderScalars1_STAR_STAR(g), SInv_STAR_STAR(g);
 
     Int oldEffectedHeight=mRem;
 
@@ -208,8 +208,8 @@ LV
         HPan_VC_STAR = HPan;
         Zeros( SInv_STAR_STAR, HPanWidth, HPanWidth );
         Herk
-        ( UPPER, ADJOINT, 
-          Base<F>(1), HPan_VC_STAR.LockedMatrix(), 
+        ( UPPER, ADJOINT,
+          Base<F>(1), HPan_VC_STAR.LockedMatrix(),
           Base<F>(0), SInv_STAR_STAR.Matrix() );
         El::AllReduce( SInv_STAR_STAR, HPan_VC_STAR.ColComm() );
         householderScalars1_STAR_STAR = householderScalars1;
@@ -223,12 +223,12 @@ LV
                         HPanB_MC_STAR, newEffectedWidth /* to match ZNew */ );
 
         // Interleave the updates of the already effected portion of the matrix
-        // with the newly effected portion to lower latency and increase 
+        // with the newly effected portion to lower latency and increase
         // performance
         Adjoint( HPanT_MC_STAR, ZNew_STAR_VR );
         Zero( ZOld_STAR_MR );
         LocalGemm
-        ( ADJOINT, NORMAL, 
+        ( ADJOINT, NORMAL,
           F(1), HPanB_MC_STAR, HEffectedOldB, F(0), ZOld_STAR_MR );
         Contract( ZOld_STAR_MR, ZOld_STAR_VR );
         LocalTrsm

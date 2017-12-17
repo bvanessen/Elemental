@@ -74,16 +74,16 @@ ScaLAPACKHelper
     proxyCtrl.colCut = 0;
     proxyCtrl.rowCut = 0;
 
-    DistMatrixReadWriteProxy<F,F,MC,MR,BLOCK> HProx( HPre, proxyCtrl );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR,DistWrap::BLOCK> HProx( HPre, proxyCtrl );
     auto& H = HProx.Get();
     const Int n = H.Height();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR,BLOCK> ZProx( ZPre, proxyCtrl );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR,DistWrap::BLOCK> ZProx( ZPre, proxyCtrl );
     auto& Z = ZProx.Get();
     if( !ctrl.accumulateSchurVecs )
         Identity( Z, n, n );
 
-    DistMatrixWriteProxy<Complex<Real>,Complex<Real>,STAR,STAR> wProx( wPre );
+    DistMatrixWriteProxy<Complex<Real>,Complex<Real>,Dist::STAR,Dist::STAR> wProx( wPre );
     auto& w = wProx.Get();
 
 #ifdef EL_HAVE_SCALAPACK
@@ -141,10 +141,10 @@ ScaLAPACKHelper
     proxyCtrl.colCut = 0;
     proxyCtrl.rowCut = 0;
 
-    DistMatrixReadWriteProxy<F,F,MC,MR,BLOCK> HProx( HPre, proxyCtrl );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR,DistWrap::BLOCK> HProx( HPre, proxyCtrl );
     auto& H = HProx.Get();
 
-    DistMatrixWriteProxy<Complex<Real>,Complex<Real>,STAR,STAR> wProx( wPre );
+    DistMatrixWriteProxy<Complex<Real>,Complex<Real>,Dist::STAR,Dist::STAR> wProx( wPre );
     auto& w = wProx.Get();
 
 #ifdef EL_HAVE_SCALAPACK
@@ -189,10 +189,10 @@ HessenbergSchur
     EL_DEBUG_CSE
     typedef Base<F> Real;
 
-    DistMatrixReadWriteProxy<F,F,MC,MR,BLOCK> HProx( HPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR,DistWrap::BLOCK> HProx( HPre );
     auto& H = HProx.Get();
 
-    DistMatrixWriteProxy<Complex<Real>,Complex<Real>,STAR,STAR> wProx( wPre );
+    DistMatrixWriteProxy<Complex<Real>,Complex<Real>,Dist::STAR,Dist::STAR> wProx( wPre );
     auto& w = wProx.Get();
 
     ProxyCtrl proxCtrl;
@@ -204,7 +204,7 @@ HessenbergSchur
     proxCtrl.rowCut = H.RowCut();
     // Technically, the 'Read' portion of the proxy is only needed if
     // ctrl.accumulateSchurVecs is true.
-    DistMatrixReadWriteProxy<F,F,MC,MR,BLOCK> ZProx( ZPre, proxCtrl );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR,DistWrap::BLOCK> ZProx( ZPre, proxCtrl );
     auto& Z = ZProx.Get();
 
     const Int n = H.Height();
@@ -279,13 +279,13 @@ HessenbergSchur
     EL_DEBUG_CSE
     typedef Base<F> Real;
 
-    DistMatrixReadWriteProxy<F,F,MC,MR,BLOCK> HProx( HPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR,DistWrap::BLOCK> HProx( HPre );
     auto& H = HProx.Get();
 
-    DistMatrixWriteProxy<Complex<Real>,Complex<Real>,STAR,STAR> wProx( wPre );
+    DistMatrixWriteProxy<Complex<Real>,Complex<Real>,Dist::STAR,Dist::STAR> wProx( wPre );
     auto& w = wProx.Get();
 
-    DistMatrix<F,MC,MR,BLOCK> Z(H.Grid());
+    DistMatrix<F,Dist::MC,Dist::MR,DistWrap::BLOCK> Z(H.Grid());
     Z.AlignWith( H );
 
     const Int n = H.Height();
@@ -361,9 +361,9 @@ void SweepHelper
 
 template<typename Real>
 void SweepHelper
-( DistMatrix<Real,MC,MR,BLOCK>& H,
-  DistMatrix<Complex<Real>,STAR,STAR>& shifts,
-  DistMatrix<Real,MC,MR,BLOCK>& Z,
+( DistMatrix<Real,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+  DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR>& shifts,
+  DistMatrix<Real,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE
@@ -444,9 +444,9 @@ void SweepHelper
 
 template<typename Real>
 void SweepHelper
-( DistMatrix<Complex<Real>,MC,MR,BLOCK>& H,
-  DistMatrix<Complex<Real>,STAR,STAR>& shifts,
-  DistMatrix<Complex<Real>,MC,MR,BLOCK>& Z,
+( DistMatrix<Complex<Real>,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+  DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR>& shifts,
+  DistMatrix<Complex<Real>,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE
@@ -497,9 +497,9 @@ void Sweep
 
 template<typename F>
 void Sweep
-( DistMatrix<F,MC,MR,BLOCK>& H,
-  DistMatrix<Complex<Base<F>>,STAR,STAR>& shifts,
-  DistMatrix<F,MC,MR,BLOCK>& Z,
+( DistMatrix<F,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+  DistMatrix<Complex<Base<F>>,Dist::STAR,Dist::STAR>& shifts,
+  DistMatrix<F,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE
@@ -533,9 +533,9 @@ void Sweep
     Matrix<F>& Z, \
     const HessenbergSchurCtrl& ctrl ); \
   template void hess_schur::Sweep \
-  ( DistMatrix<F,MC,MR,BLOCK>& H, \
-    DistMatrix<Complex<Base<F>>,STAR,STAR>& shifts, \
-    DistMatrix<F,MC,MR,BLOCK>& Z, \
+  ( DistMatrix<F,Dist::MC,Dist::MR,DistWrap::BLOCK>& H, \
+    DistMatrix<Complex<Base<F>>,Dist::STAR,Dist::STAR>& shifts, \
+    DistMatrix<F,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z, \
     const HessenbergSchurCtrl& ctrl );
 
 #define EL_NO_INT_PROTO

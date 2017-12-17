@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_CHOLESKY_REVERSE_LOWER_VARIANT3_HPP
@@ -79,13 +79,13 @@ void ReverseLowerVariant3Blocked( AbstractDistMatrix<F>& APre )
     )
     const Grid& grid = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(grid);
-    DistMatrix<F,STAR,VR  > A10_STAR_VR(grid);
-    DistMatrix<F,STAR,MC  > A10_STAR_MC(grid);
-    DistMatrix<F,STAR,MR  > A10_STAR_MR(grid);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(grid);
+    DistMatrix<F,Dist::STAR,Dist::VR  > A10_STAR_VR(grid);
+    DistMatrix<F,Dist::STAR,Dist::MC  > A10_STAR_MC(grid);
+    DistMatrix<F,Dist::STAR,Dist::MR  > A10_STAR_MR(grid);
 
     const Int n = A.Height();
     const Int bsize = Blocksize();

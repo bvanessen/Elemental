@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_APPLYPACKEDREFLECTORS_UTIL_HPP
@@ -11,7 +11,7 @@
 
 namespace El {
 
-template<typename F> 
+template<typename F>
 void FixDiagonal
 ( Conjugation conjugation,
   const Matrix<F>& householderScalars,
@@ -28,11 +28,11 @@ void FixDiagonal
     }
 }
 
-template<typename F> 
+template<typename F>
 void FixDiagonal
 ( Conjugation conjugation,
-  const DistMatrix<F,STAR,STAR>& householderScalars,
-        DistMatrix<F,STAR,STAR>& SInv )
+  const DistMatrix<F,Dist::STAR,Dist::STAR>& householderScalars,
+        DistMatrix<F,Dist::STAR,Dist::STAR>& SInv )
 {
     EL_DEBUG_CSE
     auto& householderScalarsLoc = householderScalars.LockedMatrix();

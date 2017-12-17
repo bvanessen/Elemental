@@ -10,7 +10,8 @@
 #define EL_ELEMENT_DECL_HPP
 
 #include <El/core/Element/Complex/decl.hpp>
-#include <El/core/types.hpp>
+#include "El/Types/Entry.hpp"
+#include "El/Types/ValueInt.hpp"
 
 namespace El {
 
@@ -18,10 +19,11 @@ namespace El {
 // below strings, the 'name' property is not guaranteed to exist for all types,
 // such as __float128
 
-template<typename Real,
-         typename=DisableIf<IsComplex<Real>>>
+template<typename Real, typename=DisableIf<IsComplex<Real>>>
 std::string TypeName()
-{ return typeid(Real).name(); }
+{
+    return typeid(Real).name();
+}
 
 template<> std::string TypeName<bool>();
 template<> std::string TypeName<char>();

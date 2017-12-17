@@ -15,7 +15,7 @@ template<typename T,typename S>
 void UpdateMappedDiagonal
 (       Matrix<T>& A,
   const Matrix<S>& d,
-        function<void(T&,const S&)> func,
+        std::function<void(T&,const S&)> func,
         Int offset )
 {
     EL_DEBUG_CSE
@@ -35,7 +35,7 @@ template<typename T,typename S,Dist U,Dist V>
 void UpdateMappedDiagonal
 (       DistMatrix<T,U,V>& A,
   const AbstractDistMatrix<S>& dPre,
-        function<void(T&,const S&)> func,
+        std::function<void(T&,const S&)> func,
         Int offset )
 {
     EL_DEBUG_CSE
@@ -77,9 +77,9 @@ void UpdateMappedDiagonal
 
 template<typename T,typename S,Dist U,Dist V>
 void UpdateMappedDiagonal
-(       DistMatrix<T,U,V,BLOCK>& A,
+(       DistMatrix<T,U,V,DistWrap::BLOCK>& A,
   const AbstractDistMatrix<S>& d,
-        function<void(T&,const S&)> func,
+        std::function<void(T&,const S&)> func,
         Int offset )
 {
     EL_DEBUG_CSE
@@ -110,7 +110,7 @@ void UpdateMappedDiagonal
   EL_EXTERN template void UpdateMappedDiagonal \
   (       Matrix<T>& A, \
     const Matrix<T>& d, \
-          function<void(T&,const T&)> func, \
+          std::function<void(T&,const T&)> func, \
           Int offset ); \
 
 #define EL_ENABLE_DOUBLEDOUBLE

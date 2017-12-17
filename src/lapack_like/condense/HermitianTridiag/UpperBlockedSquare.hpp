@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_HERMITIANTRIDIAG_UPPER_BLOCKED_SQUARE_HPP
@@ -14,7 +14,7 @@
 namespace El {
 namespace herm_tridiag {
 
-template<typename F> 
+template<typename F>
 void UpperBlockedSquare
 ( AbstractDistMatrix<F>& APre,
   AbstractDistMatrix<F>& tPre,
@@ -27,8 +27,8 @@ void UpperBlockedSquare
           LogicError("A must be square");
     )
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,STAR,STAR> tProx( tPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::STAR,Dist::STAR> tProx( tPre );
     auto& A = AProx.Get();
     auto& t = tProx.Get();
 
@@ -43,15 +43,15 @@ void UpperBlockedSquare
         t.Resize( 0, 1 );
         return;
     }
-    DistMatrix<F,MD,STAR> tDiag(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> tDiag(g);
     tDiag.SetRoot( A.DiagonalRoot(1) );
     tDiag.AlignCols( A.DiagonalAlign(1) );
     tDiag.Resize( A.Height()-1, 1 );
 
     DistMatrix<F> WPan(g);
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), t1_STAR_STAR(g);
-    DistMatrix<F,MC,  STAR> APan_MC_STAR(g), WPan_MC_STAR(g);
-    DistMatrix<F,MR,  STAR> APan_MR_STAR(g), WPan_MR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), t1_STAR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> APan_MC_STAR(g), WPan_MC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> APan_MR_STAR(g), WPan_MR_STAR(g);
 
     const Int bsize = Blocksize();
     const Int kLast = LastOffset( n, bsize );
@@ -84,7 +84,7 @@ void UpperBlockedSquare
 
             UpperPanelSquare
             ( ATL, WPan, t1,
-              APan_MC_STAR, APan_MR_STAR, 
+              APan_MC_STAR, APan_MR_STAR,
               WPan_MC_STAR, WPan_MR_STAR, ctrl );
 
             auto A01_MC_STAR = APan_MC_STAR( ind0, ind1-k );

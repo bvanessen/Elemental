@@ -45,7 +45,7 @@ template<typename Field>
 Base<Field> TwoNorm( const AbstractDistMatrix<Field>& A )
 {
     EL_DEBUG_CSE
-    DistMatrix<Base<Field>,VR,STAR> s( A.Grid() );
+    DistMatrix<Base<Field>,Dist::VR,Dist::STAR> s( A.Grid() );
     SVD( A, s );
     return InfinityNorm( s );
 }
@@ -55,7 +55,7 @@ Base<Field>
 HermitianTwoNorm( UpperOrLower uplo, const AbstractDistMatrix<Field>& A )
 {
     EL_DEBUG_CSE
-    DistMatrix<Base<Field>,VR,STAR> s( A.Grid() );
+    DistMatrix<Base<Field>,Dist::VR,Dist::STAR> s( A.Grid() );
     HermitianSVD( uplo, A, s );
     return InfinityNorm( s );
 }
@@ -66,7 +66,7 @@ SymmetricTwoNorm( UpperOrLower uplo, const AbstractDistMatrix<Field>& A )
 {
     EL_DEBUG_CSE
     DistMatrix<Field> B( A );
-    DistMatrix<Base<Field>,VR,STAR> s( A.Grid() );
+    DistMatrix<Base<Field>,Dist::VR,Dist::STAR> s( A.Grid() );
     MakeSymmetric( uplo, B );
     SVDCtrl<Base<Field>> ctrl;
     ctrl.overwrite = true;

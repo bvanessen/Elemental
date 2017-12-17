@@ -85,15 +85,15 @@ UVar3( UnitOrNonUnit diag, AbstractDistMatrix<Field>& UPre )
           LogicError("Nonsquare matrices cannot be triangular");
     )
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> UProx( UPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.Get();
 
     const Grid& g = U.Grid();
-    DistMatrix<Field,VC,  STAR> U01_VC_STAR(g);
-    DistMatrix<Field,STAR,STAR> U11_STAR_STAR(g);
-    DistMatrix<Field,STAR,VR  > U12_STAR_VR(g);
-    DistMatrix<Field,STAR,MC  > U01Trans_STAR_MC(g);
-    DistMatrix<Field,MR,  STAR> U12Trans_MR_STAR(g);
+    DistMatrix<Field,Dist::VC,  Dist::STAR> U01_VC_STAR(g);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<Field,Dist::STAR,Dist::VR  > U12_STAR_VR(g);
+    DistMatrix<Field,Dist::STAR,Dist::MC  > U01Trans_STAR_MC(g);
+    DistMatrix<Field,Dist::MR,  Dist::STAR> U12Trans_MR_STAR(g);
 
     const Int n = U.Height();
     const Int bsize = Blocksize();

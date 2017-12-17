@@ -23,7 +23,7 @@ void ScaleTrapezoid( S alphaS, UpperOrLower uplo, Matrix<T>& A, Int offset )
     const T alpha = T(alphaS);
     T* buffer = A.Buffer();
 
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
     {
         for( Int j=Max(0,offset-1); j<width; ++j )
         {
@@ -56,7 +56,7 @@ ScaleTrapezoid
     const Int localWidth = A.LocalWidth();
     const T alpha = T(alphaS);
 
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
     {
         T* buffer = A.Buffer();
         const Int ldim = A.LDim();

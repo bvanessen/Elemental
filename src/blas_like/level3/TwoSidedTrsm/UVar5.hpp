@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRSM_UVAR5_HPP
@@ -12,7 +12,7 @@
 namespace El {
 namespace twotrsm {
 
-template<typename F> 
+template<typename F>
 void UVar5( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
 {
     EL_DEBUG_CSE
@@ -33,7 +33,7 @@ void UVar5( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
     for( Int k=0; k<n; k+=bsize )
     {
         const Int nb = Min(bsize,n-k);
- 
+
         const Range<Int> ind0( 0,    k    ),
                          ind1( k,    k+nb ),
                          ind2( k+nb, n    );
@@ -71,9 +71,9 @@ void UVar5( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
     }
 }
 
-template<typename F> 
+template<typename F>
 void UVar5
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& APre,
   const AbstractDistMatrix<F>& UPre )
 {
@@ -90,17 +90,17 @@ void UVar5
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
     auto& A = AProx.Get();
     auto& U = UProx.GetLocked();
 
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), U11_STAR_STAR(g);
-    DistMatrix<F,STAR,MC  > A12_STAR_MC(g), U12_STAR_MC(g);
-    DistMatrix<F,STAR,MR  > A12_STAR_MR(g), U12_STAR_MR(g);
-    DistMatrix<F,STAR,VC  > A12_STAR_VC(g), U12_STAR_VC(g);
-    DistMatrix<F,STAR,VR  > A12_STAR_VR(g), U12_STAR_VR(g), Y12_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), U11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > A12_STAR_MC(g), U12_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > A12_STAR_MR(g), U12_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VC  > A12_STAR_VC(g), U12_STAR_VC(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > A12_STAR_VR(g), U12_STAR_VR(g), Y12_STAR_VR(g);
     DistMatrix<F> Y12(g);
 
     for( Int k=0; k<n; k+=bsize )

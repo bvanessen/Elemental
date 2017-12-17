@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_BIDIAG_UPPER_PANEL_HPP
@@ -12,7 +12,7 @@
 namespace El {
 namespace bidiag {
 
-template<typename F> 
+template<typename F>
 void
 UpperPanel
 ( Matrix<F>& A,
@@ -120,7 +120,7 @@ UpperPanel
         //      = a12 - (a10 Y02 + 1*y12) - x10 conj(A02)
         Gemv( TRANSPOSE, F(-1), Y02, a10, F(1), a12 );
         a12 -= y12;
-        Gemv( ADJOINT, F(-1), A02, x10, F(1), a12 ); 
+        Gemv( ADJOINT, F(-1), A02, x10, F(1), a12 );
 
         // Find tauP and v such that
         //  |alpha12L a12R| /I - tauP |1  | |1 conj(v)|\ = |epsilon 0|
@@ -139,7 +139,7 @@ UpperPanel
         // x21 := A22 a12^T
         Zeros( x21, A22.Height(), 1 );
         Gemv( NORMAL, F(1), A22, a12, F(0), x21 );
-        // x21 := x21 - A2L (YT2 a12^T) 
+        // x21 := x21 - A2L (YT2 a12^T)
         Gemv( NORMAL, F(1),  YT2, a12, zT1 );
         Gemv( NORMAL, F(-1), A2L, zT1, F(1), x21 );
         // x21 := x21 - X20 (conj(A02) a12^T)
@@ -160,16 +160,16 @@ UpperPanel
     SetRealPartOfDiagonal( ATLExpanded, e, 1 );
 }
 
-template<typename F> 
+template<typename F>
 void
 UpperPanel
-( DistMatrix<F>& A, 
-  DistMatrix<F,STAR,STAR>& householderScalarsP,
-  DistMatrix<F,STAR,STAR>& householderScalarsQ,
-  DistMatrix<F>& X, 
+( DistMatrix<F>& A,
+  DistMatrix<F,Dist::STAR,Dist::STAR>& householderScalarsP,
+  DistMatrix<F,Dist::STAR,Dist::STAR>& householderScalarsQ,
+  DistMatrix<F>& X,
   DistMatrix<F>& Y,
-  DistMatrix<F,MC,  STAR>& AL_MC_STAR,
-  DistMatrix<F,MR,  STAR>& BL_MR_STAR )
+  DistMatrix<F,Dist::MC,  Dist::STAR>& AL_MC_STAR,
+  DistMatrix<F,Dist::MR,  Dist::STAR>& BL_MR_STAR )
 {
     EL_DEBUG_CSE
     const Int nX = X.Width();
@@ -177,7 +177,7 @@ UpperPanel
       AssertSameGrids
       ( A, householderScalarsP, householderScalarsQ, X, Y, AL_MC_STAR,
         BL_MR_STAR );
-      if( A.ColAlign() != X.ColAlign() || 
+      if( A.ColAlign() != X.ColAlign() ||
           A.RowAlign() != X.RowAlign() )
           LogicError("A and X must be aligned");
       if( A.ColAlign() != Y.ColAlign() ||
@@ -203,23 +203,23 @@ UpperPanel
     typedef Base<F> Real;
     const Grid& g = A.Grid();
 
-    DistMatrix<F,MC,  STAR> z01_MC_STAR(g),
+    DistMatrix<F,Dist::MC,  Dist::STAR> z01_MC_STAR(g),
                             zT1_MC_STAR(g),
                             z21_MC_STAR(g),
                             zB1_MC_STAR(g);
-    DistMatrix<F,MR,  STAR> z01_MR_STAR(g),
+    DistMatrix<F,Dist::MR,  Dist::STAR> z01_MR_STAR(g),
                             zT1_MR_STAR(g),
                             z21_MR_STAR(g),
                             y01_MR_STAR(g),
                             a01_MR_STAR(g);
-    DistMatrix<F,STAR,MC  > x10_STAR_MC(g),
+    DistMatrix<F,Dist::STAR,Dist::MC  > x10_STAR_MC(g),
                             a10_STAR_MC(g);
 
-    DistMatrix<Real,MD,STAR> d(g), e(g);
+    DistMatrix<Real,Dist::MD,Dist::STAR> d(g), e(g);
     d.SetRoot( A.DiagonalRoot(0) );
     e.SetRoot( A.DiagonalRoot(1) );
     d.AlignCols( A.DiagonalAlign(0) );
-    e.AlignCols( A.DiagonalAlign(1) ); 
+    e.AlignCols( A.DiagonalAlign(1) );
     d.Resize( nX, 1 );
     e.Resize( nX, 1 );
 
@@ -311,7 +311,7 @@ UpperPanel
         El::AllReduce( z01_MR_STAR, AB0.ColComm() );
         z01_MC_STAR.AlignWith( Y02 );
         z01_MC_STAR = z01_MR_STAR;
-        // z21[MR,* ] -= Y02^H[MR,MC] z01[MC,* ] 
+        // z21[MR,* ] -= Y02^H[MR,MC] z01[MC,* ]
         LocalGemv( ADJOINT, F(-1), Y02, z01_MC_STAR, F(1), z21_MR_STAR );
 
         // z01[MR,* ] := XB0^H[MR,MC] aB1[MC,* ]
@@ -378,7 +378,7 @@ UpperPanel
         z21_MC_STAR.AlignWith( A22 );
         Zeros( z21_MC_STAR, A22.Height(), 1 );
         LocalGemv( NORMAL, F(1), A22, a12Trans_MR_STAR, F(0), z21_MC_STAR );
-       
+
         // z21[MC,* ] -= A2L[MC,MR] (YT2 a12^T)[MR,* ]
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         // zT1[MC,* ] := YT2[MC,MR] a12^T[MR,* ]
@@ -386,7 +386,7 @@ UpperPanel
         Zeros( zT1_MC_STAR, YT2.Height(), 1 );
         LocalGemv( NORMAL, F(1), YT2, a12Trans_MR_STAR, F(0), zT1_MC_STAR );
         El::AllReduce( zT1_MC_STAR, YT2.RowComm() );
-        // Redistribute and perform local Gemv 
+        // Redistribute and perform local Gemv
         zT1_MR_STAR.AlignWith( A2L );
         zT1_MR_STAR = zT1_MC_STAR;
         LocalGemv( NORMAL, F(-1), A2L, zT1_MR_STAR, F(1), z21_MC_STAR );
@@ -394,7 +394,7 @@ UpperPanel
         // z21[MC,* ] -= X20[MC,MR] (conj(A02) a12^T)[MR,* ]
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         // z01[MC,* ] := conj(A02[MC,MR] a12^H[MR,* ])
-        z01_MC_STAR.AlignWith( A02 ); 
+        z01_MC_STAR.AlignWith( A02 );
         Zeros( z01_MC_STAR, A02.Height(), 1 );
         Conjugate( a12Trans_MR_STAR );
         LocalGemv( NORMAL, F(1), A02, a12Trans_MR_STAR, F(0), z01_MC_STAR );

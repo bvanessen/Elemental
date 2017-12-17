@@ -743,7 +743,7 @@ FormColumnInteractionList
 template<typename Field>
 void CollectBlock
 ( const InterBlockInteraction& interaction,
-  const DistMatrix<Field,MC,MR,BLOCK>& H,
+  const DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
         Matrix<Field>& HBlock,
   const DistChaseState& state )
 {
@@ -883,7 +883,7 @@ void CollectBlock
 template<typename Field>
 void StoreBlock
 ( const InterBlockInteraction& interaction,
-        DistMatrix<Field,MC,MR,BLOCK>& H,
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
         Matrix<Field>& HBlock,
   const DistChaseState& state )
 {
@@ -1009,7 +1009,7 @@ void LocalChase
         Matrix<Field>& HBlock,
         Matrix<Field>& UBlock,
         Matrix<Field>& W,
-  const DistMatrix<Complex<Base<Field>>,STAR,STAR>& shifts,
+  const DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& shifts,
   const DistChaseState& state,
         bool progress )
 {
@@ -1119,7 +1119,7 @@ void LocalChase
 template<typename Field>
 void ApplyAccumulatedFromLeft
 ( const InterBlockInteraction& interaction,
-        DistMatrix<Field,MC,MR,BLOCK>& H,
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
   const Matrix<Field>& U,
   const DistChaseState& state,
   const HessenbergSchurCtrl& ctrl )
@@ -1145,8 +1145,8 @@ void ApplyAccumulatedFromLeft
 template<typename Field>
 void ApplyAccumulatedFromRight
 ( const InterBlockInteraction& interaction,
-        DistMatrix<Field,MC,MR,BLOCK>& H,
-        DistMatrix<Field,MC,MR,BLOCK>& Z,
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
   const Matrix<Field>& U,
   const DistChaseState& state,
   const HessenbergSchurCtrl& ctrl )
@@ -1179,9 +1179,9 @@ void ApplyAccumulatedFromRight
 
 template<typename Field>
 void InterBlockChase
-(       DistMatrix<Field,MC,MR,BLOCK>& H,
-        DistMatrix<Field,MC,MR,BLOCK>& Z,
-  const DistMatrix<Complex<Base<Field>>,STAR,STAR>& shifts,
+(       DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
+  const DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& shifts,
         bool evenToOdd,
   const DistChaseState& state,
   const HessenbergSchurCtrl& ctrl )

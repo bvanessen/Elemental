@@ -2,17 +2,16 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/lapack_like/funcs.hpp>
 #include <El/control.hpp>
 
 namespace El {
 
-// W = | A -C |, where A is m x m, B is n x n, and both are assumed to have 
+// W = | A -C |, where A is m x m, B is n x n, and both are assumed to have
 //     | 0 -B |  all of their eigenvalues in the open right-half plane.
 //
 // The solution, X, to the equation
@@ -35,14 +34,14 @@ void Sylvester
     PartitionDownDiagonal
     ( W, WTL, WTR,
          WBL, WBR, m );
-    // WTL and WBR should be the positive and negative identity, WBL should be 
+    // WTL and WBR should be the positive and negative identity, WBL should be
     // zero, and WTR should be -2 X
     X = WTR;
     X *= -F(1)/F(2);
 
     // TODO: Think of how to probe for checks on other quadrants.
     /*
-    typedef Base<F> Real; 
+    typedef Base<F> Real;
     UpdateDiagonal( WTL, F(-1) );
     const Real errorWTL = FrobeniusNorm( WTL );
     const Int n = W.Height() - m;
@@ -56,12 +55,12 @@ template<typename F>
 void Sylvester
 ( Int m,
   ElementalMatrix<F>& WPre,
-  ElementalMatrix<F>& X, 
+  ElementalMatrix<F>& X,
   SignCtrl<Base<F>> ctrl )
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadProxy<F,F,MC,MR> WProx( WPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> WProx( WPre );
     auto& W = WProx.Get();
 
     const Grid& g = W.Grid();
@@ -71,7 +70,7 @@ void Sylvester
     PartitionDownDiagonal
     ( W, WTL, WTR,
          WBL, WBR, m );
-    // WTL and WBR should be the positive and negative identity, WBL should be 
+    // WTL and WBR should be the positive and negative identity, WBL should be
     // zero, and WTR should be -2 X
     Copy( WTR, X );
     X *= -F(1)/F(2);
@@ -79,7 +78,7 @@ void Sylvester
     // TODO: Think of how to probe for checks on other quadrants.
     //       Add UpdateDiagonal routine to avoid explicit identity Axpy?
     /*
-    typedef Base<F> Real; 
+    typedef Base<F> Real;
     UpdateDiagonal( WTL, F(-1) );
     const Real errorWTL = FrobeniusNorm( WTL );
     const Int n = W.Height() - m;
@@ -124,9 +123,9 @@ void Sylvester
 template<typename F>
 void Sylvester
 ( const ElementalMatrix<F>& A,
-  const ElementalMatrix<F>& B, 
+  const ElementalMatrix<F>& B,
   const ElementalMatrix<F>& C,
-        ElementalMatrix<F>& X, 
+        ElementalMatrix<F>& X,
   SignCtrl<Base<F>> ctrl )
 {
     EL_DEBUG_CSE

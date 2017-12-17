@@ -9,7 +9,17 @@
 #ifndef EL_DISTMATRIX_ABSTRACT_HPP
 #define EL_DISTMATRIX_ABSTRACT_HPP
 
-namespace El {
+#include <vector>
+
+#include "El/core/DistMatrix_decl.hpp"
+#include "El/core/Grid.hpp"
+#include "El/core/imports/mpi.hpp"
+#include "El/core/Matrix/decl.hpp"
+
+#include "El/macros.h"
+
+namespace El
+{
 
 struct DistData;
 
@@ -237,7 +247,7 @@ public:
     void ProcessPullQueue
     ( Ring* pullBuf, bool includeViewers=true ) const;
     void ProcessPullQueue
-    ( vector<Ring>& pullBuf, bool includeViewers=true ) const;
+    ( std::vector<Ring>& pullBuf, bool includeViewers=true ) const;
 
     // Local entry manipulation
     // ------------------------
@@ -301,7 +311,7 @@ public:
 
     // Remote updates
     // --------------
-    vector<Entry<Ring>> remoteUpdates;
+    std::vector<Entry<Ring>> remoteUpdates;
 
 protected:
     // Member variables
@@ -309,7 +319,7 @@ protected:
 
     // Global and local matrix information
     // -----------------------------------
-    ViewType viewType_=OWNER;
+    ViewType viewType_=ViewType::OWNER;
     Int height_=0, width_=0;
 
     bool colConstrained_=false,
@@ -331,7 +341,7 @@ protected:
     // NOTE: Using ValueInt<Int> is somewhat of a hack; it would be nice to
     //       have a pair of integers as its own data structure that does not
     //       require separate MPI wrappers from ValueInt<Int>
-    mutable vector<ValueInt<Int>> remotePulls_;
+    mutable std::vector<ValueInt<Int>> remotePulls_;
 
     // Protected constructors
     // ======================

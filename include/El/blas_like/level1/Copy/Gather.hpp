@@ -15,7 +15,7 @@ namespace copy {
 template<typename T>
 void Gather
 ( const ElementalMatrix<T>& A,
-        DistMatrix<T,CIRC,CIRC>& B )
+        DistMatrix<T,Dist::CIRC,Dist::CIRC>& B )
 {
     EL_DEBUG_CSE
     AssertSameGrids( A, B );
@@ -37,7 +37,7 @@ void Gather
     Int myShifts[2];
     myShifts[0] = A.ColShift();
     myShifts[1] = A.RowShift();
-    vector<Int> shifts;
+    std::vector<Int> shifts;
     const Int crossSize = B.CrossSize();
     if( B.CrossRank() == B.Root() )
         shifts.resize( 2*crossSize );
@@ -47,12 +47,12 @@ void Gather
     // =======================
     const bool irrelevant = ( A.RedundantRank()!=0 || A.CrossRank()!=A.Root() );
     int totalSend = ( irrelevant ? 0 : A.LocalHeight()*A.LocalWidth() );
-    vector<int> recvCounts, recvOffsets;
+    std::vector<int> recvCounts, recvOffsets;
     if( B.CrossRank() == B.Root() )
         recvCounts.resize( crossSize );
     mpi::Gather( &totalSend, 1, recvCounts.data(), 1, B.Root(), B.CrossComm() );
     int totalRecv = Scan( recvCounts, recvOffsets );
-    vector<T> sendBuf, recvBuf;
+    std::vector<T> sendBuf, recvBuf;
     FastResize( sendBuf, totalSend );
     FastResize( recvBuf, totalRecv );
     if( !irrelevant )
@@ -90,7 +90,7 @@ void Gather
 template<typename T>
 void Gather
 ( const BlockMatrix<T>& A,
-        DistMatrix<T,CIRC,CIRC,BLOCK>& B )
+        DistMatrix<T,Dist::CIRC,Dist::CIRC,DistWrap::BLOCK>& B )
 {
     EL_DEBUG_CSE
     AssertSameGrids( A, B );
@@ -112,7 +112,7 @@ void Gather
     Int myShifts[2];
     myShifts[0] = A.ColShift();
     myShifts[1] = A.RowShift();
-    vector<Int> shifts;
+    std::vector<Int> shifts;
     const Int crossSize = B.CrossSize();
     if( B.CrossRank() == B.Root() )
         shifts.resize( 2*crossSize );
@@ -122,12 +122,12 @@ void Gather
     // =======================
     const bool irrelevant = ( A.RedundantRank()!=0 || A.CrossRank()!=A.Root() );
     int totalSend = ( irrelevant ? 0 : A.LocalHeight()*A.LocalWidth() );
-    vector<int> recvCounts, recvOffsets;
+    std::vector<int> recvCounts, recvOffsets;
     if( B.CrossRank() == B.Root() )
         recvCounts.resize( crossSize );
     mpi::Gather( &totalSend, 1, recvCounts.data(), 1, B.Root(), B.CrossComm() );
     int totalRecv = Scan( recvCounts, recvOffsets );
-    vector<T> sendBuf, recvBuf;
+    std::vector<T> sendBuf, recvBuf;
     FastResize( sendBuf, totalSend );
     FastResize( recvBuf, totalRecv );
     if( !irrelevant )

@@ -221,7 +221,7 @@ void MatrixMarket( AbstractDistMatrix<T>& A, const string filename )
 {
     EL_DEBUG_CSE
     // TODO: Use a WriteProxy instead
-    DistMatrix<T,CIRC,CIRC> A_CIRC_CIRC( A.Grid() );
+    DistMatrix<T,Dist::CIRC,Dist::CIRC> A_CIRC_CIRC( A.Grid() );
     if( A_CIRC_CIRC.CrossRank() == A_CIRC_CIRC.Root() )
     {
         MatrixMarket( A_CIRC_CIRC.Matrix(), filename );

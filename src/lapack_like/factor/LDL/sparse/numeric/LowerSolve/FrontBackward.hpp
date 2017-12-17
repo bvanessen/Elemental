@@ -1,20 +1,20 @@
 /*
-   Copyright (c) 2009-2012, Jack Poulson, Lexing Ying, and 
+   Copyright (c) 2009-2012, Jack Poulson, Lexing Ying, and
    The University of Texas at Austin.
    All rights reserved.
 
    Copyright (c) 2013, Jack Poulson, Lexing Ying, and Stanford University.
    All rights reserved.
 
-   Copyright (c) 2013-2014, Jack Poulson and 
+   Copyright (c) 2013-2014, Jack Poulson and
    The Georgia Institute of Technology.
    All rights reserved.
 
    Copyright (c) 2014-2015, Jack Poulson and Stanford University.
    All rights reserved.
-   
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_FACTOR_LDL_NUMERIC_LOWERSOLVE_FRONTBACKWARD_HPP
@@ -29,8 +29,8 @@ namespace internal {
 
 template<typename F>
 void BackwardMany
-( const DistMatrix<F,VC,STAR>& L,
-        DistMatrix<F,VC,STAR>& X,
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool conjugate=false )
 {
     // TODO: Replace this with modified inline code?
@@ -40,14 +40,14 @@ void BackwardMany
 
 template<typename F>
 void BackwardSingle
-( const DistMatrix<F,VC,STAR>& L,
-        DistMatrix<F,VC,STAR>& X,
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool conjugate=false )
 {
     const Grid& g = L.Grid();
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrix<F,STAR,STAR> D(g), L11_STAR_STAR(g), Z1_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> D(g), L11_STAR_STAR(g), Z1_STAR_STAR(g);
     FormDiagonalBlocks( L, D, conjugate );
 
     const Int m = L.Height();
@@ -60,9 +60,9 @@ void BackwardSingle
     {
         const Int nb = Min(bsize,n-k);
         const Range<Int> ind1(k,k+nb), ind2(k+nb,m);
-   
+
         auto L11Trans_STAR_STAR = D( IR(0,nb), ind1 );
-        auto L21 = L( ind2, ind1 ); 
+        auto L21 = L( ind2, ind1 );
         auto X1 = X( ind1, IR(0,numRHS) );
         auto X2 = X( ind2, IR(0,numRHS) );
 
@@ -121,8 +121,8 @@ void FrontIntraPivLowerBackwardSolve
 
 template<typename F>
 void FrontVanillaLowerBackwardSolve
-( const DistMatrix<F,VC,STAR>& L,
-        DistMatrix<F,VC,STAR>& X,
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool conjugate,
   bool singleL11AllGather=true )
 {
@@ -154,7 +154,7 @@ void FrontVanillaLowerBackwardSolve
     if( XB.Height() != 0 )
     {
         // Subtract off the parent updates
-        DistMatrix<F,STAR,STAR> Z(g);
+        DistMatrix<F,Dist::STAR,Dist::STAR> Z(g);
         const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
         LocalGemm( orientation, NORMAL, F(-1), LB, XB, Z );
         AxpyContract( F(1), Z, XT );
@@ -168,9 +168,9 @@ void FrontVanillaLowerBackwardSolve
 
 template<typename F>
 void FrontIntraPivLowerBackwardSolve
-( const DistMatrix<F,VC,STAR>& L,
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
   const DistPermutation& P,
-        DistMatrix<F,VC,STAR>& X,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool conjugate,
   bool singleL11AllGather=true )
 {
@@ -220,7 +220,7 @@ void FrontVanillaLowerBackwardSolve
 template<typename F>
 void FrontVanillaLowerBackwardSolve
 ( const DistMatrix<F>& L,
-        DistMatrix<F,VC,STAR>& XPre,
+        DistMatrix<F,Dist::VC,Dist::STAR>& XPre,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -273,8 +273,8 @@ void FrontIntraPivLowerBackwardSolve
 
 template<typename F>
 void FrontFastLowerBackwardSolve
-( const DistMatrix<F,VC,STAR>& L,
-        DistMatrix<F,VC,STAR>& X,
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -303,7 +303,7 @@ void FrontFastLowerBackwardSolve
     auto XB = X( IR(n,END), ALL );
 
     // XT := XT - LB^{T/H} XB
-    DistMatrix<F,STAR,STAR> Z(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> Z(g);
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
     if( XB.Height() != 0 )
     {
@@ -318,9 +318,9 @@ void FrontFastLowerBackwardSolve
 
 template<typename F>
 void FrontFastIntraPivLowerBackwardSolve
-( const DistMatrix<F,VC,STAR>& L,
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
   const DistPermutation& P,
-        DistMatrix<F,VC,STAR>& X,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -335,7 +335,7 @@ void FrontFastIntraPivLowerBackwardSolve
 template<typename F>
 void FrontFastLowerBackwardSolve
 ( const DistMatrix<F>& L,
-        DistMatrix<F,VC,STAR>& X,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -361,14 +361,14 @@ void FrontFastLowerBackwardSolve
     auto XT = X( IR(0,n),   ALL );
     auto XB = X( IR(n,END), ALL );
 
-    DistMatrix<F,MR,STAR> ZT_MR_STAR( g );
-    DistMatrix<F,VR,STAR> ZT_VR_STAR( g );
+    DistMatrix<F,Dist::MR,Dist::STAR> ZT_MR_STAR( g );
+    DistMatrix<F,Dist::VR,Dist::STAR> ZT_VR_STAR( g );
     ZT_MR_STAR.AlignWith( LB );
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
     if( XB.Height() != 0 )
     {
         // ZT[MR,* ] := -(LB[MC,MR])^{T/H} XB[MC,* ]
-        DistMatrix<F,MC,STAR> XB_MC_STAR( g );
+        DistMatrix<F,Dist::MC,Dist::STAR> XB_MC_STAR( g );
         XB_MC_STAR.AlignWith( LB );
         XB_MC_STAR = XB;
         LocalGemm( orientation, NORMAL, F(-1), LB, XB_MC_STAR, ZT_MR_STAR );
@@ -376,7 +376,7 @@ void FrontFastLowerBackwardSolve
         Contract( ZT_MR_STAR, ZT_VR_STAR );
 
         // ZT[VC,* ] := ZT[VR,* ]
-        DistMatrix<F,VC,STAR> ZT_VC_STAR( g );
+        DistMatrix<F,Dist::VC,Dist::STAR> ZT_VC_STAR( g );
         ZT_VC_STAR.AlignWith( XT );
         ZT_VC_STAR = ZT_VR_STAR;
 
@@ -386,7 +386,7 @@ void FrontFastLowerBackwardSolve
 
     {
         // ZT[MR,* ] := (LT[MC,MR])^{T/H} XT[MC,* ]
-        DistMatrix<F,MC,STAR> XT_MC_STAR( g );
+        DistMatrix<F,Dist::MC,Dist::STAR> XT_MC_STAR( g );
         XT_MC_STAR.AlignWith( LT );
         XT_MC_STAR = XT;
         LocalGemm( orientation, NORMAL, F(1), LT, XT_MC_STAR, ZT_MR_STAR );
@@ -402,7 +402,7 @@ template<typename F>
 void FrontFastIntraPivLowerBackwardSolve
 ( const DistMatrix<F>& L,
   const DistPermutation& P,
-        DistMatrix<F,VC,STAR>& X,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -499,8 +499,8 @@ void FrontBlockLowerBackwardSolve
 
 template<typename F>
 void FrontBlockLowerBackwardSolve
-( const DistMatrix<F,VC,STAR>& L,
-        DistMatrix<F,VC,STAR>& X,
+( const DistMatrix<F,Dist::VC,Dist::STAR>& L,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -531,10 +531,10 @@ void FrontBlockLowerBackwardSolve
         return;
 
     // YT := LB^{T/H} XB
-    DistMatrix<F,STAR,STAR> Z( g );
+    DistMatrix<F,Dist::STAR,Dist::STAR> Z( g );
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
     LocalGemm( orientation, NORMAL, F(1), LB, XB, Z );
-    DistMatrix<F,VC,STAR> YT(g);
+    DistMatrix<F,Dist::VC,Dist::STAR> YT(g);
     YT.AlignWith( XT );
     Contract( Z, YT );
 
@@ -546,7 +546,7 @@ void FrontBlockLowerBackwardSolve
 template<typename F>
 void FrontBlockLowerBackwardSolve
 ( const DistMatrix<F>& L,
-        DistMatrix<F,VC,STAR>& X,
+        DistMatrix<F,Dist::VC,Dist::STAR>& X,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -576,14 +576,14 @@ void FrontBlockLowerBackwardSolve
 
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrix<F,MR,STAR> ZT_MR_STAR( g );
-    DistMatrix<F,VR,STAR> ZT_VR_STAR( g );
+    DistMatrix<F,Dist::MR,Dist::STAR> ZT_MR_STAR( g );
+    DistMatrix<F,Dist::VR,Dist::STAR> ZT_VR_STAR( g );
     ZT_MR_STAR.AlignWith( LB );
-    DistMatrix<F,VC,STAR> YT(g);
+    DistMatrix<F,Dist::VC,Dist::STAR> YT(g);
     YT.AlignWith( XT );
     {
         // ZT[MR,* ] := (LB[MC,MR])^{T/H} XB[MC,* ]
-        DistMatrix<F,MC,STAR> XB_MC_STAR( g );
+        DistMatrix<F,Dist::MC,Dist::STAR> XB_MC_STAR( g );
         XB_MC_STAR.AlignWith( LB );
         XB_MC_STAR = XB;
         LocalGemm( orientation, NORMAL, F(1), LB, XB_MC_STAR, ZT_MR_STAR );
@@ -596,7 +596,7 @@ void FrontBlockLowerBackwardSolve
 
     {
         // ZT[MR,* ] := inv(ATL)[MC,MR] YT[MC,* ]
-        DistMatrix<F,MC,STAR> YT_MC_STAR( g );
+        DistMatrix<F,Dist::MC,Dist::STAR> YT_MC_STAR( g );
         YT_MC_STAR.AlignWith( LT );
         YT_MC_STAR = YT;
         LocalGemm( orientation, NORMAL, F(1), LT, YT_MC_STAR, ZT_MR_STAR );
@@ -604,7 +604,7 @@ void FrontBlockLowerBackwardSolve
         Contract( ZT_MR_STAR, ZT_VR_STAR );
 
         // ZT[VC,* ] := ZT[VR,* ]
-        DistMatrix<F,VC,STAR> ZT_VC_STAR( g );
+        DistMatrix<F,Dist::VC,Dist::STAR> ZT_VC_STAR( g );
         ZT_VC_STAR.AlignWith( XT );
         ZT_VC_STAR = ZT_VR_STAR;
 
@@ -675,13 +675,13 @@ void FrontLowerBackwardSolve
         auto WT = W( IR(0,n), ALL );
         auto WB = W( IR(n,END), ALL );
 
-        const Orientation orientation = 
+        const Orientation orientation =
           ( front.isHermitian ? ADJOINT : TRANSPOSE );
         Gemm( orientation, NORMAL, F(-1), front.LDense, WB, F(1), WT );
-        
+
         const bool onLeft = true;
         suite_sparse::ldl::LTSolveMulti
-        ( onLeft, WT.Height(), WT.Width(), WT.Buffer(), WT.LDim(), 
+        ( onLeft, WT.Height(), WT.Width(), WT.Buffer(), WT.LDim(),
           LOffsetBuf, LColBuf, LValBuf );
     }
     else
@@ -729,7 +729,7 @@ void FrontLowerBackwardSolve
 template<typename F>
 void FrontLowerBackwardSolve
 ( const DistFront<F>& front,
-        DistMatrix<F,VC,STAR>& W,
+        DistMatrix<F,Dist::VC,Dist::STAR>& W,
   bool conjugate )
 {
     EL_DEBUG_CSE

@@ -190,8 +190,8 @@ ValueInt<Base<F>> SignDivide
     G *= F(1)/F(2);
 
     // Compute the pivoted QR decomposition of the spectral projection
-    DistMatrix<F,MD,STAR> householderScalars(g);
-    DistMatrix<Base<F>,MD,STAR> signature(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(g);
     DistPermutation Omega(g);
     El::QR( G, householderScalars, signature, Omega );
 
@@ -307,8 +307,8 @@ ValueInt<Base<F>> RandomizedSignDivide
 
     ValueInt<Real> part;
     DistMatrix<F> V(g), B(g);
-    DistMatrix<F,MD,STAR> householderScalars(g);
-    DistMatrix<Base<F>,MD,STAR> signature(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(g);
     Int it=0;
     while( it < ctrl.maxInnerIts )
     {
@@ -1089,10 +1089,10 @@ bool PushSubproblems
   DistMatrix<F>& ABR,
   DistMatrix<F>& ATLSub,
   DistMatrix<F>& ABRSub,
-  DistMatrix<EigType,VR,STAR>& wT,
-  DistMatrix<EigType,VR,STAR>& wB,
-  DistMatrix<EigType,VR,STAR>& wTSub,
-  DistMatrix<EigType,VR,STAR>& wBSub,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wT,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wB,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wTSub,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wBSub,
   bool progress=false )
 {
     EL_DEBUG_CSE
@@ -1119,10 +1119,10 @@ void PullSubproblems
   DistMatrix<F>& ABR,
   DistMatrix<F>& ATLSub,
   DistMatrix<F>& ABRSub,
-  DistMatrix<EigType,VR,STAR>& wT,
-  DistMatrix<EigType,VR,STAR>& wB,
-  DistMatrix<EigType,VR,STAR>& wTSub,
-  DistMatrix<EigType,VR,STAR>& wBSub,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wT,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wB,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wTSub,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wBSub,
   bool progress=false )
 {
     EL_DEBUG_CSE
@@ -1188,8 +1188,8 @@ SDC
     typedef Base<F> Real;
     typedef Complex<Real> C;
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<C,C,VR,STAR> wProx( wPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<C,C,Dist::VR,Dist::STAR> wProx( wPre );
     auto& A = AProx.Get();
     auto& w = wProx.Get();
 
@@ -1210,8 +1210,8 @@ SDC
     {
         if( ctrl.progress && g.Rank() == 0 )
             Output(n," <= ",ctrl.cutoff,": using QR algorithm");
-        DistMatrix<F,CIRC,CIRC> A_CIRC_CIRC( A );
-        DistMatrix<Complex<Base<F>>,CIRC,CIRC> w_CIRC_CIRC( w );
+        DistMatrix<F,Dist::CIRC,Dist::CIRC> A_CIRC_CIRC( A );
+        DistMatrix<Complex<Base<F>>,Dist::CIRC,Dist::CIRC> w_CIRC_CIRC( w );
 
         if( A_CIRC_CIRC.CrossRank() == A_CIRC_CIRC.Root() )
             Schur( A_CIRC_CIRC.Matrix(), w_CIRC_CIRC.Matrix(), schurCtrl );
@@ -1243,7 +1243,7 @@ SDC
     const Grid *leftGrid, *rightGrid;
     {
         DistMatrix<F> ATLSub, ABRSub;
-        DistMatrix<Complex<Base<F>>,VR,STAR> wTSub, wBSub;
+        DistMatrix<Complex<Base<F>>,Dist::VR,Dist::STAR> wTSub, wBSub;
         splitGrid = PushSubproblems
           ( ATL, ABR, ATLSub, ABRSub, wT, wB, wTSub, wBSub, ctrl.progress );
         leftGrid = &wTSub.Grid();
@@ -1271,10 +1271,10 @@ void PushSubproblems
   DistMatrix<F>& ABR,
   DistMatrix<F>& ATLSub,
   DistMatrix<F>& ABRSub,
-  DistMatrix<EigType,VR,STAR>& wT,
-  DistMatrix<EigType,VR,STAR>& wB,
-  DistMatrix<EigType,VR,STAR>& wTSub,
-  DistMatrix<EigType,VR,STAR>& wBSub,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wT,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wB,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wTSub,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wBSub,
   DistMatrix<F>& ZTSub,
   DistMatrix<F>& ZBSub,
   bool progress=false )
@@ -1306,10 +1306,10 @@ void PullSubproblems
   DistMatrix<F>& ABR,
   DistMatrix<F>& ATLSub,
   DistMatrix<F>& ABRSub,
-  DistMatrix<EigType,VR,STAR>& wT,
-  DistMatrix<EigType,VR,STAR>& wB,
-  DistMatrix<EigType,VR,STAR>& wTSub,
-  DistMatrix<EigType,VR,STAR>& wBSub,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wT,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wB,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wTSub,
+  DistMatrix<EigType,Dist::VR,Dist::STAR>& wBSub,
   DistMatrix<F>& ZT,
   DistMatrix<F>& ZB,
   DistMatrix<F>& ZTSub,
@@ -1393,9 +1393,9 @@ SDC
     typedef Base<F> Real;
     typedef Complex<Real> C;
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<C,C,VR,STAR> wProx( wPre );
-    DistMatrixWriteProxy<F,F,MC,MR> QProx( QPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<C,C,Dist::VR,Dist::STAR> wProx( wPre );
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR> QProx( QPre );
     auto& A = AProx.Get();
     auto& w = wProx.Get();
     auto& Q = QProx.Get();
@@ -1418,8 +1418,8 @@ SDC
     {
         if( ctrl.progress && g.Rank() == 0 )
             Output(n," <= ",ctrl.cutoff,": using QR algorithm");
-        DistMatrix<F,CIRC,CIRC> A_CIRC_CIRC( A ), Q_CIRC_CIRC( n, n, g );
-        DistMatrix<Complex<Base<F>>,CIRC,CIRC> w_CIRC_CIRC( n, 1, g );
+        DistMatrix<F,Dist::CIRC,Dist::CIRC> A_CIRC_CIRC( A ), Q_CIRC_CIRC( n, n, g );
+        DistMatrix<Complex<Base<F>>,Dist::CIRC,Dist::CIRC> w_CIRC_CIRC( n, 1, g );
         if( A_CIRC_CIRC.CrossRank() == A_CIRC_CIRC.Root() )
             Schur
             ( A_CIRC_CIRC.Matrix(), w_CIRC_CIRC.Matrix(), Q_CIRC_CIRC.Matrix(),
@@ -1452,7 +1452,7 @@ SDC
 
     // Recurse on the two subproblems
     DistMatrix<F> ATLSub, ABRSub, ZTSub, ZBSub;
-    DistMatrix<Complex<Base<F>>,VR,STAR> wTSub, wBSub;
+    DistMatrix<Complex<Base<F>>,Dist::VR,Dist::STAR> wTSub, wBSub;
     if( ctrl.progress && g.Rank() == 0 )
         Output("Pushing subproblems");
     PushSubproblems

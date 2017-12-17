@@ -15,7 +15,7 @@ template<typename T>
 void UpdateDiagonal( Matrix<T>& A, T alpha, const Matrix<T>& d, Int offset )
 {
     EL_DEBUG_CSE
-    function<void(T&,const T&)> func
+    std::function<void(T&,const T&)> func
     ( [alpha]( T& beta, const T& gamma ) { beta += alpha*gamma; } );
     UpdateMappedDiagonal( A, d, func, offset );
 }
@@ -25,7 +25,7 @@ void UpdateRealPartOfDiagonal
 ( Matrix<T>& A, Base<T> alpha, const Matrix<Base<T>>& d, Int offset )
 {
     EL_DEBUG_CSE
-    function<void(T&,const Base<T>&)> func
+    std::function<void(T&,const Base<T>&)> func
     ( [alpha]( T& beta, const Base<T>& gamma )
     { UpdateRealPart(beta,alpha*gamma); } );
     UpdateMappedDiagonal( A, d, func, offset );
@@ -36,7 +36,7 @@ void UpdateImagPartOfDiagonal
 ( Matrix<T>& A, Base<T> alpha, const Matrix<Base<T>>& d, Int offset )
 {
     EL_DEBUG_CSE
-    function<void(T&,const Base<T>&)> func
+    std::function<void(T&,const Base<T>&)> func
     ( [alpha]( T& beta, const Base<T>& gamma )
     { UpdateImagPart(beta,alpha*gamma); } );
     UpdateMappedDiagonal( A, d, func, offset );
@@ -47,7 +47,7 @@ void UpdateDiagonal
 ( DistMatrix<T,U,V>& A, T alpha, const ElementalMatrix<T>& d, Int offset )
 {
     EL_DEBUG_CSE
-    function<void(T&,const T&)> func
+    std::function<void(T&,const T&)> func
     ( [alpha]( T& beta, const T& gamma ) { beta += alpha*gamma; } );
     UpdateMappedDiagonal( A, d, func, offset );
 }
@@ -58,7 +58,7 @@ void UpdateRealPartOfDiagonal
   Int offset )
 {
     EL_DEBUG_CSE
-    function<void(T&,const Base<T>&)> func
+    std::function<void(T&,const Base<T>&)> func
     ( [alpha]( T& beta, const Base<T>& gamma )
     { UpdateRealPart(beta,alpha*gamma); } );
     UpdateMappedDiagonal( A, d, func, offset );
@@ -70,7 +70,7 @@ void UpdateImagPartOfDiagonal
   Int offset )
 {
     EL_DEBUG_CSE
-    function<void(T&,const Base<T>&)> func
+    std::function<void(T&,const Base<T>&)> func
     ( [alpha]( T& beta, const Base<T>& gamma )
     { UpdateImagPart(beta,alpha*gamma); } );
     UpdateMappedDiagonal( A, d, func, offset );

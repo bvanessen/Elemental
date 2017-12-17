@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_HERMITIANTRIDIAG_LOWER_PANEL_SQUARE_HPP
@@ -20,11 +20,11 @@ template<typename F>
 void LowerPanelSquare
 ( DistMatrix<F>& A,
   DistMatrix<F>& W,
-  DistMatrix<F,MD,STAR>& t,
-  DistMatrix<F,MC,STAR>& B_MC_STAR, 
-  DistMatrix<F,MR,STAR>& B_MR_STAR,
-  DistMatrix<F,MC,STAR>& W_MC_STAR,
-  DistMatrix<F,MR,STAR>& W_MR_STAR,
+  DistMatrix<F,Dist::MD,Dist::STAR>& t,
+  DistMatrix<F,Dist::MC,Dist::STAR>& B_MC_STAR,
+  DistMatrix<F,Dist::MR,Dist::STAR>& B_MR_STAR,
+  DistMatrix<F,Dist::MC,Dist::STAR>& W_MC_STAR,
+  DistMatrix<F,Dist::MR,Dist::STAR>& W_MR_STAR,
   const SymvCtrl<F>& ctrl )
 {
     EL_DEBUG_CSE
@@ -56,7 +56,7 @@ void LowerPanelSquare
     const bool onDiagonal = ( transposeRank == g.VCRank() );
 
     // Create a distributed matrix for storing the subdiagonal
-    DistMatrix<Real,MD,STAR> e(g);
+    DistMatrix<Real,Dist::MD,Dist::STAR> e(g);
     e.SetRoot( A.DiagonalRoot(-1) );
     e.AlignCols( A.DiagonalAlign(-1) );
     e.Resize( nW, 1 );
@@ -65,9 +65,9 @@ void LowerPanelSquare
     FastResize( w21LastBuf, A.Height()/r+1 );
 
     DistMatrix<F> w21Last(g);
-    DistMatrix<F,MC,STAR> a21_MC(g), p21_MC(g), 
+    DistMatrix<F,Dist::MC,Dist::STAR> a21_MC(g), p21_MC(g),
                           a21Last_MC(g), w21Last_MC(g);
-    DistMatrix<F,MR,STAR> q21_MR(g), a21_MR(g),
+    DistMatrix<F,Dist::MR,Dist::STAR> q21_MR(g), a21_MR(g),
                           x01_MR(g), y01_MR(g),
                           a21Last_MR(g), w21Last_MR(g);
 
@@ -79,7 +79,7 @@ void LowerPanelSquare
                          ind1( k,   k+1 ),
                          indB( k,   n   ), indR( k, n ),
                          ind2( k+1, n   );
-           
+
         auto A00     = A( ind0, ind0 );
         auto alpha11 = A( ind1, ind1 );
         auto aB1     = A( indB, ind1 );
@@ -116,11 +116,11 @@ void LowerPanelSquare
         if( k > 0 )
         {
             // TODO: Move these and make them auto
-            View( a21Last_MC, B_MC_STAR, indB, ind1-1 ); 
+            View( a21Last_MC, B_MC_STAR, indB, ind1-1 );
             View( a21Last_MR, B_MR_STAR, indB, ind1-1 );
             View( w21Last,    W,         indB, ind1-1 );
         }
- 
+
         const bool thisIsMyCol = ( g.Col() == alpha11.RowAlign() );
         if( thisIsMyCol )
         {
@@ -132,7 +132,7 @@ void LowerPanelSquare
                 const F* a21Last_MC_Buf = a21Last_MC.Buffer();
                 for( Int i=0; i<aB1LocalHeight; ++i )
                     aB1Buf[i] -=
-                      w21LastBuf[i] + 
+                      w21LastBuf[i] +
                       a21Last_MC_Buf[i]*Conj(w21LastFirstEntry);
             }
             // Compute the Householder reflector
@@ -140,13 +140,13 @@ void LowerPanelSquare
             tau1.Set( 0, 0, tau );
         }
 
-        // Store the subdiagonal value and turn a21 into a proper scaled 
+        // Store the subdiagonal value and turn a21 into a proper scaled
         // reflector by explicitly placing the implicit one in its first entry.
         GetRealPartOfDiagonal( alpha21T, epsilon1 );
         alpha21T.Set( 0, 0, F(1) );
 
-        // If this is the first iteration, have each member of the owning 
-        // process column broadcast tau and a21 within its process row. 
+        // If this is the first iteration, have each member of the owning
+        // process column broadcast tau and a21 within its process row.
         // Otherwise, also add w21 into the broadcast.
         if( k == 0 )
         {
@@ -162,7 +162,7 @@ void LowerPanelSquare
             }
             // Broadcast a21 and tau across the process row
             mpi::Broadcast
-            ( rowBcastBuf.data(), 
+            ( rowBcastBuf.data(),
               a21LocalHeight+1, a21.RowAlign(), g.RowComm() );
             // Store a21[MC] into its DistMatrix class and also store a copy
             // for the next iteration
@@ -170,24 +170,24 @@ void LowerPanelSquare
             // Store a21[MC] into B[MC,* ]
             const Int B_MC_STAR_Off = B_MC_STAR.LocalHeight()-a21LocalHeight;
             MemCopy
-            ( B_MC_STAR.Buffer(B_MC_STAR_Off,0), 
+            ( B_MC_STAR.Buffer(B_MC_STAR_Off,0),
               rowBcastBuf.data(),
               B_MC_STAR.LocalHeight()-B_MC_STAR_Off );
             // Store tau
             tau = rowBcastBuf[a21LocalHeight];
-            
-            // Take advantage of the square process grid in order to form 
+
+            // Take advantage of the square process grid in order to form
             // a21[MR] from a21[MC]
             if( onDiagonal )
                 MemCopy( a21_MR.Buffer(), a21_MC.Buffer(), a21LocalHeight );
             else
                 mpi::SendRecv
                 ( a21_MC.Buffer(), A22.LocalHeight(), transposeRank,
-                  a21_MR.Buffer(), A22.LocalWidth(),  transposeRank, 
+                  a21_MR.Buffer(), A22.LocalWidth(),  transposeRank,
                   g.VCComm() );
 
             // Store a21[MR]
-            const Int B_MR_STAR_Off = 
+            const Int B_MR_STAR_Off =
                 B_MR_STAR.LocalHeight()-a21_MR.LocalHeight();
             MemCopy
             ( B_MR_STAR.Buffer(B_MR_STAR_Off,A00.Width()),
@@ -200,38 +200,38 @@ void LowerPanelSquare
             const Int w21LastLocalHeight = aB1.LocalHeight();
             vector<F> rowBcastBuf;
             FastResize( rowBcastBuf, a21LocalHeight+w21LastLocalHeight+1 );
-            if( thisIsMyCol ) 
+            if( thisIsMyCol )
             {
                 // Pack the broadcast buffer with a21, w21Last, and tau
                 MemCopy
                 ( rowBcastBuf.data(), a21.Buffer(), a21LocalHeight );
                 MemCopy
-                ( &rowBcastBuf[a21LocalHeight], 
+                ( &rowBcastBuf[a21LocalHeight],
                   w21LastBuf.data(), w21LastLocalHeight );
                 rowBcastBuf[a21LocalHeight+w21LastLocalHeight] = tau;
             }
             // Broadcast a21, w21Last, and tau across the process row
             mpi::Broadcast
-            ( rowBcastBuf.data(), 
-              a21LocalHeight+w21LastLocalHeight+1, 
+            ( rowBcastBuf.data(),
+              a21LocalHeight+w21LastLocalHeight+1,
               a21.RowAlign(), g.RowComm() );
-            // Store a21[MC] into its DistMatrix class 
+            // Store a21[MC] into its DistMatrix class
             MemCopy( a21_MC.Buffer(), rowBcastBuf.data(), a21LocalHeight );
             // Store a21[MC] into B[MC,* ]
             const Int B_MC_STAR_Off = B_MC_STAR.LocalHeight()-a21LocalHeight;
             MemCopy
-            ( B_MC_STAR.Buffer(B_MC_STAR_Off,A00.Width()), 
+            ( B_MC_STAR.Buffer(B_MC_STAR_Off,A00.Width()),
               rowBcastBuf.data(),
               B_MC_STAR.LocalHeight()-B_MC_STAR_Off );
             // Store w21Last[MC] into its DistMatrix class
             w21Last_MC.AlignWith( alpha11 );
             w21Last_MC.Resize( a21.Height()+1, 1 );
             MemCopy
-            ( w21Last_MC.Buffer(), 
+            ( w21Last_MC.Buffer(),
               &rowBcastBuf[a21LocalHeight], w21LastLocalHeight );
-            // Store the bottom part of w21Last[MC] into WB[MC,* ] and, 
+            // Store the bottom part of w21Last[MC] into WB[MC,* ] and,
             // if necessary, w21.
-            const Int W_MC_STAR_Off = 
+            const Int W_MC_STAR_Off =
                 W_MC_STAR.LocalHeight()-w21LastLocalHeight;
             MemCopy
             ( W_MC_STAR.Buffer(W_MC_STAR_Off,A00.Width()-1),
@@ -285,23 +285,23 @@ void LowerPanelSquare
             }
 
             // Store w21Last[MR]
-            const Int W_MR_STAR_Off = 
+            const Int W_MR_STAR_Off =
                 W_MR_STAR.LocalHeight()-w21Last_MR.LocalHeight();
             MemCopy
             ( W_MR_STAR.Buffer(W_MR_STAR_Off,A00.Width()-1),
               w21Last_MR.Buffer(),
               W_MR_STAR.LocalHeight()-W_MR_STAR_Off );
             // Store a21[MR]
-            const Int B_MR_STAR_Off = 
+            const Int B_MR_STAR_Off =
                 B_MR_STAR.LocalHeight()-a21_MR.LocalHeight();
             MemCopy
             ( B_MR_STAR.Buffer(B_MR_STAR_Off,A00.Width()),
               a21_MR.Buffer(),
               B_MR_STAR.LocalHeight()-B_MR_STAR_Off );
 
-            // Update the portion of A22 that is in our current panel with 
-            // w21Last and a21Last using two gers. We do not need their top 
-            // entries. We trash the upper triangle of our panel of A since we 
+            // Update the portion of A22 that is in our current panel with
+            // w21Last and a21Last using two gers. We do not need their top
+            // entries. We trash the upper triangle of our panel of A since we
             // are only doing slightly more work and we can replace it
             // afterwards.
             // TODO: Create a custom kernel for this operation
@@ -338,19 +338,19 @@ void LowerPanelSquare
             FastResize( colSumSendBuf, 2*x01LocalHeight );
             FastResize( colSumRecvBuf, 2*x01LocalHeight );
             MemCopy
-            ( colSumSendBuf.data(), 
+            ( colSumSendBuf.data(),
               x01_MR.Buffer(), x01LocalHeight );
             MemCopy
             ( &colSumSendBuf[x01LocalHeight],
               y01_MR.Buffer(), x01LocalHeight );
             mpi::AllReduce
-            ( colSumSendBuf.data(), 
+            ( colSumSendBuf.data(),
               colSumRecvBuf.data(), 2*x01LocalHeight, g.ColComm() );
             MemCopy
-            ( x01_MR.Buffer(), 
+            ( x01_MR.Buffer(),
               colSumRecvBuf.data(), x01LocalHeight );
             MemCopy
-            ( y01_MR.Buffer(), 
+            ( y01_MR.Buffer(),
               &colSumRecvBuf[x01LocalHeight], x01LocalHeight );
         }
 
@@ -358,7 +358,7 @@ void LowerPanelSquare
         LocalGemv( NORMAL, F(-1), W20B, y01_MR, F(1), p21B_MC );
 
         // Fast transpose the unsummed q21[MR] -> q21[MC], so that
-        // it needs to be summed over process rows instead of process 
+        // it needs to be summed over process rows instead of process
         // columns. We immediately add it onto p21[MC], which also needs
         // to be summed within process rows.
         if( onDiagonal )
@@ -377,8 +377,8 @@ void LowerPanelSquare
             vector<F> recvBuf;
             FastResize( recvBuf, recvSize );
             mpi::SendRecv
-            ( q21_MR.Buffer(), sendSize, transposeRank, 
-              recvBuf.data(),  recvSize, transposeRank, 
+            ( q21_MR.Buffer(), sendSize, transposeRank,
+              recvBuf.data(),  recvSize, transposeRank,
               g.VCComm() );
 
             // Unpack the recv buffer directly onto p21[MC]
@@ -387,7 +387,7 @@ void LowerPanelSquare
 
         if( W22.Width() > 0 )
         {
-            // This is not the last iteration of the panel factorization, 
+            // This is not the last iteration of the panel factorization,
             // Reduce to one p21[MC] to the next process column.
             const Int a21LocalHeight = a21.LocalHeight();
 
@@ -402,7 +402,7 @@ void LowerPanelSquare
               a21LocalHeight, nextProcessCol, g.RowComm() );
             if( g.Col() == nextProcessCol )
             {
-                // Finish computing w21. During its computation, ensure that 
+                // Finish computing w21. During its computation, ensure that
                 // every process has a copy of the first element of the w21.
                 // We know a priori that the first element of a21 is one.
                 const F* a21_MC_Buf = a21_MC.Buffer();
@@ -429,7 +429,7 @@ void LowerPanelSquare
         else
         {
             // This is the last iteration, so we just need to form w21[MC]
-            // and w21[MR]. 
+            // and w21[MR].
             const Int a21LocalHeight = a21.LocalHeight();
 
             // AllReduce sum p21[MC] over process rows
@@ -468,8 +468,8 @@ void LowerPanelSquare
             {
                 // Pairwise exchange with the transpose process
                 mpi::SendRecv
-                ( w21_MC.Buffer(), A22.LocalHeight(), transposeRank, 
-                  w21_MR.Buffer(), A22.LocalWidth(),  transposeRank, 
+                ( w21_MC.Buffer(), A22.LocalHeight(), transposeRank,
+                  w21_MR.Buffer(), A22.LocalWidth(),  transposeRank,
                   g.VCComm() );
             }
         }

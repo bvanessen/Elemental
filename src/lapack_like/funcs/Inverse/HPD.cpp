@@ -34,7 +34,7 @@ void HPDInverse( UpperOrLower uplo, AbstractDistMatrix<Field>& A )
 }
 
 template<typename Field>
-void LocalHPDInverse( UpperOrLower uplo, DistMatrix<Field,STAR,STAR>& A )
+void LocalHPDInverse( UpperOrLower uplo, DistMatrix<Field,Dist::STAR,Dist::STAR>& A )
 {
     EL_DEBUG_CSE
     HPDInverse( uplo, A.Matrix() );
@@ -44,7 +44,7 @@ void LocalHPDInverse( UpperOrLower uplo, DistMatrix<Field,STAR,STAR>& A )
   template void HPDInverse( UpperOrLower uplo, Matrix<Field>& A ); \
   template void HPDInverse( UpperOrLower uplo, AbstractDistMatrix<Field>& A ); \
   template void LocalHPDInverse \
-  ( UpperOrLower uplo, DistMatrix<Field,STAR,STAR>& A );
+  ( UpperOrLower uplo, DistMatrix<Field,Dist::STAR,Dist::STAR>& A );
 
 #define EL_NO_INT_PROTO
 #define EL_ENABLE_DOUBLEDOUBLE

@@ -27,7 +27,7 @@ QuasiDiagonalSolve
     const Int n = X.Width();
 
     Matrix<Field> D( 2, 2 );
-    if( side == LEFT && uplo == LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
     {
         if( m == 0 )
             return;
@@ -60,8 +60,8 @@ QuasiDiagonalSolve
                 D(0,0) = d(i);
                 D(1,1) = d(i+1);
                 D(1,0) = dSub(i);
-                Symmetric2x2Inv( LOWER, D, conjugated );
-                MakeSymmetric( LOWER, D, conjugated );
+                Symmetric2x2Inv( UpperOrLower::LOWER, D, conjugated );
+                MakeSymmetric( UpperOrLower::LOWER, D, conjugated );
 
                 Transform2x2Rows( D, X, i, i+1 );
             }
@@ -69,7 +69,7 @@ QuasiDiagonalSolve
             i += nb;
         }
     }
-    else if( side == RIGHT && uplo == LOWER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::LOWER )
     {
         if( n == 0 )
             return;
@@ -103,8 +103,8 @@ QuasiDiagonalSolve
                 D(0,0) = d(j);
                 D(1,1) = d(j+1);
                 D(1,0) = dSub(j);
-                Symmetric2x2Inv( LOWER, D, conjugated );
-                MakeSymmetric( LOWER, D, conjugated );
+                Symmetric2x2Inv( UpperOrLower::LOWER, D, conjugated );
+                MakeSymmetric( UpperOrLower::LOWER, D, conjugated );
 
                 Transform2x2Cols( D, X, j, j+1 );
             }
@@ -120,19 +120,19 @@ template<typename Field,typename FieldMain,Dist U,Dist V>
 void
 LeftQuasiDiagonalSolve
 ( UpperOrLower uplo,
-  const DistMatrix<FieldMain,U,STAR>& d,
-  const DistMatrix<FieldMain,U,STAR>& dPrev,
-  const DistMatrix<FieldMain,U,STAR>& dNext,
-  const DistMatrix<Field,    U,STAR>& dSub,
-  const DistMatrix<Field,    U,STAR>& dSubPrev,
-  const DistMatrix<Field,    U,STAR>& dSubNext,
+  const DistMatrix<FieldMain,U,Dist::STAR>& d,
+  const DistMatrix<FieldMain,U,Dist::STAR>& dPrev,
+  const DistMatrix<FieldMain,U,Dist::STAR>& dNext,
+  const DistMatrix<Field,    U,Dist::STAR>& dSub,
+  const DistMatrix<Field,    U,Dist::STAR>& dSubPrev,
+  const DistMatrix<Field,    U,Dist::STAR>& dSubNext,
         DistMatrix<Field,U,V>& X,
   const DistMatrix<Field,U,V>& XPrev,
   const DistMatrix<Field,U,V>& XNext,
   bool conjugated )
 {
     EL_DEBUG_CSE
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
         LogicError("This option not yet supported");
     const Int m = X.Height();
     const Int mLocal = X.LocalHeight();
@@ -160,7 +160,7 @@ LeftQuasiDiagonalSolve
     if( colStride == 1 )
     {
         QuasiDiagonalSolve
-        ( LEFT, uplo, d.LockedMatrix(), dSub.LockedMatrix(), X.Matrix(),
+        ( LeftOrRight::LEFT, uplo, d.LockedMatrix(), dSub.LockedMatrix(), X.Matrix(),
           conjugated );
         return;
     }
@@ -180,8 +180,8 @@ LeftQuasiDiagonalSolve
             D11.Set( 0, 0, d.GetLocal(iLoc,0) );
             D11.Set( 1, 1, dNext.GetLocal(iLocNext,0) );
             D11.Set( 1, 0, dSub.GetLocal(iLoc,0) );
-            Symmetric2x2Inv( LOWER, D11, conjugated );
-            MakeSymmetric( LOWER, D11, conjugated );
+            Symmetric2x2Inv( UpperOrLower::LOWER, D11, conjugated );
+            MakeSymmetric( UpperOrLower::LOWER, D11, conjugated );
 
             auto x1NextLoc = XNext.LockedMatrix()( IR(iLocNext), ALL );
             Scale( D11.Get(0,0), x1Loc );
@@ -193,8 +193,8 @@ LeftQuasiDiagonalSolve
             D11.Set( 0, 0, dPrev.GetLocal(iLocPrev,0) );
             D11.Set( 1, 1, d.GetLocal(iLoc,0) );
             D11.Set( 1, 0, dSubPrev.GetLocal(iLocPrev,0) );
-            Symmetric2x2Inv( LOWER, D11, conjugated );
-            MakeSymmetric( LOWER, D11, conjugated );
+            Symmetric2x2Inv( UpperOrLower::LOWER, D11, conjugated );
+            MakeSymmetric( UpperOrLower::LOWER, D11, conjugated );
 
             auto x1PrevLoc = XPrev.LockedMatrix()( IR(iLocPrev), ALL );
             Scale( D11.Get(1,1), x1Loc );
@@ -212,19 +212,19 @@ template<typename Field,typename FieldMain,Dist U,Dist V>
 void
 RightQuasiDiagonalSolve
 ( UpperOrLower uplo,
-  const DistMatrix<FieldMain,V,STAR>& d,
-  const DistMatrix<FieldMain,V,STAR>& dPrev,
-  const DistMatrix<FieldMain,V,STAR>& dNext,
-  const DistMatrix<Field,    V,STAR>& dSub,
-  const DistMatrix<Field,    V,STAR>& dSubPrev,
-  const DistMatrix<Field,    V,STAR>& dSubNext,
+  const DistMatrix<FieldMain,V,Dist::STAR>& d,
+  const DistMatrix<FieldMain,V,Dist::STAR>& dPrev,
+  const DistMatrix<FieldMain,V,Dist::STAR>& dNext,
+  const DistMatrix<Field,    V,Dist::STAR>& dSub,
+  const DistMatrix<Field,    V,Dist::STAR>& dSubPrev,
+  const DistMatrix<Field,    V,Dist::STAR>& dSubNext,
         DistMatrix<Field,U,V>& X,
   const DistMatrix<Field,U,V>& XPrev,
   const DistMatrix<Field,U,V>& XNext,
   bool conjugated )
 {
     EL_DEBUG_CSE
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
         LogicError("This option not yet supported");
     const Int n = X.Width();
     const Int nLocal = X.LocalWidth();
@@ -252,7 +252,7 @@ RightQuasiDiagonalSolve
     if( rowStride == 1 )
     {
         QuasiDiagonalSolve
-        ( RIGHT, uplo, d.LockedMatrix(), dSub.LockedMatrix(), X.Matrix(),
+        ( LeftOrRight::RIGHT, uplo, d.LockedMatrix(), dSub.LockedMatrix(), X.Matrix(),
           conjugated );
         return;
     }
@@ -272,8 +272,8 @@ RightQuasiDiagonalSolve
             D11.Set( 0, 0, d.GetLocal(jLoc,0) );
             D11.Set( 1, 1, dNext.GetLocal(jLocNext,0) );
             D11.Set( 1, 0, dSub.GetLocal(jLoc,0) );
-            Symmetric2x2Inv( LOWER, D11, conjugated );
-            MakeSymmetric( LOWER, D11, conjugated );
+            Symmetric2x2Inv( UpperOrLower::LOWER, D11, conjugated );
+            MakeSymmetric( UpperOrLower::LOWER, D11, conjugated );
 
             auto x1NextLoc = XNext.LockedMatrix()( ALL, IR(jLocNext) );
             Scale( D11.Get(0,0), x1Loc );
@@ -285,8 +285,8 @@ RightQuasiDiagonalSolve
             D11.Set( 0, 0, dPrev.GetLocal(jLocPrev,0) );
             D11.Set( 1, 1, d.GetLocal(jLoc,0) );
             D11.Set( 1, 0, dSubPrev.GetLocal(jLocPrev,0) );
-            Symmetric2x2Inv( LOWER, D11, conjugated );
-            MakeSymmetric( LOWER, D11, conjugated );
+            Symmetric2x2Inv( UpperOrLower::LOWER, D11, conjugated );
+            MakeSymmetric( UpperOrLower::LOWER, D11, conjugated );
 
             auto x1PrevLoc = XPrev.LockedMatrix()( ALL, IR(jLocPrev) );
             Scale( D11.Get(1,1), x1Loc );
@@ -313,11 +313,11 @@ QuasiDiagonalSolve
     const Grid& g = X.Grid();
     const Int colAlign = X.ColAlign();
     const Int rowAlign = X.RowAlign();
-    if( side == LEFT )
+    if( side == LeftOrRight::LEFT )
     {
         const Int colStride = X.ColStride();
-        DistMatrix<FieldMain,U,STAR> d_U_STAR(g);
-        DistMatrix<Field,U,STAR> dSub_U_STAR(g);
+        DistMatrix<FieldMain,U,Dist::STAR> d_U_STAR(g);
+        DistMatrix<Field,U,Dist::STAR> dSub_U_STAR(g);
         d_U_STAR.AlignWith( X );
         dSub_U_STAR.AlignWith( X );
         d_U_STAR = d;
@@ -330,8 +330,8 @@ QuasiDiagonalSolve
             return;
         }
 
-        DistMatrix<FieldMain,U,STAR> dPrev_U_STAR(g), dNext_U_STAR(g);
-        DistMatrix<Field,U,STAR> dSubPrev_U_STAR(g), dSubNext_U_STAR(g);
+        DistMatrix<FieldMain,U,Dist::STAR> dPrev_U_STAR(g), dNext_U_STAR(g);
+        DistMatrix<Field,U,Dist::STAR> dSubPrev_U_STAR(g), dSubNext_U_STAR(g);
         DistMatrix<Field,U,V> XPrev(g), XNext(g);
         const Int colAlignPrev = Mod(colAlign+1,colStride);
         const Int colAlignNext = Mod(colAlign-1,colStride);
@@ -355,8 +355,8 @@ QuasiDiagonalSolve
     else
     {
         const Int rowStride = X.RowStride();
-        DistMatrix<FieldMain,V,STAR> d_V_STAR(g);
-        DistMatrix<Field,V,STAR> dSub_V_STAR(g);
+        DistMatrix<FieldMain,V,Dist::STAR> d_V_STAR(g);
+        DistMatrix<Field,V,Dist::STAR> dSub_V_STAR(g);
         d_V_STAR.AlignWith( X );
         dSub_V_STAR.AlignWith( X );
         d_V_STAR = d;
@@ -370,8 +370,8 @@ QuasiDiagonalSolve
             return;
         }
 
-        DistMatrix<FieldMain,V,STAR> dPrev_V_STAR(g), dNext_V_STAR(g);
-        DistMatrix<Field,V,STAR> dSubPrev_V_STAR(g), dSubNext_V_STAR(g);
+        DistMatrix<FieldMain,V,Dist::STAR> dPrev_V_STAR(g), dNext_V_STAR(g);
+        DistMatrix<Field,V,Dist::STAR> dSubPrev_V_STAR(g), dSubNext_V_STAR(g);
         DistMatrix<Field,U,V> XPrev(g), XNext(g);
         const Int rowAlignPrev = Mod(rowAlign+1,rowStride);
         const Int rowAlignNext = Mod(rowAlign-1,rowStride);
@@ -400,7 +400,7 @@ QuasiDiagonalSolve
 ( LeftOrRight side, UpperOrLower uplo,
   const AbstractDistMatrix<FieldMain>& d,
   const AbstractDistMatrix<Field>& dSub,
-        DistMatrix<Field,U,V,BLOCK>& X,
+        DistMatrix<Field,U,V,DistWrap::BLOCK>& X,
   bool conjugated )
 {
     EL_DEBUG_CSE

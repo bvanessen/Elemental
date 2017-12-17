@@ -50,11 +50,11 @@ Base<Field> MinAbsNonzero
 template<typename Field,Dist U,Dist V>
 void GeometricColumnScaling
 ( const DistMatrix<Field,      U,V   >& A,
-        DistMatrix<Base<Field>,V,STAR>& geomScaling )
+        DistMatrix<Base<Field>,V,Dist::STAR>& geomScaling )
 {
     EL_DEBUG_CSE
     typedef Base<Field> Real;
-    DistMatrix<Real,V,STAR> maxScaling(A.Grid());
+    DistMatrix<Real,V,Dist::STAR> maxScaling(A.Grid());
     ColumnMaxNorms( A, maxScaling );
     ColumnMinAbsNonzero( A, maxScaling, geomScaling );
     const Int nLocal = A.LocalWidth();
@@ -117,14 +117,14 @@ template<typename Field,Dist U,Dist V>
 void StackedGeometricColumnScaling
 ( const DistMatrix<Field,      U,V   >& A,
   const DistMatrix<Field,      U,V   >& B,
-        DistMatrix<Base<Field>,V,STAR>& geomScaling )
+        DistMatrix<Base<Field>,V,Dist::STAR>& geomScaling )
 {
     EL_DEBUG_CSE
     // NOTE: Assuming A.ColComm() == B.ColComm() and that the row alignments
     //       are equal
     typedef Base<Field> Real;
 
-    DistMatrix<Real,V,STAR> maxScalingA(A.Grid()),
+    DistMatrix<Real,V,Dist::STAR> maxScalingA(A.Grid()),
                             maxScalingB(A.Grid());
     ColumnMaxNorms( A, maxScalingA );
     ColumnMaxNorms( B, maxScalingB );
@@ -190,11 +190,11 @@ void GeometricRowScaling
 template<typename Field,Dist U,Dist V>
 void GeometricRowScaling
 ( const DistMatrix<Field,      U,V   >& A,
-        DistMatrix<Base<Field>,U,STAR>& geomScaling )
+        DistMatrix<Base<Field>,U,Dist::STAR>& geomScaling )
 {
     EL_DEBUG_CSE
     typedef Base<Field> Real;
-    DistMatrix<Real,U,STAR> maxScaling(A.Grid());
+    DistMatrix<Real,U,Dist::STAR> maxScaling(A.Grid());
     RowMaxNorms( A, maxScaling );
     RowMinAbsNonzero( A, maxScaling, geomScaling );
     const Int mLocal = A.LocalHeight();

@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_CHOLESKY_PIVOTED_UPPER_VARIANT3_HPP
@@ -72,7 +72,7 @@ void PivotedUpperUnblocked
           LogicError("A must be square");
     )
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int n = A.Height();
@@ -91,7 +91,7 @@ void PivotedUpperUnblocked
         auto A22 = A( ind2, ind2 );
         auto ABR = A( indB, indR );
 
-        // Determine the pivot 
+        // Determine the pivot
         const LDLPivot pivot = pivot::Full( ABR );
 
         // Apply the pivot
@@ -118,7 +118,7 @@ void PivotedUpperUnblocked
 template<typename F>
 void PivotedUpperPanel
 ( Matrix<F>& AFull,
-  Permutation& PFull, 
+  Permutation& PFull,
   Matrix<F>& X,
   Matrix<F>& Y,
   Int bsize,
@@ -156,7 +156,7 @@ void PivotedUpperPanel
         auto y21 = Y( ind2, ind1 );
         auto YB0 = Y( indB, ind0 );
 
-        // Determine the pivot 
+        // Determine the pivot
         const auto pivot = pivot::PanelFull( ABR, dB, XB0, YB0 );
         const Int from = k + pivot.from[0];
 
@@ -188,8 +188,8 @@ void
 PivotedUpperPanel
 ( DistMatrix<F>& AFull,
   DistPermutation& PFull,
-  DistMatrix<F,MC,STAR>& X,
-  DistMatrix<F,MR,STAR>& Y,
+  DistMatrix<F,Dist::MC,Dist::STAR>& X,
+  DistMatrix<F,Dist::MR,Dist::STAR>& Y,
   Int bsize,
   Int off )
 {
@@ -297,7 +297,7 @@ void PivotedUpperVariant3Blocked
           LogicError("A must be square");
     )
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int n = A.Height();
@@ -306,8 +306,8 @@ void PivotedUpperVariant3Blocked
     P.ReserveSwaps( n );
 
     const Grid& grid = A.Grid();
-    DistMatrix<F,MC,STAR> XB1(grid);
-    DistMatrix<F,MR,STAR> YB1(grid);
+    DistMatrix<F,Dist::MC,Dist::STAR> XB1(grid);
+    DistMatrix<F,Dist::MR,Dist::STAR> YB1(grid);
     const Int bsize = Blocksize();
     for( Int k=0; k<n; k+=bsize )
     {

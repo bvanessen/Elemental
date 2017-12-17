@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_BIDIAG_UPPER_BLOCKED_HPP
@@ -25,7 +25,7 @@ void UpperBlocked
     const Int m = A.Height();
     const Int n = A.Width();
     EL_DEBUG_ONLY(
-      if( m < n ) 
+      if( m < n )
           LogicError("A must be at least as tall as it is wide");
     )
     const Int householderScalarsPHeight = Max(n-1,0);
@@ -83,19 +83,19 @@ void UpperBlocked
     }
 }
 
-template<typename F> 
+template<typename F>
 void
 UpperBlocked
-( DistMatrix<F>& A, 
-  DistMatrix<F,STAR,STAR>& householderScalarsP,
-  DistMatrix<F,STAR,STAR>& householderScalarsQ )
+( DistMatrix<F>& A,
+  DistMatrix<F,Dist::STAR,Dist::STAR>& householderScalarsP,
+  DistMatrix<F,Dist::STAR,Dist::STAR>& householderScalarsQ )
 {
     EL_DEBUG_CSE
     const Int m = A.Height();
     const Int n = A.Width();
     EL_DEBUG_ONLY(
       AssertSameGrids( A, householderScalarsP, householderScalarsQ );
-      if( m < n ) 
+      if( m < n )
           LogicError("A must be at least as tall as it is wide");
     )
     const Grid& grid = A.Grid();
@@ -112,11 +112,11 @@ UpperBlocked
     }
 
     DistMatrix<F> X(grid), Y(grid);
-    DistMatrix<F,MC,STAR> X21_MC_STAR(grid);
-    DistMatrix<F,MR,STAR> Y12Adj_MR_STAR(grid);
+    DistMatrix<F,Dist::MC,Dist::STAR> X21_MC_STAR(grid);
+    DistMatrix<F,Dist::MR,Dist::STAR> Y12Adj_MR_STAR(grid);
 
-    DistMatrix<F,MC,STAR> AB1_MC_STAR(grid);
-    DistMatrix<F,MR,STAR> A1RTrans_MR_STAR(grid);
+    DistMatrix<F,Dist::MC,Dist::STAR> AB1_MC_STAR(grid);
+    DistMatrix<F,Dist::MR,Dist::STAR> A1RTrans_MR_STAR(grid);
 
     const Int bsize = Blocksize();
     for( Int k=0; k<n; k+=bsize )
@@ -162,7 +162,7 @@ UpperBlocked
             ( NORMAL, ADJOINT,
               F(-1), A21_MC_STAR, Y12Adj_MR_STAR, F(1), A22 );
             LocalGemm
-            ( NORMAL, ADJOINT, 
+            ( NORMAL, ADJOINT,
               F(-1), X21_MC_STAR, A12Trans_MR_STAR, F(1), A22 );
         }
         else
@@ -175,17 +175,17 @@ UpperBlocked
     }
 }
 
-template<typename F> 
+template<typename F>
 void
 UpperBlocked
-( AbstractDistMatrix<F>& APre, 
+( AbstractDistMatrix<F>& APre,
   AbstractDistMatrix<F>& householderScalarsPPre,
   AbstractDistMatrix<F>& householderScalarsQPre )
 {
     EL_DEBUG_CSE
-    DistMatrixReadWriteProxy<F,F,MC,MR>
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR>
       AProx( APre );
-    DistMatrixWriteProxy<F,F,STAR,STAR>
+    DistMatrixWriteProxy<F,F,Dist::STAR,Dist::STAR>
       householderScalarsPProx( householderScalarsPPre ),
       householderScalarsQProx( householderScalarsQPre );
     auto& A = AProx.Get();

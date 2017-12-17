@@ -104,7 +104,7 @@ void Display( const AbstractDistMatrix<T>& A, string title )
     }
     else
     {
-        DistMatrix<T,CIRC,CIRC> A_CIRC_CIRC( A );
+        DistMatrix<T,Dist::CIRC,Dist::CIRC> A_CIRC_CIRC( A );
         if( A_CIRC_CIRC.CrossRank() == A_CIRC_CIRC.Root() )
             Display( A_CIRC_CIRC.Matrix(), title );
     }

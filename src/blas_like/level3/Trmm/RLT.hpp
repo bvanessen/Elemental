@@ -5,8 +5,8 @@
    Copyright (c) 2013, The University of Texas at Austin
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRMM_RLT_HPP
@@ -20,8 +20,8 @@ void LocalAccumulateRLT
 ( UnitOrNonUnit diag,
   T alpha,
   const DistMatrix<T>& L,
-  const DistMatrix<T,MR,STAR>& XTrans,
-        DistMatrix<T,MC,STAR>& ZTrans )
+  const DistMatrix<T,Dist::MR,Dist::STAR>& XTrans,
+        DistMatrix<T,Dist::MC,Dist::STAR>& ZTrans )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -84,15 +84,15 @@ void RLTA
     const Grid& g = LPre.Grid();
     const bool conjugate = ( orientation == ADJOINT );
 
-    DistMatrixReadProxy<T,T,MC,MR> LProx( LPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& L = LProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,MR,  STAR> X1Trans_MR_STAR(g);
-    DistMatrix<T,MC,  STAR> Z1Trans_MC_STAR(g);
-    DistMatrix<T,MC,  MR  > Z1Trans(g);
-    DistMatrix<T,MR,  MC  > Z1Trans_MR_MC(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> X1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> Z1Trans_MC_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::MR  > Z1Trans(g);
+    DistMatrix<T,Dist::MR,  Dist::MC  > Z1Trans_MR_MC(g);
 
     X1Trans_MR_STAR.AlignWith( L );
     Z1Trans_MC_STAR.AlignWith( L );
@@ -137,21 +137,21 @@ void RLTC
     const Grid& g = LPre.Grid();
     const bool conjugate = ( orientation == ADJOINT );
 
-    DistMatrixReadProxy<T,T,MC,MR> LProx( LPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
     auto& L = LProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<T,MR,  STAR> L10Trans_MR_STAR(g);
-    DistMatrix<T,STAR,STAR> L11_STAR_STAR(g);
-    DistMatrix<T,VC,  STAR> X1_VC_STAR(g);
-    DistMatrix<T,MC,  STAR> D1_MC_STAR(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> L10Trans_MR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> L11_STAR_STAR(g);
+    DistMatrix<T,Dist::VC,  Dist::STAR> X1_VC_STAR(g);
+    DistMatrix<T,Dist::MC,  Dist::STAR> D1_MC_STAR(g);
 
     const Int kLast = LastOffset( n, bsize );
     for( Int k=kLast; k>=0; k-=bsize )
     {
         const Int nb = Min(bsize,n-k);
-         
+
         auto L10 = L( IR(k,k+nb), IR(0,k)    );
         auto L11 = L( IR(k,k+nb), IR(k,k+nb) );
 
@@ -163,7 +163,7 @@ void RLTC
         LocalTrmm
         ( RIGHT, LOWER, orientation, diag, T(1), L11_STAR_STAR, X1_VC_STAR );
         X1 = X1_VC_STAR;
- 
+
         L10Trans_MR_STAR.AlignWith( X0 );
         Transpose( L10, L10Trans_MR_STAR, conjugate );
         D1_MC_STAR.AlignWith( X1 );

@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRMM_UVAR4_HPP
@@ -14,7 +14,7 @@ namespace twotrmm {
 
 // The only reason that a field is required is for the existence of 1/2, which
 // is an artifact of this algorithm...
-template<typename F> 
+template<typename F>
 void UVar4( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
 {
     EL_DEBUG_CSE
@@ -77,9 +77,9 @@ void UVar4( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
     }
 }
 
-template<typename F> 
+template<typename F>
 void UVar4
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& APre,
   const AbstractDistMatrix<F>& UPre )
 {
@@ -96,19 +96,19 @@ void UVar4
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
     auto& A = AProx.Get();
     auto& U = UProx.GetLocked();
 
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), U11_STAR_STAR(g);
-    DistMatrix<F,STAR,MC  > A01Adj_STAR_MC(g), U01Adj_STAR_MC(g);
-    DistMatrix<F,STAR,MR  > A01Adj_STAR_MR(g), U01Adj_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > A12_STAR_VR(g);
-    DistMatrix<F,MR,  STAR> A12Adj_MR_STAR(g);
-    DistMatrix<F,VC,  STAR> A01_VC_STAR(g), U01_VC_STAR(g), Y01_VC_STAR(g);
-    DistMatrix<F,VR,  STAR> A01_VR_STAR(g), U01_VR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), U11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > A01Adj_STAR_MC(g), U01Adj_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > A01Adj_STAR_MR(g), U01Adj_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > A12_STAR_VR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> A12Adj_MR_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> A01_VC_STAR(g), U01_VC_STAR(g), Y01_VC_STAR(g);
+    DistMatrix<F,Dist::VR,  Dist::STAR> A01_VR_STAR(g), U01_VR_STAR(g);
 
     for( Int k=0; k<n; k+=bsize )
     {
@@ -135,8 +135,8 @@ void UVar4
         Y01_VC_STAR.Resize( k, nb );
         Zero( Y01_VC_STAR );
         Hemm
-        ( RIGHT, UPPER, 
-          F(1), A11_STAR_STAR.LockedMatrix(), U01_VC_STAR.LockedMatrix(), 
+        ( RIGHT, UPPER,
+          F(1), A11_STAR_STAR.LockedMatrix(), U01_VC_STAR.LockedMatrix(),
           F(0), Y01_VC_STAR.Matrix() );
 
         // A01 := A01 + 1/2 Y01
@@ -159,7 +159,7 @@ void UVar4
         Adjoint( U01_VR_STAR, U01Adj_STAR_MR );
         LocalTrr2k
         ( UPPER, ADJOINT, NORMAL, ADJOINT, NORMAL,
-          F(1), U01Adj_STAR_MC, A01Adj_STAR_MR, 
+          F(1), U01Adj_STAR_MC, A01Adj_STAR_MR,
           F(1), A01Adj_STAR_MC, U01Adj_STAR_MR, F(1), A00 );
 
         // A01 := A01 + 1/2 Y01

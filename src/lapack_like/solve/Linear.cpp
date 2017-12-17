@@ -17,8 +17,8 @@ void Panel( Matrix<Field>& APan, Permutation& P, Permutation& p1, Int offset );
 
 template<typename Field>
 void Panel
-( DistMatrix<Field,STAR,STAR>& A11,
-  DistMatrix<Field,MC,  STAR>& A21,
+( DistMatrix<Field,Dist::STAR,Dist::STAR>& A11,
+  DistMatrix<Field,Dist::MC,  Dist::STAR>& A21,
   DistPermutation& P,
   DistPermutation& PB,
   Int offset,
@@ -97,14 +97,14 @@ void RowEchelon( DistMatrix<Field>& A, DistMatrix<Field>& B )
 
     DistPermutation PB(grid);
 
-    DistMatrix<Field,STAR,STAR> A11_STAR_STAR(grid);
-    DistMatrix<Field,STAR,VR  > A12_STAR_VR(grid), B1_STAR_VR(grid);
-    DistMatrix<Field,STAR,MR  > A12_STAR_MR(grid), B1_STAR_MR(grid);
-    DistMatrix<Field,MC,  STAR> A21_MC_STAR(grid);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> A11_STAR_STAR(grid);
+    DistMatrix<Field,Dist::STAR,Dist::VR  > A12_STAR_VR(grid), B1_STAR_VR(grid);
+    DistMatrix<Field,Dist::STAR,Dist::MR  > A12_STAR_MR(grid), B1_STAR_MR(grid);
+    DistMatrix<Field,Dist::MC,  Dist::STAR> A21_MC_STAR(grid);
 
     // In case B's columns are not aligned with A's
     const bool BAligned = ( B.ColShift() == A.ColShift() );
-    DistMatrix<Field,MC,STAR> A21_MC_STAR_B(grid);
+    DistMatrix<Field,Dist::MC,Dist::STAR> A21_MC_STAR_B(grid);
 
     vector<Field> panelBuf, pivotBuf;
     for( Int k=0; k<minDimA; k+=bsize )
@@ -188,7 +188,7 @@ void Overwrite
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre ), BProx( BPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre ), BProx( BPre );
     auto& A = AProx.Get();
     auto& B = BProx.Get();
 
@@ -222,8 +222,8 @@ namespace lin_solve {
 template<typename Field,
          typename=EnableIf<IsBlasScalar<Field>>>
 void ScaLAPACKHelper
-( const DistMatrix<Field,MC,MR,BLOCK>& A,
-        DistMatrix<Field,MC,MR,BLOCK>& B )
+( const DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& B )
 {
     AssertScaLAPACKSupport();
 #ifdef EL_HAVE_SCALAPACK
@@ -249,8 +249,8 @@ template<typename Field,
          typename=DisableIf<IsBlasScalar<Field>>,
          typename=void>
 void ScaLAPACKHelper
-( const DistMatrix<Field,MC,MR,BLOCK>& A,
-        DistMatrix<Field,MC,MR,BLOCK>& B )
+( const DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& B )
 {
     LogicError("ScaLAPACK does not support ",TypeName<Field>());
 }
@@ -276,8 +276,8 @@ void LinearSolve
         proxyCtrl.rowAlign = 0;
         proxyCtrl.colCut = 0;
         proxyCtrl.rowCut = 0;
-        DistMatrixReadProxy<Field,Field,MC,MR,BLOCK> AProx( A, proxyCtrl );
-        DistMatrixReadWriteProxy<Field,Field,MC,MR,BLOCK> BProx( B, proxyCtrl );
+        DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR,DistWrap::BLOCK> AProx( A, proxyCtrl );
+        DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR,DistWrap::BLOCK> BProx( B, proxyCtrl );
         auto& ABlock = AProx.GetLocked();
         auto& BBlock = BProx.Get();
         lin_solve::ScaLAPACKHelper( ABlock, BBlock );

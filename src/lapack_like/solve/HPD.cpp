@@ -33,8 +33,8 @@ void Overwrite
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> BProx( BPre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> BProx( BPre );
     auto& A = AProx.Get();
     auto& B = BProx.Get();
 

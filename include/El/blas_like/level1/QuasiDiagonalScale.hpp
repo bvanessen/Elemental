@@ -24,7 +24,7 @@ void QuasiDiagonalScale
     const Int m = X.Height();
     const Int n = X.Width();
     Matrix<F> D( 2, 2 );
-    if( side == LEFT && uplo == LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
     {
         Int i=0;
         while( i < m )
@@ -45,7 +45,7 @@ void QuasiDiagonalScale
                 D.Set(0,0,d.Get(i,0));
                 D.Set(1,1,d.Get(i+1,0));
                 D.Set(1,0,dSub.Get(i,0));
-                MakeSymmetric( LOWER, D, conjugated );
+                MakeSymmetric( UpperOrLower::LOWER, D, conjugated );
 
                 Transform2x2Rows( D, X, i, i+1 );
             }
@@ -53,7 +53,7 @@ void QuasiDiagonalScale
             i += nb;
         }
     }
-    else if( side == RIGHT && uplo == LOWER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::LOWER )
     {
         Int j=0;
         while( j < n )
@@ -74,7 +74,7 @@ void QuasiDiagonalScale
                 D.Set(0,0,d.Get(j,0));
                 D.Set(1,1,d.Get(j+1,0));
                 D.Set(1,0,dSub.Get(j,0));
-                MakeSymmetric( LOWER, D, conjugated );
+                MakeSymmetric( UpperOrLower::LOWER, D, conjugated );
 
                 Transform2x2Cols( D, X, j, j+1 );
             }
@@ -89,19 +89,19 @@ void QuasiDiagonalScale
 template<typename F,typename FMain,Dist U,Dist V>
 void LeftQuasiDiagonalScale
 ( UpperOrLower uplo,
-  const DistMatrix<FMain,U,STAR>& d,
-  const DistMatrix<FMain,U,STAR>& dPrev,
-  const DistMatrix<FMain,U,STAR>& dNext,
-  const DistMatrix<F,    U,STAR>& dSub,
-  const DistMatrix<F,    U,STAR>& dSubPrev,
-  const DistMatrix<F,    U,STAR>& dSubNext,
+  const DistMatrix<FMain,U,Dist::STAR>& d,
+  const DistMatrix<FMain,U,Dist::STAR>& dPrev,
+  const DistMatrix<FMain,U,Dist::STAR>& dNext,
+  const DistMatrix<F,    U,Dist::STAR>& dSub,
+  const DistMatrix<F,    U,Dist::STAR>& dSubPrev,
+  const DistMatrix<F,    U,Dist::STAR>& dSubNext,
         DistMatrix<F,U,V>& X,
   const DistMatrix<F,U,V>& XPrev,
   const DistMatrix<F,U,V>& XNext,
   bool conjugated )
 {
     EL_DEBUG_CSE
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
         LogicError("This option not yet supported");
     const Int m = X.Height();
     const Int mLocal = X.LocalHeight();
@@ -129,7 +129,7 @@ void LeftQuasiDiagonalScale
     if( colStride == 1 )
     {
         QuasiDiagonalScale
-        ( LEFT, uplo, d.LockedMatrix(), dSub.LockedMatrix(), X.Matrix(),
+        ( LeftOrRight::LEFT, uplo, d.LockedMatrix(), dSub.LockedMatrix(), X.Matrix(),
           conjugated );
         return;
     }
@@ -174,19 +174,19 @@ void LeftQuasiDiagonalScale
 template<typename F,typename FMain,Dist U,Dist V>
 void RightQuasiDiagonalScale
 ( UpperOrLower uplo,
-  const DistMatrix<FMain,V,STAR>& d,
-  const DistMatrix<FMain,V,STAR>& dPrev,
-  const DistMatrix<FMain,V,STAR>& dNext,
-  const DistMatrix<F,    V,STAR>& dSub,
-  const DistMatrix<F,    V,STAR>& dSubPrev,
-  const DistMatrix<F,    V,STAR>& dSubNext,
+  const DistMatrix<FMain,V,Dist::STAR>& d,
+  const DistMatrix<FMain,V,Dist::STAR>& dPrev,
+  const DistMatrix<FMain,V,Dist::STAR>& dNext,
+  const DistMatrix<F,    V,Dist::STAR>& dSub,
+  const DistMatrix<F,    V,Dist::STAR>& dSubPrev,
+  const DistMatrix<F,    V,Dist::STAR>& dSubNext,
         DistMatrix<F,U,V>& X,
   const DistMatrix<F,U,V>& XPrev,
   const DistMatrix<F,U,V>& XNext,
   bool conjugated )
 {
     EL_DEBUG_CSE
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
         LogicError("This option not yet supported");
     const Int n = X.Width();
     const Int nLocal = X.LocalWidth();
@@ -214,7 +214,7 @@ void RightQuasiDiagonalScale
     if( rowStride == 1 )
     {
         QuasiDiagonalScale
-        ( RIGHT, uplo, d.LockedMatrix(), dSub.LockedMatrix(), X.Matrix(),
+        ( LeftOrRight::RIGHT, uplo, d.LockedMatrix(), dSub.LockedMatrix(), X.Matrix(),
           conjugated );
         return;
     }
@@ -269,11 +269,11 @@ QuasiDiagonalScale
     const Grid& g = X.Grid();
     const Int colAlign = X.ColAlign();
     const Int rowAlign = X.RowAlign();
-    if( side == LEFT )
+    if( side == LeftOrRight::LEFT )
     {
         const Int colStride = X.ColStride();
-        DistMatrix<FMain,U,STAR> d_U_STAR(g);
-        DistMatrix<F,U,STAR> dSub_U_STAR(g);
+        DistMatrix<FMain,U,Dist::STAR> d_U_STAR(g);
+        DistMatrix<F,U,Dist::STAR> dSub_U_STAR(g);
         d_U_STAR.AlignWith( X );
         dSub_U_STAR.AlignWith( X );
         d_U_STAR = d;
@@ -287,8 +287,8 @@ QuasiDiagonalScale
             return;
         }
 
-        DistMatrix<FMain,U,STAR> dPrev_U_STAR(g), dNext_U_STAR(g);
-        DistMatrix<F,U,STAR> dSubPrev_U_STAR(g), dSubNext_U_STAR(g);
+        DistMatrix<FMain,U,Dist::STAR> dPrev_U_STAR(g), dNext_U_STAR(g);
+        DistMatrix<F,U,Dist::STAR> dSubPrev_U_STAR(g), dSubNext_U_STAR(g);
         DistMatrix<F,U,V> XPrev(g), XNext(g);
         const Int colAlignPrev = Mod(colAlign+1,colStride);
         const Int colAlignNext = Mod(colAlign-1,colStride);
@@ -312,8 +312,8 @@ QuasiDiagonalScale
     else
     {
         const Int rowStride = X.RowStride();
-        DistMatrix<FMain,V,STAR> d_V_STAR(g);
-        DistMatrix<F,V,STAR> dSub_V_STAR(g);
+        DistMatrix<FMain,V,Dist::STAR> d_V_STAR(g);
+        DistMatrix<F,V,Dist::STAR> dSub_V_STAR(g);
         d_V_STAR.AlignWith( X );
         dSub_V_STAR.AlignWith( X );
         d_V_STAR = d;
@@ -327,8 +327,8 @@ QuasiDiagonalScale
             return;
         }
 
-        DistMatrix<FMain,V,STAR> dPrev_V_STAR(g), dNext_V_STAR(g);
-        DistMatrix<F,V,STAR> dSubPrev_V_STAR(g), dSubNext_V_STAR(g);
+        DistMatrix<FMain,V,Dist::STAR> dPrev_V_STAR(g), dNext_V_STAR(g);
+        DistMatrix<F,V,Dist::STAR> dSubPrev_V_STAR(g), dSubNext_V_STAR(g);
         DistMatrix<F,U,V> XPrev(g), XNext(g);
         const Int rowAlignPrev = Mod(rowAlign+1,rowStride);
         const Int rowAlignNext = Mod(rowAlign-1,rowStride);
@@ -357,7 +357,7 @@ QuasiDiagonalScale
 ( LeftOrRight side, UpperOrLower uplo,
   const AbstractDistMatrix<FMain>& d,
   const AbstractDistMatrix<F>& dSub,
-        DistMatrix<F,U,V,BLOCK>& X,
+        DistMatrix<F,U,V,DistWrap::BLOCK>& X,
   bool conjugated )
 {
     EL_DEBUG_CSE

@@ -13,75 +13,76 @@
 
 #include <algorithm>
 
-namespace El {
-namespace choice {
+#include "El/core/imports/choice.hpp"
+#include "El/core/imports/mpi.hpp"
 
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::ostream;
-using std::string;
-using std::vector;
+namespace El
+{
+namespace choice
+{
 
 class MpiArgs
 {
 public:
-    MpiArgs
-    ( int argc, char** argv,
-      mpi::Comm comm=mpi::COMM_WORLD, ostream& error=cerr );
-    virtual ~MpiArgs() { }
+    MpiArgs (int argc, char** argv,
+             mpi::Comm comm=mpi::COMM_WORLD, std::ostream& error=std::cerr);
+    virtual ~MpiArgs() = default;
 
     template<typename T>
-    T Input( string name, string desc );
+    T Input( std::string name, std::string desc );
     template<typename T>
-    T Input( string name, string desc, T defaultVal );
+    T Input( std::string name, std::string desc, T defaultVal );
 
-    void Process( ostream& os=cout ) const;
-    void PrintReport( ostream& os=cout ) const;
+    void Process( std::ostream& os=std::cout ) const;
+    void PrintReport( std::ostream& os=std::cout ) const;
 
 protected:
     int argc_;
     char** argv_;
-    vector<bool> usedArgs_;
-    ostream& error_;
+    std::vector<bool> usedArgs_;
+    std::ostream& error_;
     mpi::Comm comm_;
 
-    virtual void HandleVersion( ostream& os=cout ) const { EL_UNUSED(os); }
-    virtual void HandleBuild( ostream& os=cout ) const { EL_UNUSED(os); }
+    virtual void HandleVersion( std::ostream& = std::cout ) const { }
+    virtual void HandleBuild( std::ostream& = std::cout ) const { }
 
     struct RequiredArg
     {
-        string name, desc, typeInfo, usedVal;
+        std::string name, desc, typeInfo, usedVal;
         bool found;
 
-        RequiredArg( string n, string d, string t, string uv, bool f )
-        : name(n), desc(d), typeInfo(t), usedVal(uv), found(f) { };
+        RequiredArg(std::string n, std::string d, std::string t,
+                    std::string uv, bool f )
+            : name{std::move(n)}, desc{std::move(d)}, typeInfo{std::move(t)},
+              usedVal{std::move(uv)}, found{f}
+        { }
     };
 
     struct OptionalArg
     {
-        string name, desc, typeInfo, defaultVal, usedVal;
+        std::string name, desc, typeInfo, defaultVal, usedVal;
         bool found;
 
-        OptionalArg
-        ( string n, string d, string t, string dv, string uv, bool f )
-        : name(n), desc(d), typeInfo(t),
-          defaultVal(dv), usedVal(uv), found(f) { }
+        OptionalArg(std::string n, std::string d, std::string t,
+                    std::string dv, std::string uv, bool f)
+            : name{std::move(n)}, desc{std::move(d)}, typeInfo{std::move(t)},
+              defaultVal{std::move(dv)}, usedVal{std::move(uv)}, found{f}
+        { }
     };
 
-    vector<RequiredArg> requiredArgs_;
-    vector<OptionalArg> optionalArgs_;
+    std::vector<RequiredArg> requiredArgs_;
+    std::vector<OptionalArg> optionalArgs_;
 };
 
 
-inline
-MpiArgs::MpiArgs( int argc, char** argv, mpi::Comm comm, ostream& error )
-: argc_(argc), argv_(argv), usedArgs_(argc,false), error_(error), comm_(comm)
+inline MpiArgs::MpiArgs(
+    int argc, char** argv, mpi::Comm comm, std::ostream& error )
+    : argc_(argc), argv_(argv), usedArgs_(argc,false),
+      error_(error), comm_(comm)
 { }
 
 template<typename T>
-inline T
-MpiArgs::Input( string name, string desc )
+inline T MpiArgs::Input( std::string name, std::string desc )
 {
     const int commRank = mpi::Rank( comm_ );
 
@@ -91,12 +92,13 @@ MpiArgs::Input( string name, string desc )
     if( invalidFound )
     {
         if( commRank == 0 )
-            error_ << "Missing value for last command-line argument" << endl;
+            error_ << "Missing value for last command-line argument"
+                   << std::endl;
         throw ArgException();
     }
 
-    const string typeInfo = TypeName<T>();
-    string usedVal = ( found ? arg[1] : "N/A" );
+    const std::string typeInfo = TypeName<T>();
+    std::string usedVal = ( found ? arg[1] : "N/A" );
     requiredArgs_.push_back( RequiredArg(name,desc,typeInfo,usedVal,found) );
 
     // Before returning, store the used indices and check for duplication
@@ -108,13 +110,13 @@ MpiArgs::Input( string name, string desc )
             error_ << "WARNING: conflict with " << name << " detected at ";
             if( usedArgs_[offset] && usedArgs_[offset+1] )
                 error_ << "arguments " << offset << " and " << offset+1
-                       << endl;
+                       << std::endl;
             else if( usedArgs_[offset] )
-                error_ << "argument " << offset << endl;
+                error_ << "argument " << offset << std::endl;
             else
-                error_ << "argument " << offset+1 << endl;
+                error_ << "argument " << offset+1 << std::endl;
             error_ << "Please ensure that you did request argument "
-                   << name << " multiple times" << endl;
+                   << name << " multiple times" << std::endl;
         }
         usedArgs_[offset+0] = true;
         usedArgs_[offset+1] = true;
@@ -122,15 +124,14 @@ MpiArgs::Input( string name, string desc )
         arg = std::find( arg+1, argv_+argc_, name );
         if( arg != argv_+argc_ )
             error_ << "WARNING: " << name << " was specified twice and only "
-                   << "the first instance is used" << endl;
+                   << "the first instance is used" << std::endl;
     }
 
     return Cast<T>( usedVal );
 }
 
 template<typename T>
-inline T
-MpiArgs::Input( string name, string desc, T defaultVal )
+inline T MpiArgs::Input(std::string name, std::string desc, T defaultVal)
 {
     const int commRank = mpi::Rank( comm_ );
 
@@ -141,13 +142,13 @@ MpiArgs::Input( string name, string desc, T defaultVal )
     {
         if( commRank == 0 )
             error_ << "Missing value for last command-line argument"
-                   << endl;
+                   << std::endl;
         throw ArgException();
     }
 
-    const string typeInfo = TypeName<T>();
-    string defValString = Cast<string>( defaultVal );
-    string usedVal = ( found ? arg[1] : defValString );
+    const std::string typeInfo = TypeName<T>();
+    std::string defValString = Cast<std::string>( defaultVal );
+    std::string usedVal = ( found ? arg[1] : defValString );
 
     optionalArgs_.push_back
     ( OptionalArg(name,desc,typeInfo,defValString,usedVal,found) );
@@ -161,13 +162,13 @@ MpiArgs::Input( string name, string desc, T defaultVal )
             error_ << "WARNING: conflict with " << name << " detected at ";
             if( usedArgs_[offset] && usedArgs_[offset+1] )
                 error_ << "arguments " << offset << " and " << offset+1
-                       << endl;
+                       << std::endl;
             else if( usedArgs_[offset] )
-                error_ << "argument " << offset << endl;
+                error_ << "argument " << offset << std::endl;
             else
-                error_ << "argument " << offset+1 << endl;
+                error_ << "argument " << offset+1 << std::endl;
             error_ << "Please ensure that you did request argument "
-                   << name << " multiple times" << endl;
+                   << name << " multiple times" << std::endl;
         }
         usedArgs_[offset+0] = true;
         usedArgs_[offset+1] = true;
@@ -175,7 +176,7 @@ MpiArgs::Input( string name, string desc, T defaultVal )
         arg = std::find( arg+1, argv_+argc_, name );
         if( arg != argv_+argc_ )
             error_ << "WARNING: " << name << " was specified twice and only "
-                   << "the first instance is used" << endl;
+                   << "the first instance is used" << std::endl;
     }
 
     if( found )
@@ -185,12 +186,12 @@ MpiArgs::Input( string name, string desc, T defaultVal )
 }
 
 inline void
-MpiArgs::Process( ostream& os ) const
+MpiArgs::Process( std::ostream& os ) const
 {
     HandleVersion( os );
     HandleBuild( os );
 
-    string help = "--help";
+    std::string help = "--help";
     char** arg = std::find( argv_, argv_+argc_, help );
     const bool foundHelp = ( arg != argv_+argc_ );
 
@@ -207,7 +208,7 @@ MpiArgs::Process( ostream& os ) const
 }
 
 inline void
-MpiArgs::PrintReport( ostream& os ) const
+MpiArgs::PrintReport( std::ostream& os ) const
 {
     const int commRank = mpi::Rank( comm_ );
     if( commRank != 0 )
@@ -224,7 +225,7 @@ MpiArgs::PrintReport( ostream& os ) const
         const RequiredArg& reqArg = requiredArgs_[i];
         if( !reqArg.found )
             ++numReqFailed;
-        string foundString = ( reqArg.found ? "found" : "NOT found" );
+        std::string foundString = ( reqArg.found ? "found" : "NOT found" );
         os << "  " << reqArg.name
            << " [" << reqArg.typeInfo << "," << reqArg.usedVal << ","
            << foundString << "]\n"
@@ -239,7 +240,7 @@ MpiArgs::PrintReport( ostream& os ) const
         const OptionalArg& optArg = optionalArgs_[i];
         if( !optArg.found )
             ++numOptFailed;
-        string foundString = ( optArg.found ? "found" : "NOT found" );
+        std::string foundString = ( optArg.found ? "found" : "NOT found" );
         os << "  " << optArg.name
            << " [" << optArg.typeInfo
            << "," << optArg.defaultVal << "," << optArg.usedVal << ","
@@ -248,10 +249,10 @@ MpiArgs::PrintReport( ostream& os ) const
     }
 
     os << "Out of " << numRequired << " required arguments, "
-       << numReqFailed << " were not specified." << endl;
+       << numReqFailed << " were not specified." << std::endl;
 
     os << "Out of " << numOptional << " optional arguments, "
-       << numOptFailed << " were not specified.\n" << endl;
+       << numOptFailed << " were not specified.\n" << std::endl;
 }
 
 } // namespace choice

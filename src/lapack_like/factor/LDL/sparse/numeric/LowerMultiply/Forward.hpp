@@ -1,20 +1,20 @@
 /*
-   Copyright (c) 2009-2012, Jack Poulson, Lexing Ying, and 
+   Copyright (c) 2009-2012, Jack Poulson, Lexing Ying, and
    The University of Texas at Austin.
    All rights reserved.
 
    Copyright (c) 2013, Jack Poulson, Lexing Ying, and Stanford University.
    All rights reserved.
 
-   Copyright (c) 2013-2014, Jack Poulson and 
+   Copyright (c) 2013-2014, Jack Poulson and
    The Georgia Institute of Technology.
    All rights reserved.
 
    Copyright (c) 2014-2015, Jack Poulson and Stanford University.
    All rights reserved.
-   
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_FACTOR_LDL_SPARSE_NUMERIC_LOWERMULTIPLY_FORWARD_HPP
@@ -27,9 +27,9 @@
 namespace El {
 namespace ldl {
 
-template<typename F> 
+template<typename F>
 inline void LowerForwardMultiply
-( const NodeInfo& info, 
+( const NodeInfo& info,
   const Front<F>& front, MatrixNode<F>& X )
 {
     EL_DEBUG_CSE
@@ -40,7 +40,7 @@ inline void LowerForwardMultiply
         ( *info.children[c], *front.children[c], *X.children[c] );
 
     // Set up a workspace
-    // TODO: Only set up a workspace if there is not a parent 
+    // TODO: Only set up a workspace if there is not a parent
     //       (or a duplicate's parent)
     auto& W = X.work;
     const Int numRHS = X.matrix.Width();
@@ -64,7 +64,7 @@ inline void LowerForwardMultiply
         auto childU = childW( IR(childSize,childHeight), IR(0,numRHS) );
         for( Int iChild=0; iChild<childUSize; ++iChild )
         {
-            const Int iFront = info.childRelInds[c][iChild]; 
+            const Int iFront = info.childRelInds[c][iChild];
             for( Int j=0; j<numRHS; ++j )
                 W(iFront,j) += childU(iChild,j);
         }
@@ -105,7 +105,7 @@ inline void LowerForwardMultiply
     auto& W = X.work;
     W.SetGrid( grid );
     W.Resize( frontHeight, numRHS );
-    DistMatrix<F,VC,STAR> WT(grid), WB(grid);
+    DistMatrix<F,Dist::VC,Dist::STAR> WT(grid), WB(grid);
     PartitionDown( W, WT, WB, info.size );
     WT = X.matrix;
     Zero( WB );
@@ -163,7 +163,7 @@ inline void LowerForwardMultiply
         for( unsigned k=0; k<recvInds.size(); ++k )
             blas::Axpy
             ( numRHS, F(1),
-              &recvVals[k*numRHS],     1, 
+              &recvVals[k*numRHS],     1,
               W.Buffer(recvInds[k],0), W.LDim() );
     }
     SwapClear( recvBuf );

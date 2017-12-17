@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRSM_LVAR2_HPP
@@ -79,7 +79,7 @@ void LVar2( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
 // need to be (conjugate-)transposed in order to play nice with cache.
 template<typename F>
 void LVar2
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& A,
   const AbstractDistMatrix<F>& L )
 {
@@ -96,20 +96,20 @@ void LVar2
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> LProx( LPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
     auto& A = AProx.Get();
     auto& L = LProx.GetLocked();
-    
+
     // Temporary distributions
-    DistMatrix<F,STAR,VR  > A10_STAR_VR(g);
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), L11_STAR_STAR(g);
-    DistMatrix<F,VC,  STAR> L10Adj_VC_STAR(g), A21_VC_STAR(g);
-    DistMatrix<F,MR,  STAR> A10Adj_MR_STAR(g), L10Adj_MR_STAR(g), 
+    DistMatrix<F,Dist::STAR,Dist::VR  > A10_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), L11_STAR_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> L10Adj_VC_STAR(g), A21_VC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> A10Adj_MR_STAR(g), L10Adj_MR_STAR(g),
                             F10Adj_MR_STAR(g);
-    DistMatrix<F,STAR,MC  > L10_STAR_MC(g);
-    DistMatrix<F,MC,  STAR> Y10Adj_MC_STAR(g), X11_MC_STAR(g), X21_MC_STAR(g);
-    DistMatrix<F,MR,  MC  > Y10Adj_MR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > L10_STAR_MC(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> Y10Adj_MC_STAR(g), X11_MC_STAR(g), X21_MC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::MC  > Y10Adj_MR_MC(g);
     DistMatrix<F> Y10Adj(g), X11(g);
 
     Matrix<F> Y10Local;
@@ -146,7 +146,7 @@ void LVar2
         Zero( F10Adj_MR_STAR );
         symm::LocalAccumulateRL
         ( ADJOINT,
-          F(1), A00, L10_STAR_MC, L10Adj_MR_STAR, 
+          F(1), A00, L10_STAR_MC, L10Adj_MR_STAR,
           Y10Adj_MC_STAR, F10Adj_MR_STAR );
         Contract( Y10Adj_MC_STAR, Y10Adj );
         Y10Adj_MR_MC.AlignWith( A10 );
@@ -162,12 +162,12 @@ void LVar2
         A10.Matrix() -= Y10Local;
         A10Adj_MR_STAR.AlignWith( L10 );
         A10.AdjointColAllGather( A10Adj_MR_STAR );
-        
+
         // A11 := A11 - (X11 + L10 A10') = A11 - (A10 L10' + L10 A10')
         LocalGemm
         ( NORMAL, NORMAL, F(1), L10, A10Adj_MR_STAR, F(1), X11_MC_STAR );
         X11.AlignWith( A11 );
-        Contract( X11_MC_STAR, X11 ); 
+        Contract( X11_MC_STAR, X11 );
         AxpyTrapezoid( LOWER, F(-1), X11, A11 );
 
         // A10 := inv(L11) A10

@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El.hpp>
@@ -57,7 +57,7 @@ void Schur
 template<typename F>
 void Schur
 ( AbstractDistMatrix<F>& A,
-  AbstractDistMatrix<Complex<Base<F>>>& w, 
+  AbstractDistMatrix<Complex<Base<F>>>& w,
   const SchurCtrl<Base<F>>& ctrl )
 {
     EL_DEBUG_CSE
@@ -81,7 +81,7 @@ void Schur
 template<typename F>
 void Schur
 ( AbstractDistMatrix<F>& A,
-  AbstractDistMatrix<Complex<Base<F>>>& w, 
+  AbstractDistMatrix<Complex<Base<F>>>& w,
   AbstractDistMatrix<F>& Q,
   const SchurCtrl<Base<F>>& ctrl )
 {
@@ -126,7 +126,7 @@ void Schur
           Matrix<Complex<Base<F>>>& w ); \
   template Matrix<Complex<Base<F>>> schur::QuasiTriangEig \
   ( const Matrix<F>& U ); \
-  template DistMatrix<Complex<Base<F>>,VR,STAR> \
+  template DistMatrix<Complex<Base<F>>,Dist::VR,Dist::STAR> \
   schur::QuasiTriangEig( const AbstractDistMatrix<F>& U ); \
   template void schur::QuasiTriangEig \
   ( const AbstractDistMatrix<F>& U, \

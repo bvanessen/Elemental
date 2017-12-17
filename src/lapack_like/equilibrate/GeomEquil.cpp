@@ -255,9 +255,9 @@ void GeomEquil
     control.colAlign = 0;
     control.rowAlign = 0;
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre, control );
-    DistMatrixWriteProxy<Real,Real,MC,STAR> dRowProx( dRowPre, control );
-    DistMatrixWriteProxy<Real,Real,MR,STAR> dColProx( dColPre, control );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre, control );
+    DistMatrixWriteProxy<Real,Real,Dist::MC,Dist::STAR> dRowProx( dRowPre, control );
+    DistMatrixWriteProxy<Real,Real,Dist::MR,Dist::STAR> dColProx( dColPre, control );
     auto& A = AProx.Get();
     auto& dRow = dRowProx.Get();
     auto& dCol = dColProx.Get();
@@ -288,8 +288,8 @@ void GeomEquil
     if( progress && A.Grid().Rank() == 0 )
         Output("Original ratio is ",maxAbsVal,"/",minAbsVal,"=",ratio);
 
-    DistMatrix<Real,MC,STAR> rowScale(A.Grid());
-    DistMatrix<Real,MR,STAR> colScale(A.Grid());
+    DistMatrix<Real,Dist::MC,Dist::STAR> rowScale(A.Grid());
+    DistMatrix<Real,Dist::MR,Dist::STAR> colScale(A.Grid());
     auto& colScaleLoc = colScale.Matrix();
     auto& rowScaleLoc = rowScale.Matrix();
     const Int indent = PushIndent();
@@ -354,11 +354,11 @@ void StackedGeomEquil
     control.colAlign = 0;
     control.rowAlign = 0;
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre, control );
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> BProx( BPre, control );
-    DistMatrixWriteProxy<Real,Real,MC,STAR> dRowAProx( dRowAPre, control );
-    DistMatrixWriteProxy<Real,Real,MC,STAR> dRowBProx( dRowBPre, control );
-    DistMatrixWriteProxy<Real,Real,MR,STAR> dColProx( dColPre, control );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre, control );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> BProx( BPre, control );
+    DistMatrixWriteProxy<Real,Real,Dist::MC,Dist::STAR> dRowAProx( dRowAPre, control );
+    DistMatrixWriteProxy<Real,Real,Dist::MC,Dist::STAR> dRowBProx( dRowBPre, control );
+    DistMatrixWriteProxy<Real,Real,Dist::MR,Dist::STAR> dColProx( dColPre, control );
     auto& A = AProx.Get();
     auto& B = BProx.Get();
     auto& dRowA = dRowAProx.Get();
@@ -397,9 +397,9 @@ void StackedGeomEquil
     if( progress && A.Grid().Rank() == 0 )
         Output("Original ratio is ",maxAbsVal,"/",minAbsVal,"=",ratio);
 
-    DistMatrix<Real,MC,STAR> rowScaleA(A.Grid()),
+    DistMatrix<Real,Dist::MC,Dist::STAR> rowScaleA(A.Grid()),
                              rowScaleB(A.Grid());
-    DistMatrix<Real,MR,STAR> colScale(A.Grid()), colScaleB(B.Grid());
+    DistMatrix<Real,Dist::MR,Dist::STAR> colScale(A.Grid()), colScaleB(B.Grid());
     auto& rowScaleALoc = rowScaleA.Matrix();
     auto& rowScaleBLoc = rowScaleB.Matrix();
     auto& colScaleLoc = colScale.Matrix();

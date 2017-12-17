@@ -158,11 +158,11 @@ Unblocked
 
     Zeros( dSub, n-1, 1 );
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     DistMatrix<F> Y21(g);
-    DistMatrix<F,STAR,STAR> D11_STAR_STAR(g), D11Inv_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> D11_STAR_STAR(g), D11Inv_STAR_STAR(g);
 
     Int k=0;
     while( k < n )

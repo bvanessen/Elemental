@@ -32,8 +32,8 @@ void ExplicitTriang( AbstractDistMatrix<F>& A )
 {
     EL_DEBUG_CSE
     const Grid& g = A.Grid();
-    DistMatrix<F,MD,STAR> householderScalars(g);
-    DistMatrix<Base<F>,MD,STAR> signature(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(g);
     LQ( A, householderScalars, signature );
 
     const Int m = A.Height();
@@ -64,11 +64,11 @@ void ExplicitUnitary( AbstractDistMatrix<F>& APre )
     EL_DEBUG_CSE
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
-    DistMatrix<F,MD,STAR> householderScalars(g);
-    DistMatrix<Base<F>,MD,STAR> signature(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(g);
     LQ( A, householderScalars, signature );
 
     // TODO: Replace this with an in-place expansion of Q
@@ -107,11 +107,11 @@ void Explicit( AbstractDistMatrix<F>& L, AbstractDistMatrix<F>& APre )
     EL_DEBUG_CSE
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
-    DistMatrix<F,MD,STAR> householderScalars(g);
-    DistMatrix<Base<F>,MD,STAR> signature(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(g);
     LQ( A, householderScalars, signature );
 
     const Int m = A.Height();

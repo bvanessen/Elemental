@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRSM_UVAR2_HPP
@@ -12,7 +12,7 @@
 namespace El {
 namespace twotrsm {
 
-template<typename F> 
+template<typename F>
 void UVar2( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
 {
     EL_DEBUG_CSE
@@ -33,7 +33,7 @@ void UVar2( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
     for( Int k=0; k<n; k+=bsize )
     {
         const Int nb = Min(bsize,n-k);
-        
+
         const Range<Int> ind0( 0,    k    ),
                          ind1( k,    k+nb ),
                          ind2( k+nb, n    );
@@ -54,7 +54,7 @@ void UVar2( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
 
         // A01 := A01 - 1/2 Y01
         Axpy( F(-1)/F(2), Y01, A01 );
-        
+
         // A11 := A11 - (U01' A01 + A01' U01)
         Her2k( UPPER, ADJOINT, F(-1), U01, A01, F(1), A11 );
 
@@ -66,7 +66,7 @@ void UVar2( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
 
         // A12 := inv(U11)' A12
         Trsm( LEFT, UPPER, ADJOINT, diag, F(1), U11, A12 );
-        
+
         // A01 := A01 - 1/2 Y01
         Axpy( F(-1)/F(2), Y01, A01 );
 
@@ -77,9 +77,9 @@ void UVar2( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
 
 // This routine has only partially been optimized. The ReduceScatter operations
 // need to be (conjugate-)transposed in order to play nice with cache.
-template<typename F> 
+template<typename F>
 void UVar2
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& APre,
   const AbstractDistMatrix<F>& UPre )
 {
@@ -96,20 +96,20 @@ void UVar2
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
     auto& A = AProx.Get();
     auto& U = UProx.GetLocked();
 
     // Temporary distributions
-    DistMatrix<F,MC,  STAR> A01_MC_STAR(g), F01_MC_STAR(g), U01_MC_STAR(g);
-    DistMatrix<F,VC,  STAR> A01_VC_STAR(g);
-    DistMatrix<F,VR,  STAR> U01_VR_STAR(g);
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), U11_STAR_STAR(g);
-    DistMatrix<F,STAR,MR  > U01Adj_STAR_MR(g), X11_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > A12_STAR_VR(g);
-    DistMatrix<F,MR,  STAR> X12Adj_MR_STAR(g), Y01_MR_STAR(g);
-    DistMatrix<F,MR,  MC  > X12Adj_MR_MC(g), Y01_MR_MC(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> A01_MC_STAR(g), F01_MC_STAR(g), U01_MC_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> A01_VC_STAR(g);
+    DistMatrix<F,Dist::VR,  Dist::STAR> U01_VR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), U11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > U01Adj_STAR_MR(g), X11_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > A12_STAR_VR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> X12Adj_MR_STAR(g), Y01_MR_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::MC  > X12Adj_MR_MC(g), Y01_MR_MC(g);
     DistMatrix<F> X11(g), Y01(g);
 
     Matrix<F> X12Local;
@@ -145,7 +145,7 @@ void UVar2
         Zero( Y01_MR_STAR );
         Zero( F01_MC_STAR );
         symm::LocalAccumulateLU
-        ( ADJOINT, 
+        ( ADJOINT,
           F(1), A00, U01_MC_STAR, U01Adj_STAR_MR, F01_MC_STAR, Y01_MR_STAR );
         Contract( Y01_MR_STAR, Y01_MR_MC );
         Y01.AlignWith( A01 );
@@ -160,7 +160,7 @@ void UVar2
         A01 -= Y01;
         A01_MC_STAR.AlignWith( U01 );
         A01_MC_STAR = A01;
-        
+
         // A11 := A11 - triu(X11 + A01' U01) = A11 - (U01 A01 + A01' U01)
         LocalGemm( ADJOINT, NORMAL, F(1), A01_MC_STAR, U01, F(1), X11_STAR_MR );
         X11.AlignWith( A11 );

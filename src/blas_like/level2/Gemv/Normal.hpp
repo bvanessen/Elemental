@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -33,19 +33,19 @@ void Normal
     )
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> yProx( yPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> yProx( yPre );
     auto& A = AProx.GetLocked();
     auto& y = yProx.Get();
 
     y *= beta;
     if( x.Width() == 1 && y.Width() == 1 )
     {
-        DistMatrix<T,MR,STAR> x_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> x_MR_STAR(g);
         x_MR_STAR.AlignWith( A );
         x_MR_STAR = x;
 
-        DistMatrix<T,MC,STAR> z_MC_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> z_MC_STAR(g);
         z_MC_STAR.AlignWith( A );
         z_MC_STAR.Resize( A.Height(), 1 );
         Zero( z_MC_STAR );
@@ -54,11 +54,11 @@ void Normal
     }
     else if( x.Width() == 1 )
     {
-        DistMatrix<T,MR,STAR> x_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> x_MR_STAR(g);
         x_MR_STAR.AlignWith( A );
         x_MR_STAR = x;
 
-        DistMatrix<T,MC,STAR> z_MC_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> z_MC_STAR(g);
         z_MC_STAR.AlignWith( A );
         z_MC_STAR.Resize( A.Height(), 1 );
         Zero( z_MC_STAR );
@@ -73,10 +73,10 @@ void Normal
     }
     else if( y.Width() == 1 )
     {
-        DistMatrix<T,STAR,MR> x_STAR_MR(g);
+        DistMatrix<T,Dist::STAR,Dist::MR> x_STAR_MR(g);
         x_STAR_MR.AlignWith( A );
         x_STAR_MR = x;
-        DistMatrix<T,MC,  STAR> z_MC_STAR(g);
+        DistMatrix<T,Dist::MC,  Dist::STAR> z_MC_STAR(g);
         z_MC_STAR.AlignWith( A );
         z_MC_STAR.Resize( A.Height(), 1 );
         Zero( z_MC_STAR );
@@ -85,11 +85,11 @@ void Normal
     }
     else
     {
-        DistMatrix<T,STAR,MR> x_STAR_MR(g);
+        DistMatrix<T,Dist::STAR,Dist::MR> x_STAR_MR(g);
         x_STAR_MR.AlignWith( A );
         x_STAR_MR = x;
 
-        DistMatrix<T,MC,  STAR> z_MC_STAR(g);
+        DistMatrix<T,Dist::MC,  Dist::STAR> z_MC_STAR(g);
         z_MC_STAR.AlignWith( A );
         z_MC_STAR.Resize( A.Height(), 1 );
         Zero( z_MC_STAR );
@@ -110,7 +110,7 @@ void Normal
   const DistMatrix<T>& A,
   const AbstractDistMatrix<T>& x,
   T beta,
-        DistMatrix<T,VC,STAR>& y )
+        DistMatrix<T,Dist::VC,Dist::STAR>& y )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -125,11 +125,11 @@ void Normal
     const Grid& g = A.Grid();
     y *= beta;
 
-    DistMatrix<T,MR,STAR> x_MR_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> x_MR_STAR(g);
     x_MR_STAR.AlignWith( A );
     x_MR_STAR = x;
 
-    DistMatrix<T,MC,STAR> z_MC_STAR(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> z_MC_STAR(g);
     z_MC_STAR.AlignWith( A );
     z_MC_STAR.Resize( A.Height(), 1 );
     Zero( z_MC_STAR );

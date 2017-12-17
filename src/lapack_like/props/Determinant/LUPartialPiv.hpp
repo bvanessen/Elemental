@@ -71,7 +71,7 @@ SafeProduct<Field> AfterLUPartialPiv
     if( APre.Height() != APre.Width() )
         LogicError("Cannot compute det of nonsquare matrix");
 
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.GetLocked();
 
     typedef Base<Field> Real;
@@ -112,7 +112,7 @@ LUPartialPiv( AbstractDistMatrix<Field>& APre )
     if( APre.Height() != APre.Width() )
         LogicError("Cannot compute det of nonsquare matrix");
 
-    DistMatrixReadProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     SafeProduct<Field> det( A.Height() );

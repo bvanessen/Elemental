@@ -31,7 +31,7 @@ void Rotate
 ( Base<F> c, F s, AbstractDistMatrix<F>& a1, AbstractDistMatrix<F>& a2 )
 {
     EL_DEBUG_CSE
-    DistMatrix<F,STAR,STAR> G(2,2,a1.Grid());
+    DistMatrix<F,Dist::STAR,Dist::STAR> G(2,2,a1.Grid());
     G.Set(0,0,c);
     G.Set(0,1,s);
     G.Set(1,0,-Conj(s));
@@ -55,7 +55,7 @@ template<typename F>
 void RotateRows( Base<F> c, F s, AbstractDistMatrix<F>& A, Int i1, Int i2 )
 {
     EL_DEBUG_CSE
-    DistMatrix<F,STAR,STAR> G(2,2,A.Grid());
+    DistMatrix<F,Dist::STAR,Dist::STAR> G(2,2,A.Grid());
     G.Set(0,0,c);
     G.Set(0,1,s);
     G.Set(1,0,-Conj(s));
@@ -79,7 +79,7 @@ template<typename F>
 void RotateCols( Base<F> c, F s, AbstractDistMatrix<F>& A, Int i1, Int i2 )
 {
     EL_DEBUG_CSE
-    DistMatrix<F,STAR,STAR> G(2,2,A.Grid());
+    DistMatrix<F,Dist::STAR,Dist::STAR> G(2,2,A.Grid());
     G.Set(0,0,c);
     G.Set(0,1,s);
     G.Set(1,0,-Conj(s));

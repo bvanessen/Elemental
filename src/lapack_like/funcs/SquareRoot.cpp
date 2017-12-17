@@ -108,7 +108,7 @@ Newton
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     typedef Base<Field> Real;
@@ -227,13 +227,13 @@ void HPSDSquareRoot
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     // Get the EVD of A
     typedef Base<Field> Real;
     const Grid& g = A.Grid();
-    DistMatrix<Real,VR,STAR> w(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> w(g);
     DistMatrix<Field> Q(g);
     auto ctrlMod( ctrl );
     ctrlMod.tridiagEigCtrl.sort = UNSORTED;

@@ -223,7 +223,7 @@ void Sign( AbstractDistMatrix<Field>& APre, const SignCtrl<Base<Field>> ctrl )
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     sign::Newton( A, ctrl );
@@ -237,8 +237,8 @@ void Sign
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> NProx( NPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> NProx( NPre );
     auto& A = AProx.Get();
     auto& N = NProx.Get();
 
@@ -330,13 +330,13 @@ void HermitianSign
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     // Get the EVD of A
     typedef Base<Field> Real;
     const Grid& g = A.Grid();
-    DistMatrix<Real,VR,STAR> w(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> w(g);
     DistMatrix<Field> Q(g);
     auto ctrlMod( ctrl );
     ctrlMod.tridiagEigCtrl.sort = UNSORTED;
@@ -365,15 +365,15 @@ void HermitianSign
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> NProx( NPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> NProx( NPre );
     auto& A = AProx.Get();
     auto& N = NProx.Get();
 
     // Get the EVD of A
     typedef Base<Field> Real;
     const Grid& g = A.Grid();
-    DistMatrix<Real,VR,STAR> w(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> w(g);
     DistMatrix<Field> Q(g);
     auto ctrlMod( ctrl );
     ctrlMod.tridiagEigCtrl.sort = UNSORTED;
@@ -381,7 +381,7 @@ void HermitianSign
 
     const Int n = A.Height();
     const Int numLocalEigs = w.LocalHeight();
-    DistMatrix<Real,VR,STAR> wSgn(g), wAbs(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> wSgn(g), wAbs(g);
     wSgn.AlignWith( w );
     wAbs.AlignWith( w );
     wSgn.Resize( n, 1 );

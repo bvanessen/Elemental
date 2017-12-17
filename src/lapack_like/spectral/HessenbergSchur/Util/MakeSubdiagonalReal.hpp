@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_HESS_SCHUR_UTIL_MAKE_SUBDIAGONAL_REAL_HPP
@@ -75,8 +75,8 @@ void MakeSubdiagonalReal
 
 template<typename Real>
 void MakeSubdiagonalReal
-( DistMatrix<Complex<Real>,MC,MR,BLOCK>& H,
-  DistMatrix<Complex<Real>,MC,MR,BLOCK>& Z,
+( DistMatrix<Complex<Real>,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+  DistMatrix<Complex<Real>,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE
@@ -91,9 +91,9 @@ void MakeSubdiagonalReal
 
     // Compute the phase of the unitary diagonal matrix whose similarity
     // transformations makes H have a real subdiagonal
-    DistMatrix<Complex<Real>,STAR,STAR> hSubWin(H.Grid());
+    DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR> hSubWin(H.Grid());
     util::GatherSubdiagonal( H, winInd, hSubWin );
-    DistMatrix<Complex<Real>,STAR,STAR> phase(H.Grid());
+    DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR> phase(H.Grid());
     Zeros( phase, winSize-1, 1 );
     for( Int i=0; i<winSize-1; ++i )
     {

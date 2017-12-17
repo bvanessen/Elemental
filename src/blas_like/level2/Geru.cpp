@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level2.hpp>
 
 namespace El {
@@ -40,7 +39,7 @@ void Geru
 template<typename T>
 void Geru
 ( T alpha,
-  const AbstractDistMatrix<T>& x, 
+  const AbstractDistMatrix<T>& x,
   const AbstractDistMatrix<T>& y,
         AbstractDistMatrix<T>& APre )
 {
@@ -60,16 +59,16 @@ void Geru
     )
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<T,T,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     if( x.Width() == 1 && y.Width() == 1 )
     {
-        DistMatrix<T,MC,STAR> x_MC_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
         x_MC_STAR.AlignWith( A );
         x_MC_STAR = x;
 
-        DistMatrix<T,MR,STAR> y_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> y_MR_STAR(g);
         y_MR_STAR.AlignWith( A );
         y_MR_STAR = y;
 
@@ -80,11 +79,11 @@ void Geru
     }
     else if( x.Width() == 1 )
     {
-        DistMatrix<T,MC,STAR> x_MC_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
         x_MC_STAR.AlignWith( A );
         x_MC_STAR = x;
 
-        DistMatrix<T,STAR,MR> y_STAR_MR(g);
+        DistMatrix<T,Dist::STAR,Dist::MR> y_STAR_MR(g);
         y_STAR_MR.AlignWith( A );
         y_STAR_MR = y;
 
@@ -95,11 +94,11 @@ void Geru
     }
     else if( y.Width() == 1 )
     {
-        DistMatrix<T,STAR,MC> x_STAR_MC(g);
+        DistMatrix<T,Dist::STAR,Dist::MC> x_STAR_MC(g);
         x_STAR_MC.AlignWith( A );
         x_STAR_MC = x;
 
-        DistMatrix<T,MR,STAR> y_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> y_MR_STAR(g);
         y_MR_STAR.AlignWith( A );
         y_MR_STAR = y;
 
@@ -110,11 +109,11 @@ void Geru
     }
     else
     {
-        DistMatrix<T,STAR,MC> x_STAR_MC(g);
+        DistMatrix<T,Dist::STAR,Dist::MC> x_STAR_MC(g);
         x_STAR_MC.AlignWith( A );
         x_STAR_MC = x;
 
-        DistMatrix<T,STAR,MR> y_STAR_MR(g);
+        DistMatrix<T,Dist::STAR,Dist::MR> y_STAR_MR(g);
         y_STAR_MR.AlignWith( A );
         y_STAR_MR = y;
 

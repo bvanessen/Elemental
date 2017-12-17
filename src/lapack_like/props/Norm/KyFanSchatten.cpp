@@ -77,7 +77,7 @@ KyFanSchattenNorm( const AbstractDistMatrix<Field>& A, Int k, Base<Field> p )
 
     typedef Base<Field> Real;
     DistMatrix<Field> B( A );
-    DistMatrix<Real,VR,STAR> s( A.Grid() );
+    DistMatrix<Real,Dist::VR,Dist::STAR> s( A.Grid() );
     SVDCtrl<Real> ctrl;
     ctrl.overwrite = true;
     SVD( B, s, ctrl );
@@ -101,7 +101,7 @@ Base<Field> HermitianKyFanSchattenNorm
         LogicError("Invalid index of KyFanSchatten norm");
 
     typedef Base<Field> Real;
-    DistMatrix<Real,VR,STAR> s( A.Grid() );
+    DistMatrix<Real,Dist::VR,Dist::STAR> s( A.Grid() );
     HermitianSVD( uplo, A, s );
 
     Real localSum = 0;
@@ -124,7 +124,7 @@ Base<Field> SymmetricKyFanSchattenNorm
 
     typedef Base<Field> Real;
     DistMatrix<Field> B( A );
-    DistMatrix<Real,VR,STAR> s( A.Grid() );
+    DistMatrix<Real,Dist::VR,Dist::STAR> s( A.Grid() );
     MakeSymmetric( uplo, B );
     SVDCtrl<Real> ctrl;
     ctrl.overwrite = true;

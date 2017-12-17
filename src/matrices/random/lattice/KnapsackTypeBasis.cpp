@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include <El/matrices.hpp>
 
@@ -30,7 +29,7 @@ template<typename T>
 void KnapsackTypeBasis( AbstractDistMatrix<T>& APre, Int n, Base<T> radius )
 {
     EL_DEBUG_CSE
-    DistMatrixWriteProxy<T,T,MC,MR> AProx( APre );
+    DistMatrixWriteProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     A.Resize( n+1, n );

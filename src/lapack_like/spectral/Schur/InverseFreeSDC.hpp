@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_SCHUR_INVERSEFREESDC_HPP
@@ -36,7 +36,7 @@ int InverseFreeSign( Matrix<F>& X, Int maxIts=100, Base<F> tau=0 )
     // Expose A and B in the original and temporary
     Matrix<F> XAlt( 2*n, n );
     auto B = X( IR(0,n  ), ALL );
-    auto A = X( IR(n,2*n), ALL ); 
+    auto A = X( IR(n,2*n), ALL );
     auto BAlt = XAlt( IR(0,n  ), ALL );
     auto AAlt = XAlt( IR(n,2*n), ALL );
 
@@ -57,7 +57,7 @@ int InverseFreeSign( Matrix<F>& X, Int maxIts=100, Base<F> tau=0 )
     {
         XAlt = X;
         QR( XAlt, householderScalars, signature );
- 
+
         // Form the left half of Q
         Zero( Q12 );
         MakeIdentity( Q22 );
@@ -66,7 +66,7 @@ int InverseFreeSign( Matrix<F>& X, Int maxIts=100, Base<F> tau=0 )
         // Save a copy of R
         R = BAlt;
         MakeTrapezoidal( UPPER, R );
-        
+
         // Form the new iterate
         Gemm( ADJOINT, NORMAL, F(1), Q12, A, F(0), AAlt );
         Gemm( ADJOINT, NORMAL, F(1), Q22, B, F(0), BAlt );
@@ -76,7 +76,7 @@ int InverseFreeSign( Matrix<F>& X, Int maxIts=100, Base<F> tau=0 )
         ++numIts;
         if( numIts > 1 )
         {
-            const Real oneRLast = OneNorm(RLast);     
+            const Real oneRLast = OneNorm(RLast);
             AxpyTrapezoid( UPPER, F(-1), R, RLast );
             const Real oneRDiff = OneNorm(RLast);
             if( oneRDiff <= tau*oneRLast )
@@ -96,7 +96,7 @@ int InverseFreeSign
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& X = XProx.Get();
 
     typedef Base<F> Real;
@@ -119,8 +119,8 @@ int InverseFreeSign
     A *= -1;
 
     // Set up the space for explicitly computing the left half of Q
-    DistMatrix<F,MD,STAR> householderScalars(g);
-    DistMatrix<Base<F>,MD,STAR> signature(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(g);
     DistMatrix<F> Q( 2*n, n, g );
     auto Q12 = Q( IR(0,n  ), ALL );
     auto Q22 = Q( IR(n,2*n), ALL );
@@ -132,7 +132,7 @@ int InverseFreeSign
     {
         XAlt = X;
         QR( XAlt, householderScalars, signature );
- 
+
         // Form the left half of Q
         Zero( Q12 );
         MakeIdentity( Q22 );
@@ -141,7 +141,7 @@ int InverseFreeSign
         // Save a copy of R
         R = BAlt;
         MakeTrapezoidal( UPPER, R );
-        
+
         // Form the new iterate
         Gemm( ADJOINT, NORMAL, F(1), Q12, A, F(0), AAlt );
         Gemm( ADJOINT, NORMAL, F(1), Q22, B, F(0), BAlt );
@@ -151,7 +151,7 @@ int InverseFreeSign
         ++numIts;
         if( numIts > 1 )
         {
-            const Real oneRLast = OneNorm(RLast);     
+            const Real oneRLast = OneNorm(RLast);
             AxpyTrapezoid( UPPER, F(-1), R, RLast );
             const Real oneRDiff = OneNorm(RLast);
             if( oneRDiff <= tau*oneRLast )
@@ -173,7 +173,7 @@ Base<F> InverseFreeSignDivide( Matrix<F>& X )
     const Int n = X.Width();
     if( X.Height() != 2*n )
         LogicError("Matrix should be 2n x n");
-   
+
     // Expose A and B, and then copy A
     auto B = X( IR(0,n  ), ALL );
     auto A = X( IR(n,2*n), ALL );
@@ -183,7 +183,7 @@ Base<F> InverseFreeSignDivide( Matrix<F>& X )
     InverseFreeSign( X );
 
     // Compute the pivoted QR decomp of inv(A + B) A [See LAWN91]
-    // 1) B := A + B 
+    // 1) B := A + B
     // 2) [Q,R,Pi] := QRP(A)
     // 3) B := Q^H B
     // 4) [R,Q] := RQ(B)
@@ -211,7 +211,7 @@ ValueInt<Base<F>> InverseFreeSignDivide( AbstractDistMatrix<F>& XPre )
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& X = XProx.Get();
 
     typedef Base<F> Real;
@@ -219,7 +219,7 @@ ValueInt<Base<F>> InverseFreeSignDivide( AbstractDistMatrix<F>& XPre )
     const Int n = X.Width();
     if( X.Height() != 2*n )
         LogicError("Matrix should be 2n x n");
-   
+
     // Expose A and B, and then copy A
     auto B = X( IR(0,n  ), ALL );
     auto A = X( IR(n,2*n), ALL );
@@ -229,13 +229,13 @@ ValueInt<Base<F>> InverseFreeSignDivide( AbstractDistMatrix<F>& XPre )
     InverseFreeSign( X );
 
     // Compute the pivoted QR decomp of inv(A + B) A [See LAWN91]
-    // 1) B := A + B 
+    // 1) B := A + B
     // 2) [Q,R,Pi] := QRP(A)
     // 3) B := Q^H B
     // 4) [R,Q] := RQ(B)
     B += A;
-    DistMatrix<F,MD,STAR> householderScalars(g);
-    DistMatrix<Base<F>,MD,STAR> signature(g);
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(g);
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(g);
     DistPermutation perm(g);
     QR( A, householderScalars, signature, perm );
     qr::ApplyQ( LEFT, ADJOINT, A, householderScalars, signature, B );

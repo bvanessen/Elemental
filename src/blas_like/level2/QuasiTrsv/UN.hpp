@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -39,7 +39,7 @@ void UNUnb( const Matrix<F>& U, Matrix<F>& x, bool checkIfSingular=false )
             --k;
             // Solve the 2x2 linear system via a 2x2 QR decomposition produced
             // by the Givens rotation
-            //    | c        s | | U(k,  k) | = | gamma11 | 
+            //    | c        s | | U(k,  k) | = | gamma11 |
             //    | -conj(s) c | | U(k+1,k) |   | 0       |
             //
             // and by also forming the right two entries of the 2x2 resulting
@@ -154,7 +154,7 @@ void UN
           LogicError("U must be square");
       if( xPre.Width() != 1 && xPre.Height() != 1 )
           LogicError("x must be a vector");
-      const Int xLength = 
+      const Int xLength =
           ( xPre.Width() == 1 ? xPre.Height() : xPre.Width() );
       if( UPre.Width() != xLength )
           LogicError("Nonconformal");
@@ -164,24 +164,24 @@ void UN
     const Int kLast = LastOffset( m, bsize );
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> xProx( xPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> xProx( xPre );
     auto& U = UProx.GetLocked();
     auto& x = xProx.Get();
 
-    // Matrix views 
+    // Matrix views
     DistMatrix<F> U01(g), U11(g), x1(g);
 
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g), x1_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g), x1_STAR_STAR(g);
 
     if( x.Width() == 1 )
     {
-        DistMatrix<F,MR,STAR> x1_MR_STAR(g);
-        DistMatrix<F,MC,STAR> z_MC_STAR(g);
+        DistMatrix<F,Dist::MR,Dist::STAR> x1_MR_STAR(g);
+        DistMatrix<F,Dist::MC,Dist::STAR> z_MC_STAR(g);
 
         // Views of z[MC,* ], which will store updates to x
-        DistMatrix<F,MC,STAR> z0_MC_STAR(g), z1_MC_STAR(g);
+        DistMatrix<F,Dist::MC,Dist::STAR> z0_MC_STAR(g), z1_MC_STAR(g);
 
         z_MC_STAR.AlignWith( U );
         z_MC_STAR.Resize( m, 1 );
@@ -209,7 +209,7 @@ void UN
             x1_STAR_STAR = x1;
             U11_STAR_STAR = U11;
             quasitrsv::UN
-            ( U11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix(), 
+            ( U11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix(),
               checkIfSingular );
             x1 = x1_STAR_STAR;
 
@@ -225,13 +225,13 @@ void UN
     }
     else
     {
-        DistMatrix<F,STAR,MR  > x1_STAR_MR(g);
-        DistMatrix<F,MC,  MR  > z1(g);
-        DistMatrix<F,MR,  MC  > z1_MR_MC(g);
-        DistMatrix<F,STAR,MC  > z_STAR_MC(g);
+        DistMatrix<F,Dist::STAR,Dist::MR  > x1_STAR_MR(g);
+        DistMatrix<F,Dist::MC,  Dist::MR  > z1(g);
+        DistMatrix<F,Dist::MR,  Dist::MC  > z1_MR_MC(g);
+        DistMatrix<F,Dist::STAR,Dist::MC  > z_STAR_MC(g);
 
         // Views of z[* ,MC]
-        DistMatrix<F,STAR,MC> z0_STAR_MC(g), z1_STAR_MC(g);
+        DistMatrix<F,Dist::STAR,Dist::MC> z0_STAR_MC(g), z1_STAR_MC(g);
 
         z_STAR_MC.AlignWith( U );
         z_STAR_MC.Resize( 1, m );

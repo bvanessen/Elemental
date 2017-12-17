@@ -17,8 +17,8 @@ namespace multibulge {
 
 template<typename Field>
 void ConsistentlyComputeDecomposition
-(       DistMatrix<Field,MC,MR,BLOCK>& H,
-        DistMatrix<Complex<Base<Field>>,STAR,STAR>& w,
+(       DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+        DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& w,
         Matrix<Field>& Z,
   const HessenbergSchurCtrl& ctrl=HessenbergSchurCtrl() )
 {
@@ -30,7 +30,7 @@ void ConsistentlyComputeDecomposition
     const Grid& grid = H.Grid();
     const int owner = H.Owner(0,0);
 
-    DistMatrix<Field,CIRC,CIRC> H_CIRC_CIRC( grid, owner );
+    DistMatrix<Field,Dist::CIRC,Dist::CIRC> H_CIRC_CIRC( grid, owner );
     H_CIRC_CIRC = H;
     w.Resize( H.Height(), 1 );
     if( H_CIRC_CIRC.CrossRank() == H_CIRC_CIRC.Root() )
@@ -45,9 +45,9 @@ void ConsistentlyComputeDecomposition
 template<typename Field>
 HessenbergSchurInfo
 RedundantlyHandleWindow
-( DistMatrix<Field,MC,MR,BLOCK>& H,
-  DistMatrix<Complex<Base<Field>>,STAR,STAR>& w,
-  DistMatrix<Field,MC,MR,BLOCK>& Z,
+( DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+  DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& w,
+  DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE

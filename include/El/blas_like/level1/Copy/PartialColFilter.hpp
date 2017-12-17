@@ -67,7 +67,7 @@ void PartialColFilter
         const Int localHeightSend = Length( height, sendColShift, colStride );
         const Int sendSize = localHeightSend*width;
         const Int recvSize = localHeight    *width;
-        vector<T> buffer;
+        std::vector<T> buffer;
         FastResize( buffer, sendSize+recvSize );
         T* sendBuf = &buffer[0];
         T* recvBuf = &buffer[sendSize];

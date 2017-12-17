@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include <El/blas_like/level2.hpp>
 #include <El/blas_like/level3.hpp>
@@ -130,28 +129,28 @@ void Trsm
             {
                 if( A.ColDist() == VR )
                 {
-                    DistMatrixReadProxy<F,F,VR,STAR> AProx( A );
+                    DistMatrixReadProxy<F,F,Dist::VR,Dist::STAR> AProx( A );
                     auto& APost = AProx.GetLocked();
 
                     ElementalProxyCtrl ctrl;
                     ctrl.colConstrain = true;
                     ctrl.colAlign = APost.ColAlign();
 
-                    DistMatrixReadWriteProxy<F,F,VR,STAR> BProx( B, ctrl );
+                    DistMatrixReadWriteProxy<F,F,Dist::VR,Dist::STAR> BProx( B, ctrl );
                     auto& BPost = BProx.Get();
 
                     trsm::LLNSmall( diag, APost, BPost, checkIfSingular );
                 }
                 else
                 {
-                    DistMatrixReadProxy<F,F,VC,STAR> AProx( A );
+                    DistMatrixReadProxy<F,F,Dist::VC,Dist::STAR> AProx( A );
                     auto& APost = AProx.GetLocked();
 
                     ElementalProxyCtrl ctrl;
                     ctrl.colConstrain = true;
                     ctrl.colAlign = APost.ColAlign();
 
-                    DistMatrixReadWriteProxy<F,F,VC,STAR> BProx( B, ctrl );
+                    DistMatrixReadWriteProxy<F,F,Dist::VC,Dist::STAR> BProx( B, ctrl );
                     auto& BPost = BProx.Get();
 
                     trsm::LLNSmall( diag, APost, BPost, checkIfSingular );
@@ -177,14 +176,14 @@ void Trsm
             {
                 if( A.ColDist() == VR )
                 {
-                    DistMatrixReadProxy<F,F,VR,STAR> AProx( A );
+                    DistMatrixReadProxy<F,F,Dist::VR,Dist::STAR> AProx( A );
                     auto& APost = AProx.GetLocked();
 
                     ElementalProxyCtrl ctrl;
                     ctrl.colConstrain = true;
                     ctrl.colAlign = APost.ColAlign();
 
-                    DistMatrixReadWriteProxy<F,F,VR,STAR> BProx( B, ctrl );
+                    DistMatrixReadWriteProxy<F,F,Dist::VR,Dist::STAR> BProx( B, ctrl );
                     auto& BPost = BProx.Get();
 
                     trsm::LLTSmall
@@ -192,14 +191,14 @@ void Trsm
                 }
                 else if( A.RowDist() == VC )
                 {
-                    DistMatrixReadProxy<F,F,STAR,VC> AProx( A );
+                    DistMatrixReadProxy<F,F,Dist::STAR,Dist::VC> AProx( A );
                     auto& APost = AProx.GetLocked();
 
                     ElementalProxyCtrl ctrl;
                     ctrl.colConstrain = true;
                     ctrl.colAlign = APost.RowAlign();
 
-                    DistMatrixReadWriteProxy<F,F,VC,STAR> BProx( B, ctrl );
+                    DistMatrixReadWriteProxy<F,F,Dist::VC,Dist::STAR> BProx( B, ctrl );
                     auto& BPost = BProx.Get();
 
                     trsm::LLTSmall
@@ -207,14 +206,14 @@ void Trsm
                 }
                 else if( A.RowDist() == VR )
                 {
-                    DistMatrixReadProxy<F,F,STAR,VR> AProx( A );
+                    DistMatrixReadProxy<F,F,Dist::STAR,Dist::VR> AProx( A );
                     auto& APost = AProx.GetLocked();
 
                     ElementalProxyCtrl ctrl;
                     ctrl.colConstrain = true;
                     ctrl.colAlign = A.RowAlign();
 
-                    DistMatrixReadWriteProxy<F,F,VR,STAR> BProx( B, ctrl );
+                    DistMatrixReadWriteProxy<F,F,Dist::VR,Dist::STAR> BProx( B, ctrl );
                     auto& BPost = BProx.Get();
 
                     trsm::LLTSmall
@@ -222,14 +221,14 @@ void Trsm
                 }
                 else
                 {
-                    DistMatrixReadProxy<F,F,VC,STAR> AProx( A );
+                    DistMatrixReadProxy<F,F,Dist::VC,Dist::STAR> AProx( A );
                     auto& APost = AProx.GetLocked();
 
                     ElementalProxyCtrl ctrl;
                     ctrl.colConstrain = true;
                     ctrl.colAlign = A.ColAlign();
 
-                    DistMatrixReadWriteProxy<F,F,VC,STAR> BProx( B, ctrl );
+                    DistMatrixReadWriteProxy<F,F,Dist::VC,Dist::STAR> BProx( B, ctrl );
                     auto& BPost = BProx.Get();
 
                     trsm::LLTSmall
@@ -259,28 +258,28 @@ void Trsm
             {
                 if( A.ColDist() == VR )
                 {
-                    DistMatrixReadProxy<F,F,VR,STAR> AProx( A );
+                    DistMatrixReadProxy<F,F,Dist::VR,Dist::STAR> AProx( A );
                     auto& APost = AProx.GetLocked();
 
                     ElementalProxyCtrl ctrl;
                     ctrl.colConstrain = true;
                     ctrl.colAlign = A.ColAlign();
 
-                    DistMatrixReadWriteProxy<F,F,VR,STAR> BProx( B, ctrl );
+                    DistMatrixReadWriteProxy<F,F,Dist::VR,Dist::STAR> BProx( B, ctrl );
                     auto& BPost = BProx.Get();
 
                     trsm::LUNSmall( diag, APost, BPost, checkIfSingular );
                 }
                 else
                 {
-                    DistMatrixReadProxy<F,F,VC,STAR> AProx( A );
+                    DistMatrixReadProxy<F,F,Dist::VC,Dist::STAR> AProx( A );
                     auto& APost = AProx.GetLocked();
 
                     ElementalProxyCtrl ctrl;
                     ctrl.colConstrain = true;
                     ctrl.colAlign = A.ColAlign();
 
-                    DistMatrixReadWriteProxy<F,F,VC,STAR> BProx( B, ctrl );
+                    DistMatrixReadWriteProxy<F,F,Dist::VC,Dist::STAR> BProx( B, ctrl );
                     auto& BPost = BProx.Get();
 
                     trsm::LUNSmall( diag, APost, BPost, checkIfSingular );
@@ -306,14 +305,14 @@ void Trsm
             {
                 if( A.RowDist() == VC )
                 {
-                    DistMatrixReadProxy<F,F,STAR,VC> AProx( A );
+                    DistMatrixReadProxy<F,F,Dist::STAR,Dist::VC> AProx( A );
                     auto& APost = AProx.GetLocked();
 
                     ElementalProxyCtrl ctrl;
                     ctrl.colConstrain = true;
                     ctrl.colAlign = A.RowAlign();
 
-                    DistMatrixReadWriteProxy<F,F,VC,STAR> BProx( B, ctrl );
+                    DistMatrixReadWriteProxy<F,F,Dist::VC,Dist::STAR> BProx( B, ctrl );
                     auto& BPost = BProx.Get();
 
                     trsm::LUTSmall
@@ -321,14 +320,14 @@ void Trsm
                 }
                 else
                 {
-                    DistMatrixReadProxy<F,F,STAR,VR> AProx( A );
+                    DistMatrixReadProxy<F,F,Dist::STAR,Dist::VR> AProx( A );
                     auto& APost = AProx.GetLocked();
 
                     ElementalProxyCtrl ctrl;
                     ctrl.colConstrain = true;
                     ctrl.colAlign = A.RowAlign();
 
-                    DistMatrixReadWriteProxy<F,F,VR,STAR> BProx( B, ctrl );
+                    DistMatrixReadWriteProxy<F,F,Dist::VR,Dist::STAR> BProx( B, ctrl );
                     auto& BPost = BProx.Get();
 
                     trsm::LUTSmall
@@ -382,7 +381,7 @@ void LocalTrsm
   Orientation orientation,
   UnitOrNonUnit diag,
   F alpha,
-  const DistMatrix<F,STAR,STAR>& A,
+  const DistMatrix<F,Dist::STAR,Dist::STAR>& A,
         AbstractDistMatrix<F>& X,
   bool checkIfSingular )
 {
@@ -424,7 +423,7 @@ void LocalTrsm
     Orientation orientation, \
     UnitOrNonUnit diag, \
     F alpha, \
-    const DistMatrix<F,STAR,STAR>& A, \
+    const DistMatrix<F,Dist::STAR,Dist::STAR>& A, \
           AbstractDistMatrix<F>& X, \
     bool checkIfSingular );
 

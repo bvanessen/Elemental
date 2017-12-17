@@ -36,8 +36,8 @@ void Cholesky( AbstractDistMatrix<F>& APre, AbstractDistMatrix<F>& RPre )
     if( m > n )
         LogicError("A A^H will be singular");
 
-    DistMatrixReadWriteProxy<F,F,VR,STAR> AProx( APre );
-    DistMatrixWriteProxy<F,F,STAR,STAR> RProx( RPre );
+    DistMatrixReadWriteProxy<F,F,Dist::VR,Dist::STAR> AProx( APre );
+    DistMatrixWriteProxy<F,F,Dist::STAR,Dist::STAR> RProx( RPre );
     auto& A = AProx.Get();
     auto& R = RProx.Get();
 

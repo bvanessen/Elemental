@@ -54,7 +54,7 @@ HermitianGenDefEig
           LogicError("Hermitian matrices must be square.");
     )
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre ), BProx( BPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre ), BProx( BPre );
     auto& A = AProx.Get();
     auto& B = BProx.Get();
 
@@ -123,8 +123,8 @@ HermitianGenDefEig
           LogicError("Hermitian matrices must be square.");
     )
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre ), BProx( BPre );
-    DistMatrixWriteProxy<Field,Field,MC,MR> XProx( XPre );
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre ), BProx( BPre );
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR> XProx( XPre );
     auto& A = AProx.Get();
     auto& B = BProx.Get();
     auto& X = XProx.Get();

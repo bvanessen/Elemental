@@ -9,7 +9,12 @@
 #ifndef EL_BLAS_CONCATENATE_HPP
 #define EL_BLAS_CONCATENATE_HPP
 
-namespace El {
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/Typedefs.hpp"
+
+namespace El
+{
 
 template<typename T>
 void HCat
@@ -66,7 +71,7 @@ inline void HCat
     const Int nA = A.Width();
     const Int nB = B.Width();
 
-    DistMatrixWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& C = CProx.Get();
 
     C.Resize( m, nA+nB );
@@ -90,7 +95,7 @@ void VCat
     const Int mB = B.Height();
     const Int n = A.Width();
 
-    DistMatrixWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& C = CProx.Get();
 
     C.Resize( mA+mB, n );

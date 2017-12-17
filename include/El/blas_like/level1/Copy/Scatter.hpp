@@ -14,7 +14,7 @@ namespace copy {
 
 template<typename T>
 void Scatter
-( const DistMatrix<T,CIRC,CIRC>& A,
+( const DistMatrix<T,Dist::CIRC,Dist::CIRC>& A,
         ElementalMatrix<T>& B )
 {
     EL_DEBUG_CSE
@@ -50,7 +50,7 @@ void Scatter
         return;
     }
 
-    vector<T> buffer;
+    std::vector<T> buffer;
     T* recvBuf=0; // some compilers (falsely) warn otherwise
     if( A.CrossRank() == root )
     {
@@ -90,7 +90,7 @@ void Scatter
 
 template<typename T>
 void Scatter
-( const DistMatrix<T,CIRC,CIRC,BLOCK>& A,
+( const DistMatrix<T,Dist::CIRC,Dist::CIRC,DistWrap::BLOCK>& A,
         BlockMatrix<T>& B )
 {
     EL_DEBUG_CSE
@@ -101,8 +101,8 @@ void Scatter
 
 template<typename T>
 void Scatter
-( const DistMatrix<T,CIRC,CIRC>& A,
-        DistMatrix<T,STAR,STAR>& B )
+( const DistMatrix<T,Dist::CIRC,Dist::CIRC>& A,
+        DistMatrix<T,Dist::STAR,Dist::STAR>& B )
 {
     EL_DEBUG_CSE
     AssertSameGrids( A, B );
@@ -117,8 +117,8 @@ void Scatter
 
 template<typename T>
 void Scatter
-( const DistMatrix<T,CIRC,CIRC,BLOCK>& A,
-        DistMatrix<T,STAR,STAR,BLOCK>& B )
+( const DistMatrix<T,Dist::CIRC,Dist::CIRC,DistWrap::BLOCK>& A,
+        DistMatrix<T,Dist::STAR,Dist::STAR,DistWrap::BLOCK>& B )
 {
     EL_DEBUG_CSE
     AssertSameGrids( A, B );

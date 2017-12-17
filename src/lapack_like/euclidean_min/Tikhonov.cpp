@@ -76,10 +76,10 @@ void Tikhonov
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadProxy<F,F,MC,MR>
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR>
       AProx( APre ),
       BProx( BPre );
-    DistMatrixWriteProxy<F,F,MC,MR>
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR>
       XProx( XPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();

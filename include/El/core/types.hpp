@@ -9,131 +9,10 @@
 #ifndef EL_TYPES_HPP
 #define EL_TYPES_HPP
 
-namespace El {
+#include "El/core/Element/Complex/decl.hpp"
 
-template<typename T>
-struct Range
+namespace El
 {
-    T beg, end;
-    Range() : beg(0), end(0) { }
-    Range( T begArg, T endArg ) : beg(begArg), end(endArg) { }
-
-    Range<T> operator+( T shift ) const
-    { return Range<T>(beg+shift,end+shift); }
-
-    Range<T> operator-( T shift ) const
-    { return Range<T>(beg-shift,end-shift); }
-
-    Range<T> operator*( T scale ) const
-    { return Range<T>(beg*scale,end*scale); }
-};
-
-static const Int END = -100;
-
-template<>
-struct Range<Int>
-{
-    Int beg, end;
-    Range() : beg(0), end(0) { }
-    Range( Int index ) : beg(index), end(index+1) { }
-    Range( Int begArg, Int endArg ) : beg(begArg), end(endArg) { }
-
-    Range<Int> operator+( Int shift ) const
-    {
-        if( end == END )
-            throw std::logic_error("Unsupported shift");
-        return Range<Int>(beg+shift,end+shift);
-    }
-
-    Range<Int> operator-( Int shift ) const
-    {
-        if( end == END )
-            throw std::logic_error("Unsupported shift");
-        return Range<Int>(beg-shift,end-shift);
-    }
-
-    Range<Int> operator*( Int scale ) const
-    {
-        if( end == END )
-            throw std::logic_error("Unsupported scale");
-        return Range<Int>(beg*scale,end*scale);
-    }
-};
-typedef Range<Int> IR;
-
-static const IR ALL(0,END);
-
-template<typename T>
-inline bool operator==( const Range<T>& a, const Range<T>& b )
-{ return a.beg == b.beg && a.end == b.end; }
-
-template<typename Real>
-struct ValueInt
-{
-    Real value;
-    Int index;
-
-    static bool Lesser( const ValueInt<Real>& a, const ValueInt<Real>& b )
-    { return a.value < b.value; }
-    static bool Greater( const ValueInt<Real>& a, const ValueInt<Real>& b )
-    { return a.value > b.value; }
-};
-
-template<typename Real>
-struct ValueInt<Complex<Real>>
-{
-    Complex<Real> value;
-    Int index;
-
-    static bool Lesser
-    ( const ValueInt<Complex<Real>>& a, const ValueInt<Complex<Real>>& b )
-    {
-        return RealPart(a.value) < RealPart(b.value) ||
-               (RealPart(a.value) == RealPart(b.value) &&
-                ImagPart(a.value) < ImagPart(b.value));
-    }
-    static bool Greater
-    ( const ValueInt<Complex<Real>>& a, const ValueInt<Complex<Real>>& b )
-    {
-        return RealPart(a.value) > RealPart(b.value) ||
-               (RealPart(a.value) == RealPart(b.value) &&
-                ImagPart(a.value) > ImagPart(b.value));
-    }
-};
-
-template<typename Real>
-struct Entry
-{
-    Int i, j;
-    Real value;
-
-    static bool Lesser( const Entry<Real>& a, const Entry<Real>& b )
-    { return a.value < b.value; }
-    static bool Greater( const Entry<Real>& a, const Entry<Real>& b )
-    { return a.value > b.value; }
-};
-
-template<typename Real>
-struct Entry<Complex<Real>>
-{
-    Int i, j;
-    Complex<Real> value;
-
-    static bool Lesser
-    ( const Entry<Complex<Real>>& a, const Entry<Complex<Real>>& b )
-    {
-        return RealPart(a.value) < RealPart(b.value) ||
-               (RealPart(a.value) == RealPart(b.value) &&
-                ImagPart(a.value) < ImagPart(b.value));
-    }
-    static bool Greater
-    ( const Entry<Complex<Real>>& a, const Entry<Complex<Real>>& b )
-    {
-        return RealPart(a.value) > RealPart(b.value) ||
-               (RealPart(a.value) == RealPart(b.value) &&
-                ImagPart(a.value) > ImagPart(b.value));
-    }
-};
 
 // For the safe computation of products. The result is given by
 //   product = rho * exp(kappa*n)
@@ -372,26 +251,6 @@ inline Dist ProductDistPartner( Dist U, Dist V ) EL_NO_EXCEPT
     else                         return STAR;
 }
 
-namespace ViewTypeNS {
-enum ViewType
-{
-    OWNER = 0x0,
-    VIEW = 0x1,
-    OWNER_FIXED = 0x2,
-    VIEW_FIXED = 0x3,
-    LOCKED_OWNER = 0x4, // unused
-    LOCKED_VIEW = 0x5,
-    LOCKED_OWNER_FIXED = 0x6, // unused
-    LOCKED_VIEW_FIXED = 0x7
-};
-static inline bool IsViewing( ViewType v ) EL_NO_EXCEPT
-{ return ( v & VIEW ) != 0; }
-static inline bool IsFixedSize( ViewType v ) EL_NO_EXCEPT
-{ return ( v & OWNER_FIXED ) != 0; }
-static inline bool IsLocked( ViewType v ) EL_NO_EXCEPT
-{ return ( v & LOCKED_OWNER ) != 0; }
-}
-using namespace ViewTypeNS;
 
 namespace ForwardOrBackwardNS {
 enum ForwardOrBackward

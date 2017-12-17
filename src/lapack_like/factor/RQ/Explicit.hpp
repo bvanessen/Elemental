@@ -26,8 +26,8 @@ template<typename F>
 void ExplicitTriang( AbstractDistMatrix<F>& A )
 {
     EL_DEBUG_CSE
-    DistMatrix<F,MD,STAR> householderScalars(A.Grid());
-    DistMatrix<Base<F>,MD,STAR> signature(A.Grid());
+    DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(A.Grid());
+    DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(A.Grid());
     Householder( A, householderScalars, signature );
     MakeTrapezoidal( UPPER, A, A.Width()-A.Height() );
 }

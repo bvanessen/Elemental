@@ -109,10 +109,10 @@ void Ridge
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadProxy<Field,Field,MC,MR>
+    DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR>
       AProx( APre ),
       BProx( BPre );
-    DistMatrixWriteProxy<Field,Field,MC,MR>
+    DistMatrixWriteProxy<Field,Field,Dist::MC,Dist::MR>
       XProx( XPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
@@ -163,7 +163,7 @@ void Ridge
         else
         {
             DistMatrix<Field> U(A.Grid()), V(A.Grid());
-            DistMatrix<Base<Field>,VR,STAR> s(A.Grid());
+            DistMatrix<Base<Field>,Dist::VR,Dist::STAR> s(A.Grid());
             if( orientation == NORMAL )
             {
                 SVDCtrl<Base<Field>> ctrl;

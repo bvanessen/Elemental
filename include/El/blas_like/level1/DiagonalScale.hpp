@@ -9,7 +9,13 @@
 #ifndef EL_BLAS_DIAGONALSCALE_HPP
 #define EL_BLAS_DIAGONALSCALE_HPP
 
-namespace El {
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/Typedefs.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
 
 template<typename TDiag,typename T>
 void DiagonalScale
@@ -22,7 +28,7 @@ void DiagonalScale
     const Int m = A.Height();
     const Int n = A.Width();
     const bool conj = ( orientation == ADJOINT );
-    if( side == LEFT )
+    if( side == LeftOrRight::LEFT )
     {
         EL_DEBUG_ONLY(
           if( d.Height() != m )
@@ -58,9 +64,9 @@ void DiagonalScale
         DistMatrix<T,U,V,wrapType>& A )
 {
     EL_DEBUG_CSE
-    if( wrapType == ELEMENT )
+    if( wrapType == DistWrap::ELEMENT )
     {
-        if( side == LEFT )
+        if( side == LeftOrRight::LEFT )
         {
             ElementalProxyCtrl ctrl;
             ctrl.rootConstrain = true;
@@ -71,7 +77,7 @@ void DiagonalScale
             DistMatrixReadProxy<TDiag,TDiag,U,Collect<V>()> dProx( dPre, ctrl );
             auto& d = dProx.GetLocked();
 
-            DiagonalScale( LEFT, orientation, d.LockedMatrix(), A.Matrix() );
+            DiagonalScale( LeftOrRight::LEFT, orientation, d.LockedMatrix(), A.Matrix() );
         }
         else
         {
@@ -94,17 +100,17 @@ void DiagonalScale
         ctrl.colConstrain = true;
         ctrl.root = A.Root();
 
-        if( side == LEFT )
+        if( side == LeftOrRight::LEFT )
         {
             ctrl.colAlign = A.ColAlign();
             ctrl.blockHeight = A.BlockHeight();
             ctrl.colCut = A.ColCut();
 
-            DistMatrixReadProxy<TDiag,TDiag,U,Collect<V>(),BLOCK>
+            DistMatrixReadProxy<TDiag,TDiag,U,Collect<V>(),DistWrap::BLOCK>
               dProx( dPre, ctrl );
             auto& d = dProx.GetLocked();
 
-            DiagonalScale( LEFT, orientation, d.LockedMatrix(), A.Matrix() );
+            DiagonalScale( LeftOrRight::LEFT, orientation, d.LockedMatrix(), A.Matrix() );
         }
         else
         {
@@ -112,7 +118,7 @@ void DiagonalScale
             ctrl.blockHeight = A.BlockWidth();
             ctrl.colCut = A.RowCut();
 
-            DistMatrixReadProxy<TDiag,TDiag,V,Collect<U>(),BLOCK>
+            DistMatrixReadProxy<TDiag,TDiag,V,Collect<U>(),DistWrap::BLOCK>
               dProx( dPre, ctrl );
             auto& d = dProx.GetLocked();
 

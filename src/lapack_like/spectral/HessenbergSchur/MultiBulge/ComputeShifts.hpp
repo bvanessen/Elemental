@@ -18,8 +18,8 @@ namespace multibulge {
 // Return the number of unconverged eigenvalues
 template<typename Field>
 Int ConsistentlyComputeEigenvalues
-( const DistMatrix<Field,MC,MR,BLOCK>& H,
-        DistMatrix<Complex<Base<Field>>,STAR,STAR>& w,
+( const DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+        DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& w,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE
@@ -29,7 +29,7 @@ Int ConsistentlyComputeEigenvalues
     // be amplified by the forward instability of Francis sweeps.
     const Grid& grid = H.Grid();
     const int owner = H.Owner(0,0);
-    DistMatrix<Field,CIRC,CIRC> H_CIRC_CIRC( grid, owner );
+    DistMatrix<Field,Dist::CIRC,Dist::CIRC> H_CIRC_CIRC( grid, owner );
     H_CIRC_CIRC = H;
     w.Resize( H.Height(), 1 );
     Int numUnconverged = 0;
@@ -114,8 +114,8 @@ Int ComputeShifts
 
 template<typename Real>
 Int ComputeShifts
-( const DistMatrix<Real,MC,MR,BLOCK>& H,
-        DistMatrix<Complex<Real>,STAR,STAR>& w,
+( const DistMatrix<Real,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+        DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR>& w,
         Int iterBeg,
         Int winBeg,
         Int winEnd,
@@ -141,7 +141,7 @@ Int ComputeShifts
         // Get a full copy of the bidiagonal of the bottom-right section of H
         const Int subStart = Max(shiftBeg-1,winBeg);
         auto subInd = IR(subStart,winEnd);
-        DistMatrix<Real,STAR,STAR> hMain(H.Grid()), hSub(H.Grid());
+        DistMatrix<Real,Dist::STAR,Dist::STAR> hMain(H.Grid()), hSub(H.Grid());
         util::GatherBidiagonal( H, subInd, hMain, hSub );
         const auto& hMainLoc = hMain.LockedMatrix();
         const auto& hSubLoc = hSub.LockedMatrix();
@@ -249,8 +249,8 @@ Int ComputeShifts
 
 template<typename Real>
 Int ComputeShifts
-( const DistMatrix<Complex<Real>,MC,MR,BLOCK>& H,
-        DistMatrix<Complex<Real>,STAR,STAR>& w,
+( const DistMatrix<Complex<Real>,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+        DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR>& w,
         Int iterBeg,
         Int winBeg,
         Int winEnd,
@@ -276,7 +276,7 @@ Int ComputeShifts
         const Real exceptShift0(Real(4)/Real(3));
 
         // Gather the relevant bidiagonal of H
-        DistMatrix<Complex<Real>,STAR,STAR> hMain(H.Grid()), hSub(H.Grid());
+        DistMatrix<Complex<Real>,Dist::STAR,Dist::STAR> hMain(H.Grid()), hSub(H.Grid());
         util::GatherBidiagonal( H, shiftInd, hMain, hSub );
         const auto& hMainLoc = hMain.LockedMatrix();
         const auto& hSubLoc = hSub.LockedMatrix();

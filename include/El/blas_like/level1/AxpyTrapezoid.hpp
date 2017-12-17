@@ -30,7 +30,7 @@ void AxpyTrapezoid
     const Int XLDim = X.LDim();
     T* YBuf = Y.Buffer();
     const Int YLDim = Y.LDim();
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
     {
         for( Int j=0; j<n; ++j )
         {
@@ -70,7 +70,7 @@ void LocalAxpyTrapezoid
     T* YBuffer = Y.Buffer();
     const Int XLDim = X.LDim();
     const Int YLDim = Y.LDim();
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
     {
         for( Int jLoc=0; jLoc<localWidth; ++jLoc )
         {
@@ -120,7 +120,7 @@ void AxpyTrapezoid
     }
     else
     {
-        unique_ptr<ElementalMatrix<T>>
+        std::unique_ptr<ElementalMatrix<T>>
           XCopy( Y.Construct(Y.Grid(),Y.Root()) );
         XCopy->AlignWith( YDistData );
         Copy( X, *XCopy );
@@ -151,7 +151,7 @@ void AxpyTrapezoid
     }
     else
     {
-        unique_ptr<BlockMatrix<T>>
+        std::unique_ptr<BlockMatrix<T>>
           XCopy( Y.Construct(Y.Grid(),Y.Root()) );
         XCopy->AlignWith( YDistData );
         Copy( X, *XCopy );

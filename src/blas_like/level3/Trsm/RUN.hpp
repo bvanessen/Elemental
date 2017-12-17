@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -15,7 +15,7 @@ namespace trsm {
 //   X := X triuu(U)^-1
 template<typename F>
 void RUN
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   const AbstractDistMatrix<F>& UPre,
         AbstractDistMatrix<F>& XPre,
   bool checkIfSingular )
@@ -25,15 +25,15 @@ void RUN
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& U = UProx.GetLocked();
     auto& X = XProx.Get();
 
-    DistMatrix<F,STAR,STAR> U11_STAR_STAR(g); 
-    DistMatrix<F,STAR,MR  > U12_STAR_MR(g);
-    DistMatrix<F,VC,  STAR> X1_VC_STAR(g);    
-    DistMatrix<F,STAR,MC  > X1Trans_STAR_MC(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> U11_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > U12_STAR_MR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> X1_VC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MC  > X1Trans_STAR_MC(g);
 
     for( Int k=0; k<n; k+=bsize )
     {
@@ -48,7 +48,7 @@ void RUN
         auto X1 = X( ALL, ind1 );
         auto X2 = X( ALL, ind2 );
 
-        U11_STAR_STAR = U11; 
+        U11_STAR_STAR = U11;
         X1_VC_STAR.AlignWith( X2 );
         X1_VC_STAR = X1;
 
@@ -60,7 +60,7 @@ void RUN
         Transpose( X1_VC_STAR, X1Trans_STAR_MC );
         Transpose( X1Trans_STAR_MC, X1 );
         U12_STAR_MR.AlignWith( X2 );
-        U12_STAR_MR = U12; 
+        U12_STAR_MR = U12;
 
         // X2[MC,MR] -= X1[MC,* ] U12[* ,MR]
         //            = X1^T[* ,MC] U12[* ,MR]

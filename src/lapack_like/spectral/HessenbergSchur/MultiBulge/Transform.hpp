@@ -30,7 +30,7 @@ void TransformRows
 template<typename Field>
 void TransformRows
 ( const Matrix<Field>& V,
-        DistMatrix<Field,MC,MR,BLOCK>& A )
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& A )
 {
     EL_DEBUG_CSE
     const Int height = A.Height();
@@ -108,7 +108,7 @@ void TransformRows
     {
         // Fall back to the entire process column interacting.
         // TODO(poulson): Only form the subset of the result that we need.
-        DistMatrix<Field,STAR,MR,BLOCK> A_STAR_MR( A );
+        DistMatrix<Field,Dist::STAR,Dist::MR,DistWrap::BLOCK> A_STAR_MR( A );
         Matrix<Field> ALocCopy( A_STAR_MR.Matrix() );
         Gemm( ADJOINT, NORMAL, Field(1), V, ALocCopy, A_STAR_MR.Matrix() );
         A = A_STAR_MR;
@@ -130,7 +130,7 @@ void TransformColumns
 template<typename Field>
 void TransformColumns
 ( const Matrix<Field>& V,
-        DistMatrix<Field,MC,MR,BLOCK>& A )
+        DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& A )
 {
     EL_DEBUG_CSE
     const Int width = A.Width();
@@ -207,7 +207,7 @@ void TransformColumns
     {
         // Fall back to the entire process column interacting.
         // TODO(poulson): Only form the subset of the result that we need.
-        DistMatrix<Field,MC,STAR,BLOCK> A_MC_STAR( A );
+        DistMatrix<Field,Dist::MC,Dist::STAR,DistWrap::BLOCK> A_MC_STAR( A );
         Matrix<Field> ALocCopy( A_MC_STAR.Matrix() );
         Gemm( NORMAL, NORMAL, Field(1), ALocCopy, V, A_MC_STAR.Matrix() );
         A = A_MC_STAR;

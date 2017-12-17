@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include <El/blas_like/level3.hpp>
 
@@ -20,7 +19,7 @@ namespace El {
 
 template<typename T>
 void TrrkInternal
-( UpperOrLower uplo, 
+( UpperOrLower uplo,
   Orientation orientA, Orientation orientB,
   T alpha, const Matrix<T>& A, const Matrix<T>& B,
   T beta,        Matrix<T>& C )
@@ -40,7 +39,7 @@ void TrrkInternal
 #ifdef HYDROGEN_HAVE_MKL_GEMMT
 template<typename T,typename=EnableIf<IsBlasScalar<T>>>
 void TrrkMKL
-( UpperOrLower uplo, 
+( UpperOrLower uplo,
   Orientation orientA, Orientation orientB,
   T alpha, const Matrix<T>& A, const Matrix<T>& B,
   T beta,        Matrix<T>& C )
@@ -50,10 +49,10 @@ void TrrkMKL
     const char orientAChar = OrientationToChar( orientA );
     const char orientBChar = OrientationToChar( orientB );
     const auto n = C.Height();
-    const auto k = orientA == NORMAL ? A.Width() : A.Height(); 
-    mkl::Trrk 
+    const auto k = orientA == NORMAL ? A.Width() : A.Height();
+    mkl::Trrk
     ( uploChar, orientAChar, orientBChar,
-      n, k, 
+      n, k,
       alpha, A.LockedBuffer(), A.LDim(),
              B.LockedBuffer(), B.LDim(),
       beta,  C.Buffer(),       C.LDim() );
@@ -62,7 +61,7 @@ void TrrkMKL
 
 template<typename T,typename=EnableIf<IsBlasScalar<T>>>
 void TrrkHelper
-( UpperOrLower uplo, 
+( UpperOrLower uplo,
   Orientation orientA, Orientation orientB,
   T alpha, const Matrix<T>& A, const Matrix<T>& B,
   T beta,        Matrix<T>& C )
@@ -77,7 +76,7 @@ void TrrkHelper
 
 template<typename T,typename=DisableIf<IsBlasScalar<T>>,typename=void>
 void TrrkHelper
-( UpperOrLower uplo, 
+( UpperOrLower uplo,
   Orientation orientA, Orientation orientB,
   T alpha, const Matrix<T>& A, const Matrix<T>& B,
   T beta,        Matrix<T>& C )
@@ -88,7 +87,7 @@ void TrrkHelper
 
 template<typename T>
 void Trrk
-( UpperOrLower uplo, 
+( UpperOrLower uplo,
   Orientation orientA, Orientation orientB,
   T alpha, const Matrix<T>& A, const Matrix<T>& B,
   T beta,        Matrix<T>& C )
@@ -130,24 +129,24 @@ void Trrk
     T beta,        AbstractDistMatrix<T>& C ); \
   template void LocalTrrk \
    ( UpperOrLower uplo, \
-     T alpha, const DistMatrix<T,MC,  STAR>& A, \
-              const DistMatrix<T,STAR,MR  >& B, \
+     T alpha, const DistMatrix<T,Dist::MC,  Dist::STAR>& A, \
+              const DistMatrix<T,Dist::STAR,Dist::MR  >& B, \
      T beta,        DistMatrix<T>& C ); \
   template void LocalTrrk \
   ( UpperOrLower uplo, Orientation orientB, \
-    T alpha, const DistMatrix<T,MC,STAR>& A, \
-             const DistMatrix<T,MR,STAR>& B, \
+    T alpha, const DistMatrix<T,Dist::MC,Dist::STAR>& A, \
+             const DistMatrix<T,Dist::MR,Dist::STAR>& B, \
     T beta,        DistMatrix<T>& C ); \
   template void LocalTrrk \
   ( UpperOrLower uplo, Orientation orientA, \
-    T alpha, const DistMatrix<T,STAR,MC>& A, \
-             const DistMatrix<T,STAR,MR>& B, \
+    T alpha, const DistMatrix<T,Dist::STAR,Dist::MC>& A, \
+             const DistMatrix<T,Dist::STAR,Dist::MR>& B, \
     T beta,        DistMatrix<T>& C ); \
   template void LocalTrrk \
   ( UpperOrLower uplo, \
     Orientation orientA, Orientation orientB, \
-    T alpha, const DistMatrix<T,STAR,MC  >& A, \
-             const DistMatrix<T,MR,  STAR>& B, \
+    T alpha, const DistMatrix<T,Dist::STAR,Dist::MC  >& A, \
+             const DistMatrix<T,Dist::MR,  Dist::STAR>& B, \
     T beta,        DistMatrix<T>& C );
 
 #define EL_ENABLE_DOUBLEDOUBLE

@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_APPLYPACKEDREFLECTORS_LLVF_HPP
@@ -16,22 +16,22 @@ namespace apply_packed_reflectors {
 // Since applying Householder transforms from vectors stored left-to-right
 // implies that we will be forming a generalization of
 //
-//   (I - tau_1 u_1 u_1^H) (I - tau_0 u_0 u_0^H) = 
+//   (I - tau_1 u_1 u_1^H) (I - tau_0 u_0 u_0^H) =
 //   I - tau_0 u_0 u_0^H - tau_1 u_1 u_1^H + (tau_0 tau_1 u_1^H u_0) u_1 u_0^H =
 //   I - [ u_0, u_1 ] [  tau_0,                 0     ] [ u_0^H ]
 //                    [ -tau_0 tau_1 u_1^H u_0, tau_1 ] [ u_1^H ],
 //
-// which has a lower-triangular center matrix, say S, we will form S as 
+// which has a lower-triangular center matrix, say S, we will form S as
 // the inverse of a matrix T, which can easily be formed as
-// 
-//   tril(T,-1) = tril( U^H U ), 
+//
+//   tril(T,-1) = tril( U^H U ),
 //   diag(T) = 1/householderScalars or 1/conj(householderScalars),
 //
 // where U is the matrix of Householder vectors and householderScalars is the
 // vector of Householder reflector coefficients.
 //
 
-template<typename F> 
+template<typename F>
 void LLVFUnblocked
 ( Conjugation conjugation,
   Int offset,
@@ -77,7 +77,7 @@ void LLVFUnblocked
     }
 }
 
-template<typename F> 
+template<typename F>
 void LLVFBlocked
 ( Conjugation conjugation,
   Int offset,
@@ -131,7 +131,7 @@ void LLVFBlocked
     }
 }
 
-template<typename F> 
+template<typename F>
 void LLVF
 ( Conjugation conjugation,
   Int offset,
@@ -141,7 +141,7 @@ void LLVF
 {
     EL_DEBUG_CSE
     const Int numRHS = A.Width();
-    const Int blocksize = Blocksize(); 
+    const Int blocksize = Blocksize();
     if( numRHS < blocksize )
     {
         LLVFUnblocked( conjugation, offset, H, householderScalars, A );
@@ -152,12 +152,12 @@ void LLVF
     }
 }
 
-template<typename F> 
+template<typename F>
 void LLVFUnblocked
 ( Conjugation conjugation,
-  Int offset, 
+  Int offset,
   const AbstractDistMatrix<F>& H,
-  const AbstractDistMatrix<F>& householderScalarsPre, 
+  const AbstractDistMatrix<F>& householderScalarsPre,
         AbstractDistMatrix<F>& APre )
 {
     EL_DEBUG_CSE
@@ -169,11 +169,11 @@ void LLVFUnblocked
 
     // We gather the entire set of Householder scalars at the start rather than
     // continually paying the latency cost of the broadcasts in a 'Get' call
-    DistMatrixReadProxy<F,F,STAR,STAR>
+    DistMatrixReadProxy<F,F,Dist::STAR,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& householderScalars = householderScalarsProx.GetLocked();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int m = H.Height();
@@ -185,8 +185,8 @@ void LLVFUnblocked
     )
     const Grid& g = H.Grid();
     auto hPan = unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
-    DistMatrix<F,MC,STAR> hPan_MC_STAR(g);
-    DistMatrix<F,MR,STAR> z_MR_STAR(g);
+    DistMatrix<F,Dist::MC,Dist::STAR> hPan_MC_STAR(g);
+    DistMatrix<F,Dist::MR,Dist::STAR> z_MR_STAR(g);
 
     const Int iOff = ( offset>=0 ? 0      : -offset );
     const Int jOff = ( offset>=0 ? offset : 0       );
@@ -217,12 +217,12 @@ void LLVFUnblocked
     }
 }
 
-template<typename F> 
+template<typename F>
 void LLVFBlocked
 ( Conjugation conjugation,
-  Int offset, 
+  Int offset,
   const AbstractDistMatrix<F>& H,
-  const AbstractDistMatrix<F>& householderScalarsPre, 
+  const AbstractDistMatrix<F>& householderScalarsPre,
         AbstractDistMatrix<F>& APre )
 {
     EL_DEBUG_CSE
@@ -232,11 +232,11 @@ void LLVFBlocked
       AssertSameGrids( H, householderScalarsPre, APre );
     )
 
-    DistMatrixReadProxy<F,F,MC,STAR>
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::STAR>
       householderScalarsProx( householderScalarsPre );
     auto& householderScalars = householderScalarsProx.GetLocked();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     const Int m = H.Height();
@@ -249,11 +249,11 @@ void LLVFBlocked
     const Grid& g = H.Grid();
     auto HPan = unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
     DistMatrix<F> HPanCopy(g);
-    DistMatrix<F,VC,  STAR> HPan_VC_STAR(g);
-    DistMatrix<F,MC,  STAR> HPan_MC_STAR(g);
-    DistMatrix<F,STAR,STAR> householderScalars1_STAR_STAR(g), SInv_STAR_STAR(g);
-    DistMatrix<F,STAR,MR  > Z_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > Z_STAR_VR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> HPan_VC_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> HPan_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> householderScalars1_STAR_STAR(g), SInv_STAR_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > Z_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > Z_STAR_VR(g);
 
     const Int iOff = ( offset>=0 ? 0      : -offset );
     const Int jOff = ( offset>=0 ? offset : 0       );
@@ -279,9 +279,9 @@ void LLVFBlocked
         HPan_VC_STAR = HPanCopy;
         Zeros( SInv_STAR_STAR, nb, nb );
         Herk
-        ( LOWER, ADJOINT, 
+        ( LOWER, ADJOINT,
           Base<F>(1), HPan_VC_STAR.LockedMatrix(),
-          Base<F>(0), SInv_STAR_STAR.Matrix() );     
+          Base<F>(0), SInv_STAR_STAR.Matrix() );
         El::AllReduce( SInv_STAR_STAR, HPan_VC_STAR.ColComm() );
         householderScalars1_STAR_STAR = householderScalars1;
         FixDiagonal
@@ -294,7 +294,7 @@ void LLVFBlocked
         LocalGemm( ADJOINT, NORMAL, F(1), HPan_MC_STAR, ABot, Z_STAR_MR );
         Z_STAR_VR.AlignWith( ABot );
         Contract( Z_STAR_MR, Z_STAR_VR );
-        
+
         // Z := inv(SInv) HPan' ABot
         LocalTrsm
         ( LEFT, LOWER, NORMAL, NON_UNIT, F(1), SInv_STAR_STAR, Z_STAR_VR );
@@ -305,7 +305,7 @@ void LLVFBlocked
     }
 }
 
-template<typename F> 
+template<typename F>
 void LLVF
 ( Conjugation conjugation,
   Int offset,
@@ -318,7 +318,7 @@ void LLVF
     const Int blocksize = Blocksize();
     // It is not clear that switching to the unblocked implementation is as much
     // of a win as in the sequential case, as there is additional latency
-    // overhead due to increasing the number of reductions by a factor of 
+    // overhead due to increasing the number of reductions by a factor of
     // blocksize.
     if( numRHS < blocksize )
     {

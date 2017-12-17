@@ -182,7 +182,7 @@ void Transpose
     }
     else
     {
-        unique_ptr<ElementalMatrix<T>>
+        std::unique_ptr<ElementalMatrix<T>>
             C( B.ConstructTranspose(A.Grid(),A.Root()) );
         C->AlignWith( BData );
         Copy( A, *C );
@@ -247,7 +247,7 @@ void Transpose
     }
     else
     {
-        unique_ptr<BlockMatrix<T>>
+        std::unique_ptr<BlockMatrix<T>>
             C( B.ConstructTranspose(A.Grid(),A.Root()) );
         C->AlignWith( BData );
         Copy( A, *C );
@@ -263,32 +263,32 @@ void Transpose
   bool conjugate )
 {
     EL_DEBUG_CSE
-    if( A.Wrap() == ELEMENT && B.Wrap() == ELEMENT )
+    if( A.Wrap() == DistWrap::ELEMENT && B.Wrap() == DistWrap::ELEMENT )
     {
         const auto& ACast = static_cast<const ElementalMatrix<T>&>(A);
               auto& BCast = static_cast<      ElementalMatrix<T>&>(B);
         Transpose( ACast, BCast, conjugate );
     }
-    else if( A.Wrap() == BLOCK  && B.Wrap() == BLOCK )
+    else if( A.Wrap() == DistWrap::BLOCK  && B.Wrap() == DistWrap::BLOCK )
     {
         const auto& ACast = static_cast<const BlockMatrix<T>&>(A);
               auto& BCast = static_cast<      BlockMatrix<T>&>(B);
         Transpose( ACast, BCast, conjugate );
     }
-    else if( A.Wrap() == ELEMENT ) // && B.Wrap() == BLOCK
+    else if( A.Wrap() == DistWrap::ELEMENT ) // && B.Wrap() == DistWrap::BLOCK
     {
         auto& BCast = static_cast<BlockMatrix<T>&>(B);
-        unique_ptr<BlockMatrix<T>>
+        std::unique_ptr<BlockMatrix<T>>
             C( BCast.ConstructTranspose(A.Grid(),A.Root()) );
         C->AlignWith( BCast );
         Copy( A, *C );
         BCast.Resize( A.Width(), A.Height() );
         Transpose( C->LockedMatrix(), BCast.Matrix(), conjugate );
     }
-    else  // A.Wrap() == BLOCK && B.Wrap() == ELEMENT
+    else  // A.Wrap() == DistWrap::BLOCK && B.Wrap() == DistWrap::ELEMENT
     {
         auto& BCast = static_cast<ElementalMatrix<T>&>(B);
-        unique_ptr<ElementalMatrix<T>>
+        std::unique_ptr<ElementalMatrix<T>>
             C( BCast.ConstructTranspose(A.Grid(),A.Root()) );
         C->AlignWith( BCast );
         Copy( A, *C );

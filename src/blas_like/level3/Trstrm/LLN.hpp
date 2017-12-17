@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRSTRM_LLN_HPP
@@ -25,7 +25,7 @@ void LLNUnb( UnitOrNonUnit diag, F alpha, const Matrix<F>& L, Matrix<F>& X )
 
     // X := alpha X
     if( alpha != F(1) )
-        for( Int j=0; j<n; ++j ) 
+        for( Int j=0; j<n; ++j )
             for( Int i=j; i<n; ++i )
                 XBuffer[i+j*XLDim] *= alpha;
 
@@ -89,7 +89,7 @@ void LLN
 
 template<typename F>
 void LLN
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
   F alpha,
   const AbstractDistMatrix<F>& LPre,
         AbstractDistMatrix<F>& XPre,
@@ -100,16 +100,16 @@ void LLN
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
 
-    DistMatrixReadProxy<F,F,MC,MR> LProx( LPre );
-    DistMatrixReadWriteProxy<F,F,MC,MR> XProx( XPre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> XProx( XPre );
     auto& L = LProx.GetLocked();
     auto& X = XProx.Get();
 
     // Temporary distributions
-    DistMatrix<F,STAR,STAR> L11_STAR_STAR(g), X11_STAR_STAR(g);
-    DistMatrix<F,MC,  STAR> L21_MC_STAR(g);
-    DistMatrix<F,STAR,MR  > X10_STAR_MR(g), X11_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > X10_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> L11_STAR_STAR(g), X11_STAR_STAR(g);
+    DistMatrix<F,Dist::MC,  Dist::STAR> L21_MC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > X10_STAR_MR(g), X11_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > X10_STAR_VR(g);
 
     ScaleTrapezoid( alpha, LOWER, X );
     for( Int k=0; k<n; k+=bsize )
@@ -128,8 +128,8 @@ void LLN
         auto X20 = X( ind2, ind0 );
         auto X21 = X( ind2, ind1 );
 
-        L11_STAR_STAR = L11; 
-        X11_STAR_STAR = X11; 
+        L11_STAR_STAR = L11;
+        X11_STAR_STAR = X11;
         X10_STAR_VR = X10;
 
         LocalTrsm
@@ -148,7 +148,7 @@ void LLN
         X10 = X10_STAR_MR;
         L21_MC_STAR.AlignWith( X20 );
         L21_MC_STAR = L21;
-        
+
         LocalGemm
         ( NORMAL, NORMAL, F(-1), L21_MC_STAR, X10_STAR_MR, F(1), X20 );
         LocalGemm

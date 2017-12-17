@@ -398,10 +398,10 @@ AEDInfo Nibble
 
 template<typename Field>
 AEDInfo Nibble
-( DistMatrix<Field,MC,MR,BLOCK>& H,
+( DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
   Int deflationSize,
-  DistMatrix<Complex<Base<Field>>,STAR,STAR>& w,
-  DistMatrix<Field,MC,MR,BLOCK>& Z,
+  DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& w,
+  DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE
@@ -424,7 +424,7 @@ AEDInfo Nibble
     auto wDefl = w( deflateInd, ALL );
 
     const int owner = HDefl.Owner(0,0);
-    DistMatrix<Field,CIRC,CIRC> HDefl_CIRC_CIRC( grid, owner );
+    DistMatrix<Field,Dist::CIRC,Dist::CIRC> HDefl_CIRC_CIRC( grid, owner );
     HDefl_CIRC_CIRC = HDefl;
     Field spikeValue =
       ( deflateBeg==winBeg ? Field(0) : H.Get(deflateBeg,deflateBeg-1) );

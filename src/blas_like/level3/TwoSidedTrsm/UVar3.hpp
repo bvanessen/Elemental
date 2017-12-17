@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRSM_UVAR3_HPP
@@ -12,7 +12,7 @@
 namespace El {
 namespace twotrsm {
 
-template<typename F> 
+template<typename F>
 void UVar3( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
 {
     EL_DEBUG_CSE
@@ -53,7 +53,7 @@ void UVar3( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         auto Y01 = Y( ind0, ind1 );
         auto Y02 = Y( ind0, ind2 );
         auto Y12 = Y( ind1, ind2 );
- 
+
         // A01 := A01 - 1/2 Y01
         Axpy( F(-1)/F(2), Y01, A01 );
 
@@ -86,9 +86,9 @@ void UVar3( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
     }
 }
 
-template<typename F> 
+template<typename F>
 void UVar3
-( UnitOrNonUnit diag, 
+( UnitOrNonUnit diag,
         AbstractDistMatrix<F>& APre,
   const AbstractDistMatrix<F>& UPre )
 {
@@ -105,19 +105,19 @@ void UVar3
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
-    DistMatrixReadProxy<F,F,MC,MR> UProx( UPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
     auto& A = AProx.Get();
     auto& U = UProx.GetLocked();
 
     // Temporary distributions
-    DistMatrix<F,MC,  STAR> A01_MC_STAR(g), U01_MC_STAR(g), A11_MC_STAR(g);
-    DistMatrix<F,MR,  STAR> U12Adj_MR_STAR(g);
-    DistMatrix<F,VC,  STAR> A01_VC_STAR(g), U01_VC_STAR(g);
-    DistMatrix<F,STAR,STAR> A11_STAR_STAR(g), U11_STAR_STAR(g), 
+    DistMatrix<F,Dist::MC,  Dist::STAR> A01_MC_STAR(g), U01_MC_STAR(g), A11_MC_STAR(g);
+    DistMatrix<F,Dist::MR,  Dist::STAR> U12Adj_MR_STAR(g);
+    DistMatrix<F,Dist::VC,  Dist::STAR> A01_VC_STAR(g), U01_VC_STAR(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> A11_STAR_STAR(g), U11_STAR_STAR(g),
                             X11_STAR_STAR(g);
-    DistMatrix<F,STAR,MR  > X12_STAR_MR(g), Z12_STAR_MR(g);
-    DistMatrix<F,STAR,VR  > A12_STAR_VR(g);
+    DistMatrix<F,Dist::STAR,Dist::MR  > X12_STAR_MR(g), Z12_STAR_MR(g);
+    DistMatrix<F,Dist::STAR,Dist::VR  > A12_STAR_VR(g);
 
     // We will use an entire extra matrix as temporary storage. If this is not
     // acceptable, use UVar4 instead.
@@ -158,7 +158,7 @@ void UVar3
         X11_STAR_STAR.Resize( A11.Height(), A11.Width() );
         Zero( X11_STAR_STAR );
         Her2k
-        ( UPPER, ADJOINT, 
+        ( UPPER, ADJOINT,
           F(1), A01_VC_STAR.Matrix(), U01_VC_STAR.Matrix(),
           F(0), X11_STAR_STAR.Matrix() );
         MakeTrapezoidal( UPPER, X11_STAR_STAR );

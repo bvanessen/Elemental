@@ -325,10 +325,10 @@ ScaLAPACKHelper
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadProxy<F,F,MC,MR,BLOCK> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR,DistWrap::BLOCK> AProx( APre );
     auto& A = AProx.Get();
 
-    DistMatrixWriteProxy<Base<F>,Base<F>,STAR,STAR> wProx( wPre );
+    DistMatrixWriteProxy<Base<F>,Base<F>,Dist::STAR,Dist::STAR> wProx( wPre );
     auto& w = wProx.Get();
 
     HermitianEigInfo info;
@@ -407,7 +407,7 @@ BlackBox
         return info;
     }
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     // Check if we need to rescale the matrix, and do so if necessary
@@ -576,11 +576,11 @@ BlackBox
     const Grid& g = APre.Grid();
     HermitianEigInfo info;
 
-    DistMatrixReadProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     // TODO(poulson): Extend interface to support ctrl.tridiagCtrl
-    DistMatrix<F,VC,STAR> householderScalars(g);
+    DistMatrix<F,Dist::VC,Dist::STAR> householderScalars(g);
     HermitianTridiag( uplo, A, householderScalars );
 
     auto d = GetRealPartOfDiagonal(A);
@@ -588,7 +588,7 @@ BlackBox
 
     if( ctrl.tridiagEigCtrl.accumulateEigVecs )
     {
-        DistMatrixReadWriteProxy<F,F,MC,MR> QProx( QPre );
+        DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> QProx( QPre );
         auto& Q = QProx.Get();
 
         info.tridiagEigInfo =
@@ -597,7 +597,7 @@ BlackBox
     }
     else
     {
-        DistMatrixWriteProxy<F,F,MC,MR> QProx( QPre );
+        DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR> QProx( QPre );
         auto& Q = QProx.Get();
 
         info.tridiagEigInfo =
@@ -764,13 +764,13 @@ ScaLAPACKHelper
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadProxy<F,F,MC,MR,BLOCK> AProx( APre );
+    DistMatrixReadProxy<F,F,Dist::MC,Dist::MR,DistWrap::BLOCK> AProx( APre );
     auto& A = AProx.Get();
 
-    DistMatrixWriteProxy<Base<F>,Base<F>,STAR,STAR> wProx( wPre );
+    DistMatrixWriteProxy<Base<F>,Base<F>,Dist::STAR,Dist::STAR> wProx( wPre );
     auto& w = wProx.Get();
 
-    DistMatrixWriteProxy<F,F,MC,MR,BLOCK> QProx( QPre );
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR,DistWrap::BLOCK> QProx( QPre );
     auto& Q = QProx.Get();
 
     if( A.Height() != A.Width() )
@@ -855,7 +855,7 @@ MRRR
     HermitianEigInfo info;
     Timer timer;
 
-    DistMatrixReadWriteProxy<F,F,MC,MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
     // Tridiagonalize A
@@ -865,7 +865,7 @@ MRRR
         if( A.Grid().Rank() == 0 )
             timer.Start();
     }
-    DistMatrix<F,STAR,STAR> householderScalars(g);
+    DistMatrix<F,Dist::STAR,Dist::STAR> householderScalars(g);
     HermitianTridiag( uplo, A, householderScalars, ctrl.tridiagCtrl );
     if( ctrl.timeStages )
     {
@@ -881,8 +881,8 @@ MRRR
     const Int subdiagonal = ( uplo==LOWER ? -1 : +1 );
     auto d = GetRealPartOfDiagonal(A);
     auto e = GetRealPartOfDiagonal(A,subdiagonal);
-    DistMatrix<Real,STAR,STAR> d_STAR_STAR( d );
-    DistMatrix<Real,STAR,STAR> e_STAR_STAR( g );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> d_STAR_STAR( d );
+    DistMatrix<Real,Dist::STAR,Dist::STAR> e_STAR_STAR( g );
     e_STAR_STAR.Resize( n-1, 1, n );
     e_STAR_STAR = e;
     if( subset.rangeSubset )
@@ -908,11 +908,11 @@ MRRR
     proxCtrl.colAlign = 0;
     proxCtrl.rowAlign = 0;
 
-    DistMatrixWriteProxy<F,F,MC,MR> QProx( QPre, proxCtrl );
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR> QProx( QPre, proxCtrl );
     auto& Q = QProx.Get();
 
     Q.Resize( N, K );
-    DistMatrix<Real,STAR,VR> Q_STAR_VR(g);
+    DistMatrix<Real,Dist::STAR,Dist::VR> Q_STAR_VR(g);
     {
         // Grab a slice of size Q_STAR_VR_BufferSize from the very end
         // of QBuf so that we can later redistribute in place

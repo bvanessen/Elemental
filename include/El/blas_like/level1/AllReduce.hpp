@@ -26,7 +26,7 @@ void AllReduce( Matrix<T>& A, mpi::Comm comm, mpi::Op op )
     }
     else
     {
-        vector<T> buf;
+        std::vector<T> buf;
         FastResize( buf, size );
 
         // Pack
@@ -63,7 +63,7 @@ void AllReduce( AbstractDistMatrix<T>& A, mpi::Comm comm, mpi::Op op )
     }
     else
     {
-        vector<T> buf;
+        std::vector<T> buf;
         FastResize( buf, localSize );
 
         // Pack

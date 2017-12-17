@@ -14,8 +14,8 @@ namespace El {
 template<typename T>
 void SetSubmatrix
 (       Matrix<T>& A,
-  const vector<Int>& I,
-  const vector<Int>& J,
+  const std::vector<Int>& I,
+  const std::vector<Int>& J,
   const Matrix<T>& ASub )
 {
     EL_DEBUG_CSE
@@ -37,8 +37,8 @@ void SetSubmatrix
 template<typename T>
 void SetSubmatrix
 (       AbstractDistMatrix<T>& A,
-  const vector<Int>& I,
-  const vector<Int>& J,
+  const std::vector<Int>& I,
+  const std::vector<Int>& J,
   const AbstractDistMatrix<T>& ASub )
 {
     EL_DEBUG_CSE
@@ -60,13 +60,13 @@ void SetSubmatrix
 #define PROTO(T) \
   EL_EXTERN template void SetSubmatrix \
   (       Matrix<T>& A, \
-    const vector<Int>& I, \
-    const vector<Int>& J, \
+    const std::vector<Int>& I, \
+    const std::vector<Int>& J, \
     const Matrix<T>& ASub ); \
   EL_EXTERN template void SetSubmatrix \
   (       AbstractDistMatrix<T>& A, \
-    const vector<Int>& I, \
-    const vector<Int>& J, \
+    const std::vector<Int>& I, \
+    const std::vector<Int>& J, \
     const AbstractDistMatrix<T>& ASub );
 
 #define EL_ENABLE_DOUBLEDOUBLE

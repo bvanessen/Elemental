@@ -135,9 +135,9 @@ MultiBulge
 template<typename Field>
 HessenbergSchurInfo
 MultiBulge
-( DistMatrix<Field,MC,MR,BLOCK>& H,
-  DistMatrix<Complex<Base<Field>>,STAR,STAR>& w,
-  DistMatrix<Field,MC,MR,BLOCK>& Z,
+( DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+  DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& w,
+  DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
   const HessenbergSchurCtrl& ctrl )
 {
     EL_DEBUG_CSE
@@ -177,7 +177,7 @@ MultiBulge
       Max(30,2*numStaleIterBeforeExceptional) * Max(10,winSize);
 
     Int iterBegLast=-1, winEndLast=-1;
-    DistMatrix<Field,STAR,STAR> hMainWin(grid), hSubWin(grid), hSuperWin(grid);
+    DistMatrix<Field,Dist::STAR,Dist::STAR> hMainWin(grid), hSubWin(grid), hSuperWin(grid);
     while( winBeg < winEnd )
     {
         if( info.numIterations >= maxIter )

@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level1.hpp>
 #include <El/blas_like/level3.hpp>
 
@@ -348,18 +347,18 @@ void LocalMultiShiftQuasiTrsm
   UpperOrLower uplo,
   Orientation orientation,
   Field alpha,
-  const DistMatrix<Field,STAR,STAR>& A,
+  const DistMatrix<Field,Dist::STAR,Dist::STAR>& A,
   const AbstractDistMatrix<Field>& shifts,
         AbstractDistMatrix<Field>& X )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( shifts.RowDist() != STAR )
+      if( shifts.RowDist() != Dist::STAR )
           LogicError("shifts must only be distributed within columns");
       if( (side == LEFT &&
-           (X.ColDist() != STAR || shifts.ColDist() != X.RowDist())) ||
+           (X.ColDist() != Dist::STAR || shifts.ColDist() != X.RowDist())) ||
           (side == RIGHT &&
-           (X.RowDist() != STAR || shifts.ColDist() != X.ColDist())) )
+           (X.RowDist() != Dist::STAR || shifts.ColDist() != X.ColDist())) )
           LogicError
           ("Dist of RHS and shifts must conform with that of triangle");
     )
@@ -374,22 +373,22 @@ void LocalMultiShiftQuasiTrsm
   UpperOrLower uplo,
   Orientation orientation,
   Complex<Real> alpha,
-  const DistMatrix<Real,STAR,STAR>& A,
+  const DistMatrix<Real,Dist::STAR,Dist::STAR>& A,
   const AbstractDistMatrix<Complex<Real>>& shifts,
         AbstractDistMatrix<Real>& XReal,
         AbstractDistMatrix<Real>& XImag )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( shifts.RowDist() != STAR )
+      if( shifts.RowDist() != Dist::STAR )
           LogicError("shifts must only be distributed within columns");
       if( XReal.ColDist() != XImag.ColDist() ||
           XReal.RowDist() != XImag.RowDist() )
           LogicError("XReal and XImag must have the same distribution");
       if( (side == LEFT &&
-           (XReal.ColDist() != STAR || shifts.ColDist() != XReal.RowDist())) ||
+           (XReal.ColDist() != Dist::STAR || shifts.ColDist() != XReal.RowDist())) ||
           (side == RIGHT &&
-           (XReal.RowDist() != STAR || shifts.ColDist() != XReal.ColDist())) )
+           (XReal.RowDist() != Dist::STAR || shifts.ColDist() != XReal.ColDist())) )
           LogicError
           ("Dist of RHS and shifts must conform with that of triangle");
     )
@@ -421,7 +420,7 @@ void LocalMultiShiftQuasiTrsm
     UpperOrLower uplo, \
     Orientation orientation, \
     Field alpha, \
-    const DistMatrix<Field,STAR,STAR>& A, \
+    const DistMatrix<Field,Dist::STAR,Dist::STAR>& A, \
     const AbstractDistMatrix<Field>& shifts, \
           AbstractDistMatrix<Field>& X );
 
@@ -450,7 +449,7 @@ void LocalMultiShiftQuasiTrsm
     UpperOrLower uplo, \
     Orientation orientation, \
     Complex<Real> alpha, \
-    const DistMatrix<Real,STAR,STAR>& A, \
+    const DistMatrix<Real,Dist::STAR,Dist::STAR>& A, \
     const AbstractDistMatrix<Complex<Real>>& shifts, \
           AbstractDistMatrix<Real>& XReal, \
           AbstractDistMatrix<Real>& XImag );

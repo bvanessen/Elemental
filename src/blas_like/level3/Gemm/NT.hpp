@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -25,16 +25,16 @@ void SUMMA_NTA
     const Grid& g = APre.Grid();
     const bool conjugate = ( orientB == ADJOINT );
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,MR,STAR> B1Trans_MR_STAR(g);
-    DistMatrix<T,MC,STAR> D1_MC_STAR(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> B1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> D1_MC_STAR(g);
 
     B1Trans_MR_STAR.AlignWith( A );
     D1_MC_STAR.AlignWith( A );
@@ -68,17 +68,17 @@ void SUMMA_NTB
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,MR,STAR> A1Trans_MR_STAR(g);
-    DistMatrix<T,STAR,MC> D1_STAR_MC(g);
-    DistMatrix<T,MR,MC> D1_MR_MC(g);
+    DistMatrix<T,Dist::MR,Dist::STAR> A1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MC> D1_STAR_MC(g);
+    DistMatrix<T,Dist::MR,Dist::MC> D1_MR_MC(g);
 
     A1Trans_MR_STAR.AlignWith( B );
     D1_STAR_MC.AlignWith( B );
@@ -115,17 +115,17 @@ void SUMMA_NTC
     const Grid& g = APre.Grid();
     const bool conjugate = ( orientB == ADJOINT );
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadProxy<T,T,MC,MR> BProx( BPre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& B = BProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,MC,STAR> A1_MC_STAR(g);
-    DistMatrix<T,VR,STAR> B1_VR_STAR(g);
-    DistMatrix<T,STAR,MR> B1Trans_STAR_MR(g);
+    DistMatrix<T,Dist::MC,Dist::STAR> A1_MC_STAR(g);
+    DistMatrix<T,Dist::VR,Dist::STAR> B1_VR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::MR> B1Trans_STAR_MR(g);
 
     A1_MC_STAR.AlignWith( C );
     B1_VR_STAR.AlignWith( C );
@@ -166,19 +166,19 @@ void SUMMA_NTDot
     const Int n = CPre.Width();
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,STAR,VC> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::STAR,Dist::VC> AProx( APre );
     auto& A = AProx.GetLocked();
 
     ElementalProxyCtrl BCtrl;
     BCtrl.rowConstrain = true;
     BCtrl.rowAlign = A.RowAlign();
-    DistMatrixReadProxy<T,T,STAR,VC> BProx( BPre, BCtrl );
+    DistMatrixReadProxy<T,T,Dist::STAR,Dist::VC> BProx( BPre, BCtrl );
     auto& B = BProx.GetLocked();
 
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& C = CProx.Get();
 
-    DistMatrix<T,STAR,STAR> C11_STAR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::STAR> C11_STAR_STAR(g);
     for( Int kOuter=0; kOuter<m; kOuter+=blockSize )
     {
         const Int nbOuter = Min(blockSize,m-kOuter);

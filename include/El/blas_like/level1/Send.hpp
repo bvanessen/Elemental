@@ -24,7 +24,7 @@ void Send( const Matrix<T>& A, mpi::Comm comm, int destination )
     }
     else
     {
-        vector<T> buf;
+        std::vector<T> buf;
         FastResize( buf, size );
 
         // Pack

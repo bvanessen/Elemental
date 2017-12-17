@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level2.hpp>
 
 #include "./Symv/L.hpp"
@@ -84,24 +83,24 @@ void Symv
     )
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> yProx( yPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> yProx( yPre );
     auto& A = AProx.GetLocked();
     auto& y = yProx.Get();
 
     y *= beta;
     if( x.Width() == 1 && y.Width() == 1 )
     {
-        DistMatrix<T,MC,STAR> x_MC_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
         x_MC_STAR.AlignWith( A );
         x_MC_STAR = x;
 
-        DistMatrix<T,MR,STAR> x_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> x_MR_STAR(g);
         x_MR_STAR.AlignWith( A );
         x_MR_STAR = x_MC_STAR;
 
-        DistMatrix<T,MC,STAR> z_MC_STAR(g);
-        DistMatrix<T,MR,STAR> z_MR_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> z_MC_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> z_MR_STAR(g);
         z_MC_STAR.AlignWith( A );
         z_MR_STAR.AlignWith( A );
         z_MC_STAR.Resize( y.Height(), 1 );
@@ -121,7 +120,7 @@ void Symv
               ctrl );
         }
 
-        DistMatrix<T,MR,MC> z_MR_MC(g);
+        DistMatrix<T,Dist::MR,Dist::MC> z_MR_MC(g);
         Contract( z_MR_STAR, z_MR_MC );
 
         DistMatrix<T> z(g);
@@ -132,16 +131,16 @@ void Symv
     }
     else if( x.Width() == 1 )
     {
-        DistMatrix<T,MC,STAR> x_MC_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
         x_MC_STAR.AlignWith( A );
         x_MC_STAR = x;
 
-        DistMatrix<T,MR,STAR> x_MR_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> x_MR_STAR(g);
         x_MR_STAR.AlignWith( A );
         x_MR_STAR = x_MC_STAR;
 
-        DistMatrix<T,MC,STAR> z_MC_STAR(g);
-        DistMatrix<T,MR,STAR> z_MR_STAR(g);
+        DistMatrix<T,Dist::MC,Dist::STAR> z_MC_STAR(g);
+        DistMatrix<T,Dist::MR,Dist::STAR> z_MR_STAR(g);
         z_MC_STAR.AlignWith( A );
         z_MR_STAR.AlignWith( A );
         z_MC_STAR.Resize( y.Width(), 1 );
@@ -165,7 +164,7 @@ void Symv
         z.AlignWith( y );
         Contract( z_MC_STAR, z );
 
-        DistMatrix<T,MR,MC> z_MR_MC(g);
+        DistMatrix<T,Dist::MR,Dist::MC> z_MR_MC(g);
         z_MR_MC.AlignWith( y );
         z_MR_MC = z;
         AxpyContract( T(1), z_MR_STAR, z_MR_MC );
@@ -176,16 +175,16 @@ void Symv
     }
     else if( y.Width() == 1 )
     {
-        DistMatrix<T,STAR,MR> x_STAR_MR(g);
+        DistMatrix<T,Dist::STAR,Dist::MR> x_STAR_MR(g);
         x_STAR_MR.AlignWith( A );
         x_STAR_MR = x;
 
-        DistMatrix<T,STAR,MC> x_STAR_MC(g);
+        DistMatrix<T,Dist::STAR,Dist::MC> x_STAR_MC(g);
         x_STAR_MC.AlignWith( A );
         x_STAR_MC = x_STAR_MR;
 
-        DistMatrix<T,STAR,MC> z_STAR_MC(g);
-        DistMatrix<T,STAR,MR> z_STAR_MR(g);
+        DistMatrix<T,Dist::STAR,Dist::MC> z_STAR_MC(g);
+        DistMatrix<T,Dist::STAR,Dist::MR> z_STAR_MR(g);
         z_STAR_MC.AlignWith( A );
         z_STAR_MR.AlignWith( A );
         z_STAR_MC.Resize( 1, y.Height() );
@@ -209,7 +208,7 @@ void Symv
         z.AlignWith( y );
         Contract( z_STAR_MR, z );
 
-        DistMatrix<T,MR,MC> z_MR_MC(g);
+        DistMatrix<T,Dist::MR,Dist::MC> z_MR_MC(g);
         z_MR_MC.AlignWith( y );
         z_MR_MC = z;
         AxpyContract( T(1), z_STAR_MC, z_MR_MC );
@@ -220,16 +219,16 @@ void Symv
     }
     else
     {
-        DistMatrix<T,STAR,MR> x_STAR_MR(g);
+        DistMatrix<T,Dist::STAR,Dist::MR> x_STAR_MR(g);
         x_STAR_MR.AlignWith( A );
         x_STAR_MR = x;
 
-        DistMatrix<T,STAR,MC> x_STAR_MC(g);
+        DistMatrix<T,Dist::STAR,Dist::MC> x_STAR_MC(g);
         x_STAR_MC.AlignWith( A );
         x_STAR_MC = x_STAR_MR;
 
-        DistMatrix<T,STAR,MC> z_STAR_MC(g);
-        DistMatrix<T,STAR,MR> z_STAR_MR(g);
+        DistMatrix<T,Dist::STAR,Dist::MC> z_STAR_MC(g);
+        DistMatrix<T,Dist::STAR,Dist::MR> z_STAR_MR(g);
         z_STAR_MR.AlignWith( A );
         z_STAR_MC.AlignWith( A );
         z_STAR_MR.Resize( 1, y.Width() );
@@ -249,7 +248,7 @@ void Symv
               ctrl );
         }
 
-        DistMatrix<T,MR,MC> z_MR_MC(g);
+        DistMatrix<T,Dist::MR,Dist::MC> z_MR_MC(g);
         z_MR_MC.AlignWith( y );
         Contract( z_STAR_MC, z_MR_MC );
 
@@ -267,10 +266,10 @@ template<typename T>
 void LocalColAccumulate
 ( UpperOrLower uplo, T alpha,
   const DistMatrix<T>& A,
-  const DistMatrix<T,MC,STAR>& x_MC_STAR,
-  const DistMatrix<T,MR,STAR>& x_MR_STAR,
-        DistMatrix<T,MC,STAR>& z_MC_STAR,
-        DistMatrix<T,MR,STAR>& z_MR_STAR, bool conjugate,
+  const DistMatrix<T,Dist::MC,Dist::STAR>& x_MC_STAR,
+  const DistMatrix<T,Dist::MR,Dist::STAR>& x_MR_STAR,
+        DistMatrix<T,Dist::MC,Dist::STAR>& z_MC_STAR,
+        DistMatrix<T,Dist::MR,Dist::STAR>& z_MR_STAR, bool conjugate,
   const SymvCtrl<T>& ctrl )
 {
     if( uplo == LOWER )
@@ -287,10 +286,10 @@ template<typename T>
 void LocalRowAccumulate
 ( UpperOrLower uplo, T alpha,
   const DistMatrix<T>& A,
-  const DistMatrix<T,STAR,MC>& x_STAR_MC,
-  const DistMatrix<T,STAR,MR>& x_STAR_MR,
-        DistMatrix<T,STAR,MC>& z_STAR_MC,
-        DistMatrix<T,STAR,MR>& z_STAR_MR, bool conjugate,
+  const DistMatrix<T,Dist::STAR,Dist::MC>& x_STAR_MC,
+  const DistMatrix<T,Dist::STAR,Dist::MR>& x_STAR_MR,
+        DistMatrix<T,Dist::STAR,Dist::MC>& z_STAR_MC,
+        DistMatrix<T,Dist::STAR,Dist::MR>& z_STAR_MR, bool conjugate,
   const SymvCtrl<T>& ctrl )
 {
     if( uplo == LOWER )
@@ -327,19 +326,19 @@ void LocalRowAccumulate
   ( UpperOrLower uplo, \
     T alpha, \
     const DistMatrix<T>& A, \
-    const DistMatrix<T,MC,STAR>& x_MC_STAR, \
-    const DistMatrix<T,MR,STAR>& x_MR_STAR, \
-          DistMatrix<T,MC,STAR>& z_MC_STAR, \
-          DistMatrix<T,MR,STAR>& z_MR_STAR, bool conjugate, \
+    const DistMatrix<T,Dist::MC,Dist::STAR>& x_MC_STAR, \
+    const DistMatrix<T,Dist::MR,Dist::STAR>& x_MR_STAR, \
+          DistMatrix<T,Dist::MC,Dist::STAR>& z_MC_STAR, \
+          DistMatrix<T,Dist::MR,Dist::STAR>& z_MR_STAR, bool conjugate, \
     const SymvCtrl<T>& ctrl ); \
   template void symv::LocalRowAccumulate \
   ( UpperOrLower uplo, \
     T alpha, \
     const DistMatrix<T>& A, \
-    const DistMatrix<T,STAR,MC>& x_STAR_MC, \
-    const DistMatrix<T,STAR,MR>& x_STAR_MR, \
-          DistMatrix<T,STAR,MC>& z_STAR_MC, \
-          DistMatrix<T,STAR,MR>& z_STAR_MR, bool conjugate, \
+    const DistMatrix<T,Dist::STAR,Dist::MC>& x_STAR_MC, \
+    const DistMatrix<T,Dist::STAR,Dist::MR>& x_STAR_MR, \
+          DistMatrix<T,Dist::STAR,Dist::MC>& z_STAR_MC, \
+          DistMatrix<T,Dist::STAR,Dist::MR>& z_STAR_MR, bool conjugate, \
     const SymvCtrl<T>& ctrl );
 
 #define EL_ENABLE_DOUBLEDOUBLE

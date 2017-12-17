@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -13,7 +13,7 @@ namespace syrk {
 template<typename T>
 void LT_C
 ( T alpha,
-  const AbstractDistMatrix<T>& APre, 
+  const AbstractDistMatrix<T>& APre,
         AbstractDistMatrix<T>& CPre,
   bool conjugate=false )
 {
@@ -23,15 +23,15 @@ void LT_C
     const Grid& g = APre.Grid();
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrixReadProxy<T,T,MC,MR> AProx( APre );
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& A = AProx.GetLocked();
     auto& C = CProx.Get();
 
     // Temporary distributions
-    DistMatrix<T,MR,  STAR> A1Trans_MR_STAR(g);
-    DistMatrix<T,STAR,VR  > A1_STAR_VR(g);
-    DistMatrix<T,STAR,MC  > A1_STAR_MC(g);
+    DistMatrix<T,Dist::MR,  Dist::STAR> A1Trans_MR_STAR(g);
+    DistMatrix<T,Dist::STAR,Dist::VR  > A1_STAR_VR(g);
+    DistMatrix<T,Dist::STAR,Dist::MC  > A1_STAR_MC(g);
 
     A1Trans_MR_STAR.AlignWith( C );
     A1_STAR_MC.AlignWith( C );
@@ -46,7 +46,7 @@ void LT_C
         A1_STAR_MC = A1_STAR_VR;
 
         LocalTrrk
-        ( LOWER, orientation, TRANSPOSE, 
+        ( LOWER, orientation, TRANSPOSE,
           alpha, A1_STAR_MC, A1Trans_MR_STAR, T(1), C );
     }
 }
@@ -59,19 +59,19 @@ void LT_Dot
   const bool conjugate,
   Int blockSize=2000 )
 {
-    EL_DEBUG_CSE 
+    EL_DEBUG_CSE
     const Int n = CPre.Height();
     const Grid& g = APre.Grid();
 
     const Orientation orient = ( conjugate ? ADJOINT : TRANSPOSE );
 
-    DistMatrixReadProxy<T,T,VC,STAR> AProx( APre );
+    DistMatrixReadProxy<T,T,Dist::VC,Dist::STAR> AProx( APre );
     auto& A = AProx.GetLocked();
 
-    DistMatrixReadWriteProxy<T,T,MC,MR> CProx( CPre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
     auto& C = CProx.Get();
 
-    DistMatrix<T,STAR,STAR> Z( blockSize, blockSize, g );
+    DistMatrix<T,Dist::STAR,Dist::STAR> Z( blockSize, blockSize, g );
     Zero( Z );
     for( Int kOuter=0; kOuter<n; kOuter+=blockSize )
     {
@@ -102,7 +102,7 @@ void LT_Dot
 template<typename T>
 void LT
 ( T alpha,
-  const AbstractDistMatrix<T>& A, 
+  const AbstractDistMatrix<T>& A,
         AbstractDistMatrix<T>& C,
   bool conjugate=false )
 {

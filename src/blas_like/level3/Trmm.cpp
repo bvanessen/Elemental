@@ -2,11 +2,10 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level3.hpp>
 
 #include "./Trmm/LLN.hpp"
@@ -52,7 +51,7 @@ void Trmm
 
 template<typename T>
 void Trmm
-( LeftOrRight side, UpperOrLower uplo, 
+( LeftOrRight side, UpperOrLower uplo,
   Orientation orientation, UnitOrNonUnit diag,
   T alpha, const AbstractDistMatrix<T>& A, AbstractDistMatrix<T>& X )
 {
@@ -92,7 +91,7 @@ template<typename T>
 void LocalTrmm
 ( LeftOrRight side, UpperOrLower uplo,
   Orientation orientation, UnitOrNonUnit diag,
-  T alpha, const DistMatrix<T,STAR,STAR>& A, AbstractDistMatrix<T>& B )
+  T alpha, const DistMatrix<T,Dist::STAR,Dist::STAR>& A, AbstractDistMatrix<T>& B )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -117,7 +116,7 @@ void LocalTrmm
   template void LocalTrmm \
   ( LeftOrRight side, UpperOrLower uplo, \
     Orientation orientation, UnitOrNonUnit diag, \
-    T alpha, const DistMatrix<T,STAR,STAR>& A, AbstractDistMatrix<T>& B );
+    T alpha, const DistMatrix<T,Dist::STAR,Dist::STAR>& A, AbstractDistMatrix<T>& B );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

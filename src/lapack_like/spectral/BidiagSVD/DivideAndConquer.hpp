@@ -161,7 +161,7 @@ Merge
     for( Int j=0; j<m0; ++j )
     {
         r(j+1) = alpha*V0(lastRowOfV0,j);
-        columnTypes(j+1) = COLUMN_NONZERO_IN_FIRST_BLOCK;
+        columnTypes(j+1) = COLUMN_NONZERO_IN_FIRST_DistWrap::BLOCK;
     }
     for( Int j=0; j<m1; ++j )
     {
@@ -861,9 +861,9 @@ Merge
   // The right entry in the removed middle row of the bidiagonal matrix
   Real beta,
   // The non-deflated m0 (unsorted) singular values from B0.
-  const DistMatrix<Real,STAR,STAR>& s0,
+  const DistMatrix<Real,Dist::STAR,Dist::STAR>& s0,
   // The non-deflated m1 (unsorted) singular values from B1.
-  const DistMatrix<Real,STAR,STAR>& s1,
+  const DistMatrix<Real,Dist::STAR,Dist::STAR>& s1,
   // If ctrl.wantU is true, then, on entry, U contains a packing of the left
   // singular vectors from the two subproblems,
   //
@@ -877,7 +877,7 @@ Merge
   // merged bidiagonal matrix.
   DistMatrix<Real>& U,
   // On exit, the (unsorted) singular values of the merged bidiagonal matrix
-  DistMatrix<Real,STAR,STAR>& d,
+  DistMatrix<Real,Dist::STAR,Dist::STAR>& d,
   // If ctrl.wantV is true, then, on entry, a packing of the right singular
   // vectors from the two subproblems,
   //
@@ -993,13 +993,13 @@ Merge
 
     // Get a full copy of the last row of V0 and the first row of V1.
     const Int lastRowOfV0 = ( ctrl.wantV ? m0 : 0 );
-    DistMatrix<Real,STAR,STAR> v0Last( V0(IR(lastRowOfV0),ALL) ),
+    DistMatrix<Real,Dist::STAR,Dist::STAR> v0Last( V0(IR(lastRowOfV0),ALL) ),
       v1First( V1(IR(0),ALL) );
     const auto& v0LastLoc = v0Last.LockedMatrix();
     const auto& v1FirstLoc = v1First.LockedMatrix();
 
     // Put U and V into [VC,STAR] distributions for Givens applications
-    DistMatrix<Real,VC,STAR> U_VC_STAR(U), V_VC_STAR(V);
+    DistMatrix<Real,Dist::VC,Dist::STAR> U_VC_STAR(U), V_VC_STAR(V);
     auto& U_VC_STAR_Loc = U_VC_STAR.Matrix();
     auto& V_VC_STAR_Loc = V_VC_STAR.Matrix();
 
@@ -1377,7 +1377,7 @@ Merge
                      packingInd2(packingOffsets[2],packingOffsets[3]);
 
     Matrix<Real> dPacked;
-    DistMatrix<Real,VC,STAR> UPacked(g), VPacked(g);
+    DistMatrix<Real,Dist::VC,Dist::STAR> UPacked(g), VPacked(g);
     dPacked.Resize( m, 1 );
     if( ctrl.wantU )
         UPacked.Resize( m, m );
@@ -1458,8 +1458,8 @@ Merge
     // vectors from the undeflated secular equation. Notice that we *always*
     // need to compute the right singular vectors of the undeflated secular
     // equation.
-    DistMatrix<Real,VR,STAR> dSecular(numUndeflated,1,g);
-    DistMatrix<Real,STAR,VR> USecular(g), VSecular(g);
+    DistMatrix<Real,Dist::VR,Dist::STAR> dSecular(numUndeflated,1,g);
+    DistMatrix<Real,Dist::STAR,Dist::VR> USecular(g), VSecular(g);
     if( ctrl.wantU )
         USecular.Resize( numUndeflated, numUndeflated );
     VSecular.Resize( numUndeflated, numUndeflated );
@@ -1561,7 +1561,7 @@ Merge
     // vectors from the secular equation.
     if( ctrl.progress && amRoot )
         Output("Forming undeflated left singular vectors");
-    DistMatrix<Real,STAR,VR> Q(g);
+    DistMatrix<Real,Dist::STAR,Dist::VR> Q(g);
     auto& QLoc = Q.Matrix();
     if( ctrl.wantU )
     {
@@ -1848,7 +1848,7 @@ DivideAndConquer
 ( const Matrix<Real>& mainDiag,
   const Matrix<Real>& superDiag,
         DistMatrix<Real>& U,
-        DistMatrix<Real,STAR,STAR>& s,
+        DistMatrix<Real,Dist::STAR,Dist::STAR>& s,
         DistMatrix<Real>& V,
   const BidiagSVDCtrl<Real>& ctrl,
   bool topLevel=true )
@@ -2020,7 +2020,7 @@ DivideAndConquer
         Zeros( V1Sub, 2, n-(split+1) );
     }
 
-    DistMatrix<Real,STAR,STAR> s0Sub(*leftGrid), s1Sub(*rightGrid);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> s0Sub(*leftGrid), s1Sub(*rightGrid);
     DCInfo info0, info1;
     if( s0Sub.Participating() )
     {
@@ -2043,7 +2043,7 @@ DivideAndConquer
     s1Sub.MakeConsistent( includeViewers );
     V1Sub.MakeConsistent( includeViewers );
 
-    DistMatrix<Real,STAR,STAR> s0(grid), s1(grid);
+    DistMatrix<Real,Dist::STAR,Dist::STAR> s0(grid), s1(grid);
     s0 = s0Sub;
     s1 = s1Sub;
     if( ctrl.wantU )

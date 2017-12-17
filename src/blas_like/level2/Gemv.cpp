@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El-lite.hpp>
 #include <El/blas_like/level2.hpp>
 
 #include "./Gemv/Normal.hpp"
@@ -134,9 +133,9 @@ namespace gemv {
 template<typename T,typename=EnableIf<IsBlasScalar<T>>>
 void ScaLAPACKHelper
 ( Orientation orientation,
-  T alpha, const DistMatrix<T,MC,MR,BLOCK>& A,
-           const DistMatrix<T,MC,MR,BLOCK>& x,
-  T beta,        DistMatrix<T,MC,MR,BLOCK>& y )
+  T alpha, const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+           const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& x,
+  T beta,        DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& y )
 {
     AssertScaLAPACKSupport();
 #ifdef EL_HAVE_SCALAPACK
@@ -160,9 +159,9 @@ void ScaLAPACKHelper
 template<typename T,typename=DisableIf<IsBlasScalar<T>>,typename=void>
 void ScaLAPACKHelper
 ( Orientation orientation,
-  T alpha, const DistMatrix<T,MC,MR,BLOCK>& A,
-           const DistMatrix<T,MC,MR,BLOCK>& x,
-  T beta,        DistMatrix<T,MC,MR,BLOCK>& y )
+  T alpha, const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+           const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& x,
+  T beta,        DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& y )
 {
     LogicError("ScaLAPACK does not support this datatype");
 }
@@ -172,9 +171,9 @@ void ScaLAPACKHelper
 template<typename T>
 void Gemv
 ( Orientation orientation,
-  T alpha, const DistMatrix<T,MC,MR,BLOCK>& A,
-           const DistMatrix<T,MC,MR,BLOCK>& x,
-  T beta,        DistMatrix<T,MC,MR,BLOCK>& y )
+  T alpha, const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+           const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& x,
+  T beta,        DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& y )
 {
     EL_DEBUG_CSE
     gemv::ScaLAPACKHelper( orientation, alpha, A, x, beta, y );
@@ -183,9 +182,9 @@ void Gemv
 template<>
 void Gemv
 ( Orientation orientation,
-  Int alpha, const DistMatrix<Int,MC,MR,BLOCK>& A,
-             const DistMatrix<Int,MC,MR,BLOCK>& x,
-  Int beta,        DistMatrix<Int,MC,MR,BLOCK>& y )
+  Int alpha, const DistMatrix<Int,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+             const DistMatrix<Int,Dist::MC,Dist::MR,DistWrap::BLOCK>& x,
+  Int beta,        DistMatrix<Int,Dist::MC,Dist::MR,DistWrap::BLOCK>& y )
 {
     EL_DEBUG_CSE
     LogicError("ScaLAPACK does not support integer data");
@@ -195,9 +194,9 @@ void Gemv
 template<>
 void Gemv
 ( Orientation orientation,
-  Quad alpha, const DistMatrix<Quad,MC,MR,BLOCK>& A,
-              const DistMatrix<Quad,MC,MR,BLOCK>& x,
-  Quad beta,        DistMatrix<Quad,MC,MR,BLOCK>& y )
+  Quad alpha, const DistMatrix<Quad,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+              const DistMatrix<Quad,Dist::MC,Dist::MR,DistWrap::BLOCK>& x,
+  Quad beta,        DistMatrix<Quad,Dist::MC,Dist::MR,DistWrap::BLOCK>& y )
 {
     EL_DEBUG_CSE
     LogicError("ScaLAPACK does not support quad-precision data");
@@ -206,9 +205,9 @@ void Gemv
 template<>
 void Gemv
 ( Orientation orientation,
-  Complex<Quad> alpha, const DistMatrix<Complex<Quad>,MC,MR,BLOCK>& A,
-                       const DistMatrix<Complex<Quad>,MC,MR,BLOCK>& x,
-  Complex<Quad> beta,        DistMatrix<Complex<Quad>,MC,MR,BLOCK>& y )
+  Complex<Quad> alpha, const DistMatrix<Complex<Quad>,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+                       const DistMatrix<Complex<Quad>,Dist::MC,Dist::MR,DistWrap::BLOCK>& x,
+  Complex<Quad> beta,        DistMatrix<Complex<Quad>,Dist::MC,Dist::MR,DistWrap::BLOCK>& y )
 {
     EL_DEBUG_CSE
     LogicError("ScaLAPACK does not support quad-precision data");
@@ -218,9 +217,9 @@ void Gemv
 template<typename T>
 void Gemv
 ( Orientation orientation,
-  T alpha, const DistMatrix<T,MC,MR,BLOCK>& A,
-           const DistMatrix<T,MC,MR,BLOCK>& x,
-                 DistMatrix<T,MC,MR,BLOCK>& y )
+  T alpha, const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
+           const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& x,
+                 DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& y )
 {
     EL_DEBUG_CSE
     y.AlignWith( A );
@@ -255,14 +254,14 @@ void Gemv
                    AbstractDistMatrix<T>& y ); \
   template void Gemv \
   ( Orientation orientation, \
-    T alpha, const DistMatrix<T,MC,MR,BLOCK>& A, \
-             const DistMatrix<T,MC,MR,BLOCK>& x, \
-    T beta,        DistMatrix<T,MC,MR,BLOCK>& y ); \
+    T alpha, const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& A, \
+             const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& x, \
+    T beta,        DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& y ); \
   template void Gemv \
   ( Orientation orientation, \
-    T alpha, const DistMatrix<T,MC,MR,BLOCK>& A, \
-             const DistMatrix<T,MC,MR,BLOCK>& x, \
-                   DistMatrix<T,MC,MR,BLOCK>& y ); \
+    T alpha, const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& A, \
+             const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& x, \
+                   DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& y ); \
   template void LocalGemv \
   ( Orientation orientation, \
     T alpha, const AbstractDistMatrix<T>& A, \

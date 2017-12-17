@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_VIEW_IMPL_HPP
@@ -61,11 +61,11 @@ void View( ElementalMatrix<T>& A, ElementalMatrix<T>& B )
     EL_DEBUG_ONLY(AssertSameDist( A.DistData(), B.DistData() ))
     if( B.Locked() )
         A.LockedAttach
-        ( B.Height(), B.Width(), B.Grid(), B.ColAlign(), B.RowAlign(), 
+        ( B.Height(), B.Width(), B.Grid(), B.ColAlign(), B.RowAlign(),
           B.LockedBuffer(), B.LDim(), B.Root() );
     else
         A.Attach
-        ( B.Height(), B.Width(), B.Grid(), B.ColAlign(), B.RowAlign(), 
+        ( B.Height(), B.Width(), B.Grid(), B.ColAlign(), B.RowAlign(),
           B.Buffer(), B.LDim(), B.Root() );
 }
 
@@ -76,7 +76,7 @@ void LockedView
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(AssertSameDist( A.DistData(), B.DistData() ))
     A.LockedAttach
-    ( B.Height(), B.Width(), B.Grid(), B.ColAlign(), B.RowAlign(), 
+    ( B.Height(), B.Width(), B.Grid(), B.ColAlign(), B.RowAlign(),
       B.LockedBuffer(), B.LDim(), B.Root() );
 }
 
@@ -140,12 +140,12 @@ void View
     EL_DEBUG_ONLY(AssertSameDist( A.DistData(), B.DistData() ))
     if( B.Locked() )
         A.LockedAttach
-        ( B.Height(), B.Width(), B.Grid(), 
+        ( B.Height(), B.Width(), B.Grid(),
           1, 1, B.ColAlign(), B.RowAlign(), 0, 0,
           B.LockedBuffer(), B.LDim(), B.Root() );
     else
         A.Attach
-        ( B.Height(), B.Width(), B.Grid(), 
+        ( B.Height(), B.Width(), B.Grid(),
           1, 1, B.ColAlign(), B.RowAlign(), 0, 0,
           B.Buffer(), B.LDim(), B.Root() );
 }
@@ -174,11 +174,11 @@ void View
                     " instead of 1x1");
     if( B.Locked() )
         A.LockedAttach
-        ( B.Height(), B.Width(), B.Grid(), B.ColAlign(), B.RowAlign(), 
+        ( B.Height(), B.Width(), B.Grid(), B.ColAlign(), B.RowAlign(),
           B.LockedBuffer(), B.LDim(), B.Root() );
     else
         A.Attach
-        ( B.Height(), B.Width(), B.Grid(), B.ColAlign(), B.RowAlign(), 
+        ( B.Height(), B.Width(), B.Grid(), B.ColAlign(), B.RowAlign(),
           B.Buffer(), B.LDim(), B.Root() );
 }
 
@@ -193,7 +193,7 @@ void LockedView
         LogicError("Block size was ",B.BlockHeight()," x ",B.BlockWidth(),
                     " instead of 1x1");
     A.LockedAttach
-    ( B.Height(), B.Width(), B.Grid(), B.ColAlign(), B.RowAlign(), 
+    ( B.Height(), B.Width(), B.Grid(), B.ColAlign(), B.RowAlign(),
       B.LockedBuffer(), B.LDim(), B.Root() );
 }
 
@@ -206,19 +206,19 @@ void View
 {
     auto AWrap = A.Wrap();
     auto BWrap = B.Wrap();
-    if( AWrap == ELEMENT && BWrap == ELEMENT )    
+    if( AWrap == DistWrap::ELEMENT && BWrap == DistWrap::ELEMENT )
     {
         auto& ACast = static_cast<ElementalMatrix<T>&>(A);
         auto& BCast = static_cast<ElementalMatrix<T>&>(B);
         View( ACast, BCast );
-    } 
-    else if( AWrap == ELEMENT && BWrap == BLOCK )
+    }
+    else if( AWrap == DistWrap::ELEMENT && BWrap == DistWrap::BLOCK )
     {
         auto& ACast = static_cast<ElementalMatrix<T>&>(A);
         auto& BCast = static_cast<BlockMatrix<T>&>(B);
         View( ACast, BCast );
     }
-    else if( AWrap == BLOCK && BWrap == ELEMENT )
+    else if( AWrap == DistWrap::BLOCK && BWrap == DistWrap::ELEMENT )
     {
         auto& ACast = static_cast<BlockMatrix<T>&>(A);
         auto& BCast = static_cast<ElementalMatrix<T>&>(B);
@@ -239,19 +239,19 @@ void LockedView
 {
     auto AWrap = A.Wrap();
     auto BWrap = B.Wrap();
-    if( AWrap == ELEMENT && BWrap == ELEMENT )    
+    if( AWrap == DistWrap::ELEMENT && BWrap == DistWrap::ELEMENT )
     {
         auto& ACast = static_cast<ElementalMatrix<T>&>(A);
         auto& BCast = static_cast<const ElementalMatrix<T>&>(B);
         LockedView( ACast, BCast );
-    } 
-    else if( AWrap == ELEMENT && BWrap == BLOCK )
+    }
+    else if( AWrap == DistWrap::ELEMENT && BWrap == DistWrap::BLOCK )
     {
         auto& ACast = static_cast<ElementalMatrix<T>&>(A);
         auto& BCast = static_cast<const BlockMatrix<T>&>(B);
         LockedView( ACast, BCast );
     }
-    else if( AWrap == BLOCK && BWrap == ELEMENT )
+    else if( AWrap == DistWrap::BLOCK && BWrap == DistWrap::ELEMENT )
     {
         auto& ACast = static_cast<BlockMatrix<T>&>(A);
         auto& BCast = static_cast<const ElementalMatrix<T>&>(B);
@@ -286,7 +286,7 @@ void View
           LogicError("Height and width must be non-negative");
       if( (i+height) > B.Height() || (j+width) > B.Width() )
           LogicError
-          ("Trying to view outside of a Matrix: (",i,",",j,") up to (", 
+          ("Trying to view outside of a Matrix: (",i,",",j,") up to (",
            i+height-1,",",j+width-1,") of ",B.Height()," x ",B.Width(),
            " Matrix");
     )
@@ -328,7 +328,7 @@ void View
         I.end = B.Height();
     if( J.end == END )
         J.end = B.Width();
-    View( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg ); 
+    View( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg );
 }
 
 template<typename T>
@@ -336,12 +336,12 @@ void LockedView
 (       Matrix<T>& A,
   const Matrix<T>& B,
   Range<Int> I, Range<Int> J )
-{ 
+{
     if( I.end == END )
         I.end = B.Height();
     if( J.end == END )
         J.end = B.Width();
-    LockedView( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg ); 
+    LockedView( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg );
 }
 
 // Return by value
@@ -367,23 +367,23 @@ Matrix<T> LockedView
 template<typename T>
 Matrix<T> View
 ( Matrix<T>& B, Range<Int> I, Range<Int> J )
-{ 
+{
     if( I.end == END )
         I.end = B.Height();
     if( J.end == END )
         J.end = B.Width();
-    return View( B, I.beg, J.beg, I.end-I.beg, J.end-J.beg ); 
+    return View( B, I.beg, J.beg, I.end-I.beg, J.end-J.beg );
 }
 
 template<typename T>
 Matrix<T> LockedView
 ( const Matrix<T>& B, Range<Int> I, Range<Int> J )
-{ 
+{
     if( I.end == END )
         I.end = B.Height();
     if( J.end == END )
         J.end = B.Width();
-    return LockedView( B, I.beg, J.beg, I.end-I.beg, J.end-J.beg ); 
+    return LockedView( B, I.beg, J.beg, I.end-I.beg, J.end-J.beg );
 }
 
 // ElementalMatrix
@@ -408,11 +408,11 @@ void View
         const Int jLoc = B.LocalColOffset(j);
         if( B.Locked() )
             A.LockedAttach
-            ( height, width, B.Grid(), colAlign, rowAlign, 
+            ( height, width, B.Grid(), colAlign, rowAlign,
               B.LockedBuffer(iLoc,jLoc), B.LDim(), B.Root() );
         else
             A.Attach
-            ( height, width, B.Grid(), colAlign, rowAlign, 
+            ( height, width, B.Grid(), colAlign, rowAlign,
               B.Buffer(iLoc,jLoc), B.LDim(), B.Root() );
     }
     else
@@ -446,7 +446,7 @@ void LockedView
         const Int iLoc = B.LocalRowOffset(i);
         const Int jLoc = B.LocalColOffset(j);
         A.LockedAttach
-        ( height, width, B.Grid(), colAlign, rowAlign, 
+        ( height, width, B.Grid(), colAlign, rowAlign,
           B.LockedBuffer(iLoc,jLoc), B.LDim(), B.Root() );
     }
     else
@@ -459,27 +459,27 @@ void LockedView
 template<typename T>
 void View
 ( ElementalMatrix<T>& A,
-  ElementalMatrix<T>& B, 
+  ElementalMatrix<T>& B,
   Range<Int> I, Range<Int> J )
 {
     if( I.end == END )
         I.end = B.Height();
     if( J.end == END )
         J.end = B.Width();
-    View( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg ); 
+    View( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg );
 }
 
 template<typename T>
 void LockedView
 (       ElementalMatrix<T>& A,
-  const ElementalMatrix<T>& B, 
+  const ElementalMatrix<T>& B,
   Range<Int> I, Range<Int> J )
-{ 
+{
     if( I.end == END )
         I.end = B.Height();
     if( J.end == END )
         J.end = B.Width();
-    LockedView( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg ); 
+    LockedView( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg );
 }
 
 // Return by value
@@ -511,18 +511,18 @@ DistMatrix<T,U,V,wrapType> View
         I.end = B.Height();
     if( J.end == END )
         J.end = B.Width();
-    return View( B, I.beg, J.beg, I.end-I.beg, J.end-J.beg ); 
+    return View( B, I.beg, J.beg, I.end-I.beg, J.end-J.beg );
 }
- 
+
 template<typename T,Dist U,Dist V,DistWrap wrapType>
 DistMatrix<T,U,V,wrapType> LockedView
 ( const DistMatrix<T,U,V,wrapType>& B, Range<Int> I, Range<Int> J )
-{ 
+{
     if( I.end == END )
         I.end = B.Height();
     if( J.end == END )
         J.end = B.Width();
-    return LockedView( B, I.beg, J.beg, I.end-I.beg, J.end-J.beg ); 
+    return LockedView( B, I.beg, J.beg, I.end-I.beg, J.end-J.beg );
 }
 
 // BlockMatrix
@@ -546,9 +546,9 @@ void View
     const Int jLoc = B.LocalColOffset(j);
     if( B.Locked() )
         A.LockedAttach
-        ( height, width, B.Grid(), 
+        ( height, width, B.Grid(),
           B.BlockHeight(), B.BlockWidth(),
-          B.RowOwner(i), B.ColOwner(j), 
+          B.RowOwner(i), B.ColOwner(j),
           Mod(B.ColCut()+i,B.BlockHeight()),
           Mod(B.RowCut()+j,B.BlockWidth()),
           B.LockedBuffer(iLoc,jLoc), B.LDim(), B.Root() );
@@ -556,7 +556,7 @@ void View
         A.Attach
         ( height, width, B.Grid(),
           B.BlockHeight(), B.BlockWidth(),
-          B.RowOwner(i), B.ColOwner(j), 
+          B.RowOwner(i), B.ColOwner(j),
           Mod(B.ColCut()+i,B.BlockHeight()),
           Mod(B.RowCut()+j,B.BlockWidth()),
           B.Buffer(iLoc,jLoc), B.LDim(), B.Root() );
@@ -576,9 +576,9 @@ void LockedView
     const Int iLoc = B.LocalRowOffset(i);
     const Int jLoc = B.LocalColOffset(j);
     A.LockedAttach
-    ( height, width, B.Grid(), 
+    ( height, width, B.Grid(),
       B.BlockHeight(), B.BlockWidth(),
-      B.RowOwner(i), B.ColOwner(j), 
+      B.RowOwner(i), B.ColOwner(j),
       Mod(B.ColCut()+i,B.BlockHeight()),
       Mod(B.RowCut()+j,B.BlockWidth()),
       B.LockedBuffer(iLoc,jLoc), B.LDim(), B.Root() );
@@ -587,27 +587,27 @@ void LockedView
 template<typename T>
 void View
 ( BlockMatrix<T>& A,
-  BlockMatrix<T>& B, 
+  BlockMatrix<T>& B,
   Range<Int> I, Range<Int> J )
 {
     if( I.end == END )
         I.end = B.Height();
     if( J.end == END )
         J.end = B.Width();
-    View( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg ); 
+    View( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg );
 }
 
 template<typename T>
 void LockedView
 (       BlockMatrix<T>& A,
-  const BlockMatrix<T>& B, 
+  const BlockMatrix<T>& B,
   Range<Int> I, Range<Int> J )
-{ 
+{
     if( I.end == END )
         I.end = B.Height();
     if( J.end == END )
         J.end = B.Width();
-    LockedView( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg ); 
+    LockedView( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg );
 }
 
 // AbstractDistMatrix
@@ -620,19 +620,19 @@ void View
 {
     auto AWrap = A.Wrap();
     auto BWrap = B.Wrap();
-    if( AWrap == ELEMENT && BWrap == ELEMENT )    
+    if( AWrap == DistWrap::ELEMENT && BWrap == DistWrap::ELEMENT )
     {
         auto& ACast = static_cast<ElementalMatrix<T>&>(A);
         auto& BCast = static_cast<ElementalMatrix<T>&>(B);
         View( ACast, BCast, i, j, height, width );
-    } 
-    else if( AWrap == ELEMENT && BWrap == BLOCK )
+    }
+    else if( AWrap == DistWrap::ELEMENT && BWrap == DistWrap::BLOCK )
     {
         auto& ACast = static_cast<ElementalMatrix<T>&>(A);
         auto& BCast = static_cast<BlockMatrix<T>&>(B);
         View( ACast, BCast, i, j, height, width );
     }
-    else if( AWrap == BLOCK && BWrap == ELEMENT )
+    else if( AWrap == DistWrap::BLOCK && BWrap == DistWrap::ELEMENT )
     {
         auto& ACast = static_cast<BlockMatrix<T>&>(A);
         auto& BCast = static_cast<ElementalMatrix<T>&>(B);
@@ -654,19 +654,19 @@ void LockedView
 {
     auto AWrap = A.Wrap();
     auto BWrap = B.Wrap();
-    if( AWrap == ELEMENT && BWrap == ELEMENT )    
+    if( AWrap == DistWrap::ELEMENT && BWrap == DistWrap::ELEMENT )
     {
         auto& ACast = static_cast<ElementalMatrix<T>&>(A);
         auto& BCast = static_cast<const ElementalMatrix<T>&>(B);
         LockedView( ACast, BCast, i, j, height, width );
-    } 
-    else if( AWrap == ELEMENT && BWrap == BLOCK )
+    }
+    else if( AWrap == DistWrap::ELEMENT && BWrap == DistWrap::BLOCK )
     {
         auto& ACast = static_cast<ElementalMatrix<T>&>(A);
         auto& BCast = static_cast<const BlockMatrix<T>&>(B);
         LockedView( ACast, BCast, i, j, height, width );
     }
-    else if( AWrap == BLOCK && BWrap == ELEMENT )
+    else if( AWrap == DistWrap::BLOCK && BWrap == DistWrap::ELEMENT )
     {
         auto& ACast = static_cast<BlockMatrix<T>&>(A);
         auto& BCast = static_cast<const ElementalMatrix<T>&>(B);
@@ -683,27 +683,27 @@ void LockedView
 template<typename T>
 void View
 ( AbstractDistMatrix<T>& A,
-  AbstractDistMatrix<T>& B, 
+  AbstractDistMatrix<T>& B,
   Range<Int> I, Range<Int> J )
 {
     if( I.end == END )
         I.end = B.Height();
     if( J.end == END )
         J.end = B.Width();
-    View( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg ); 
+    View( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg );
 }
 
 template<typename T>
 void LockedView
 (       AbstractDistMatrix<T>& A,
-  const AbstractDistMatrix<T>& B, 
+  const AbstractDistMatrix<T>& B,
   Range<Int> I, Range<Int> J )
-{ 
+{
     if( I.end == END )
         I.end = B.Height();
     if( J.end == END )
         J.end = B.Width();
-    LockedView( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg ); 
+    LockedView( A, B, I.beg, J.beg, I.end-I.beg, J.end-J.beg );
 }
 
 #ifdef EL_INSTANTIATE_CORE
@@ -816,7 +816,7 @@ void LockedView
   (       BlockMatrix<T>& A, \
     const BlockMatrix<T>& B, \
     Range<Int> I, Range<Int> J ); \
-  /* AbstractDistMatrix 
+  /* AbstractDistMatrix
      ------------------ */ \
   EL_EXTERN template void View \
   ( AbstractDistMatrix<T>& A, \
