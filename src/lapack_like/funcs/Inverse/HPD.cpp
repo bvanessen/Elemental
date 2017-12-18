@@ -17,7 +17,7 @@ template<typename Field>
 void HPDInverse( UpperOrLower uplo, Matrix<Field>& A )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         hpd_inv::CholeskyLVar2( A );
     else
         hpd_inv::CholeskyUVar2( A );
@@ -27,7 +27,7 @@ template<typename Field>
 void HPDInverse( UpperOrLower uplo, AbstractDistMatrix<Field>& A )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         hpd_inv::CholeskyLVar2( A );
     else
         hpd_inv::CholeskyUVar2( A );

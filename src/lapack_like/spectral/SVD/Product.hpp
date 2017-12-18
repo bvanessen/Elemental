@@ -54,7 +54,7 @@ SVDInfo TallAbsoluteProduct
 
     // C := A^H A
     Matrix<Field> C;
-    Herk( LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
 
     // [V,Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -67,7 +67,7 @@ SVDInfo TallAbsoluteProduct
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, V, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, V, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
 
     // Sigma := sqrt(Sigma^2)
@@ -120,12 +120,12 @@ SVDInfo TallRelativeProduct
 
     // C := A^H A
     Matrix<Field> C;
-    Herk( LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
 
     // [V,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, V, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, V, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
     const Real twoNorm = Sqrt(MaxNorm(s));
 
@@ -215,7 +215,7 @@ SVDInfo TallAbsoluteProduct
     // C := A^H A
     const Grid& g = A.Grid();
     DistMatrix<Field> C(g);
-    Herk( LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
 
     // [V,Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -228,7 +228,7 @@ SVDInfo TallAbsoluteProduct
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, V, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, V, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
 
     // Sigma := sqrt(Sigma^2)
@@ -303,12 +303,12 @@ SVDInfo TallRelativeProduct
 
     // C := A^H A
     DistMatrix<Field> C(g);
-    Herk( LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
 
     // [V,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, V, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, V, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
     const Real twoNorm = Sqrt(MaxNorm(s));
 
@@ -421,7 +421,7 @@ SVDInfo TallAbsoluteProduct
     const Grid& g = A.Grid();
     DistMatrix<Field,Dist::STAR,Dist::STAR> C(g);
     Zeros( C, n, n );
-    Herk( LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
+    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
     El::AllReduce( C, A.ColComm() );
 
     // [V,Sigma^2] := eig(C), where each sigma > tol
@@ -435,7 +435,7 @@ SVDInfo TallAbsoluteProduct
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, V, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, V, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
     const int k = s.Height();
 
@@ -513,13 +513,13 @@ SVDInfo TallRelativeProduct
     // C := A^H A
     DistMatrix<Field,Dist::STAR,Dist::STAR> C(g);
     Zeros( C, n, n );
-    Herk( LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
+    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
     El::AllReduce( C, A.ColComm() );
 
     // [V,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, V, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, V, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
     const Real twoNorm = Sqrt(MaxNorm(s));
 
@@ -630,7 +630,7 @@ SVDInfo WideAbsoluteProduct
 
     // C := A A^H
     Matrix<Field> C;
-    Herk( LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
 
     // [U,Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -643,7 +643,7 @@ SVDInfo WideAbsoluteProduct
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, U, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, U, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
 
     // Sigma := sqrt(Sigma^2)
@@ -694,12 +694,12 @@ SVDInfo WideRelativeProduct
 
     // C := A A^H
     Matrix<Field> C;
-    Herk( LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
 
     // [U,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, U, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, U, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
     const Real twoNorm = Sqrt(MaxNorm(s));
 
@@ -786,7 +786,7 @@ SVDInfo WideAbsoluteProduct
     // C := A A^H
     const Grid& g = A.Grid();
     DistMatrix<Field> C( g );
-    Herk( LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
 
     // [U,Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -799,7 +799,7 @@ SVDInfo WideAbsoluteProduct
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, U, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, U, ctrl );
 
     // Sigma := sqrt(Sigma^2)
     const Int localHeight = s.LocalHeight();
@@ -871,12 +871,12 @@ SVDInfo WideRelativeProduct
 
     // C := A A^H
     DistMatrix<Field> C( g );
-    Herk( LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
 
     // [U,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, U, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, U, ctrl );
     const Real twoNorm = Sqrt(MaxNorm(s));
 
     // Sigma := sqrt(Sigma^2), where all sigmas > relTol*twoNorm
@@ -1023,7 +1023,7 @@ SVDInfo TallAbsoluteProduct
 
     // C := A^H A
     Matrix<Field> C;
-    Herk( LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
 
     // [Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -1036,7 +1036,7 @@ SVDInfo TallAbsoluteProduct
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
 
     // Sigma := sqrt(Sigma^2)
     const Int k = s.Height();
@@ -1065,12 +1065,12 @@ SVDInfo TallRelativeProduct
 
     // C := A^H A
     Matrix<Field> C;
-    Herk( LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
 
     // [Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
     const Real twoNorm = Sqrt(MaxNorm(s));
 
     // Sigma := sqrt(Sigma^2), where all sigmas > relTol*twoNorm
@@ -1136,7 +1136,7 @@ SVDInfo TallAbsoluteProduct
 
     // C := A^H A
     DistMatrix<Field> C(g);
-    Herk( LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
 
     // [Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -1149,7 +1149,7 @@ SVDInfo TallAbsoluteProduct
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
     ctrl.tridiagEigCtrl.subset = subset;
-    HermitianEig( LOWER, C, s, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
 
     // Sigma := sqrt(Sigma^2)
     const Int localHeight = s.LocalHeight();
@@ -1193,12 +1193,12 @@ SVDInfo TallRelativeProduct
 
     // C := A^H A
     DistMatrix<Field> C(g);
-    Herk( LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
 
     // [Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
     const Real twoNorm = Sqrt(MaxNorm(s));
 
     // Sigma := sqrt(Sigma^2), where all sigmas > relTol*twoNorm
@@ -1281,7 +1281,7 @@ SVDInfo TallAbsoluteProduct
     const Grid& g = A.Grid();
     DistMatrix<Field,Dist::STAR,Dist::STAR> C(g);
     Zeros( C, n, n );
-    Herk( LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
+    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
     El::AllReduce( C, A.ColComm() );
 
     // [Sigma^2] := eig(C), where each sigma > tol
@@ -1295,7 +1295,7 @@ SVDInfo TallAbsoluteProduct
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
     const int k = s.Height();
 
     // Sigma := sqrt(Sigma^2)
@@ -1341,13 +1341,13 @@ SVDInfo TallRelativeProduct
     // C := A^H A
     DistMatrix<Field,Dist::STAR,Dist::STAR> C(g);
     Zeros( C, n, n );
-    Herk( LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
+    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
     El::AllReduce( C, A.ColComm() );
 
     // [V,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
     const Real twoNorm = Sqrt(MaxNorm(s));
 
     // Sigma := sqrt(Sigma^2), where each sigma > twoNorm*relTol
@@ -1425,7 +1425,7 @@ SVDInfo WideAbsoluteProduct
 
     // C := A A^H
     Matrix<Field> C;
-    Herk( LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
 
     // [Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -1438,7 +1438,7 @@ SVDInfo WideAbsoluteProduct
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
 
     // Sigma := sqrt(Sigma^2)
     const Int k = s.Height();
@@ -1467,12 +1467,12 @@ SVDInfo WideRelativeProduct
 
     // C := A A^H
     Matrix<Field> C;
-    Herk( LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
 
     // [Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
     const Real twoNorm = Sqrt(MaxNorm(s));
 
     // Sigma := sqrt(Sigma^2), where each sigma > relTol*twoNorm
@@ -1537,7 +1537,7 @@ SVDInfo WideAbsoluteProduct
     // C := A A^H
     const Grid& g = A.Grid();
     DistMatrix<Field> C( g );
-    Herk( LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
 
     // [Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -1550,7 +1550,7 @@ SVDInfo WideAbsoluteProduct
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
 
     // Sigma := sqrt(Sigma^2)
     const Int localHeight = s.LocalHeight();
@@ -1594,12 +1594,12 @@ SVDInfo WideRelativeProduct
 
     // C := A A^H
     DistMatrix<Field> C( g );
-    Herk( LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
 
     // [Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.sort = DESCENDING;
-    HermitianEig( LOWER, C, s, ctrl );
+    HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
     const Real twoNorm = Sqrt(MaxNorm(s));
 
     // Sigma := sqrt(Sigma^2), where all sigmas > relTol*twoNorm

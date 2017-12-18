@@ -22,7 +22,7 @@ void Overwrite
   const LDLPivotCtrl<Base<Field>>& ctrl )
 {
     EL_DEBUG_CSE
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
         LogicError("Upper Bunch-Kaufman is not yet supported");
     Permutation p;
     Matrix<Field> dSub;
@@ -46,7 +46,7 @@ void Overwrite
   const LDLPivotCtrl<Base<Field>>& ctrl )
 {
     EL_DEBUG_CSE
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
         LogicError("Upper Bunch-Kaufman is not yet supported");
 
     DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );

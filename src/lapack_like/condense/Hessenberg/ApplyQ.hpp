@@ -23,18 +23,18 @@ void ApplyQ
     const bool normal = (orientation==NORMAL);
     const bool onLeft = (side==LEFT);
     const ForwardOrBackward direction = ( normal==onLeft ? BACKWARD : FORWARD );
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         const Conjugation conjugation = ( normal ? UNCONJUGATED : CONJUGATED );
         ApplyPackedReflectors
-        ( side, UPPER, HORIZONTAL, direction, conjugation, 1,
+        ( side, UpperOrLower::UPPER, HORIZONTAL, direction, conjugation, 1,
           A, householderScalars, B );
     }
     else
     {
         const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
         ApplyPackedReflectors
-        ( side, LOWER, VERTICAL, direction, conjugation, -1,
+        ( side, UpperOrLower::LOWER, VERTICAL, direction, conjugation, -1,
           A, householderScalars, B );
     }
 }
@@ -50,18 +50,18 @@ void ApplyQ
     const bool normal = (orientation==NORMAL);
     const bool onLeft = (side==LEFT);
     const ForwardOrBackward direction = ( normal==onLeft ? BACKWARD : FORWARD );
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         const Conjugation conjugation = ( normal ? UNCONJUGATED : CONJUGATED );
         ApplyPackedReflectors
-        ( side, UPPER, HORIZONTAL, direction, conjugation, 1,
+        ( side, UpperOrLower::UPPER, HORIZONTAL, direction, conjugation, 1,
           A, householderScalars, B );
     }
     else
     {
         const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
         ApplyPackedReflectors
-        ( side, LOWER, VERTICAL, direction, conjugation, -1,
+        ( side, UpperOrLower::LOWER, VERTICAL, direction, conjugation, -1,
           A, householderScalars, B );
     }
 }

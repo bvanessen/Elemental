@@ -94,7 +94,7 @@ void LowerBlockedSquare
             auto W21_MR_STAR = WPan_MR_STAR( ind2-k, ind1-k );
 
             LocalTrr2k
-            ( LOWER, NORMAL, ADJOINT, NORMAL, ADJOINT,
+            ( UpperOrLower::LOWER, NORMAL, ADJOINT, NORMAL, ADJOINT,
               F(-1), A21_MC_STAR, W21_MR_STAR,
               F(-1), W21_MC_STAR, A21_MR_STAR,
               F(1), A22 );
@@ -104,7 +104,7 @@ void LowerBlockedSquare
             A11_STAR_STAR = A11;
             t1_STAR_STAR.Resize( nbt, 1 );
             HermitianTridiag
-            ( LOWER, A11_STAR_STAR.Matrix(), t1_STAR_STAR.Matrix() );
+            ( UpperOrLower::LOWER, A11_STAR_STAR.Matrix(), t1_STAR_STAR.Matrix() );
             A11 = A11_STAR_STAR;
             t1 = t1_STAR_STAR;
         }

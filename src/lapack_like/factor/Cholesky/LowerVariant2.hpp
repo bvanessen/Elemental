@@ -37,10 +37,10 @@ void LowerVariant2Blocked( Matrix<F>& A )
         auto A20 = A( ind2, ind0 );
         auto A21 = A( ind2, ind1 );
 
-        Herk( LOWER, NORMAL, F(-1), A10, F(1), A11 );
+        Herk( UpperOrLower::LOWER, NORMAL, F(-1), A10, F(1), A11 );
         cholesky::LowerVariant3Unblocked( A11 );
         Gemm( NORMAL, ADJOINT, F(-1), A20, A10, F(1), A21 );
-        Trsm( RIGHT, LOWER, ADJOINT, NON_UNIT, F(1), A11, A21 );
+        Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), A11, A21 );
     }
 }
 
@@ -85,7 +85,7 @@ void LowerVariant2Blocked( AbstractDistMatrix<F>& APre )
         AxpyContract( F(-1), X11_MC_STAR, A11 );
 
         A11_STAR_STAR = A11;
-        Cholesky( LOWER, A11_STAR_STAR );
+        Cholesky( UpperOrLower::LOWER, A11_STAR_STAR );
         A11 = A11_STAR_STAR;
 
         X21_MC_STAR.AlignWith( A20 );
@@ -94,7 +94,7 @@ void LowerVariant2Blocked( AbstractDistMatrix<F>& APre )
 
         A21_VC_STAR = A21;
         LocalTrsm
-        ( RIGHT, LOWER, ADJOINT, NON_UNIT, F(1), A11_STAR_STAR, A21_VC_STAR );
+        ( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), A11_STAR_STAR, A21_VC_STAR );
         A21 = A21_VC_STAR;
     }
 }

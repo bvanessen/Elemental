@@ -117,17 +117,17 @@ RLVFBlocked
 
         // Convert to an explicit matrix of (scaled) Householder vectors
         HPanCopy = HPan;
-        MakeTrapezoidal( LOWER, HPanCopy );
+        MakeTrapezoidal( UpperOrLower::LOWER, HPanCopy );
         FillDiagonal( HPanCopy, F(1) );
 
         // Form the small triangular matrix needed for the UT transform
-        Herk( UPPER, ADJOINT, Base<F>(1), HPanCopy, SInv );
+        Herk( UpperOrLower::UPPER, ADJOINT, Base<F>(1), HPanCopy, SInv );
         FixDiagonal( conjugation, householderScalars1, SInv );
 
         // Z := ARight HPan
         Gemm( NORMAL, NORMAL, F(1), ARight, HPanCopy, Z );
         // Z := ARight HPan inv(SInv)
-        Trsm( RIGHT, UPPER, NORMAL, NON_UNIT, F(1), SInv, Z );
+        Trsm( RIGHT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), SInv, Z );
         // ARight := ARight (I - HPan inv(SInv) HPan')
         Gemm( NORMAL, ADJOINT, F(-1), Z, HPanCopy, F(1), ARight );
     }
@@ -277,14 +277,14 @@ RLVFBlocked
         // Convert to an explicit matrix of (scaled) Householder vectors
         LockedView( *HPan, H, IR(ki,nA), IR(kj,kj+nb) );
         Copy( *HPan, HPanCopy );
-        MakeTrapezoidal( LOWER, HPanCopy );
+        MakeTrapezoidal( UpperOrLower::LOWER, HPanCopy );
         FillDiagonal( HPanCopy, F(1) );
 
         // Form the small triangular matrix needed for the UT transform
         HPan_VC_STAR = HPanCopy;
         Zeros( SInv_STAR_STAR, nb, nb );
         Herk
-        ( UPPER, ADJOINT,
+        ( UpperOrLower::UPPER, ADJOINT,
           Base<F>(1), HPan_VC_STAR.LockedMatrix(),
           Base<F>(0), SInv_STAR_STAR.Matrix() );
         El::AllReduce( SInv_STAR_STAR, HPan_VC_STAR.ColComm() );
@@ -302,7 +302,7 @@ RLVFBlocked
 
         // Z := ARight HPan inv(SInv)
         LocalTrsm
-        ( LEFT, UPPER, ADJOINT, NON_UNIT, F(1), SInv_STAR_STAR, ZAdj_STAR_VC );
+        ( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), SInv_STAR_STAR, ZAdj_STAR_VC );
 
         // ARight := ARight (I - HPan inv(SInv) HPan')
         ZAdj_STAR_MC = ZAdj_STAR_VC;

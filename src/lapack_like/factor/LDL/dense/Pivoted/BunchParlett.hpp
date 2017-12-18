@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_LDL_PIVOTED_BUNCHPARLETT_HPP
@@ -23,7 +23,7 @@ BunchParlett( const Matrix<F>& A, Base<F> gamma )
         gamma = LDLPivotConstant<Real>( BUNCH_PARLETT );
 
     const ValueInt<Real> diagMax = VectorMaxAbsLoc( GetDiagonal(A) );
-    const Entry<Real> offDiagMax = SymmetricMaxAbsLoc( LOWER, A );
+    const Entry<Real> offDiagMax = SymmetricMaxAbsLoc( UpperOrLower::LOWER, A );
 
     LDLPivot pivot;
     if( diagMax.value >= gamma*offDiagMax.value )
@@ -51,7 +51,7 @@ BunchParlett( const DistMatrix<F>& A, Base<F> gamma )
         gamma = LDLPivotConstant<Real>( BUNCH_PARLETT );
 
     const ValueInt<Real> diagMax = VectorMaxAbsLoc( GetDiagonal(A) );
-    const Entry<Real> offDiagMax = SymmetricMaxAbsLoc( LOWER, A );
+    const Entry<Real> offDiagMax = SymmetricMaxAbsLoc( UpperOrLower::LOWER, A );
 
     LDLPivot pivot;
     if( diagMax.value >= gamma*offDiagMax.value )
@@ -62,7 +62,7 @@ BunchParlett( const DistMatrix<F>& A, Base<F> gamma )
     }
     else
     {
-        pivot.nb = 2; 
+        pivot.nb = 2;
         pivot.from[0] = offDiagMax.i;
         pivot.from[1] = offDiagMax.j;
         return pivot;

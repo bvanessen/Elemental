@@ -73,7 +73,7 @@ void LN
             x1_STAR_STAR = x1;
             L11_STAR_STAR = L11;
             Trsv
-            ( LOWER, NORMAL, diag,
+            ( UpperOrLower::LOWER, NORMAL, diag,
               L11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix() );
             x1 = x1_STAR_STAR;
 
@@ -116,7 +116,7 @@ void LN
             x1_STAR_STAR = x1;
             L11_STAR_STAR = L11;
             Trsv
-            ( LOWER, NORMAL, diag,
+            ( UpperOrLower::LOWER, NORMAL, diag,
               L11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix() );
             x1 = x1_STAR_STAR;
 

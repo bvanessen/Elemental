@@ -5,8 +5,8 @@
    Copyright (c) 2015-2016, Tim Moon
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level1.hpp>
@@ -25,7 +25,7 @@ void SafeMultiShiftTrsm
 {
     EL_DEBUG_CSE
     B *= alpha;
-    if( side == LEFT && uplo == UPPER && orientation == NORMAL)
+    if( side == LEFT && uplo == UpperOrLower::UPPER && orientation == NORMAL)
     {
         safemstrsm::LUN( A, shifts, B, scales );
     }
@@ -38,19 +38,19 @@ void SafeMultiShiftTrsm
 template<typename F>
 void SafeMultiShiftTrsm
 ( LeftOrRight side, UpperOrLower uplo, Orientation orientation,
-  F alpha, const AbstractDistMatrix<F>& A, const AbstractDistMatrix<F>& shifts, 
+  F alpha, const AbstractDistMatrix<F>& A, const AbstractDistMatrix<F>& shifts,
   AbstractDistMatrix<F>& B, AbstractDistMatrix<F>& scales )
 {
     EL_DEBUG_CSE
     B *= alpha;
-    if( side == LEFT && uplo == UPPER && orientation == NORMAL)
+    if( side == LEFT && uplo == UpperOrLower::UPPER && orientation == NORMAL)
     {
         safemstrsm::LUN( A, shifts, B, scales );
     }
     else
         LogicError("This option is not yet supported");
 }
-  
+
 #define PROTO(F) \
   template void SafeMultiShiftTrsm \
   ( LeftOrRight side, UpperOrLower uplo, Orientation orientation, \
@@ -60,7 +60,7 @@ void SafeMultiShiftTrsm
   ( LeftOrRight side, UpperOrLower uplo, Orientation orientation, \
     F alpha, const AbstractDistMatrix<F>& A, const AbstractDistMatrix<F>& shifts, \
     AbstractDistMatrix<F>& B, AbstractDistMatrix<F>& scales );
-  
+
 #define EL_NO_INT_PROTO
 #define EL_ENABLE_QUAD
 #define EL_ENABLE_DOUBLEDOUBLE

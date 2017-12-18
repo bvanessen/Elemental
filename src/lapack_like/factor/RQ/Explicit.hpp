@@ -19,7 +19,7 @@ void ExplicitTriang( Matrix<F>& A )
     Matrix<F> t;
     Matrix<Base<F>> d;
     Householder( A, t, d );
-    MakeTrapezoidal( UPPER, A, A.Width()-A.Height() );
+    MakeTrapezoidal( UpperOrLower::UPPER, A, A.Width()-A.Height() );
 }
 
 template<typename F>
@@ -29,7 +29,7 @@ void ExplicitTriang( AbstractDistMatrix<F>& A )
     DistMatrix<F,Dist::MD,Dist::STAR> householderScalars(A.Grid());
     DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(A.Grid());
     Householder( A, householderScalars, signature );
-    MakeTrapezoidal( UPPER, A, A.Width()-A.Height() );
+    MakeTrapezoidal( UpperOrLower::UPPER, A, A.Width()-A.Height() );
 }
 
 // TODO: ExplicitUnitary

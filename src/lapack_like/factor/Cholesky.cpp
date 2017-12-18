@@ -31,7 +31,7 @@ void Cholesky( UpperOrLower uplo, Matrix<F>& A )
       if( A.Height() != A.Width() )
           LogicError("A must be square");
     )
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         cholesky::LowerVariant3Blocked( A );
     else
         cholesky::UpperVariant3Blocked( A );
@@ -45,7 +45,7 @@ void Cholesky( UpperOrLower uplo, Matrix<F>& A, Permutation& p )
       if( A.Height() != A.Width() )
           LogicError("A must be square");
     )
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         cholesky::PivotedLowerVariant3Blocked( A, p );
     else
         cholesky::PivotedUpperVariant3Blocked( A, p );
@@ -59,7 +59,7 @@ void ReverseCholesky( UpperOrLower uplo, Matrix<F>& A )
       if( A.Height() != A.Width() )
           LogicError("A must be square");
     )
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         cholesky::ReverseLowerVariant3Blocked( A );
     else
         cholesky::ReverseUpperVariant3Blocked( A );
@@ -102,7 +102,7 @@ void Cholesky( UpperOrLower uplo, AbstractDistMatrix<F>& A, bool scalapack )
     }
     else
     {
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
             cholesky::LowerVariant3Blocked( A );
         else
             cholesky::UpperVariant3Blocked( A );
@@ -114,7 +114,7 @@ void Cholesky
 ( UpperOrLower uplo, AbstractDistMatrix<F>& A, DistPermutation& p )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         cholesky::PivotedLowerVariant3Blocked( A, p );
     else
         cholesky::PivotedUpperVariant3Blocked( A, p );
@@ -129,7 +129,7 @@ template<typename F>
 void ReverseCholesky( UpperOrLower uplo, AbstractDistMatrix<F>& A )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         cholesky::ReverseLowerVariant3Blocked( A );
     else
         cholesky::ReverseUpperVariant3Blocked( A );
@@ -150,7 +150,7 @@ void CholeskyMod( UpperOrLower uplo, Matrix<F>& T, Base<F> alpha, Matrix<F>& V )
     EL_DEBUG_CSE
     if( alpha == Base<F>(0) )
         return;
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         cholesky::LowerMod( T, alpha, V );
     else
         cholesky::UpperMod( T, alpha, V );
@@ -166,7 +166,7 @@ void CholeskyMod
     EL_DEBUG_CSE
     if( alpha == Base<F>(0) )
         return;
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         cholesky::LowerMod( T, alpha, V );
     else
         cholesky::UpperMod( T, alpha, V );
@@ -179,7 +179,7 @@ void HPSDCholesky( UpperOrLower uplo, Matrix<F>& A )
     HPSDSquareRoot( uplo, A );
     MakeHermitian( uplo, A );
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         lq::ExplicitTriang( A );
     else
         qr::ExplicitTriang( A );
@@ -197,7 +197,7 @@ void HPSDCholesky( UpperOrLower uplo, AbstractDistMatrix<F>& APre )
     HPSDSquareRoot( uplo, A );
     MakeHermitian( uplo, A );
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         lq::ExplicitTriang( A );
     else
         qr::ExplicitTriang( A );

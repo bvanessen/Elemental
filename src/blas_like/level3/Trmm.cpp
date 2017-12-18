@@ -57,7 +57,7 @@ void Trmm
 {
     EL_DEBUG_CSE
     X *= alpha;
-    if( side == LEFT && uplo == LOWER )
+    if( side == LEFT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             trmm::LLN( diag, A, X );
@@ -71,7 +71,7 @@ void Trmm
         else
             trmm::LUT( orientation, diag, A, X );
     }
-    else if( uplo == LOWER )
+    else if( uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             trmm::RLN( diag, A, X );

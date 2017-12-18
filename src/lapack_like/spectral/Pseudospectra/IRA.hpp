@@ -304,10 +304,10 @@ Matrix<Int> IRA
                 if( progress )
                     subtimer.Start();
                 MultiShiftTrsm
-                ( LEFT, UPPER, NORMAL,
+                ( LEFT, UpperOrLower::UPPER, NORMAL,
                   C(1), UCopy, activeShifts, activeVList[j+1] );
                 MultiShiftTrsm
-                ( LEFT, UPPER, ADJOINT,
+                ( LEFT, UpperOrLower::UPPER, ADJOINT,
                   C(1), UCopy, activeShifts, activeVList[j+1] );
                 if( progress )
                 {
@@ -324,12 +324,12 @@ Matrix<Int> IRA
                 if( progress )
                     subtimer.Start();
                 MultiShiftHessSolve
-                ( UPPER, NORMAL,
+                ( UpperOrLower::UPPER, NORMAL,
                   C(1), U, activeShifts, activeVList[j+1] );
                 Matrix<C> activeShiftsConj;
                 Conjugate( activeShifts, activeShiftsConj );
                 MultiShiftHessSolve
-                ( LOWER, NORMAL,
+                ( UpperOrLower::LOWER, NORMAL,
                   C(1), UAdj, activeShiftsConj, activeVList[j+1] );
                 if( progress )
                 {
@@ -533,10 +533,10 @@ IRA
             if( progress )
                 subtimer.Start();
             MultiShiftQuasiTrsm
-            ( LEFT, UPPER, NORMAL, C(1), U, activeShifts,
+            ( LEFT, UpperOrLower::UPPER, NORMAL, C(1), U, activeShifts,
               activeVRealList[j+1], activeVImagList[j+1] );
             MultiShiftQuasiTrsm
-            ( LEFT, UPPER, ADJOINT, C(1), U, activeShifts,
+            ( LEFT, UpperOrLower::UPPER, ADJOINT, C(1), U, activeShifts,
               activeVRealList[j+1], activeVImagList[j+1] );
             if( progress )
             {
@@ -771,10 +771,10 @@ IRA
                         subtimer.Start();
                 }
                 MultiShiftTrsm
-                ( LEFT, UPPER, NORMAL,
+                ( LEFT, UpperOrLower::UPPER, NORMAL,
                   C(1), U, activeShifts, activeVList[j+1] );
                 MultiShiftTrsm
-                ( LEFT, UPPER, ADJOINT,
+                ( LEFT, UpperOrLower::UPPER, ADJOINT,
                   C(1), U, activeShifts, activeVList[j+1] );
                 if( progress )
                 {
@@ -801,12 +801,12 @@ IRA
                 // NOTE: This redistribution sequence might not be necessary
                 DistMatrix<C,Dist::STAR,Dist::VR> activeV_STAR_VR( activeVList[j+1] );
                 MultiShiftHessSolve
-                ( UPPER, NORMAL, C(1), U_VC_STAR, activeShifts,
+                ( UpperOrLower::UPPER, NORMAL, C(1), U_VC_STAR, activeShifts,
                   activeV_STAR_VR );
                 DistMatrix<C,Dist::VR,Dist::STAR> activeShiftsConj(g);
                 Conjugate( activeShifts, activeShiftsConj );
                 MultiShiftHessSolve
-                ( LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
+                ( UpperOrLower::LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
                   activeV_STAR_VR );
                 activeVList[j+1] = activeV_STAR_VR;
                 if( progress )
@@ -1051,10 +1051,10 @@ IRA
                     subtimer.Start();
             }
             MultiShiftQuasiTrsm
-            ( LEFT, UPPER, NORMAL, C(1), U, activeShifts,
+            ( LEFT, UpperOrLower::UPPER, NORMAL, C(1), U, activeShifts,
               activeVRealList[j+1], activeVImagList[j+1] );
             MultiShiftQuasiTrsm
-            ( LEFT, UPPER, ADJOINT, C(1), U, activeShifts,
+            ( LEFT, UpperOrLower::UPPER, ADJOINT, C(1), U, activeShifts,
               activeVRealList[j+1], activeVImagList[j+1] );
             if( progress )
             {

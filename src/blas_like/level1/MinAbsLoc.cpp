@@ -235,7 +235,7 @@ Entry<Base<Ring>> SymmetricMinAbsLoc
     pivot.i = 0;
     pivot.j = 0;
     pivot.value = Abs(A(0,0));
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         for( Int j=0; j<n; ++j )
         {
@@ -300,7 +300,7 @@ SymmetricMinAbsLoc( UpperOrLower uplo, const AbstractDistMatrix<Ring>& A )
     localPivot.value = Abs(A.Get(0,0));
     if( A.Participating() )
     {
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             for( Int jLoc=0; jLoc<nLocal; ++jLoc )
             {

@@ -63,7 +63,7 @@ void LLTLarge
 
         // X1[* ,VR] := L11^-[T/H][* ,* ] X1[* ,VR]
         LocalTrsm
-        ( LEFT, LOWER, orientation, diag, F(1), L11_STAR_STAR, X1_STAR_VR,
+        ( LEFT, UpperOrLower::LOWER, orientation, diag, F(1), L11_STAR_STAR, X1_STAR_VR,
           checkIfSingular );
 
         X1_STAR_MR.AlignWith( X0 );
@@ -128,7 +128,7 @@ void LLTMedium
         // X1[* ,MR] := L11^-[T/H][* ,* ] X1[* ,MR]
         // X1^[T/H][MR,* ] := X1^[T/H][MR,* ] L11^-1[* ,* ]
         LocalTrsm
-        ( RIGHT, LOWER, NORMAL, diag,
+        ( RIGHT, UpperOrLower::LOWER, NORMAL, diag,
           F(1), L11_STAR_STAR, X1Trans_MR_STAR, checkIfSingular );
 
         Transpose( X1Trans_MR_STAR, X1, (orientation==ADJOINT) );
@@ -191,7 +191,7 @@ void LLTSmall
         // X1 := L11^-1 X1
         L11_STAR_STAR = L11;
         LocalTrsm
-        ( LEFT, LOWER, orientation, diag, F(1), L11_STAR_STAR, Z1_STAR_STAR,
+        ( LEFT, UpperOrLower::LOWER, orientation, diag, F(1), L11_STAR_STAR, Z1_STAR_STAR,
           checkIfSingular );
         X1 = Z1_STAR_STAR;
     }
@@ -241,7 +241,7 @@ void LLTSmall
 
         // X1[* ,* ] := L11^-[T/H][* ,* ] X1[* ,* ]
         LocalTrsm
-        ( LEFT, LOWER, orientation, diag,
+        ( LEFT, UpperOrLower::LOWER, orientation, diag,
           F(1), L11_STAR_STAR, X1_STAR_STAR, checkIfSingular );
 
         X1 = X1_STAR_STAR;

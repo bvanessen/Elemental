@@ -43,7 +43,7 @@ void SolveAfter
         Zero( XB );
 
         // Solve against R (checking for singularities)
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), AR, XT, true );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), AR, XT, true );
 
         // Apply Q' to X
         rq::ApplyQ( LEFT, ADJOINT, A, householderScalars, signature, X );
@@ -66,7 +66,7 @@ void SolveAfter
         X.Resize( m, X.Width() );
 
         // Solve against R' (check for singularities)
-        Trsm( LEFT, UPPER, ADJOINT, NON_UNIT, F(1), AR, X, true );
+        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), AR, X, true );
 
         if( orientation == TRANSPOSE )
             Conjugate( X );
@@ -112,7 +112,7 @@ void SolveAfter
             Conjugate( XT );
 
         // Solve against R (checking for singularities)
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), AR, XT, true );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), AR, XT, true );
 
         // Apply Q' to X
         rq::ApplyQ( LEFT, ADJOINT, A, householderScalars, signature, X );
@@ -135,7 +135,7 @@ void SolveAfter
         X.Resize( m, X.Width() );
 
         // Solve against R' (check for singularities)
-        Trsm( LEFT, UPPER, ADJOINT, NON_UNIT, F(1), AR, X, true );
+        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), AR, X, true );
 
         if( orientation == TRANSPOSE )
             Conjugate( X );

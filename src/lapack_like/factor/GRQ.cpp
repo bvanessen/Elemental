@@ -55,7 +55,7 @@ void ExplicitTriang( Matrix<F>& A, Matrix<F>& B )
     Matrix<Base<F>> signatureA;
     RQ( A, householderScalarsA, signatureA );
     rq::ApplyQ( RIGHT, ADJOINT, A, householderScalarsA, signatureA, B );
-    MakeTrapezoidal( UPPER, A, Min(A.Height(),A.Width()) );
+    MakeTrapezoidal( UpperOrLower::UPPER, A, Min(A.Height(),A.Width()) );
     qr::ExplicitTriang( B );
 }
 
@@ -73,7 +73,7 @@ void ExplicitTriang( AbstractDistMatrix<F>& APre, AbstractDistMatrix<F>& BPre )
     DistMatrix<Base<F>,Dist::MD,Dist::STAR> signatureA(g);
     RQ( A, householderScalarsA, signatureA );
     rq::ApplyQ( RIGHT, ADJOINT, A, householderScalarsA, signatureA, B );
-    MakeTrapezoidal( UPPER, A, Min(A.Height(),A.Width()) );
+    MakeTrapezoidal( UpperOrLower::UPPER, A, Min(A.Height(),A.Width()) );
     qr::ExplicitTriang( B );
 }
 

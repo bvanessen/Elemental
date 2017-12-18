@@ -64,7 +64,7 @@ void PanelHouseholder
     auto sgn = []( const Real& delta )
                { return delta >= Real(0) ? Real(1) : Real(-1); };
     EntrywiseMap( signature, MakeFunction(sgn) );
-    DiagonalScaleTrapezoid( LEFT, UPPER, NORMAL, signature, R );
+    DiagonalScaleTrapezoid( LEFT, UpperOrLower::UPPER, NORMAL, signature, R );
 }
 
 template<typename F>
@@ -139,7 +139,7 @@ void PanelHouseholder
     auto sgn = []( const Real& delta )
                { return delta >= Real(0) ? Real(1) : Real(-1); };
     EntrywiseMap( signature, MakeFunction(sgn) );
-    DiagonalScaleTrapezoid( LEFT, UPPER, NORMAL, signature, R );
+    DiagonalScaleTrapezoid( LEFT, UpperOrLower::UPPER, NORMAL, signature, R );
 }
 
 } // namespace qr

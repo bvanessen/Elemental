@@ -9,14 +9,23 @@
 #ifndef EL_ENVIRONMENT_IMPL_HPP
 #define EL_ENVIRONMENT_IMPL_HPP
 
-namespace El {
+#include <algorithm>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+
+#include "El/core/imports/mpi.hpp"
+
+namespace El
+{
 
 template<typename T>
-T Input( string name, string desc )
+T Input( std::string name, std::string desc )
 { return GetArgs().Input<T>( name, desc ); }
 
 template<typename T>
-T Input( string name, string desc, T defaultVal )
+T Input( std::string name, std::string desc, T defaultVal )
 { return GetArgs().Input( name, desc, defaultVal ); }
 
 inline void
@@ -142,7 +151,7 @@ void SwapClear( T& x ) { T().swap( x ); }
 
 template<typename T,
          typename/*=EnableIf<IsPacked<T>>*/>
-void FastResize( vector<T>& v, Int numEntries )
+void FastResize( std::vector<T>& v, Int numEntries )
 {
 #ifdef EL_ZERO_INIT
     v.resize( numEntries );
@@ -158,20 +167,20 @@ void FastResize( vector<T>& v, Int numEntries )
 template<typename T,
          typename/*=DisableIf<IsPacked<T>>*/,
          typename/*=void*/>
-void FastResize( vector<T>& v, Int numEntries )
+void FastResize( std::vector<T>& v, Int numEntries )
 { v.resize( numEntries ); }
 
 template<typename T,typename... ArgPack>
-void BuildStream( ostringstream& os, const T& item, const ArgPack& ... args )
+void BuildStream( std::ostringstream& os, const T& item, const ArgPack& ... args )
 {
     os << item;
     BuildStream( os, args... );
 }
 
 template<typename... ArgPack>
-string BuildString( const ArgPack& ... args )
+std::string BuildString( const ArgPack& ... args )
 {
-    ostringstream os;
+    std::ostringstream os;
     BuildStream( os, args... );
     return os.str();
 }
@@ -179,34 +188,34 @@ string BuildString( const ArgPack& ... args )
 template<typename... ArgPack>
 void UnrecoverableError( const ArgPack& ... args )
 {
-    ostringstream os;
+    std::ostringstream os;
     BuildStream( os, args... );
-    os << endl;
+    os << std::endl;
     UnrecoverableException( os.str().c_str() );
 }
 
 template<typename... ArgPack>
 void LogicError( const ArgPack& ... args )
 {
-    ostringstream os;
+    std::ostringstream os;
     BuildStream( os, args... );
-    os << endl;
+    os << std::endl;
     throw std::logic_error( os.str().c_str() );
 }
 
 template<typename... ArgPack>
 void RuntimeError( const ArgPack& ... args )
 {
-    ostringstream os;
+    std::ostringstream os;
     BuildStream( os, args... );
-    os << endl;
+    os << std::endl;
     throw std::runtime_error( os.str().c_str() );
 }
 
 template<class MatType>
-string DimsString( const MatType& A, string label )
+std::string DimsString( const MatType& A, std::string label )
 {
-    ostringstream os;
+    std::ostringstream os;
     os << label << " ~ " << A.Height() << " x " << A.Width();
     return os.str();
 }
@@ -222,11 +231,11 @@ void Log( const ArgPack& ... args )
 template<typename... ArgPack>
 void Output( const ArgPack& ... args )
 {
-    ostringstream os;
+    std::ostringstream os;
     os << Indent();
     BuildStream( os, args... );
-    os << endl;
-    cout << os.str();
+    os << std::endl;
+    std::cout << os.str();
 }
 
 template<typename... ArgPack>
@@ -239,7 +248,7 @@ void OutputFromRoot( mpi::Comm comm, const ArgPack& ... args )
 }
 
 template<typename T>
-T Scan( const vector<T>& counts, vector<T>& offsets )
+T Scan( const std::vector<T>& counts, std::vector<T>& offsets )
 {
     offsets.resize( counts.size() );
     T total = 0;
@@ -252,20 +261,20 @@ T Scan( const vector<T>& counts, vector<T>& offsets )
 }
 
 template<typename T>
-void EnsureConsistent( T alpha, mpi::Comm comm, string name )
+void EnsureConsistent( T alpha, mpi::Comm comm, std::string name )
 {
-    string tag = ( name=="" ? "" : name+" " );
+    std::string tag = ( name=="" ? "" : name+" " );
     const int commSize = mpi::Size( comm );
     const int commRank = mpi::Rank( comm );
-    vector<T> a(commSize);
+    std::vector<T> a(commSize);
     mpi::Gather( &alpha, 1, a.data(), 1, 0, comm );
     if( commRank == 0 )
     {
         for( Int j=0; j<commSize; ++j )
             if( a[j] != alpha )
-                cout << "Process " << j << "'s " << tag << "value, "
+                std::cout << "Process " << j << "'s " << tag << "value, "
                      << a[j] << ", mismatched the root's, " << alpha
-                     << endl;
+                     << std::endl;
     }
 }
 

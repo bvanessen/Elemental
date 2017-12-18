@@ -50,20 +50,20 @@ void UpperBlocked( Matrix<F>& A, Matrix<F>& householderScalars )
         // A0R := A0R - ((A0R UB1) inv(G11)^H) UB1^H
         // -----------------------------------------
         Gemm( NORMAL, NORMAL, F(1), A0R, UB1, V01 );
-        Trsm( RIGHT, LOWER, ADJOINT, NON_UNIT, F(1), G11, V01 );
+        Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), G11, V01 );
         Gemm( NORMAL, ADJOINT, F(-1), V01, UB1, F(1), A0R );
 
         // AB2 := (I - UB1 inv(G11) UB1^H)(AB2 - VB1 inv(G11)^H U21^H)
         // -----------------------------------------------------------
         // AB2 := AB2 - VB1 inv(G11)^H U21^H
         // (note: VB1 is overwritten)
-        Trsm( RIGHT, LOWER, ADJOINT, NON_UNIT, F(1), G11, VB1 );
+        Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), G11, VB1 );
         Gemm( NORMAL, ADJOINT, F(-1), VB1, U21, F(1), AB2 );
         // AB2 := AB2 - UB1 (inv(G11) (UB1^H AB2))
         //      = AB2 - UB1 ((AB2^H UB1) inv(G11)^H)^H
         // (note: V21 is used as scratch space)
         Gemm( ADJOINT, NORMAL, F(1), AB2, UB1, F(0), V21 );
-        Trsm( RIGHT, LOWER, ADJOINT, NON_UNIT, F(1), G11, V21 );
+        Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), G11, V21 );
         Gemm( NORMAL, ADJOINT, F(-1), UB1, V21, F(1), AB2 );
     }
 }
@@ -127,7 +127,7 @@ void UpperBlocked
         LocalGemm( NORMAL, NORMAL, F(1), A0R, UB1_MR_STAR, F(0), V01_MC_STAR );
         El::AllReduce( V01_MC_STAR, A0R.RowComm() );
         LocalTrsm
-        ( RIGHT, LOWER, ADJOINT, NON_UNIT, F(1), G11_STAR_STAR, V01_MC_STAR );
+        ( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), G11_STAR_STAR, V01_MC_STAR );
         LocalGemm
         ( NORMAL, ADJOINT, F(-1), V01_MC_STAR, UB1_MR_STAR, F(1), A0R );
 
@@ -136,7 +136,7 @@ void UpperBlocked
         // AB2 := AB2 - VB1 inv(G11)^H U21^H
         // (note: VB1 is overwritten)
         LocalTrsm
-        ( RIGHT, LOWER, ADJOINT, NON_UNIT, F(1), G11_STAR_STAR, VB1_MC_STAR );
+        ( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), G11_STAR_STAR, VB1_MC_STAR );
         LocalGemm
         ( NORMAL, ADJOINT, F(-1), VB1_MC_STAR, U21_MR_STAR, F(1), AB2 );
         // AB2 := AB2 - UB1 (inv(G11) (UB1^H AB2))
@@ -146,7 +146,7 @@ void UpperBlocked
         LocalGemm( ADJOINT, NORMAL, F(1), AB2, UB1_MC_STAR, F(0), V21_MR_STAR );
         El::AllReduce( V21_MR_STAR, AB2.ColComm() );
         LocalTrsm
-        ( RIGHT, LOWER, ADJOINT, NON_UNIT, F(1), G11_STAR_STAR, V21_MR_STAR );
+        ( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), G11_STAR_STAR, V21_MR_STAR );
         LocalGemm
         ( NORMAL, ADJOINT, F(-1), UB1_MC_STAR, V21_MR_STAR, F(1), AB2 );
     }

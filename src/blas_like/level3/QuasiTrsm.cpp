@@ -61,7 +61,7 @@ void QuasiTrsm
     */
 
     const Int p = B.Grid().Size();
-    if( side == LEFT && uplo == LOWER )
+    if( side == LEFT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
         {
@@ -78,7 +78,7 @@ void QuasiTrsm
                 quasitrsm::LLTMedium( orientation, A, B, checkIfSingular );
         }
     }
-    else if( side == LEFT && uplo == UPPER )
+    else if( side == LEFT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
         {
@@ -95,7 +95,7 @@ void QuasiTrsm
                 quasitrsm::LUTMedium( orientation, A, B, checkIfSingular );
         }
     }
-    else if( side == RIGHT && uplo == LOWER )
+    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             //quasitrsm::RLN( A, B, checkIfSingular );
@@ -104,7 +104,7 @@ void QuasiTrsm
             //quasitrsm::RLT( orientation, A, B, checkIfSingular );
             LogicError("This case not yet handled");
     }
-    else if( side == RIGHT && uplo == UPPER )
+    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
             //quasitrsm::RUN( A, B, checkIfSingular );
@@ -173,21 +173,21 @@ void QuasiTrsm
     }
     */
 
-    if( side == LEFT && uplo == LOWER )
+    if( side == LEFT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             quasitrsm::LLN( A, B, checkIfSingular );
         else
             quasitrsm::LLT( orientation, A, B, checkIfSingular );
     }
-    else if( side == LEFT && uplo == UPPER )
+    else if( side == LEFT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
             quasitrsm::LUN( A, B, checkIfSingular );
         else
             quasitrsm::LUT( orientation, A, B, checkIfSingular );
     }
-    else if( side == RIGHT && uplo == LOWER )
+    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             //quasitrsm::RLN( A, B, checkIfSingular );
@@ -196,7 +196,7 @@ void QuasiTrsm
             //quasitrsm::RLT( orientation, A, B, checkIfSingular );
             LogicError("This case not yet handled");
     }
-    else if( side == RIGHT && uplo == UPPER )
+    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
             //quasitrsm::RUN( A, B, checkIfSingular );

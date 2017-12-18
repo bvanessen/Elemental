@@ -108,7 +108,7 @@ void Process
         // Form the Schur complement
         Orientation orientation = ( front.isHermitian ? ADJOINT : TRANSPOSE );
         Trrk
-        ( LOWER, NORMAL, orientation,
+        ( UpperOrLower::LOWER, NORMAL, orientation,
           Field(-1), front.LDense, ABLCopy, Field(0), front.workDense );
     }
     else

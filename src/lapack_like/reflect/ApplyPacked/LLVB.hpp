@@ -116,17 +116,17 @@ void LLVBBlocked
 
         // Convert to an explicit matrix of (scaled) Householder vectors
         HPanCopy = HPan;
-        MakeTrapezoidal( LOWER, HPanCopy );
+        MakeTrapezoidal( UpperOrLower::LOWER, HPanCopy );
         FillDiagonal( HPanCopy, F(1) );
 
         // Form the small triangular matrix needed for the UT transform
-        Herk( UPPER, ADJOINT, Base<F>(1), HPanCopy, SInv );
+        Herk( UpperOrLower::UPPER, ADJOINT, Base<F>(1), HPanCopy, SInv );
         FixDiagonal( conjugation, householderScalars1, SInv );
 
         // Z := HPan' ABot
         Gemm( ADJOINT, NORMAL, F(1), HPanCopy, ABot, Z );
         // Z := inv(SInv) HPan' ABot
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), SInv, Z );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), SInv, Z );
         // ABot := (I - HPan inv(SInv) HPan') ABot = ABot - HPan Z
         Gemm( NORMAL, NORMAL, F(-1), HPanCopy, Z, F(1), ABot );
     }
@@ -273,14 +273,14 @@ void LLVBBlocked
         // Convert to an explicit matrix of (scaled) Householder vectors
         LockedView( *HPan, H, IR(ki,m), IR(kj,kj+nb) );
         Copy( *HPan, HPanCopy );
-        MakeTrapezoidal( LOWER, HPanCopy );
+        MakeTrapezoidal( UpperOrLower::LOWER, HPanCopy );
         FillDiagonal( HPanCopy, F(1) );
 
         // Form the small triangular matrix needed for the UT transform
         HPan_VC_STAR = HPanCopy;
         Zeros( SInv_STAR_STAR, nb, nb );
         Herk
-        ( UPPER, ADJOINT,
+        ( UpperOrLower::UPPER, ADJOINT,
           Base<F>(1), HPan_VC_STAR.LockedMatrix(),
           Base<F>(0), SInv_STAR_STAR.Matrix() );
         El::AllReduce( SInv_STAR_STAR, HPan_VC_STAR.ColComm() );
@@ -298,7 +298,7 @@ void LLVBBlocked
 
         // Z := inv(SInv) HPan' ABot
         LocalTrsm
-        ( LEFT, UPPER, NORMAL, NON_UNIT, F(1), SInv_STAR_STAR, Z_STAR_VR );
+        ( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), SInv_STAR_STAR, Z_STAR_VR );
 
         // ABot := (I - HPan inv(SInv) HPan') ABot = ABot - HPan Z
         Z_STAR_MR = Z_STAR_VR;

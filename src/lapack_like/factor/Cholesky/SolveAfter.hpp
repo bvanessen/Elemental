@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_CHOLESKY_SOLVEAFTER_HPP
@@ -12,7 +12,7 @@
 namespace El {
 namespace cholesky {
 
-template<typename F> 
+template<typename F>
 void SolveAfter
 ( UpperOrLower uplo,
   Orientation orientation,
@@ -28,24 +28,24 @@ void SolveAfter
     )
     if( orientation == TRANSPOSE )
         Conjugate( B );
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
-        Trsm( LEFT, LOWER, NORMAL, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, LOWER, ADJOINT, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), A, B );
     }
     else
     {
-        Trsm( LEFT, UPPER, ADJOINT, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
     }
     if( orientation == TRANSPOSE )
         Conjugate( B );
 }
 
-template<typename F> 
+template<typename F>
 void SolveAfter
 ( UpperOrLower uplo,
-  Orientation orientation, 
+  Orientation orientation,
   const Matrix<F>& A,
   const Permutation& P,
         Matrix<F>& B )
@@ -60,25 +60,25 @@ void SolveAfter
     P.PermuteRows( B );
     if( orientation == TRANSPOSE )
         Conjugate( B );
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
-        Trsm( LEFT, LOWER, NORMAL, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, LOWER, ADJOINT, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), A, B );
     }
     else
     {
-        Trsm( LEFT, UPPER, ADJOINT, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
     }
     if( orientation == TRANSPOSE )
         Conjugate( B );
     P.InversePermuteRows( B );
 }
 
-template<typename F> 
+template<typename F>
 void SolveAfter
 ( UpperOrLower uplo,
-  Orientation orientation, 
+  Orientation orientation,
   const AbstractDistMatrix<F>& A,
         AbstractDistMatrix<F>& B )
 {
@@ -92,26 +92,26 @@ void SolveAfter
     )
     if( orientation == TRANSPOSE )
         Conjugate( B );
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
-        Trsm( LEFT, LOWER, NORMAL, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, LOWER, ADJOINT, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), A, B );
     }
     else
     {
-        Trsm( LEFT, UPPER, ADJOINT, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
     }
     if( orientation == TRANSPOSE )
         Conjugate( B );
 }
 
-template<typename F> 
+template<typename F>
 void SolveAfter
 ( UpperOrLower uplo,
-  Orientation orientation, 
+  Orientation orientation,
   const AbstractDistMatrix<F>& A,
-  const DistPermutation& P, 
+  const DistPermutation& P,
         AbstractDistMatrix<F>& B )
 {
     EL_DEBUG_CSE
@@ -125,15 +125,15 @@ void SolveAfter
     P.PermuteRows( B );
     if( orientation == TRANSPOSE )
         Conjugate( B );
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
-        Trsm( LEFT, LOWER, NORMAL, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, LOWER, ADJOINT, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), A, B );
     }
     else
     {
-        Trsm( LEFT, UPPER, ADJOINT, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
     }
     if( orientation == TRANSPOSE )
         Conjugate( B );

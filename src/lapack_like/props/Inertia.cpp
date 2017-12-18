@@ -17,7 +17,7 @@ InertiaType Inertia
   const LDLPivotCtrl<Base<Field>>& ctrl )
 {
     EL_DEBUG_CSE
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
         LogicError("This option not yet supported");
     Permutation p;
     Matrix<Field> dSub;
@@ -32,7 +32,7 @@ InertiaType Inertia
   const LDLPivotCtrl<Base<Field>>& ctrl )
 {
     EL_DEBUG_CSE
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
         LogicError("This option not yet supported");
 
     DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );

@@ -147,7 +147,7 @@ AEDInfo NibbleHelper
         work[0] = Real(1);
 
         // Force T to be upper Hessenberg
-        MakeTrapezoidal( UPPER, T, -1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, T, -1 );
 
         lapack::ApplyReflector
         ( true, spikeSize, n,
@@ -167,20 +167,20 @@ AEDInfo NibbleHelper
           VL.Buffer(), VL.LDim(),
           &work[n] );
 
-        Hessenberg( UPPER, TTL, householderScalarsT );
+        Hessenberg( UpperOrLower::UPPER, TTL, householderScalarsT );
         hessenberg::ApplyQ
-        ( LEFT, UPPER, ADJOINT, TTL, householderScalarsT, TTR );
+        ( LEFT, UpperOrLower::UPPER, ADJOINT, TTL, householderScalarsT, TTR );
     }
 
     spikeValue *= V(0,0);
     // NOTE(poulson): We could copy only the upper Hessenberg part of T
     H = T;
-    MakeTrapezoidal( UPPER, H, -1 );
+    MakeTrapezoidal( UpperOrLower::UPPER, H, -1 );
 
     if( spikeSize > 1 && spikeValue != zero )
     {
         hessenberg::ApplyQ
-        ( RIGHT, UPPER, NORMAL, TTL, householderScalarsT, VL );
+        ( RIGHT, UpperOrLower::UPPER, NORMAL, TTL, householderScalarsT, VL );
     }
 
     return info;
@@ -298,7 +298,7 @@ AEDInfo NibbleHelper
         work[0] = Real(1);
 
         // Force T to be upper Hessenberg
-        MakeTrapezoidal( UPPER, T, -1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, T, -1 );
 
         lapack::ApplyReflector
         ( true, spikeSize, n,
@@ -318,20 +318,20 @@ AEDInfo NibbleHelper
           VL.Buffer(), VL.LDim(),
           &work[n] );
 
-        Hessenberg( UPPER, TTL, householderScalarsT );
+        Hessenberg( UpperOrLower::UPPER, TTL, householderScalarsT );
         hessenberg::ApplyQ
-        ( LEFT, UPPER, ADJOINT, TTL, householderScalarsT, TTR );
+        ( LEFT, UpperOrLower::UPPER, ADJOINT, TTL, householderScalarsT, TTR );
     }
 
     spikeValue *= Conj(V(0,0));
     // NOTE(poulson): We could copy only the upper Hessenberg part of T
     H = T;
-    MakeTrapezoidal( UPPER, H, -1 );
+    MakeTrapezoidal( UpperOrLower::UPPER, H, -1 );
 
     if( spikeSize > 1 && spikeValue != zero )
     {
         hessenberg::ApplyQ
-        ( RIGHT, UPPER, NORMAL, TTL, householderScalarsT, VL );
+        ( RIGHT, UpperOrLower::UPPER, NORMAL, TTL, householderScalarsT, VL );
     }
 
     return info;

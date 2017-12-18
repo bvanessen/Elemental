@@ -233,7 +233,7 @@ BlackBox
     herm_tridiag::ExplicitCondensed( uplo, A );
 
     auto d = GetRealPartOfDiagonal(A);
-    auto dSub = GetDiagonal( A, (uplo==LOWER?-1:1) );
+    auto dSub = GetDiagonal( A, (uplo==UpperOrLower::LOWER?-1:1) );
     info.tridiagEigInfo =
       HermitianTridiagEig( d, dSub, w, ctrl.tridiagEigCtrl );
 
@@ -469,7 +469,7 @@ BlackBox
     }
 
     // Solve the symmetric tridiagonal EVP
-    const Int subdiagonal = ( uplo==LOWER ? -1 : +1 );
+    const Int subdiagonal = ( uplo==UpperOrLower::LOWER ? -1 : +1 );
     auto d = GetRealPartOfDiagonal(A);
     auto e = GetRealPartOfDiagonal(A,subdiagonal);
     info.tridiagEigInfo = HermitianTridiagEig( d, e, w, ctrl.tridiagEigCtrl );
@@ -554,7 +554,7 @@ BlackBox
     HermitianTridiag( uplo, A, householderScalars );
 
     auto d = GetRealPartOfDiagonal(A);
-    auto dSub = GetDiagonal( A, (uplo==LOWER?-1:1) );
+    auto dSub = GetDiagonal( A, (uplo==UpperOrLower::LOWER?-1:1) );
     info.tridiagEigInfo =
       HermitianTridiagEig( d, dSub, w, Q, ctrl.tridiagEigCtrl );
 
@@ -584,7 +584,7 @@ BlackBox
     HermitianTridiag( uplo, A, householderScalars );
 
     auto d = GetRealPartOfDiagonal(A);
-    auto dSub = GetDiagonal( A, (uplo==LOWER?-1:1) );
+    auto dSub = GetDiagonal( A, (uplo==UpperOrLower::LOWER?-1:1) );
 
     if( ctrl.tridiagEigCtrl.accumulateEigVecs )
     {
@@ -878,7 +878,7 @@ MRRR
     }
 
     Int kEst;
-    const Int subdiagonal = ( uplo==LOWER ? -1 : +1 );
+    const Int subdiagonal = ( uplo==UpperOrLower::LOWER ? -1 : +1 );
     auto d = GetRealPartOfDiagonal(A);
     auto e = GetRealPartOfDiagonal(A,subdiagonal);
     DistMatrix<Real,Dist::STAR,Dist::STAR> d_STAR_STAR( d );

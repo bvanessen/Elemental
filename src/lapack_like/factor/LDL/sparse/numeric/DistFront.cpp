@@ -151,7 +151,7 @@ void UnpackEntriesLocal
             }
         }
         front.workSparse.ProcessQueues();
-        MakeSymmetric( LOWER, front.workSparse, front.isHermitian );
+        MakeSymmetric( UpperOrLower::LOWER, front.workSparse, front.isHermitian );
     }
     else
     {

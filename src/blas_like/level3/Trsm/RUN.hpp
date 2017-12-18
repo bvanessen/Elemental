@@ -53,7 +53,7 @@ void RUN
         X1_VC_STAR = X1;
 
         LocalTrsm
-        ( RIGHT, UPPER, NORMAL, diag, F(1), U11_STAR_STAR, X1_VC_STAR,
+        ( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11_STAR_STAR, X1_VC_STAR,
           checkIfSingular );
 
         X1Trans_STAR_MC.AlignWith( X2 );

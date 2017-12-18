@@ -24,10 +24,10 @@ void Condense
     Matrix<F> householderScalars;
     if( ctrl.time )
         timer.Start();
-    Hessenberg( UPPER, A, householderScalars );
+    Hessenberg( UpperOrLower::UPPER, A, householderScalars );
     if( ctrl.time )
         Output("  Hessenberg reduction: ",timer.Stop()," seconds");
-    MakeTrapezoidal( UPPER, A, -1 );
+    MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
 
     if( ctrl.time )
         timer.Start();
@@ -36,10 +36,10 @@ void Condense
         Output("  HessenbergSchur: ",timer.Stop()," seconds");
 
     if( IsComplex<F>::value )
-        MakeTrapezoidal( UPPER, A );
+        MakeTrapezoidal( UpperOrLower::UPPER, A );
     else
     {
-        MakeTrapezoidal( UPPER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
         EL_DEBUG_ONLY(CheckRealSchur(A))
     }
 }
@@ -57,11 +57,11 @@ void Condense
     Matrix<F> householderScalars;
     if( ctrl.time )
         timer.Start();
-    Hessenberg( UPPER, A, householderScalars );
+    Hessenberg( UpperOrLower::UPPER, A, householderScalars );
     if( ctrl.time )
         Output("  Hessenberg reduction: ",timer.Stop()," seconds");
-    hessenberg::FormQ( UPPER, A, householderScalars, Q );
-    MakeTrapezoidal( UPPER, A, -1 );
+    hessenberg::FormQ( UpperOrLower::UPPER, A, householderScalars, Q );
+    MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
 
     auto hessSchurCtrl( ctrl.hessSchurCtrl );
     hessSchurCtrl.accumulateSchurVecs = true;
@@ -72,10 +72,10 @@ void Condense
         Output("  HessenbergSchur: ",timer.Stop()," seconds");
 
     if( IsComplex<F>::value )
-        MakeTrapezoidal( UPPER, A );
+        MakeTrapezoidal( UpperOrLower::UPPER, A );
     else
     {
-        MakeTrapezoidal( UPPER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
         EL_DEBUG_ONLY(CheckRealSchur(A))
     }
 }
@@ -93,7 +93,7 @@ void Condense
     // Reduce the matrix to upper-Hessenberg form in an elemental form
     if( ctrl.time && grid.Rank() == 0 )
         timer.Start();
-    hessenberg::ExplicitCondensed( UPPER, A );
+    hessenberg::ExplicitCondensed( UpperOrLower::UPPER, A );
     if( ctrl.time && grid.Rank() == 0 )
         Output("  Hessenberg reduction: ",timer.Stop()," seconds");
 
@@ -105,10 +105,10 @@ void Condense
         Output("  HessenbergSchur: ",timer.Stop()," seconds");
 
     if( IsComplex<F>::value )
-        MakeTrapezoidal( UPPER, A );
+        MakeTrapezoidal( UpperOrLower::UPPER, A );
     else
     {
-        MakeTrapezoidal( UPPER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
         // NOTE: This routine is not yet implemented
         //DEBUG_ONLY(CheckRealSchur(A))
     }
@@ -129,17 +129,17 @@ void Condense
     DistMatrix<F,Dist::STAR,Dist::STAR> householderScalars( A.Grid() );
     if( ctrl.time && grid.Rank() == 0 )
         timer.Start();
-    Hessenberg( UPPER, A, householderScalars );
+    Hessenberg( UpperOrLower::UPPER, A, householderScalars );
     if( ctrl.time && grid.Rank() == 0 )
         Output("  Hessenberg reduction: ",timer.Stop()," seconds");
 
     // Explicitly accumulate the Householder transformations into Q
     if( ctrl.time && grid.Rank() == 0 )
         timer.Start();
-    hessenberg::FormQ( UPPER, A, householderScalars, Q );
+    hessenberg::FormQ( UpperOrLower::UPPER, A, householderScalars, Q );
     if( ctrl.time && grid.Rank() == 0 )
         Output("  hessenberg::FormQ: ",timer.Stop()," seconds");
-    MakeTrapezoidal( UPPER, A, -1 );
+    MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
 
     // Call the black-box HessenbergSchur decomposition
     if( ctrl.time && grid.Rank() == 0 )
@@ -151,10 +151,10 @@ void Condense
         Output("  HessenbergSchur: ",timer.Stop()," seconds");
 
     if( IsComplex<F>::value )
-        MakeTrapezoidal( UPPER, A );
+        MakeTrapezoidal( UpperOrLower::UPPER, A );
     else
     {
-        MakeTrapezoidal( UPPER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
         // NOTE: This routine is not yet implemented
         //DEBUG_ONLY(CheckRealSchur(A))
     }

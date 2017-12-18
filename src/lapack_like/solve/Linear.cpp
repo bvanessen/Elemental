@@ -67,8 +67,8 @@ void RowEchelon( Matrix<Field>& A, Matrix<Field>& B )
         PB.PermuteRows( AB2 );
         PB.PermuteRows( BB );
 
-        Trsm( LEFT, LOWER, NORMAL, UNIT, Field(1), A11, A12 );
-        Trsm( LEFT, LOWER, NORMAL, UNIT, Field(1), A11, B1 );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, Field(1), A11, A12 );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, Field(1), A11, B1 );
 
         Gemm( NORMAL, NORMAL, Field(-1), A21, A12, Field(1), A22 );
         Gemm( NORMAL, NORMAL, Field(-1), A21, B1,  Field(1), B2 );
@@ -140,9 +140,9 @@ void RowEchelon( DistMatrix<Field>& A, DistMatrix<Field>& B )
         B1_STAR_VR.AlignWith( B1 );
         B1_STAR_VR = B1;
         LocalTrsm
-        ( LEFT, LOWER, NORMAL, UNIT, Field(1), A11_STAR_STAR, A12_STAR_VR );
+        ( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, Field(1), A11_STAR_STAR, A12_STAR_VR );
         LocalTrsm
-        ( LEFT, LOWER, NORMAL, UNIT, Field(1), A11_STAR_STAR, B1_STAR_VR );
+        ( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, Field(1), A11_STAR_STAR, B1_STAR_VR );
 
         A12_STAR_MR.AlignWith( A22 );
         A12_STAR_MR = A12_STAR_VR;
@@ -179,7 +179,7 @@ void Overwrite( Matrix<Field>& A, Matrix<Field>& B )
     EL_DEBUG_CSE
     // Perform Gaussian elimination
     RowEchelon( A, B );
-    Trsm( LEFT, UPPER, NORMAL, NON_UNIT, Field(1), A, B );
+    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, Field(1), A, B );
 }
 
 template<typename Field>
@@ -203,7 +203,7 @@ void Overwrite
     else
     {
         RowEchelon( A, B );
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, Field(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, Field(1), A, B );
     }
 }
 

@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TRR2K_LOCAL_HPP
@@ -49,7 +49,7 @@ void LocalTrr2kKernel
 
     const Int half = E.Height() / 2;
     const auto indTL = IR(0,half);
-    const auto indBR = IR(half,END); 
+    const auto indBR = IR(half,END);
     if( transA )
     {
         LockedView( *A0, A, ALL, indTL );
@@ -93,28 +93,28 @@ void LocalTrr2kKernel
     View( *ETL, E, indTL, indTL );
     View( *EBR, E, indBR, indBR );
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
-        View( *EBL, E, indBR, indTL ); 
+        View( *EBL, E, indBR, indTL );
         Gemm
-        ( orientA, orientB, 
-          alpha, A1->LockedMatrix(), B0->LockedMatrix(), 
+        ( orientA, orientB,
+          alpha, A1->LockedMatrix(), B0->LockedMatrix(),
           T(1), EBL->Matrix() );
         Gemm
-        ( orientC, orientD, 
-          beta, C1->LockedMatrix(), D0->LockedMatrix(), 
+        ( orientC, orientD,
+          beta, C1->LockedMatrix(), D0->LockedMatrix(),
           T(1), EBL->Matrix() );
     }
     else
     {
         View( *ETR, E, indTL, indBR );
         Gemm
-        ( orientA, orientB, 
-          alpha, A0->LockedMatrix(), B1->LockedMatrix(), 
+        ( orientA, orientB,
+          alpha, A0->LockedMatrix(), B1->LockedMatrix(),
           T(1), ETR->Matrix() );
         Gemm
-        ( orientC, orientD, 
-          beta, C0->LockedMatrix(), D1->LockedMatrix(), 
+        ( orientC, orientD,
+          beta, C0->LockedMatrix(), D1->LockedMatrix(),
           T(1), ETR->Matrix() );
     }
 
@@ -122,7 +122,7 @@ void LocalTrr2kKernel
     FTL->AlignWith( *ETL );
     FTL->Resize( ETL->Height(), ETL->Width() );
     Gemm
-    ( orientA, orientB, 
+    ( orientA, orientB,
       alpha, A0->LockedMatrix(), B0->LockedMatrix(),
       T(0), FTL->Matrix() );
     Gemm
@@ -135,7 +135,7 @@ void LocalTrr2kKernel
     FBR->AlignWith( *EBR );
     FBR->Resize( EBR->Height(), EBR->Width() );
     Gemm
-    ( orientA, orientB, 
+    ( orientA, orientB,
       alpha, A1->LockedMatrix(), B1->LockedMatrix(),
       T(0), FBR->Matrix() );
     Gemm
@@ -150,7 +150,7 @@ void LocalTrr2kKernel
 // E := alpha op(A) op(B) + beta op(C) op(D) + gamma E
 template<typename T>
 void LocalTrr2k
-( UpperOrLower uplo, 
+( UpperOrLower uplo,
   Orientation orientA, Orientation orientB,
   Orientation orientC, Orientation orientD,
   T alpha, const AbstractDistMatrix<T>& A, const AbstractDistMatrix<T>& B,
@@ -170,7 +170,7 @@ void LocalTrr2k
     if( E.Height() < E.Grid().Width()*LocalTrr2kBlocksize<T>() )
     {
         LocalTrr2kKernel
-        ( uplo, orientA, orientB, orientC, orientD, 
+        ( uplo, orientA, orientB, orientC, orientD,
           alpha, A, B, beta, C, D, E );
     }
     else
@@ -192,7 +192,7 @@ void LocalTrr2k
 
         const Int half = E.Height() / 2;
         const auto indTL = IR(0,half);
-        const auto indBR = IR(half,END); 
+        const auto indBR = IR(half,END);
         if( transA )
         {
             LockedView( *A0, A, ALL, indTL );
@@ -236,16 +236,16 @@ void LocalTrr2k
         View( *ETL, E, indTL, indTL );
         View( *EBR, E, indBR, indBR );
 
-        if( uplo == LOWER )
-        { 
-            View( *EBL, E, indBR, indTL ); 
+        if( uplo == UpperOrLower::LOWER )
+        {
+            View( *EBL, E, indBR, indTL );
             Gemm
-            ( orientA, orientB, 
-              alpha, A1->LockedMatrix(), B0->LockedMatrix(), 
+            ( orientA, orientB,
+              alpha, A1->LockedMatrix(), B0->LockedMatrix(),
               T(1), EBL->Matrix() );
             Gemm
-            ( orientC, orientD, 
-              beta,  C1->LockedMatrix(), D0->LockedMatrix(), 
+            ( orientC, orientD,
+              beta,  C1->LockedMatrix(), D0->LockedMatrix(),
               T(1), EBL->Matrix() );
         }
         else
@@ -253,20 +253,20 @@ void LocalTrr2k
             View( *ETR, E, indTL, indBR );
             Gemm
             ( orientA, orientB,
-              alpha, A0->LockedMatrix(), B1->LockedMatrix(), 
+              alpha, A0->LockedMatrix(), B1->LockedMatrix(),
               T(1), ETR->Matrix() );
             Gemm
             ( orientC, orientD,
-              beta,  C0->LockedMatrix(), D1->LockedMatrix(), 
+              beta,  C0->LockedMatrix(), D1->LockedMatrix(),
               T(1), ETR->Matrix() );
         }
 
         // Recurse
         LocalTrr2k
-        ( uplo, orientA, orientB, orientC, orientD, 
+        ( uplo, orientA, orientB, orientC, orientD,
           alpha, *A0, *B0, beta, *C0, *D0, T(1), *ETL );
         LocalTrr2k
-        ( uplo, orientA, orientB, orientC, orientD, 
+        ( uplo, orientA, orientB, orientC, orientD,
           alpha, *A1, *B1, beta, *C1, *D1, T(1), *EBR );
     }
 }

@@ -80,7 +80,7 @@ void UT
             x1_STAR_STAR = x1;
             U11_STAR_STAR = U11;
             Trsv
-            ( UPPER, orientation, diag,
+            ( UpperOrLower::UPPER, orientation, diag,
               U11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix() );
             x1 = x1_STAR_STAR;
 
@@ -119,7 +119,7 @@ void UT
             x1_STAR_STAR = x1;
             U11_STAR_STAR = U11;
             Trsv
-            ( UPPER, orientation, diag,
+            ( UpperOrLower::UPPER, orientation, diag,
               U11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix() );
             x1 = x1_STAR_STAR;
 

@@ -68,9 +68,9 @@ UVar3( UnitOrNonUnit diag, Matrix<Field>& U )
         auto U12 = U( ind1, ind2 );
         auto U22 = U( ind2, ind2 );
 
-        Trsm( RIGHT, UPPER, NORMAL, diag, Field(-1), U11, U01 );
+        Trsm( RIGHT, UpperOrLower::UPPER, NORMAL, diag, Field(-1), U11, U01 );
         Gemm( NORMAL, NORMAL, Field(1), U01, U12, Field(1), U02 );
-        Trsm( LEFT, UPPER, NORMAL, diag, Field(1), U11, U12 );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, diag, Field(1), U11, U12 );
         UVar3Unb( diag, U11 );
     }
 }
@@ -115,7 +115,7 @@ UVar3( UnitOrNonUnit diag, AbstractDistMatrix<Field>& UPre )
         U01_VC_STAR = U01;
         U11_STAR_STAR = U11;
         LocalTrsm
-        ( RIGHT, UPPER, NORMAL, diag, Field(-1), U11_STAR_STAR, U01_VC_STAR );
+        ( RIGHT, UpperOrLower::UPPER, NORMAL, diag, Field(-1), U11_STAR_STAR, U01_VC_STAR );
 
         // We transpose before the communication to avoid cache-thrashing
         // in the unpacking stage.
@@ -131,8 +131,8 @@ UVar3( UnitOrNonUnit diag, AbstractDistMatrix<Field>& UPre )
 
         Transpose( U12Trans_MR_STAR, U12_STAR_VR );
         LocalTrsm
-        ( LEFT, UPPER, NORMAL, diag, Field(1), U11_STAR_STAR, U12_STAR_VR );
-        LocalTriangularInverse( UPPER, diag, U11_STAR_STAR );
+        ( LEFT, UpperOrLower::UPPER, NORMAL, diag, Field(1), U11_STAR_STAR, U12_STAR_VR );
+        LocalTriangularInverse( UpperOrLower::UPPER, diag, U11_STAR_STAR );
         U11 = U11_STAR_STAR;
         U12 = U12_STAR_VR;
     }

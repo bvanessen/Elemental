@@ -39,8 +39,8 @@ void UVar1( Matrix<F>& U, bool conjugate=false )
 
         S01 = U01;
         DiagonalSolve( LEFT, NORMAL, d1, U01, true );
-        Trrk( UPPER, NORMAL, orientation, F(1), U01, S01, F(1), U00 );
-        Trmm( RIGHT, UPPER, orientation, UNIT, F(1), U11, U01 );
+        Trrk( UpperOrLower::UPPER, NORMAL, orientation, F(1), U01, S01, F(1), U00 );
+        Trmm( RIGHT, UpperOrLower::UPPER, orientation, UNIT, F(1), U11, U01 );
         trdtrmm::UUnblocked( U11, conjugate );
     }
 }
@@ -90,14 +90,14 @@ void UVar1( AbstractDistMatrix<F>& UPre, bool conjugate=false )
         U01_VR_STAR = S01_VC_STAR;
         DiagonalSolve( RIGHT, NORMAL, d1, U01_VR_STAR );
         Transpose( U01_VR_STAR, U01Trans_STAR_MR, conjugate );
-        LocalTrrk( UPPER, F(1), S01_MC_STAR, U01Trans_STAR_MR, F(1), U00 );
+        LocalTrrk( UpperOrLower::UPPER, F(1), S01_MC_STAR, U01Trans_STAR_MR, F(1), U00 );
 
         U11_STAR_STAR = U11;
         LocalTrmm
-        ( RIGHT, UPPER, orientation, UNIT, F(1), U11_STAR_STAR, U01_VR_STAR );
+        ( RIGHT, UpperOrLower::UPPER, orientation, UNIT, F(1), U11_STAR_STAR, U01_VR_STAR );
         U01 = U01_VR_STAR;
 
-        Trdtrmm( UPPER, U11_STAR_STAR, conjugate );
+        Trdtrmm( UpperOrLower::UPPER, U11_STAR_STAR, conjugate );
         U11 = U11_STAR_STAR;
     }
 }

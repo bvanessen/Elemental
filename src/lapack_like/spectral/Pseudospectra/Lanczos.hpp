@@ -304,9 +304,9 @@ Lanczos
             if( progress )
                 subtimer.Start();
             MultiShiftTrsm
-            ( LEFT, UPPER, NORMAL, C(1), UCopy, activeShifts, activeXNew );
+            ( LEFT, UpperOrLower::UPPER, NORMAL, C(1), UCopy, activeShifts, activeXNew );
             MultiShiftTrsm
-            ( LEFT, UPPER, ADJOINT, C(1), UCopy, activeShifts, activeXNew );
+            ( LEFT, UpperOrLower::UPPER, ADJOINT, C(1), UCopy, activeShifts, activeXNew );
             if( progress )
             {
                 const double msTime = subtimer.Stop();
@@ -321,11 +321,11 @@ Lanczos
             if( progress )
                 subtimer.Start();
             MultiShiftHessSolve
-            ( UPPER, NORMAL, C(1), U, activeShifts, activeXNew );
+            ( UpperOrLower::UPPER, NORMAL, C(1), U, activeShifts, activeXNew );
             Matrix<C> activeShiftsConj;
             Conjugate( activeShifts, activeShiftsConj );
             MultiShiftHessSolve
-            ( LOWER, NORMAL, C(1), UAdj, activeShiftsConj, activeXNew );
+            ( UpperOrLower::LOWER, NORMAL, C(1), UAdj, activeShiftsConj, activeXNew );
             if( progress )
             {
                 const double msTime = subtimer.Stop();
@@ -518,9 +518,9 @@ Lanczos
                     subtimer.Start();
             }
             MultiShiftTrsm
-            ( LEFT, UPPER, NORMAL, C(1), U, activeShifts, activeXNew );
+            ( LEFT, UpperOrLower::UPPER, NORMAL, C(1), U, activeShifts, activeXNew );
             MultiShiftTrsm
-            ( LEFT, UPPER, ADJOINT, C(1), U, activeShifts, activeXNew );
+            ( LEFT, UpperOrLower::UPPER, ADJOINT, C(1), U, activeShifts, activeXNew );
             if( progress )
             {
                 mpi::Barrier( g.Comm() );
@@ -545,12 +545,12 @@ Lanczos
             // NOTE: This redistribution sequence might not be necessary
             DistMatrix<C,Dist::STAR,Dist::VR> activeXNew_STAR_VR( activeXNew );
             MultiShiftHessSolve
-            ( UPPER, NORMAL, C(1), U_VC_STAR, activeShifts,
+            ( UpperOrLower::UPPER, NORMAL, C(1), U_VC_STAR, activeShifts,
               activeXNew_STAR_VR );
             DistMatrix<C,Dist::VR,Dist::STAR> activeShiftsConj(g);
             Conjugate( activeShifts, activeShiftsConj );
             MultiShiftHessSolve
-            ( LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
+            ( UpperOrLower::LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
               activeXNew_STAR_VR );
             activeXNew = activeXNew_STAR_VR;
             if( progress )

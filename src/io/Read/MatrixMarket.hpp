@@ -203,16 +203,16 @@ void MatrixMarket( Matrix<T>& A, const string filename )
     }
 
     if( isSymmetric )
-        MakeSymmetric( LOWER, A );
+        MakeSymmetric( UpperOrLower::LOWER, A );
     if( isHermitian )
-        MakeHermitian( LOWER, A );
+        MakeHermitian( UpperOrLower::LOWER, A );
     // I'm not certain of what the MM standard is for complex skew-symmetry,
     // so I'll default to assuming no conjugation
     const bool conjugateSkew = false;
     if( isSkewSymmetric )
     {
-        MakeSymmetric( LOWER, A, conjugateSkew );
-        ScaleTrapezoid( T(-1), UPPER, A, 1 );
+        MakeSymmetric( UpperOrLower::LOWER, A, conjugateSkew );
+        ScaleTrapezoid( T(-1), UpperOrLower::UPPER, A, 1 );
     }
 }
 

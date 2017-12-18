@@ -48,21 +48,21 @@ void MultiShiftQuasiTrsm
     B *= alpha;
     // TODO(poulson): Call the single right-hand side algorithm if appropriate
 
-    if( side == LEFT && uplo == LOWER )
+    if( side == LEFT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             msquasitrsm::LLN( A, shifts, B );
         else
             msquasitrsm::LLT( orientation, A, shifts, B );
     }
-    else if( side == LEFT && uplo == UPPER )
+    else if( side == LEFT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
             msquasitrsm::LUN( A, shifts, B );
         else
             msquasitrsm::LUT( orientation, A, shifts, B );
     }
-    else if( side == RIGHT && uplo == LOWER )
+    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             //msquasitrsm::RLN( A, B );
@@ -71,7 +71,7 @@ void MultiShiftQuasiTrsm
             //msquasitrsm::RLT( orientation, A, B );
             LogicError("This case not yet handled");
     }
-    else if( side == RIGHT && uplo == UPPER )
+    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
             //msquasitrsm::RUN( A, B );
@@ -111,7 +111,7 @@ void MultiShiftQuasiTrsm
     Scale( alpha, BReal, BImag );
     // TODO: Call the single right-hand side algorithm if appropriate
 
-    if( side == LEFT && uplo == LOWER )
+    if( side == LEFT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             //msquasitrsm::LLN( A, shifts, BReal, BImag );
@@ -120,14 +120,14 @@ void MultiShiftQuasiTrsm
             //msquasitrsm::LLT( orientation, A, shifts, BReal, BImag );
             LogicError("This case not yet handled");
     }
-    else if( side == LEFT && uplo == UPPER )
+    else if( side == LEFT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
             msquasitrsm::LUN( A, shifts, BReal, BImag );
         else
             msquasitrsm::LUT( orientation, A, shifts, BReal, BImag );
     }
-    else if( side == RIGHT && uplo == LOWER )
+    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             //msquasitrsm::RLN( A, BReal, BImag );
@@ -136,7 +136,7 @@ void MultiShiftQuasiTrsm
             //msquasitrsm::RLT( orientation, A, BReal, BImag );
             LogicError("This case not yet handled");
     }
-    else if( side == RIGHT && uplo == UPPER )
+    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
             //msquasitrsm::RUN( A, BReal, BImag );
@@ -177,7 +177,7 @@ void MultiShiftQuasiTrsm
     // TODO(poulson): Call the single right-hand side algorithm if appropriate
 
     //const Int p = B.Grid().Size();
-    if( side == LEFT && uplo == LOWER )
+    if( side == LEFT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
         {
@@ -200,7 +200,7 @@ void MultiShiftQuasiTrsm
             */
         }
     }
-    else if( side == LEFT && uplo == UPPER )
+    else if( side == LEFT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
         {
@@ -223,7 +223,7 @@ void MultiShiftQuasiTrsm
             */
         }
     }
-    else if( side == RIGHT && uplo == LOWER )
+    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             //msquasitrsm::RLN( A, shifts, B );
@@ -232,7 +232,7 @@ void MultiShiftQuasiTrsm
             //msquasitrsm::RLT( orientation, A, shifts, B );
             LogicError("This case not yet handled");
     }
-    else if( side == RIGHT && uplo == UPPER )
+    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
             //msquasitrsm::RUN( A, shifts, B );
@@ -277,7 +277,7 @@ void MultiShiftQuasiTrsm
     // TODO: Call the single right-hand side algorithm if appropriate
 
     const Int p = BReal.Grid().Size();
-    if( side == LEFT && uplo == LOWER )
+    if( side == LEFT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
         {
@@ -298,7 +298,7 @@ void MultiShiftQuasiTrsm
                 LogicError("This case not yet handled");
         }
     }
-    else if( side == LEFT && uplo == UPPER )
+    else if( side == LEFT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
         {
@@ -321,7 +321,7 @@ void MultiShiftQuasiTrsm
             */
         }
     }
-    else if( side == RIGHT && uplo == LOWER )
+    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             //msquasitrsm::RLN( A, shifts, BReal, BImag );
@@ -330,7 +330,7 @@ void MultiShiftQuasiTrsm
             //msquasitrsm::RLT( orientation, A, shifts, BReal, BImag );
             LogicError("This case not yet handled");
     }
-    else if( side == RIGHT && uplo == UPPER )
+    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
             //msquasitrsm::RUN( A, shifts, BReal, BImag );

@@ -110,7 +110,7 @@ void Trsm
     */
 
     const Int p = B.Grid().Size();
-    if( side == LEFT && uplo == LOWER )
+    if( side == LEFT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
         {
@@ -239,7 +239,7 @@ void Trsm
                 LogicError("Unsupported TRSM algorithm");
         }
     }
-    else if( side == LEFT && uplo == UPPER )
+    else if( side == LEFT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
         {
@@ -338,7 +338,7 @@ void Trsm
                 LogicError("Unsupported TRSM algorithm");
         }
     }
-    else if( side == RIGHT && uplo == LOWER )
+    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
         {
@@ -355,7 +355,7 @@ void Trsm
                 LogicError("Unsupported TRSM algorithm");
         }
     }
-    else if( side == RIGHT && uplo == UPPER )
+    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
         {

@@ -51,13 +51,13 @@ void Reduce( const AbstractDistMatrix<F>& A, TreeData<F>& treeData )
         if( top )
         {
             ZTop = lastZ;
-            MakeTrapezoidal( UPPER, ZTop );
+            MakeTrapezoidal( UpperOrLower::UPPER, ZTop );
             mpi::Recv( ZBot.Buffer(), n*n, partner, colComm );
         }
         else
         {
             ZBot = lastZ;
-            MakeTrapezoidal( UPPER, ZBot );
+            MakeTrapezoidal( UpperOrLower::UPPER, ZBot );
             mpi::Send( ZBot.LockedBuffer(), n*n, partner, colComm );
             break;
         }
@@ -274,7 +274,7 @@ FormR( const AbstractDistMatrix<F>& A, const TreeData<F>& treeData )
         auto R = RootQR(A,treeData);
         auto RTop = R( IR(0,n), IR(0,n) );
         CopyFromRoot( RTop, RRoot );
-        MakeTrapezoidal( UPPER, RRoot );
+        MakeTrapezoidal( UpperOrLower::UPPER, RRoot );
     }
     else
         CopyFromNonRoot( RRoot );
@@ -295,7 +295,7 @@ FormQ( AbstractDistMatrix<F>& A, TreeData<F>& treeData )
     {
         A.Matrix() = treeData.QR0;
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, 0,
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0,
           A.Matrix(), RootHouseholderScalars(A,treeData) );
         DiagonalScale( RIGHT, NORMAL, RootSignature(A,treeData), A.Matrix() );
     }
@@ -304,7 +304,7 @@ FormQ( AbstractDistMatrix<F>& A, TreeData<F>& treeData )
         if( A.ColRank() == 0 )
         {
             ExpandPackedReflectors
-            ( LOWER, VERTICAL, CONJUGATED, 0,
+            ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0,
               RootQR(A,treeData), RootHouseholderScalars(A,treeData) );
             DiagonalScale
             ( RIGHT, NORMAL, RootSignature(A,treeData), RootQR(A,treeData) );

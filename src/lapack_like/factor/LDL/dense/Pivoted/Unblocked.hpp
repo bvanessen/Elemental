@@ -88,14 +88,14 @@ Unblocked
         {
             LogicError("Have not yet generalized pivot storage");
             const auto diagMax = VectorMaxAbsLoc( GetDiagonal(ABR) );
-            SymmetricSwap( LOWER, A, k, k+diagMax.index, conjugate );
+            SymmetricSwap( UpperOrLower::LOWER, A, k, k+diagMax.index, conjugate );
         }
         const LDLPivot pivot = Select( ABR, pivotType, gamma );
 
         for( Int l=0; l<pivot.nb; ++l )
         {
             const Int from = k + pivot.from[l];
-            SymmetricSwap( LOWER, A, k+l, from, conjugate );
+            SymmetricSwap( UpperOrLower::LOWER, A, k+l, from, conjugate );
             P.Swap( k+l, from );
         }
 
@@ -108,7 +108,7 @@ Unblocked
             const F delta11Inv = F(1)/ABR(0,0);
             auto a21 = A( ind2, ind1 );
             auto A22 = A( ind2, ind2 );
-            Syr( LOWER, -delta11Inv, a21, A22, conjugate );
+            Syr( UpperOrLower::LOWER, -delta11Inv, a21, A22, conjugate );
             a21 *= delta11Inv;
         }
         else
@@ -120,10 +120,10 @@ Unblocked
             Y21 = A21;
 
             auto D11Inv = D11;
-            Symmetric2x2Inv( LOWER, D11Inv, conjugate );
-            MakeSymmetric( LOWER, D11Inv, conjugate );
+            Symmetric2x2Inv( UpperOrLower::LOWER, D11Inv, conjugate );
+            MakeSymmetric( UpperOrLower::LOWER, D11Inv, conjugate );
             Transform2x2Cols( D11Inv, A21, 0, 1 );
-            Trr2( LOWER, F(-1), A21, Y21, A22, conjugate );
+            Trr2( UpperOrLower::LOWER, F(-1), A21, Y21, A22, conjugate );
 
             // Only leave the main diagonal of D in A, so that routines like
             // Trsm can still be used. Thus, return the subdiagonal.
@@ -175,14 +175,14 @@ Unblocked
         {
             LogicError("Have not yet generalized pivot storage");
             const auto diagMax = VectorMaxAbsLoc( GetDiagonal(ABR) );
-            SymmetricSwap( LOWER, A, k, k+diagMax.index, conjugate );
+            SymmetricSwap( UpperOrLower::LOWER, A, k, k+diagMax.index, conjugate );
         }
         const LDLPivot pivot = Select( ABR, pivotType, gamma );
 
         for( Int l=0; l<pivot.nb; ++l )
         {
             const Int from = k + pivot.from[l];
-            SymmetricSwap( LOWER, A, k+l, from, conjugate );
+            SymmetricSwap( UpperOrLower::LOWER, A, k+l, from, conjugate );
             P.Swap( k+l, from );
         }
 
@@ -196,7 +196,7 @@ Unblocked
             const F delta11Inv = F(1)/ABR.Get(0,0);
             auto a21 = A( ind2, ind1 );
             auto A22 = A( ind2, ind2 );
-            Syr( LOWER, -delta11Inv, a21, A22, conjugate );
+            Syr( UpperOrLower::LOWER, -delta11Inv, a21, A22, conjugate );
             a21 *= delta11Inv;
         }
         else
@@ -209,11 +209,11 @@ Unblocked
             D11_STAR_STAR = D11;
 
             D11Inv_STAR_STAR = D11_STAR_STAR;
-            Symmetric2x2Inv( LOWER, D11Inv_STAR_STAR.Matrix(), conjugate );
-            MakeSymmetric( LOWER, D11Inv_STAR_STAR.Matrix(), conjugate );
+            Symmetric2x2Inv( UpperOrLower::LOWER, D11Inv_STAR_STAR.Matrix(), conjugate );
+            MakeSymmetric( UpperOrLower::LOWER, D11Inv_STAR_STAR.Matrix(), conjugate );
             Transform2x2Cols( D11Inv_STAR_STAR, A21, 0, 1 );
 
-            Trr2( LOWER, F(-1), A21, Y21, A22, conjugate );
+            Trr2( UpperOrLower::LOWER, F(-1), A21, Y21, A22, conjugate );
 
             // Only leave the main diagonal of D in A, so that routines like
             // Trsm can still be used. Thus, return the subdiagonal.

@@ -155,7 +155,7 @@ ValueInt<Base<F>> SignDivide
     if( returnQ )
     {
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
         DiagonalScale( RIGHT, NORMAL, signature, G );
         Matrix<F> B;
         Gemm( ADJOINT, NORMAL, F(1), G, A, B );
@@ -200,7 +200,7 @@ ValueInt<Base<F>> SignDivide
     if( returnQ )
     {
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
         DiagonalScale( RIGHT, NORMAL, signature, G );
         DistMatrix<F> B(g);
         Gemm( ADJOINT, NORMAL, F(1), G, A, B );
@@ -258,7 +258,7 @@ ValueInt<Base<F>> RandomizedSignDivide
         if( returnQ )
         {
             ExpandPackedReflectors
-            ( LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
+            ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
             DiagonalScale( RIGHT, NORMAL, signature, G );
             Gemm( ADJOINT, NORMAL, F(1), G, A, B );
             Gemm( NORMAL, NORMAL, F(1), B, G, A );
@@ -324,7 +324,7 @@ ValueInt<Base<F>> RandomizedSignDivide
         if( returnQ )
         {
             ExpandPackedReflectors
-            ( LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
+            ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
             DiagonalScale( RIGHT, NORMAL, signature, G );
             Gemm( ADJOINT, NORMAL, F(1), G, A, B );
             Gemm( NORMAL, NORMAL, F(1), B, G, A );

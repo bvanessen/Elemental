@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El.hpp>
@@ -25,7 +25,7 @@ void MultiShiftTrsm
 {
     EL_DEBUG_CSE
     X *= alpha;
-    if( side == LEFT && uplo == UPPER )
+    if( side == LEFT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
             mstrsm::LUN( U, shifts, X );
@@ -43,12 +43,12 @@ void MultiShiftTrsm
   Orientation orientation,
   F alpha,
   const AbstractDistMatrix<F>& U,
-  const AbstractDistMatrix<F>& shifts, 
+  const AbstractDistMatrix<F>& shifts,
         AbstractDistMatrix<F>& X )
 {
     EL_DEBUG_CSE
     X *= alpha;
-    if( side == LEFT && uplo == UPPER )
+    if( side == LEFT && uplo == UpperOrLower::UPPER )
     {
         if( orientation == NORMAL )
             mstrsm::LUN( U, shifts, X );

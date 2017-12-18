@@ -38,7 +38,7 @@ void FrontVanillaLowerForwardMultiply( const Matrix<F>& L, Matrix<F>& X )
     PartitionDown( X, XT, XB, L.Width() );
 
     Gemm( NORMAL, NORMAL, F(1), LB, XT, F(1), XB );
-    Trmm( LEFT, LOWER, NORMAL, UNIT, F(1), LT, XT );
+    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), LT, XT );
 }
 
 template<typename F>
@@ -91,7 +91,7 @@ void FrontVanillaLowerForwardMultiply
     Gemm( NORMAL, NORMAL, F(1), LB, XT, F(1), XB );
 
     // XT := LT XT
-    Trmm( LEFT, LOWER, NORMAL, UNIT, F(1), LT, XT );
+    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), LT, XT );
 }
 
 template<typename F>
@@ -124,7 +124,7 @@ void FrontVanillaLowerForwardMultiply
     Gemm( NORMAL, NORMAL, F(1), LB, XT, F(1), XB );
 
     // XT := LT XT
-    Trmm( LEFT, LOWER, NORMAL, UNIT, F(1), LT, XT );
+    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), LT, XT );
 }
 
 template<typename F>

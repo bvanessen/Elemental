@@ -38,7 +38,7 @@ Base<Ring> HermitianMaxNorm( UpperOrLower uplo, const Matrix<Ring>& A )
     const Int width = A.Width();
 
     Real maxAbs = 0;
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
     {
         for( Int j=0; j<width; ++j )
             for( Int i=0; i<=j; ++i )
@@ -91,7 +91,7 @@ HermitianMaxNorm( UpperOrLower uplo, const AbstractDistMatrix<Ring>& A )
         const Matrix<Ring>& ALoc = A.LockedMatrix();
 
         Real localMaxAbs = 0;
-        if( uplo == UPPER )
+        if( uplo == UpperOrLower::UPPER )
         {
             for( Int jLoc=0; jLoc<localWidth; ++jLoc )
             {

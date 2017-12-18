@@ -60,7 +60,7 @@ void UT_C
         B1_STAR_MC = B1_STAR_VR;
 
         LocalTrr2k
-        ( UPPER, orientation, TRANSPOSE, orientation, TRANSPOSE,
+        ( UpperOrLower::UPPER, orientation, TRANSPOSE, orientation, TRANSPOSE,
           alpha,    A1_STAR_MC, B1Trans_MR_STAR,
           alphaSec, B1_STAR_MC, A1Trans_MR_STAR, T(1), C );
     }
@@ -106,7 +106,7 @@ void UT_Dot
 
         Z.Resize( nbOuter, nbOuter );
         Syr2k
-        ( UPPER, TRANSPOSE, alpha, A1.Matrix(), B1.Matrix(), Z.Matrix(),
+        ( UpperOrLower::UPPER, TRANSPOSE, alpha, A1.Matrix(), B1.Matrix(), Z.Matrix(),
           conjugate );
         AxpyContract( T(1), Z, C11 );
 

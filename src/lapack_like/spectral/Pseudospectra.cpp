@@ -693,7 +693,7 @@ Matrix<Int> Helper
         }
         else
         {
-            hessenberg::ExplicitCondensed( UPPER, U );
+            hessenberg::ExplicitCondensed( UpperOrLower::UPPER, U );
             return HessenbergSpectralCloud( U, shifts, invNorms, psCtrl );
         }
     }
@@ -711,9 +711,9 @@ Matrix<Int> Helper
         else
         {
             Matrix<C> t;
-            Hessenberg( UPPER, U, t );
+            Hessenberg( UpperOrLower::UPPER, U, t );
             Identity( Q, A.Height(), A.Height() );
-            hessenberg::ApplyQ( LEFT, UPPER, NORMAL, U, t, Q );
+            hessenberg::ApplyQ( LEFT, UpperOrLower::UPPER, NORMAL, U, t, Q );
             return HessenbergSpectralCloud( U, Q, shifts, invNorms, psCtrl );
         }
     }
@@ -744,7 +744,7 @@ DistMatrix<Int,Dist::VR,Dist::STAR> Helper
         }
         else
         {
-            hessenberg::ExplicitCondensed( UPPER, U );
+            hessenberg::ExplicitCondensed( UpperOrLower::UPPER, U );
             return HessenbergSpectralCloud( U, shifts, invNorms, psCtrl );
         }
     }
@@ -762,9 +762,9 @@ DistMatrix<Int,Dist::VR,Dist::STAR> Helper
         else
         {
             DistMatrix<C,Dist::STAR,Dist::STAR> t(g);
-            Hessenberg( UPPER, U, t );
+            Hessenberg( UpperOrLower::UPPER, U, t );
             Identity( Q, U.Height(), U.Height() );
-            hessenberg::ApplyQ( LEFT, UPPER, NORMAL, U, t, Q );
+            hessenberg::ApplyQ( LEFT, UpperOrLower::UPPER, NORMAL, U, t, Q );
             return HessenbergSpectralCloud( U, Q, shifts, invNorms, psCtrl );
         }
     }
@@ -2059,7 +2059,7 @@ Matrix<Int> Helper
         }
         else
         {
-            hessenberg::ExplicitCondensed( UPPER, B );
+            hessenberg::ExplicitCondensed( UpperOrLower::UPPER, B );
             return HessenbergSpectralPortrait
                    ( B, invNormMap, realSize, imagSize, box, psCtrl );
         }
@@ -2079,9 +2079,9 @@ Matrix<Int> Helper
         else
         {
             Matrix<C> t;
-            Hessenberg( UPPER, B, t );
+            Hessenberg( UpperOrLower::UPPER, B, t );
             Identity( Q, B.Height(), B.Height() );
-            hessenberg::ApplyQ( LEFT, UPPER, NORMAL, B, t, Q );
+            hessenberg::ApplyQ( LEFT, UpperOrLower::UPPER, NORMAL, B, t, Q );
             return HessenbergSpectralPortrait
                    ( B, Q, invNormMap, realSize, imagSize, box, psCtrl );
         }
@@ -2115,7 +2115,7 @@ DistMatrix<Int> Helper
         }
         else
         {
-            hessenberg::ExplicitCondensed( UPPER, B );
+            hessenberg::ExplicitCondensed( UpperOrLower::UPPER, B );
             return HessenbergSpectralPortrait
                    ( B, invNormMap, realSize, imagSize, box, psCtrl );
         }
@@ -2135,9 +2135,9 @@ DistMatrix<Int> Helper
         else
         {
             DistMatrix<C,Dist::STAR,Dist::STAR> t(g);
-            Hessenberg( UPPER, B, t );
+            Hessenberg( UpperOrLower::UPPER, B, t );
             Identity( Q, B.Height(), B.Height() );
-            hessenberg::ApplyQ( LEFT, UPPER, NORMAL, B, t, Q );
+            hessenberg::ApplyQ( LEFT, UpperOrLower::UPPER, NORMAL, B, t, Q );
             return HessenbergSpectralPortrait
                    ( B, Q, invNormMap, realSize, imagSize, box, psCtrl );
         }

@@ -115,17 +115,17 @@ RLHBBlocked
 
         // Convert to an explicit matrix of (scaled) Householder vectors
         Conjugate( HPan, HPanConj );
-        MakeTrapezoidal( LOWER, HPanConj, HPanConj.Width()-HPanConj.Height() );
+        MakeTrapezoidal( UpperOrLower::LOWER, HPanConj, HPanConj.Width()-HPanConj.Height() );
         FillDiagonal( HPanConj, F(1), HPanConj.Width()-HPanConj.Height() );
 
         // Form the small triangular matrix needed for the UT transform
-        Herk( LOWER, NORMAL, Base<F>(1), HPanConj, SInv );
+        Herk( UpperOrLower::LOWER, NORMAL, Base<F>(1), HPanConj, SInv );
         FixDiagonal( conjugation, householderScalars1, SInv );
 
         // Z := ALeft HPan^T
         Gemm( NORMAL, ADJOINT, F(1), ALeft, HPanConj, Z );
         // Z := ALeft HPan^T inv(SInv)
-        Trsm( RIGHT, LOWER, NORMAL, NON_UNIT, F(1), SInv, Z );
+        Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), SInv, Z );
         // ALeft := ALeft (I - HPan^T inv(SInv) conj(HPan))
         Gemm( NORMAL, NORMAL, F(-1), Z, HPanConj, F(1), ALeft );
     }
@@ -266,14 +266,14 @@ RLHBBlocked
         // Convert to an explicit matrix of (scaled) Householder vectors
         LockedView( *HPan, H, IR(ki,ki+nb), IR(0,kj+nb) );
         Conjugate( *HPan, HPanConj );
-        MakeTrapezoidal( LOWER, HPanConj, HPanConj.Width()-HPanConj.Height() );
+        MakeTrapezoidal( UpperOrLower::LOWER, HPanConj, HPanConj.Width()-HPanConj.Height() );
         FillDiagonal( HPanConj, F(1), HPanConj.Width()-HPanConj.Height() );
 
         // Form the small triangular matrix needed for the UT transform
         HPan_STAR_VR = HPanConj;
         Zeros( SInv_STAR_STAR, nb, nb );
         Herk
-        ( LOWER, NORMAL,
+        ( UpperOrLower::LOWER, NORMAL,
           Base<F>(1), HPan_STAR_VR.LockedMatrix(),
           Base<F>(0), SInv_STAR_STAR.Matrix() );
         El::AllReduce( SInv_STAR_STAR, HPan_STAR_VR.RowComm() );
@@ -291,7 +291,7 @@ RLHBBlocked
 
         // Z := ALeft HPan^T inv(SInv)
         LocalTrsm
-        ( LEFT, LOWER, ADJOINT, NON_UNIT,
+        ( LEFT, UpperOrLower::LOWER, ADJOINT, NON_UNIT,
           F(1), SInv_STAR_STAR, ZAdj_STAR_VC );
 
         // ALeft := ALeft (I - HPan^T inv(SInv) conj(HPan))

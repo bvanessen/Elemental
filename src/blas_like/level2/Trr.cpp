@@ -33,7 +33,7 @@ void Trr
     )
     const T* xCol = x.LockedBuffer();
     const T* yCol = y.LockedBuffer();
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         for( Int j=0; j<n; ++j )
         {
@@ -95,7 +95,7 @@ void Trr
     const T* xLocCol = x_MC_STAR.LockedBuffer();
     const T* yLocCol = y_MR_STAR.LockedBuffer();
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         for( Int jLoc=0; jLoc<nLocal; ++jLoc )
         {

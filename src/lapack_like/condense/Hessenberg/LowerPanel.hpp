@@ -81,13 +81,13 @@ void LowerPanel
         //     = conj(a1 - (V0 (inv(G00) u10^H))^H)
         //     = conj(a1) - (V0 (inv(G00) u10^H))^T
         Conjugate( u10, y10 );
-        Trsv( UPPER, NORMAL, NON_UNIT, G00, y10 );
+        Trsv( UpperOrLower::UPPER, NORMAL, NON_UNIT, G00, y10 );
         Conjugate( a1 );
         Gemv( NORMAL, F(-1), V0, y10, F(1), a1 );
         // a1 := conj(a1) - conj(a1) U0 inv(G00) U0^H
         //     = conj(a1 - (U0 (inv(G00)^H (U0^H a1^T)))^T)
         Gemv( ADJOINT, F(1), U0, a1, F(0), y10 );
-        Trsv( UPPER, ADJOINT, NON_UNIT, G00, y10 );
+        Trsv( UpperOrLower::UPPER, ADJOINT, NON_UNIT, G00, y10 );
         Gemv( NORMAL, F(-1), U0, y10, F(1), a1 );
         Conjugate( a1 );
 
@@ -195,7 +195,7 @@ void LowerPanel
         Conjugate( a1, a1Conj_MR );
         Conjugate( u10_MR, y10_STAR );
         Trsv
-        ( UPPER, NORMAL, NON_UNIT,
+        ( UpperOrLower::UPPER, NORMAL, NON_UNIT,
           G00_STAR_STAR.LockedMatrix(), y10_STAR.Matrix() );
         LocalGemv( NORMAL, F(-1), V0_MR_STAR, y10_STAR, F(1), a1Conj_MR );
         // a1 := conj(a1) - conj(a1) U0 inv(G00) U0^H
@@ -204,7 +204,7 @@ void LowerPanel
         ( ADJOINT, F(1), U0_MR_STAR, a1Conj_MR, F(0), y10_STAR );
         El::AllReduce( y10_STAR, U0_MR_STAR.ColComm() );
         Trsv
-        ( UPPER, ADJOINT, NON_UNIT,
+        ( UpperOrLower::UPPER, ADJOINT, NON_UNIT,
           G00_STAR_STAR.LockedMatrix(), y10_STAR.Matrix() );
         LocalGemv( NORMAL, F(-1), U0_MR_STAR, y10_STAR, F(1), a1Conj_MR );
         Conjugate( a1Conj_MR, a1 );

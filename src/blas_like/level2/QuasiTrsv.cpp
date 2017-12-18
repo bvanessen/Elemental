@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level2.hpp>
@@ -17,11 +17,11 @@ namespace El {
 
 template<typename F>
 void QuasiTrsv
-( UpperOrLower uplo, Orientation orientation, const Matrix<F>& A, Matrix<F>& x, 
+( UpperOrLower uplo, Orientation orientation, const Matrix<F>& A, Matrix<F>& x,
   bool checkIfSingular )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             quasitrsv::LN( A, x, checkIfSingular );
@@ -39,12 +39,12 @@ void QuasiTrsv
 
 template<typename F>
 void QuasiTrsv
-( UpperOrLower uplo, Orientation orientation, 
-  const AbstractDistMatrix<F>& A, AbstractDistMatrix<F>& x, 
+( UpperOrLower uplo, Orientation orientation,
+  const AbstractDistMatrix<F>& A, AbstractDistMatrix<F>& x,
   bool checkIfSingular )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             quasitrsv::LN( A, x, checkIfSingular );

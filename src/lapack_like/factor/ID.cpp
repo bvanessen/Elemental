@@ -58,7 +58,7 @@ BusingerGolub
     auto RL = A( IR(0,numSteps), IR(0,numSteps) );
     auto RR = A( IR(0,numSteps), IR(numSteps,n) );
     Z = RR;
-    Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), RL, Z );
+    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), RL, Z );
 }
 
 template<typename F>
@@ -100,7 +100,7 @@ BusingerGolub
     auto RL = A( IR(0,numSteps), IR(0,numSteps) );
     auto RR = A( IR(0,numSteps), IR(numSteps,n) );
     Copy( RR, Z );
-    Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), RL, Z );
+    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), RL, Z );
 }
 
 } // namespace id

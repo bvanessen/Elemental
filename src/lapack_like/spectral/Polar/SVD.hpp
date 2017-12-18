@@ -49,7 +49,7 @@ void SVD( Matrix<Field>& A, Matrix<Field>& P )
     Gemm( NORMAL, ADJOINT, Field(1), U, V, A );
 
     // Form P := V Sigma V^H in P
-    HermitianFromEVD( LOWER, P, s, V );
+    HermitianFromEVD( UpperOrLower::LOWER, P, s, V );
 }
 
 template<typename Field>
@@ -96,7 +96,7 @@ void SVD( AbstractDistMatrix<Field>& APre, AbstractDistMatrix<Field>& PPre )
     Gemm( NORMAL, ADJOINT, Field(1), U, V, A );
 
     // Form P := V Sigma V^H in P
-    HermitianFromEVD( LOWER, P, s, V );
+    HermitianFromEVD( UpperOrLower::LOWER, P, s, V );
 }
 
 } // namespace polar

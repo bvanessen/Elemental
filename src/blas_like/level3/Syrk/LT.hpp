@@ -46,7 +46,7 @@ void LT_C
         A1_STAR_MC = A1_STAR_VR;
 
         LocalTrrk
-        ( LOWER, orientation, TRANSPOSE,
+        ( UpperOrLower::LOWER, orientation, TRANSPOSE,
           alpha, A1_STAR_MC, A1Trans_MR_STAR, T(1), C );
     }
 }
@@ -82,7 +82,7 @@ void LT_Dot
         auto C11 = C( indOuter, indOuter );
 
         Z.Resize( nbOuter, nbOuter );
-        Syrk( LOWER, TRANSPOSE, alpha, A1.Matrix(), Z.Matrix(), conjugate );
+        Syrk( UpperOrLower::LOWER, TRANSPOSE, alpha, A1.Matrix(), Z.Matrix(), conjugate );
         AxpyContract( T(1), Z, C11 );
 
         for( Int kInner=kOuter+nbOuter; kInner<n; kInner+=blockSize )

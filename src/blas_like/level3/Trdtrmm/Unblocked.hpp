@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -132,19 +132,19 @@ void LUnblocked( Matrix<F>& L, const Matrix<F>& dSub, bool conjugate=false )
             // S10 := L10
             S10 = L10;
 
-            // L10 := inv(D11) L10 
+            // L10 := inv(D11) L10
             D11.Set( 0, 0, L11.Get(0,0) );
             D11.Set( 1, 1, L11.Get(1,1) );
             D11.Set( 1, 0, dSub.Get(k,0) );
 
             D11Inv = D11;
-            Symmetric2x2Inv( LOWER, D11Inv, conjugate );
-            MakeSymmetric( LOWER, D11Inv, conjugate );
+            Symmetric2x2Inv( UpperOrLower::LOWER, D11Inv, conjugate );
+            MakeSymmetric( UpperOrLower::LOWER, D11Inv, conjugate );
             Transform2x2Rows( D11Inv, L10, 0, 1 );
 
             // L00 := L00 + L10' S10
-            // TODO: Custom rank-2 update 
-            Trrk( LOWER, orientation, NORMAL, F(1), L10, S10, F(1), L00 );
+            // TODO: Custom rank-2 update
+            Trrk( UpperOrLower::LOWER, orientation, NORMAL, F(1), L10, S10, F(1), L00 );
 
             // L11 := inv(D11)
             L11.Set( 0, 0, D11Inv.Get(0,0) );
@@ -180,7 +180,7 @@ void UUnblocked( Matrix<F>& U, bool conjugate=false )
         u01 *= deltaInv;
 
         // U00 := U00 + s01 u01'
-        Trr( UPPER, F(1), s01, u01, U00, conjugate );
+        Trr( UpperOrLower::UPPER, F(1), s01, u01, U00, conjugate );
 
         // lambda11 := 1 / delta11
         U.Set( k, k, deltaInv );

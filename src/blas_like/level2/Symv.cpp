@@ -107,7 +107,7 @@ void Symv
         z_MR_STAR.Resize( y.Height(), 1 );
         Zero( z_MC_STAR );
         Zero( z_MR_STAR );
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             symv::LocalColAccumulateL
             ( alpha, A, x_MC_STAR, x_MR_STAR, z_MC_STAR, z_MR_STAR, conjugate,
@@ -147,7 +147,7 @@ void Symv
         z_MR_STAR.Resize( y.Width(), 1 );
         Zero( z_MC_STAR );
         Zero( z_MR_STAR );
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             symv::LocalColAccumulateL
             ( alpha, A, x_MC_STAR, x_MR_STAR, z_MC_STAR, z_MR_STAR, conjugate,
@@ -191,7 +191,7 @@ void Symv
         z_STAR_MR.Resize( 1, y.Height() );
         Zero( z_STAR_MC );
         Zero( z_STAR_MR );
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             symv::LocalRowAccumulateL
             ( alpha, A, x_STAR_MC, x_STAR_MR, z_STAR_MC, z_STAR_MR, conjugate,
@@ -235,7 +235,7 @@ void Symv
         z_STAR_MC.Resize( 1, y.Width() );
         Zero( z_STAR_MR );
         Zero( z_STAR_MC );
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             symv::LocalRowAccumulateL
             ( alpha, A, x_STAR_MC, x_STAR_MR, z_STAR_MC, z_STAR_MR, conjugate,
@@ -272,7 +272,7 @@ void LocalColAccumulate
         DistMatrix<T,Dist::MR,Dist::STAR>& z_MR_STAR, bool conjugate,
   const SymvCtrl<T>& ctrl )
 {
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         LocalColAccumulateL
         ( alpha, A, x_MC_STAR, x_MR_STAR, z_MC_STAR, z_MR_STAR, conjugate,
           ctrl );
@@ -292,7 +292,7 @@ void LocalRowAccumulate
         DistMatrix<T,Dist::STAR,Dist::MR>& z_STAR_MR, bool conjugate,
   const SymvCtrl<T>& ctrl )
 {
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         LocalRowAccumulateL
         ( alpha, A, x_STAR_MC, x_STAR_MR, z_STAR_MC, z_STAR_MR, conjugate,
           ctrl );

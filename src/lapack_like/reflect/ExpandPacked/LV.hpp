@@ -56,7 +56,7 @@ LV
     const Int mRem = m-n;
     const Int bsize = Blocksize();
     H.Resize( m, n );
-    MakeTrapezoidal( LOWER, H, offset );
+    MakeTrapezoidal( UpperOrLower::LOWER, H, offset );
     FillDiagonal( H, F(1), offset );
 
     Matrix<F> HPanT, HPanB,
@@ -98,7 +98,7 @@ LV
 
         Z.Resize( HPanWidth, effectedWidth );
         PartitionLeft( Z, ZNew, ZOld, oldEffectedWidth );
-        Herk( UPPER, ADJOINT, Base<F>(1), HPan, SInv );
+        Herk( UpperOrLower::UPPER, ADJOINT, Base<F>(1), HPan, SInv );
         FixDiagonal( conjugation, householderScalars1, SInv );
 
         // Interleave the updates of the already effected portion of the matrix
@@ -106,7 +106,7 @@ LV
         Adjoint( HPanT, ZNew );
         Zero( ZOld );
         Gemm( ADJOINT, NORMAL, F(1), HPanB, HEffectedOldB, F(0), ZOld );
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), SInv, Z );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), SInv, Z );
         HPanCopy = HPan;
         MakeIdentity( HEffectedNew );
         Gemm( NORMAL, NORMAL, F(-1), HPanCopy, Z, F(1), HEffected );
@@ -151,7 +151,7 @@ LV
     const Int mRem = m-n;
     const Int bsize = Blocksize();
     H.Resize( m, n );
-    MakeTrapezoidal( LOWER, H, offset );
+    MakeTrapezoidal( UpperOrLower::LOWER, H, offset );
     FillDiagonal( H, F(1), offset );
 
     const Grid& g = H.Grid();
@@ -208,7 +208,7 @@ LV
         HPan_VC_STAR = HPan;
         Zeros( SInv_STAR_STAR, HPanWidth, HPanWidth );
         Herk
-        ( UPPER, ADJOINT,
+        ( UpperOrLower::UPPER, ADJOINT,
           Base<F>(1), HPan_VC_STAR.LockedMatrix(),
           Base<F>(0), SInv_STAR_STAR.Matrix() );
         El::AllReduce( SInv_STAR_STAR, HPan_VC_STAR.ColComm() );
@@ -232,7 +232,7 @@ LV
           F(1), HPanB_MC_STAR, HEffectedOldB, F(0), ZOld_STAR_MR );
         Contract( ZOld_STAR_MR, ZOld_STAR_VR );
         LocalTrsm
-        ( LEFT, UPPER, NORMAL, NON_UNIT, F(1), SInv_STAR_STAR, Z_STAR_VR );
+        ( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), SInv_STAR_STAR, Z_STAR_VR );
         Z_STAR_MR = Z_STAR_VR;
         MakeIdentity( HEffectedNew );
         LocalGemm

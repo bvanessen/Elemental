@@ -43,7 +43,7 @@ void FrontVanillaLowerForwardSolve
     auto XT = X( IR(0,n),   ALL );
     auto XB = X( IR(n,END), ALL );
 
-    Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), LT, XT );
+    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), LT, XT );
     Gemm( NORMAL, NORMAL, F(-1), LB, XT, F(1), XB );
 }
 
@@ -160,7 +160,7 @@ void ForwardMany
 
         // X1[* ,* ] := (L11[* ,* ])^-1 X1[* ,* ]
         LocalTrsm
-        ( LEFT, LOWER, NORMAL, UNIT, F(1), L11_STAR_STAR, X1_STAR_STAR );
+        ( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), L11_STAR_STAR, X1_STAR_STAR );
         X1 = X1_STAR_STAR;
 
         // X2[VC,* ] -= L21[VC,* ] X1[* ,* ]
@@ -202,7 +202,7 @@ void ForwardSingle
 
         // X1[* ,* ] := (L11[* ,* ])^-1 X1[* ,* ]
         LocalTrsm
-        ( LEFT, UPPER, TRANSPOSE, UNIT,
+        ( LEFT, UpperOrLower::UPPER, TRANSPOSE, UNIT,
           F(1), L11Trans_STAR_STAR, X1_STAR_STAR );
         X1 = X1_STAR_STAR;
 
@@ -282,7 +282,7 @@ void FrontVanillaLowerForwardSolve
 
     // XT := inv(LT) XT
     // TODO: Replace with TrsmLLNMedium?
-    Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), LT, XT );
+    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), LT, XT );
 
     // XB := XB - LB XT
     Gemm( NORMAL, NORMAL, F(-1), LB, XT, F(1), XB );
@@ -320,7 +320,7 @@ void FrontVanillaLowerForwardSolve
 
     // XT := inv(LT) XT
     // TODO: Replace with TrsmLLNMedium?
-    Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), LT, XT );
+    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), LT, XT );
 
     // XB := XB - LB XT
     Gemm( NORMAL, NORMAL, F(-1), LB, XT, F(1), XB );

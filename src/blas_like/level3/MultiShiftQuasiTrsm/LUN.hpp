@@ -319,7 +319,7 @@ void LUNLarge
 
         // X1[* ,VR] := U11^-1[* ,* ] X1[* ,VR]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UPPER, NORMAL, F(1), U11_STAR_STAR, shifts, X1_STAR_VR );
+        ( LEFT, UpperOrLower::UPPER, NORMAL, F(1), U11_STAR_STAR, shifts, X1_STAR_VR );
 
         X1_STAR_MR.AlignWith( X0 );
         X1_STAR_MR  = X1_STAR_VR; // X1[* ,MR]  <- X1[* ,VR]
@@ -394,7 +394,7 @@ void LUNLarge
 
         // X1[* ,VR] := U11^-1[* ,* ] X1[* ,VR]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UPPER, NORMAL, C(1),
+        ( LEFT, UpperOrLower::UPPER, NORMAL, C(1),
           U11_STAR_STAR, shifts, X1Real_STAR_VR, X1Imag_STAR_VR );
 
         X1Real_STAR_MR.AlignWith( X0Real );
@@ -473,7 +473,7 @@ void LUNMedium
         shifts_MR_STAR_Align.AlignWith( X1Trans_MR_STAR );
         shifts_MR_STAR_Align = shifts_MR_STAR;
         LocalMultiShiftQuasiTrsm
-        ( RIGHT, UPPER, TRANSPOSE,
+        ( RIGHT, UpperOrLower::UPPER, TRANSPOSE,
           F(1), U11_STAR_STAR, shifts_MR_STAR_Align, X1Trans_MR_STAR );
         Transpose( X1Trans_MR_STAR, X1 );
 
@@ -554,7 +554,7 @@ void LUNMedium
         shifts_MR_STAR_Align.AlignWith( X1RealTrans_MR_STAR );
         shifts_MR_STAR_Align = shifts_MR_STAR;
         LocalMultiShiftQuasiTrsm
-        ( RIGHT, UPPER, TRANSPOSE,
+        ( RIGHT, UpperOrLower::UPPER, TRANSPOSE,
           C(1), U11_STAR_STAR, shifts_MR_STAR_Align,
                 X1RealTrans_MR_STAR, X1ImagTrans_MR_STAR );
         Transpose( X1RealTrans_MR_STAR, X1Real );
@@ -625,7 +625,7 @@ void LUNSmall
 
         // X1[* ,* ] := U11^-1[* ,* ] X1[* ,* ]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UPPER, NORMAL,
+        ( LEFT, UpperOrLower::UPPER, NORMAL,
           F(1), U11_STAR_STAR, shifts_STAR_STAR, X1_STAR_STAR );
         X1 = X1_STAR_STAR;
 
@@ -696,7 +696,7 @@ void LUNSmall
 
         // X1[* ,* ] := U11^-1[* ,* ] X1[* ,* ]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UPPER, NORMAL,
+        ( LEFT, UpperOrLower::UPPER, NORMAL,
           C(1), U11_STAR_STAR, shifts_STAR_STAR,
                 X1Real_STAR_STAR, X1Imag_STAR_STAR );
         X1Real = X1Real_STAR_STAR;

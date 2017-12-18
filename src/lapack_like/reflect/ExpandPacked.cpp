@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El.hpp>
@@ -15,7 +15,7 @@
 
 namespace El {
 
-template<typename F> 
+template<typename F>
 void ExpandPackedReflectors
 ( UpperOrLower uplo, VerticalOrHorizontal dir, Conjugation conjugation,
   Int offset,
@@ -23,14 +23,14 @@ void ExpandPackedReflectors
   const Matrix<F>& householderScalars )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER && dir == VERTICAL )
+    if( uplo == UpperOrLower::LOWER && dir == VERTICAL )
         expand_packed_reflectors::LV
         ( conjugation, offset, H, householderScalars );
     else
         LogicError("This option is not yet supported");
 }
 
-template<typename F> 
+template<typename F>
 void ExpandPackedReflectors
 ( UpperOrLower uplo, VerticalOrHorizontal dir, Conjugation conjugation,
   Int offset,
@@ -38,7 +38,7 @@ void ExpandPackedReflectors
   const AbstractDistMatrix<F>& householderScalars )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER && dir == VERTICAL )
+    if( uplo == UpperOrLower::LOWER && dir == VERTICAL )
         expand_packed_reflectors::LV
         ( conjugation, offset, H, householderScalars );
     else

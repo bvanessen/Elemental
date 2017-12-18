@@ -196,7 +196,7 @@ void LUTLarge
 
         // X1[* ,VR] := U11^-[T/H][*,*] X1[* ,VR]
         LocalQuasiTrsm
-        ( LEFT, UPPER, orientation, F(1), U11_STAR_STAR, X1_STAR_VR,
+        ( LEFT, UpperOrLower::UPPER, orientation, F(1), U11_STAR_STAR, X1_STAR_VR,
           checkIfSingular );
 
         X1_STAR_MR.AlignWith( X2 );
@@ -261,7 +261,7 @@ void LUTMedium
         // X1[* ,MR] := U11^-[T/H][*,*] X1[* ,MR]
         // X1^[T/H][MR,* ] := X1^[T/H][MR,* ] U11^-1[* ,* ]
         LocalQuasiTrsm
-        ( RIGHT, UPPER, NORMAL,
+        ( RIGHT, UpperOrLower::UPPER, NORMAL,
           F(1), U11_STAR_STAR, X1Trans_MR_STAR, checkIfSingular );
 
         Transpose( X1Trans_MR_STAR, X1, (orientation==ADJOINT) );
@@ -321,7 +321,7 @@ void LUTSmall
 
         // X1[* ,* ] := U11^-[T/H][* ,* ] X1[* ,* ]
         LocalQuasiTrsm
-        ( LEFT, UPPER, orientation,
+        ( LEFT, UpperOrLower::UPPER, orientation,
           F(1), U11_STAR_STAR, X1_STAR_STAR, checkIfSingular );
 
         X1 = X1_STAR_STAR;

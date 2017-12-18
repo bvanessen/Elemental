@@ -58,7 +58,7 @@ void LocalAccumulateRUT
 
         D11.AlignWith( U11 );
         D11 = U11;
-        MakeTrapezoidal( UPPER, D11 );
+        MakeTrapezoidal( UpperOrLower::UPPER, D11 );
         if( diag == UNIT )
             FillDiagonal( D11, T(1) );
         LocalGemm( NORMAL, NORMAL, alpha, D11, X1Trans, T(1), Z1Trans );
@@ -159,7 +159,7 @@ void RUTC
         X1_VC_STAR = X1;
         U11_STAR_STAR = U11;
         LocalTrmm
-        ( RIGHT, UPPER, orientation, diag, T(1), U11_STAR_STAR, X1_VC_STAR );
+        ( RIGHT, UpperOrLower::UPPER, orientation, diag, T(1), U11_STAR_STAR, X1_VC_STAR );
         X1 = X1_VC_STAR;
 
         U12Trans_MR_STAR.AlignWith( X2 );

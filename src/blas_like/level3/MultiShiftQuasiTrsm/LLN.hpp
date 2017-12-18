@@ -159,7 +159,7 @@ void LLNLarge
 
         // X1[* ,VR] := L11^-1[* ,* ] X1[* ,VR]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, LOWER, NORMAL, F(1), L11_STAR_STAR, shifts, X1_STAR_VR );
+        ( LEFT, UpperOrLower::LOWER, NORMAL, F(1), L11_STAR_STAR, shifts, X1_STAR_VR );
 
         X1_STAR_MR.AlignWith( X2 );
         X1_STAR_MR  = X1_STAR_VR; // X1[* ,MR]  <- X1[* ,VR]
@@ -222,7 +222,7 @@ void LLNMedium
         shifts_MR_STAR_Align.AlignWith( X1Trans_MR_STAR );
         shifts_MR_STAR_Align = shifts_MR_STAR;
         LocalMultiShiftQuasiTrsm
-        ( RIGHT, LOWER, TRANSPOSE,
+        ( RIGHT, UpperOrLower::LOWER, TRANSPOSE,
           F(1), L11_STAR_STAR, shifts_MR_STAR_Align, X1Trans_MR_STAR );
 
         Transpose( X1Trans_MR_STAR, X1 );
@@ -274,7 +274,7 @@ void LLNSmall
 
         // X1[* ,* ] := (L11[* ,* ])^-1 X1[* ,* ]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, LOWER, NORMAL,
+        ( LEFT, UpperOrLower::LOWER, NORMAL,
           F(1), L11_STAR_STAR, shifts_STAR_STAR, X1_STAR_STAR );
 
         // X2[VC,* ] -= L21[VC,* ] X1[* ,* ]

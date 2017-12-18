@@ -62,7 +62,7 @@ void RankOneMod
     // w := inv(L) P u
     auto w( u );
     P.PermuteRows( w );
-    Trsv( LOWER, NORMAL, UNIT, A, w );
+    Trsv( UpperOrLower::LOWER, NORMAL, UNIT, A, w );
 
     // Maintain an external vector for the temporary subdiagonal of U
     Matrix<F> uSub;
@@ -318,7 +318,7 @@ void RankOneMod
     //       broadcasting at every iteration.
     DistMatrix<F> w( u );
     P.PermuteRows( w );
-    Trsv( LOWER, NORMAL, UNIT, A, w );
+    Trsv( UpperOrLower::LOWER, NORMAL, UNIT, A, w );
 
     // Maintain an external vector for the temporary subdiagonal of U
     DistMatrix<F,Dist::MD,Dist::STAR> uSub(g);

@@ -65,7 +65,7 @@ int InverseFreeSign( Matrix<F>& X, Int maxIts=100, Base<F> tau=0 )
 
         // Save a copy of R
         R = BAlt;
-        MakeTrapezoidal( UPPER, R );
+        MakeTrapezoidal( UpperOrLower::UPPER, R );
 
         // Form the new iterate
         Gemm( ADJOINT, NORMAL, F(1), Q12, A, F(0), AAlt );
@@ -77,7 +77,7 @@ int InverseFreeSign( Matrix<F>& X, Int maxIts=100, Base<F> tau=0 )
         if( numIts > 1 )
         {
             const Real oneRLast = OneNorm(RLast);
-            AxpyTrapezoid( UPPER, F(-1), R, RLast );
+            AxpyTrapezoid( UpperOrLower::UPPER, F(-1), R, RLast );
             const Real oneRDiff = OneNorm(RLast);
             if( oneRDiff <= tau*oneRLast )
                 break;
@@ -140,7 +140,7 @@ int InverseFreeSign
 
         // Save a copy of R
         R = BAlt;
-        MakeTrapezoidal( UPPER, R );
+        MakeTrapezoidal( UpperOrLower::UPPER, R );
 
         // Form the new iterate
         Gemm( ADJOINT, NORMAL, F(1), Q12, A, F(0), AAlt );
@@ -152,7 +152,7 @@ int InverseFreeSign
         if( numIts > 1 )
         {
             const Real oneRLast = OneNorm(RLast);
-            AxpyTrapezoid( UPPER, F(-1), R, RLast );
+            AxpyTrapezoid( UpperOrLower::UPPER, F(-1), R, RLast );
             const Real oneRDiff = OneNorm(RLast);
             if( oneRDiff <= tau*oneRLast )
                 break;

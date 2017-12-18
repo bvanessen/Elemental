@@ -55,7 +55,7 @@ void HermitianTridiag
 ( UpperOrLower uplo, Matrix<F>& A, Matrix<F>& householderScalars )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         herm_tridiag::LowerBlocked( A, householderScalars );
     else
         herm_tridiag::UpperBlocked( A, householderScalars );
@@ -80,7 +80,7 @@ void HermitianTridiag
     if( ctrl.approach == HERMITIAN_TRIDIAG_NORMAL )
     {
         // Use the pipelined algorithm for nonsquare meshes
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
             herm_tridiag::LowerBlocked( A, householderScalars, ctrl.symvCtrl );
         else
             herm_tridiag::UpperBlocked( A, householderScalars, ctrl.symvCtrl );
@@ -119,7 +119,7 @@ void HermitianTridiag
         ASquare = A;
         if( ASquare.Participating() )
         {
-            if( uplo == LOWER )
+            if( uplo == UpperOrLower::LOWER )
                 herm_tridiag::LowerBlockedSquare
                 ( ASquare, householderScalarsSquare, ctrl.symvCtrl );
             else
@@ -139,7 +139,7 @@ void HermitianTridiag
         // grid, in which case we use the fast square method.
         if( grid.Height() == grid.Width() )
         {
-            if( uplo == LOWER )
+            if( uplo == UpperOrLower::LOWER )
                 herm_tridiag::LowerBlockedSquare
                 ( A, householderScalars, ctrl.symvCtrl );
             else
@@ -148,7 +148,7 @@ void HermitianTridiag
         }
         else
         {
-            if( uplo == LOWER )
+            if( uplo == UpperOrLower::LOWER )
                 herm_tridiag::LowerBlocked
                 ( A, householderScalars, ctrl.symvCtrl );
             else
@@ -166,10 +166,10 @@ void ExplicitCondensed( UpperOrLower uplo, Matrix<F>& A )
     EL_DEBUG_CSE
     Matrix<F> householderScalars;
     HermitianTridiag( uplo, A, householderScalars );
-    if( uplo == UPPER )
-        MakeTrapezoidal( LOWER, A, 1 );
+    if( uplo == UpperOrLower::UPPER )
+        MakeTrapezoidal( UpperOrLower::LOWER, A, 1 );
     else
-        MakeTrapezoidal( UPPER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
 }
 
 template<typename F>
@@ -181,10 +181,10 @@ void ExplicitCondensed
     EL_DEBUG_CSE
     DistMatrix<F,Dist::STAR,Dist::STAR> householderScalars(A.Grid());
     HermitianTridiag( uplo, A, householderScalars, ctrl );
-    if( uplo == UPPER )
-        MakeTrapezoidal( LOWER, A, 1 );
+    if( uplo == UpperOrLower::UPPER )
+        MakeTrapezoidal( UpperOrLower::LOWER, A, 1 );
     else
-        MakeTrapezoidal( UPPER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
 }
 
 } // namespace herm_tridiag

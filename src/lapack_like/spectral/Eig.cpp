@@ -30,7 +30,7 @@ void Helper
     Matrix<C> R;
     TriangEig( ACpx, R );
 
-    Trmm( RIGHT, UPPER, NORMAL, NON_UNIT, C(1), R, X );
+    Trmm( RIGHT, UpperOrLower::UPPER, NORMAL, NON_UNIT, C(1), R, X );
 }
 
 template<typename Real>
@@ -47,7 +47,7 @@ void Helper
     Matrix<C> R;
     TriangEig( A, R );
 
-    Trmm( RIGHT, UPPER, NORMAL, NON_UNIT, C(1), R, X );
+    Trmm( RIGHT, UpperOrLower::UPPER, NORMAL, NON_UNIT, C(1), R, X );
 }
 
 template<typename Real>
@@ -74,7 +74,7 @@ void Helper
     DistMatrix<C> R(g);
     TriangEig( ACpx, R );
 
-    Trmm( RIGHT, UPPER, NORMAL, NON_UNIT, C(1), R, X );
+    Trmm( RIGHT, UpperOrLower::UPPER, NORMAL, NON_UNIT, C(1), R, X );
 }
 
 template<typename Real>
@@ -96,7 +96,7 @@ void Helper
     DistMatrix<C> R( A.Grid() );
     TriangEig( A, R );
 
-    Trmm( RIGHT, UPPER, NORMAL, NON_UNIT, C(1), R, X );
+    Trmm( RIGHT, UpperOrLower::UPPER, NORMAL, NON_UNIT, C(1), R, X );
 }
 
 } // namespace eig

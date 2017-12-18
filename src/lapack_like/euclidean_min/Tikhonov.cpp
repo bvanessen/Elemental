@@ -34,11 +34,11 @@ void Tikhonov
         if( alg == TIKHONOV_CHOLESKY )
         {
             if( orientation == NORMAL )
-                Herk( LOWER, ADJOINT, Base<F>(1), A, Z );
+                Herk( UpperOrLower::LOWER, ADJOINT, Base<F>(1), A, Z );
             else
-                Herk( LOWER, NORMAL, Base<F>(1), A, Z );
-            Herk( LOWER, ADJOINT, Base<F>(1), G, Base<F>(1), Z );
-            Cholesky( LOWER, Z );
+                Herk( UpperOrLower::LOWER, NORMAL, Base<F>(1), A, Z );
+            Herk( UpperOrLower::LOWER, ADJOINT, Base<F>(1), G, Base<F>(1), Z );
+            Cholesky( UpperOrLower::LOWER, Z );
         }
         else
         {
@@ -57,7 +57,7 @@ void Tikhonov
             Gemm( ADJOINT, NORMAL, F(1), A, B, X );
         else
             Gemm( NORMAL, NORMAL, F(1), A, B, X );
-        cholesky::SolveAfter( LOWER, NORMAL, Z, X );
+        cholesky::SolveAfter( UpperOrLower::LOWER, NORMAL, Z, X );
     }
     else
     {
@@ -99,11 +99,11 @@ void Tikhonov
         if( alg == TIKHONOV_CHOLESKY )
         {
             if( orientation == NORMAL )
-                Herk( LOWER, ADJOINT, Base<F>(1), A, Z );
+                Herk( UpperOrLower::LOWER, ADJOINT, Base<F>(1), A, Z );
             else
-                Herk( LOWER, NORMAL, Base<F>(1), A, Z );
-            Herk( LOWER, ADJOINT, Base<F>(1), G, Base<F>(1), Z );
-            Cholesky( LOWER, Z );
+                Herk( UpperOrLower::LOWER, NORMAL, Base<F>(1), A, Z );
+            Herk( UpperOrLower::LOWER, ADJOINT, Base<F>(1), G, Base<F>(1), Z );
+            Cholesky( UpperOrLower::LOWER, Z );
         }
         else
         {
@@ -122,7 +122,7 @@ void Tikhonov
             Gemm( ADJOINT, NORMAL, F(1), A, B, X );
         else
             Gemm( NORMAL, NORMAL, F(1), A, B, X );
-        cholesky::SolveAfter( LOWER, NORMAL, Z, X );
+        cholesky::SolveAfter( UpperOrLower::LOWER, NORMAL, Z, X );
     }
     else
     {

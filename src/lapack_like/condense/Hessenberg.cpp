@@ -22,7 +22,7 @@ void Hessenberg
   Matrix<F>& householderScalars )
 {
     EL_DEBUG_CSE
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
         hessenberg::UpperBlocked( A, householderScalars );
     else
         hessenberg::LowerBlocked( A, householderScalars );
@@ -35,7 +35,7 @@ void Hessenberg
   AbstractDistMatrix<F>& householderScalars )
 {
     EL_DEBUG_CSE
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
         hessenberg::UpperBlocked( A, householderScalars );
     else
         hessenberg::LowerBlocked( A, householderScalars );
@@ -49,10 +49,10 @@ void ExplicitCondensed( UpperOrLower uplo, Matrix<F>& A )
     EL_DEBUG_CSE
     Matrix<F> householderScalars;
     Hessenberg( uplo, A, householderScalars );
-    if( uplo == LOWER )
-        MakeTrapezoidal( LOWER, A, 1 );
+    if( uplo == UpperOrLower::LOWER )
+        MakeTrapezoidal( UpperOrLower::LOWER, A, 1 );
     else
-        MakeTrapezoidal( UPPER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
 }
 
 template<typename F>
@@ -61,10 +61,10 @@ void ExplicitCondensed( UpperOrLower uplo, AbstractDistMatrix<F>& A )
     EL_DEBUG_CSE
     DistMatrix<F,Dist::STAR,Dist::STAR> householderScalars(A.Grid());
     Hessenberg( uplo, A, householderScalars );
-    if( uplo == LOWER )
-        MakeTrapezoidal( LOWER, A, 1 );
+    if( uplo == UpperOrLower::LOWER )
+        MakeTrapezoidal( UpperOrLower::LOWER, A, 1 );
     else
-        MakeTrapezoidal( UPPER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
 }
 
 } // namespace hessenberg

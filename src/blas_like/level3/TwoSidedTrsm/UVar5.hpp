@@ -52,22 +52,22 @@ void UVar5( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         // Y12 := A11 U12
         Y12.Resize( A12.Height(), A12.Width() );
         Zero( Y12 );
-        Hemm( LEFT, UPPER, F(1), A11, U12, F(0), Y12 );
+        Hemm( LEFT, UpperOrLower::UPPER, F(1), A11, U12, F(0), Y12 );
 
         // A12 := inv(U11)' A12
-        Trsm( LEFT, UPPER, ADJOINT, diag, F(1), U11, A12 );
+        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U11, A12 );
 
         // A12 := A12 - 1/2 Y12
         Axpy( F(-1)/F(2), Y12, A12 );
 
         // A22 := A22 - (A12' U12 + U12' A12)
-        Her2k( UPPER, ADJOINT, F(-1), A12, U12, Base<F>(1), A22 );
+        Her2k( UpperOrLower::UPPER, ADJOINT, F(-1), A12, U12, Base<F>(1), A22 );
 
         // A12 := A12 - 1/2 Y12
         Axpy( F(-1)/F(2), Y12, A12 );
 
         // A12 := A12 inv(U22)
-        Trsm( RIGHT, UPPER, NORMAL, diag, F(1), U22, A12 );
+        Trsm( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U22, A12 );
     }
 }
 
@@ -122,7 +122,7 @@ void UVar5
         // A11 := inv(U11)' A11 inv(U11)
         U11_STAR_STAR = U11;
         A11_STAR_STAR = A11;
-        TwoSidedTrsm( UPPER, diag, A11_STAR_STAR, U11_STAR_STAR );
+        TwoSidedTrsm( UpperOrLower::UPPER, diag, A11_STAR_STAR, U11_STAR_STAR );
         A11 = A11_STAR_STAR;
 
         // Y12 := A11 U12
@@ -132,7 +132,7 @@ void UVar5
         Y12_STAR_VR.Resize( nb, A12.Width() );
         Zero( Y12_STAR_VR );
         Hemm
-        ( LEFT, UPPER,
+        ( LEFT, UpperOrLower::UPPER,
           F(1), A11_STAR_STAR.Matrix(), U12_STAR_VR.Matrix(),
           F(0), Y12_STAR_VR.Matrix() );
         Y12.AlignWith( A12 );
@@ -142,7 +142,7 @@ void UVar5
         A12_STAR_VR.AlignWith( A22 );
         A12_STAR_VR = A12;
         LocalTrsm
-        ( LEFT, UPPER, ADJOINT, diag, F(1), U11_STAR_STAR, A12_STAR_VR );
+        ( LEFT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U11_STAR_STAR, A12_STAR_VR );
         A12 = A12_STAR_VR;
 
         // A12 := A12 - 1/2 Y12
@@ -163,7 +163,7 @@ void UVar5
         U12_STAR_MR.AlignWith( A22 );
         U12_STAR_MR = U12_STAR_VR;
         LocalTrr2k
-        ( UPPER, ADJOINT, NORMAL, ADJOINT, NORMAL,
+        ( UpperOrLower::UPPER, ADJOINT, NORMAL, ADJOINT, NORMAL,
           F(-1), U12_STAR_MC, A12_STAR_MR,
           F(-1), A12_STAR_MC, U12_STAR_MR,
           F(1), A22 );
@@ -174,7 +174,7 @@ void UVar5
         // A12 := A12 inv(U22)
         //
         // This is the bottleneck because A12 only has blocksize rows
-        Trsm( RIGHT, UPPER, NORMAL, diag, F(1), U22, A12 );
+        Trsm( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U22, A12 );
     }
 }
 

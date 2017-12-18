@@ -19,16 +19,16 @@ void SymmetricInverse
   const LDLPivotCtrl<Base<Field>>& ctrl )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         Permutation P;
         Matrix<Field> dSub;
         LDL( A, dSub, P, conjugate, ctrl );
-        TriangularInverse( LOWER, UNIT, A );
-        Trdtrmm( LOWER, A, dSub, conjugate );
+        TriangularInverse( UpperOrLower::LOWER, UNIT, A );
+        Trdtrmm( UpperOrLower::LOWER, A, dSub, conjugate );
 
         // NOTE: Fill in both triangles of the inverse
-        MakeSymmetric( LOWER, A, conjugate );
+        MakeSymmetric( UpperOrLower::LOWER, A, conjugate );
         P.InversePermuteRows( A );
         P.InversePermuteCols( A );
     }
@@ -48,17 +48,17 @@ void SymmetricInverse
     DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.Get();
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         DistPermutation P( A.Grid() );
         DistMatrix<Field,Dist::MD,Dist::STAR> dSub( A.Grid() );
 
         LDL( A, dSub, P, conjugate, ctrl );
-        TriangularInverse( LOWER, UNIT, A );
-        Trdtrmm( LOWER, A, dSub, conjugate );
+        TriangularInverse( UpperOrLower::LOWER, UNIT, A );
+        Trdtrmm( UpperOrLower::LOWER, A, dSub, conjugate );
 
         // NOTE: Fill in both triangles of the inverse
-        MakeSymmetric( LOWER, A, conjugate );
+        MakeSymmetric( UpperOrLower::LOWER, A, conjugate );
         P.InversePermuteRows( A );
         P.InversePermuteCols( A );
     }

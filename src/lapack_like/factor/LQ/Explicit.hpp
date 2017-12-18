@@ -24,7 +24,7 @@ void ExplicitTriang( Matrix<F>& A )
     const Int n = A.Width();
     const Int minDim = Min(m,n);
     A.Resize( m, minDim );
-    MakeTrapezoidal( LOWER, A );
+    MakeTrapezoidal( UpperOrLower::LOWER, A );
 }
 
 template<typename F>
@@ -40,7 +40,7 @@ void ExplicitTriang( AbstractDistMatrix<F>& A )
     const Int n = A.Width();
     const Int minDim = Min(m,n);
     A.Resize( m, minDim );
-    MakeTrapezoidal( LOWER, A );
+    MakeTrapezoidal( UpperOrLower::LOWER, A );
 }
 
 template<typename F>
@@ -92,7 +92,7 @@ void Explicit( Matrix<F>& L, Matrix<F>& A )
     const Int minDim = Min(m,n);
     auto AL = A( IR(0,m), IR(0,minDim) );
     L = AL;
-    MakeTrapezoidal( LOWER, L );
+    MakeTrapezoidal( UpperOrLower::LOWER, L );
 
     // TODO: Replace this with an in-place expansion of Q
     Matrix<F> Q;
@@ -119,7 +119,7 @@ void Explicit( AbstractDistMatrix<F>& L, AbstractDistMatrix<F>& APre )
     const Int minDim = Min(m,n);
     auto AL = A( IR(0,m), IR(0,minDim) );
     Copy( AL, L );
-    MakeTrapezoidal( LOWER, L );
+    MakeTrapezoidal( UpperOrLower::LOWER, L );
 
     // TODO: Replace this with an in-place expansion of Q
     DistMatrix<F> Q(g);

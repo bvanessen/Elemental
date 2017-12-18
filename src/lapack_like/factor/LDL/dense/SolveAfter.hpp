@@ -25,9 +25,9 @@ void SolveAfter( const Matrix<F>& A, Matrix<F>& B, bool conjugated )
     const Orientation orientation = ( conjugated ? ADJOINT : TRANSPOSE );
     const bool checkIfSingular = false;
     const auto d = GetDiagonal(A);
-    Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
+    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
     DiagonalSolve( LEFT, NORMAL, d, B, checkIfSingular );
-    Trsm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
+    Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
 }
 
 template<typename F>
@@ -52,9 +52,9 @@ void SolveAfter
 
     const auto d = GetDiagonal(A);
 
-    Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
+    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
     DiagonalSolve( LEFT, NORMAL, d, B, checkIfSingular );
-    Trsm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
+    Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
 }
 
 template<typename F>
@@ -77,9 +77,9 @@ void SolveAfter
     const auto d = GetDiagonal(A);
 
     P.PermuteRows( B );
-    Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
-    QuasiDiagonalSolve( LEFT, LOWER, d, dSub, B, conjugated );
-    Trsm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
+    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
+    QuasiDiagonalSolve( LEFT, UpperOrLower::LOWER, d, dSub, B, conjugated );
+    Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
     P.InversePermuteRows( B );
 }
 
@@ -110,9 +110,9 @@ void SolveAfter
     const auto d = GetDiagonal(A);
 
     P.PermuteRows( B );
-    Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
-    QuasiDiagonalSolve( LEFT, LOWER, d, dSub, B, conjugated );
-    Trsm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
+    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
+    QuasiDiagonalSolve( LEFT, UpperOrLower::LOWER, d, dSub, B, conjugated );
+    Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
     P.InversePermuteRows( B );
 }
 

@@ -141,7 +141,7 @@ void TrrkNNKernel
     auto CTL = C(indTL,indTL);
     auto CBR = C(indBR,indBR);
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
         Gemm( NORMAL, NORMAL, alpha, AB, BL, T(1), CBL );
@@ -186,7 +186,7 @@ void LocalTrrkKernel
     auto CTL = C(indTL,indTL);
     auto CBR = C(indBR,indBR);
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
         LocalGemm( NORMAL, NORMAL, alpha, AB, BL, T(1), CBL );
@@ -232,7 +232,7 @@ void TrrkNTKernel
     auto CTL = C(indTL,indTL);
     auto CBR = C(indBR,indBR);
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
         Gemm( NORMAL, orientationOfB, alpha, AB, BT, T(1), CBL );
@@ -278,7 +278,7 @@ void LocalTrrkKernel
     auto CTL = C(indTL,indTL);
     auto CBR = C(indBR,indBR);
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
         LocalGemm( NORMAL, orientationOfB, alpha, AB, BT, T(1), CBL );
@@ -324,7 +324,7 @@ void TrrkTNKernel
     auto CTL = C(indTL,indTL);
     auto CBR = C(indBR,indBR);
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
         Gemm( orientationOfA, NORMAL, alpha, AR, BL, T(1), CBL );
@@ -370,7 +370,7 @@ void LocalTrrkKernel
     auto CTL = C(indTL,indTL);
     auto CBR = C(indBR,indBR);
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
         LocalGemm( orientationOfA, NORMAL, alpha, AR, BL, T(1), CBL );
@@ -417,7 +417,7 @@ void TrrkTTKernel
     auto CTL = C(indTL,indTL);
     auto CBR = C(indBR,indBR);
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
         Gemm( orientationOfA, orientationOfB, alpha, AR, BT, T(1), CBL );
@@ -464,7 +464,7 @@ void LocalTrrkKernel
     auto CTL = C(indTL,indTL);
     auto CBR = C(indBR,indBR);
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
         LocalGemm( orientationOfA, orientationOfB, alpha, AR, BT, T(1), CBL );
@@ -517,7 +517,7 @@ void TrrkNN
         auto CTL = C(indTL,indTL);
         auto CBR = C(indBR,indBR);
 
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
             Gemm( NORMAL, NORMAL, alpha, AB, BL, T(1), CBL );
@@ -564,7 +564,7 @@ void TrrkNT
         auto CTL = C(indTL,indTL);
         auto CBR = C(indBR,indBR);
 
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
             Gemm( NORMAL, orientationOfB, alpha, AB, BT, T(1), CBL );
@@ -611,7 +611,7 @@ void TrrkTN
         auto CTL = C(indTL,indTL);
         auto CBR = C(indBR,indBR);
 
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
             Gemm( orientationOfA, NORMAL, alpha, AR, BL, T(1), CBL );
@@ -658,7 +658,7 @@ void TrrkTT
         auto CTL = C(indTL,indTL);
         auto CBR = C(indBR,indBR);
 
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
             Gemm( orientationOfA, orientationOfB, alpha, AR, BT, T(1), CBL );
@@ -710,7 +710,7 @@ void LocalTrrk
         auto CTL = C(indTL,indTL);
         auto CBR = C(indBR,indBR);
 
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
             LocalGemm( NORMAL, NORMAL, alpha, AB, BL, T(1), CBL );
@@ -761,7 +761,7 @@ void LocalTrrk
         auto CTL = C(indTL,indTL);
         auto CBR = C(indBR,indBR);
 
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
             LocalGemm( NORMAL, orientationOfB, alpha, AB, BT, T(1), CBL );
@@ -812,7 +812,7 @@ void LocalTrrk
         auto CTL = C(indTL,indTL);
         auto CBR = C(indBR,indBR);
 
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
             LocalGemm( orientationOfA, NORMAL, alpha, AR, BL, T(1), CBL );
@@ -863,7 +863,7 @@ void LocalTrrk
         auto CTL = C(indTL,indTL);
         auto CBR = C(indBR,indBR);
 
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
             LocalGemm

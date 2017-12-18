@@ -199,7 +199,7 @@ Entry<Real> SymmetricMaxLoc( UpperOrLower uplo, const Matrix<Real>& A )
     pivot.i = -1;
     pivot.j = -1;
     pivot.value = limits::Lowest<Real>();
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         for( Int j=0; j<n; ++j )
         {
@@ -254,7 +254,7 @@ SymmetricMaxLoc( UpperOrLower uplo, const AbstractDistMatrix<Real>& A )
     {
         const Int mLocal = A.LocalHeight();
         const Int nLocal = A.LocalWidth();
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             for( Int jLoc=0; jLoc<nLocal; ++jLoc )
             {

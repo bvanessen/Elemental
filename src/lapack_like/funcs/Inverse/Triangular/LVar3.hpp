@@ -66,9 +66,9 @@ LVar3( UnitOrNonUnit diag, Matrix<Field>& L )
         auto L20 = L( ind2, ind0 );
         auto L21 = L( ind2, ind1 );
 
-        Trsm( LEFT, LOWER, NORMAL, diag, Field(-1), L11, L10 );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, diag, Field(-1), L11, L10 );
         Gemm( NORMAL, NORMAL, Field(1), L21, L10, Field(1), L20 );
-        Trsm( RIGHT, LOWER, NORMAL, diag, Field(1), L11, L21 );
+        Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, diag, Field(1), L11, L21 );
         LVar3Unb( diag, L11 );
     }
 }
@@ -111,7 +111,7 @@ LVar3( UnitOrNonUnit diag, AbstractDistMatrix<Field>& LPre )
         L10_STAR_VR = L10;
         L11_STAR_STAR = L11;
         LocalTrsm
-        ( LEFT, LOWER, NORMAL, diag, Field(-1), L11_STAR_STAR, L10_STAR_VR );
+        ( LEFT, UpperOrLower::LOWER, NORMAL, diag, Field(-1), L11_STAR_STAR, L10_STAR_VR );
 
         L21_MC_STAR.AlignWith( L20 );
         L21_MC_STAR = L21;
@@ -123,8 +123,8 @@ LVar3( UnitOrNonUnit diag, AbstractDistMatrix<Field>& LPre )
 
         L21_VC_STAR = L21_MC_STAR;
         LocalTrsm
-        ( RIGHT, LOWER, NORMAL, diag, Field(1), L11_STAR_STAR, L21_VC_STAR );
-        LocalTriangularInverse( LOWER, diag, L11_STAR_STAR );
+        ( RIGHT, UpperOrLower::LOWER, NORMAL, diag, Field(1), L11_STAR_STAR, L21_VC_STAR );
+        LocalTriangularInverse( UpperOrLower::LOWER, diag, L11_STAR_STAR );
         L11 = L11_STAR_STAR;
         L21 = L21_VC_STAR;
     }

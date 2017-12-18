@@ -45,7 +45,7 @@ SVDInfo GolubReinsch
     // Compute the SVD of the bidiagonal matrix.
     // (We can guarantee that accumulation was not requested.)
     const Int offdiagonal = ( m>=n ? 1 : -1 );
-    const UpperOrLower uplo = ( m>=n ? UPPER : LOWER );
+    const UpperOrLower uplo = ( m>=n ? UpperOrLower::UPPER : UpperOrLower::LOWER );
     auto mainDiag = GetRealPartOfDiagonal( A );
     auto offDiag = GetRealPartOfDiagonal( A, offdiagonal );
     if( ctrl.time )
@@ -124,7 +124,7 @@ SVDInfo GolubReinsch
         Output("Reduction to bidiagonal: ",timer.Stop()," seconds");
 
     // Grab copies of the diagonal and sub/super-diagonal of A
-    const UpperOrLower uplo = ( m>=n ? UPPER : LOWER );
+    const UpperOrLower uplo = ( m>=n ? UpperOrLower::UPPER : UpperOrLower::LOWER );
     const Int offdiagonal = ( m>=n ? 1 : -1 );
     auto mainDiag = GetRealPartOfDiagonal(A);
     auto offDiag = GetRealPartOfDiagonal(A,offdiagonal);
@@ -220,8 +220,8 @@ SVDInfo GolubReinsch
         Output("Reduction to bidiagonal: ",timer.Stop()," seconds");
 
     // Compute the singular values of the bidiagonal matrix
-    const UpperOrLower uplo = ( m>=n ? UPPER : LOWER );
-    const Int offdiagonal = ( uplo==UPPER ? 1 : -1 );
+    const UpperOrLower uplo = ( m>=n ? UpperOrLower::UPPER : UpperOrLower::LOWER );
+    const Int offdiagonal = ( uplo==UpperOrLower::UPPER ? 1 : -1 );
     auto mainDiag = GetRealPartOfDiagonal( A );
     auto offDiag = GetRealPartOfDiagonal( A, offdiagonal );
     if( ctrl.time )
@@ -256,8 +256,8 @@ SVDInfo GolubReinsch
         Output("Reduction to bidiagonal: ",timer.Stop()," seconds");
 
     // Grab copies of the diagonal and sub/super-diagonal of A
-    const UpperOrLower uplo = ( m>=n ? UPPER : LOWER );
-    const Int offdiagonal = ( uplo==UPPER ? 1 : -1 );
+    const UpperOrLower uplo = ( m>=n ? UpperOrLower::UPPER : UpperOrLower::LOWER );
+    const Int offdiagonal = ( uplo==UpperOrLower::UPPER ? 1 : -1 );
     auto mainDiag = GetRealPartOfDiagonal(A);
     auto offDiag = GetRealPartOfDiagonal(A,offdiagonal);
     if( ctrl.time && g.Rank() == 0 )

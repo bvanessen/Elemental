@@ -27,13 +27,13 @@ void SolveAfter
     )
     if( orientation == NORMAL )
     {
-        Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
     }
     else
     {
-        Trsm( LEFT, UPPER, orientation, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, orientation, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
     }
 }
 
@@ -53,13 +53,13 @@ void SolveAfter
     )
     if( orientation == NORMAL )
     {
-        Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
     }
     else
     {
-        Trsm( LEFT, UPPER, orientation, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, orientation, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
     }
 }
 
@@ -80,13 +80,13 @@ void SolveAfter
     if( orientation == NORMAL )
     {
         P.PermuteRows( B );
-        Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
     }
     else
     {
-        Trsm( LEFT, UPPER, orientation, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, orientation, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
         P.InversePermuteRows( B );
     }
 }
@@ -109,13 +109,13 @@ void SolveAfter
     if( orientation == NORMAL )
     {
         P.PermuteRows( B );
-        Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
     }
     else
     {
-        Trsm( LEFT, UPPER, orientation, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, orientation, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
         P.InversePermuteRows( B );
     }
 }
@@ -138,15 +138,15 @@ void SolveAfter
     if( orientation == NORMAL )
     {
         P.PermuteRows( B );
-        Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
         Q.InversePermuteRows( B );
     }
     else
     {
         Q.PermuteRows( B );
-        Trsm( LEFT, UPPER, orientation, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, orientation, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
         P.InversePermuteRows( B );
     }
 }
@@ -170,15 +170,15 @@ void SolveAfter
     if( orientation == NORMAL )
     {
         P.PermuteRows( B );
-        Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
-        Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
         Q.InversePermuteRows( B );
     }
     else
     {
         Q.PermuteRows( B );
-        Trsm( LEFT, UPPER, orientation, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::UPPER, orientation, NON_UNIT, F(1), A, B );
+        Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
         P.InversePermuteRows( B );
     }
 }

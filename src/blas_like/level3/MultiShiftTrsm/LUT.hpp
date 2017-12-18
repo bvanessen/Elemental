@@ -35,7 +35,7 @@ void LUT
         auto X1 = X( ind1, ALL );
         auto X2 = X( ind2, ALL );
 
-        LeftUnb( UPPER, orientation, U11, shifts, X1 );
+        LeftUnb( UpperOrLower::UPPER, orientation, U11, shifts, X1 );
         Gemm( orientation, NORMAL, F(-1), U12, X1, F(1), X2 );
     }
 }

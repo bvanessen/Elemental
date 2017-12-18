@@ -50,22 +50,22 @@ void LVar5( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
         // Y21 := L21 A11
         Y21.Resize( A21.Height(), A21.Width() );
         Zero( Y21 );
-        Hemm( RIGHT, LOWER, F(1), A11, L21, F(0), Y21 );
+        Hemm( RIGHT, UpperOrLower::LOWER, F(1), A11, L21, F(0), Y21 );
 
         // A21 := A21 inv(L11)'
-        Trsm( RIGHT, LOWER, ADJOINT, diag, F(1), L11, A21 );
+        Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, diag, F(1), L11, A21 );
 
         // A21 := A21 - 1/2 Y21
         Axpy( F(-1)/F(2), Y21, A21 );
 
         // A22 := A22 - (L21 A21' + A21 L21')
-        Her2k( LOWER, NORMAL, F(-1), L21, A21, Base<F>(1), A22 );
+        Her2k( UpperOrLower::LOWER, NORMAL, F(-1), L21, A21, Base<F>(1), A22 );
 
         // A21 := A21 - 1/2 Y21
         Axpy( F(-1)/F(2), Y21, A21 );
 
         // A21 := inv(L22) A21
-        Trsm( LEFT, LOWER, NORMAL, diag, F(1), L22, A21 );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L22, A21 );
     }
 }
 
@@ -118,7 +118,7 @@ void LVar5
         // A11 := inv(L11) A11 inv(L11)'
         L11_STAR_STAR = L11;
         A11_STAR_STAR = A11;
-        TwoSidedTrsm( LOWER, diag, A11_STAR_STAR, L11_STAR_STAR );
+        TwoSidedTrsm( UpperOrLower::LOWER, diag, A11_STAR_STAR, L11_STAR_STAR );
         A11 = A11_STAR_STAR;
 
         // Y21 := L21 A11
@@ -128,7 +128,7 @@ void LVar5
         Y21_VC_STAR.Resize( A21.Height(), A21.Width() );
         Zero( Y21_VC_STAR );
         Hemm
-        ( RIGHT, LOWER,
+        ( RIGHT, UpperOrLower::LOWER,
           F(1), A11_STAR_STAR.Matrix(), L21_VC_STAR.Matrix(),
           F(0), Y21_VC_STAR.Matrix() );
         Y21.AlignWith( A21 );
@@ -138,7 +138,7 @@ void LVar5
         A21_VC_STAR.AlignWith( A22 );
         A21_VC_STAR = A21;
         LocalTrsm
-        ( RIGHT, LOWER, ADJOINT, diag, F(1), L11_STAR_STAR, A21_VC_STAR );
+        ( RIGHT, UpperOrLower::LOWER, ADJOINT, diag, F(1), L11_STAR_STAR, A21_VC_STAR );
         A21 = A21_VC_STAR;
 
         // A21 := A21 - 1/2 Y21
@@ -159,7 +159,7 @@ void LVar5
         A21_VR_STAR.AdjointPartialColAllGather( A21Adj_STAR_MR );
         L21_VR_STAR.AdjointPartialColAllGather( L21Adj_STAR_MR );
         LocalTrr2k
-        ( LOWER, NORMAL, NORMAL, NORMAL, NORMAL,
+        ( UpperOrLower::LOWER, NORMAL, NORMAL, NORMAL, NORMAL,
           F(-1), L21_MC_STAR, A21Adj_STAR_MR,
           F(-1), A21_MC_STAR, L21Adj_STAR_MR, F(1), A22 );
 
@@ -169,7 +169,7 @@ void LVar5
         // A21 := inv(L22) A21
         //
         // This is the bottleneck because A21 only has blocksize columns
-        Trsm( LEFT, LOWER, NORMAL, diag, F(1), L22, A21 );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L22, A21 );
     }
 }
 

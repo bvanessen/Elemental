@@ -33,16 +33,16 @@ void Ridge
         if( alg == RIDGE_CHOLESKY )
         {
             if( orientation == NORMAL )
-                Herk( LOWER, ADJOINT, Base<Field>(1), A, Z );
+                Herk( UpperOrLower::LOWER, ADJOINT, Base<Field>(1), A, Z );
             else
-                Herk( LOWER, NORMAL, Base<Field>(1), A, Z );
+                Herk( UpperOrLower::LOWER, NORMAL, Base<Field>(1), A, Z );
             ShiftDiagonal( Z, Field(gamma*gamma) );
-            Cholesky( LOWER, Z );
+            Cholesky( UpperOrLower::LOWER, Z );
             if( orientation == NORMAL )
                 Gemm( ADJOINT, NORMAL, Field(1), A, B, X );
             else
                 Gemm( NORMAL, NORMAL, Field(1), A, B, X );
-            cholesky::SolveAfter( LOWER, NORMAL, Z, X );
+            cholesky::SolveAfter( UpperOrLower::LOWER, NORMAL, Z, X );
         }
         else if( alg == RIDGE_QR )
         {
@@ -61,7 +61,7 @@ void Ridge
                 Gemm( ADJOINT, NORMAL, Field(1), A, B, X );
             else
                 Gemm( NORMAL, NORMAL, Field(1), A, B, X );
-            cholesky::SolveAfter( LOWER, NORMAL, Z, X );
+            cholesky::SolveAfter( UpperOrLower::LOWER, NORMAL, Z, X );
         }
         else
         {
@@ -130,16 +130,16 @@ void Ridge
         if( alg == RIDGE_CHOLESKY )
         {
             if( orientation == NORMAL )
-                Herk( LOWER, ADJOINT, Base<Field>(1), A, Z );
+                Herk( UpperOrLower::LOWER, ADJOINT, Base<Field>(1), A, Z );
             else
-                Herk( LOWER, NORMAL, Base<Field>(1), A, Z );
+                Herk( UpperOrLower::LOWER, NORMAL, Base<Field>(1), A, Z );
             ShiftDiagonal( Z, Field(gamma*gamma) );
-            Cholesky( LOWER, Z );
+            Cholesky( UpperOrLower::LOWER, Z );
             if( orientation == NORMAL )
                 Gemm( ADJOINT, NORMAL, Field(1), A, B, X );
             else
                 Gemm( NORMAL, NORMAL, Field(1), A, B, X );
-            cholesky::SolveAfter( LOWER, NORMAL, Z, X );
+            cholesky::SolveAfter( UpperOrLower::LOWER, NORMAL, Z, X );
         }
         else if( alg == RIDGE_QR )
         {
@@ -158,7 +158,7 @@ void Ridge
                 Gemm( ADJOINT, NORMAL, Field(1), A, B, X );
             else
                 Gemm( NORMAL, NORMAL, Field(1), A, B, X );
-            cholesky::SolveAfter( LOWER, NORMAL, Z, X );
+            cholesky::SolveAfter( UpperOrLower::LOWER, NORMAL, Z, X );
         }
         else
         {

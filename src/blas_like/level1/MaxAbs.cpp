@@ -65,7 +65,7 @@ Base<Ring> SymmetricMaxAbs( UpperOrLower uplo, const Matrix<Ring>& A )
     const Int ALDim = A.LDim();
 
     Base<Ring> value = 0;
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         for( Int j=0; j<n; ++j )
             for( Int i=j; i<n; ++i )
@@ -99,7 +99,7 @@ Base<Ring> SymmetricMaxAbs
         const Int nLocal = A.LocalWidth();
         const Ring* ABuf = A.LockedBuffer();
         const Int ALDim = A.LDim();
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             for( Int jLoc=0; jLoc<nLocal; ++jLoc )
             {

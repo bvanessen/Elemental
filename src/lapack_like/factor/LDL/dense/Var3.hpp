@@ -98,10 +98,10 @@ void Var3( Matrix<F>& A, bool conjugate=false )
 
         ldl::Var3Unb( A11, conjugate );
         GetDiagonal( A11, d1 );
-        Trsm( RIGHT, LOWER, orientation, UNIT, F(1), A11, A21 );
+        Trsm( RIGHT, UpperOrLower::LOWER, orientation, UNIT, F(1), A11, A21 );
         S21 = A21;
         DiagonalSolve( RIGHT, NORMAL, d1, A21 );
-        Trrk( LOWER, NORMAL, orientation, F(-1), S21, A21, F(1), A22 );
+        Trrk( UpperOrLower::LOWER, NORMAL, orientation, F(-1), S21, A21, F(1), A22 );
     }
 }
 
@@ -147,7 +147,7 @@ void Var3( AbstractDistMatrix<F>& APre, bool conjugate=false )
         A21_VC_STAR.AlignWith( A22 );
         A21_VC_STAR = A21;
         LocalTrsm
-        ( RIGHT, LOWER, orientation, UNIT,
+        ( RIGHT, UpperOrLower::LOWER, orientation, UNIT,
           F(1), A11_STAR_STAR, A21_VC_STAR );
 
         S21Trans_STAR_MC.AlignWith( A22 );
@@ -158,7 +158,7 @@ void Var3( AbstractDistMatrix<F>& APre, bool conjugate=false )
         A21Trans_STAR_MR.AlignWith( A22 );
         Transpose( A21_VR_STAR, A21Trans_STAR_MR, conjugate );
         LocalTrrk
-        ( LOWER, TRANSPOSE,
+        ( UpperOrLower::LOWER, TRANSPOSE,
           F(-1), S21Trans_STAR_MC, A21Trans_STAR_MR, F(1), A22 );
 
         A21 = A21_VC_STAR;

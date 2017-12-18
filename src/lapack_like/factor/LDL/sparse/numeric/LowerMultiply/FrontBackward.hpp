@@ -39,7 +39,7 @@ void FrontVanillaLowerBackwardMultiply
     PartitionDown( X, XT, XB, L.Width() );
 
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
-    Trmm( LEFT, LOWER, orientation, UNIT, F(1), LT, XT );
+    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), LT, XT );
     Gemm( orientation, NORMAL, F(1), LB, XB, F(1), XT );
 }
 
@@ -96,7 +96,7 @@ void FrontVanillaLowerBackwardMultiply
     PartitionDown( X, XT, XB, L.Width() );
 
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
-    Trmm( LEFT, LOWER, orientation, UNIT, F(1), LT, XT );
+    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), LT, XT );
 
     if( XB.Height() != 0 )
     {
@@ -135,7 +135,7 @@ void FrontVanillaLowerBackwardMultiply
     PartitionDown( X, XT, XB, L.Width() );
 
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
-    Trmm( LEFT, LOWER, orientation, UNIT, F(1), LT, XT );
+    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), LT, XT );
     Gemm( orientation, NORMAL, F(1), LB, XB, F(1), XT );
 }
 

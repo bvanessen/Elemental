@@ -37,8 +37,8 @@ void LU( Matrix<F>& A )
         auto A22 = A( ind2, ind2 );
 
         lu::Unb( A11 );
-        Trsm( RIGHT, UPPER, NORMAL, NON_UNIT, F(1), A11, A21 );
-        Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), A11, A12 );
+        Trsm( RIGHT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A11, A21 );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A11, A12 );
         Gemm( NORMAL, NORMAL, F(-1), A21, A12, F(1), A22 );
     }
 }
@@ -78,7 +78,7 @@ void LU( AbstractDistMatrix<F>& APre )
         A21_MC_STAR.AlignWith( A22 );
         A21_MC_STAR = A21;
         LocalTrsm
-        ( RIGHT, UPPER, NORMAL, NON_UNIT, F(1), A11_STAR_STAR, A21_MC_STAR );
+        ( RIGHT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A11_STAR_STAR, A21_MC_STAR );
         A21 = A21_MC_STAR;
 
         // Perhaps we should give up perfectly distributing this operation since
@@ -86,7 +86,7 @@ void LU( AbstractDistMatrix<F>& APre )
         A12_STAR_VR.AlignWith( A22 );
         A12_STAR_VR = A12;
         LocalTrsm
-        ( LEFT, LOWER, NORMAL, UNIT, F(1), A11_STAR_STAR, A12_STAR_VR );
+        ( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A11_STAR_STAR, A12_STAR_VR );
 
         A12_STAR_MR.AlignWith( A22 );
         A12_STAR_MR = A12_STAR_VR;
@@ -136,7 +136,7 @@ void LU( Matrix<F>& A, Permutation& P )
         PB.PermuteRows( AB0 );
         PB.PermuteRows( AB2 );
 
-        Trsm( LEFT, LOWER, NORMAL, UNIT, F(1), A11, A12 );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A11, A12 );
         Gemm( NORMAL, NORMAL, F(-1), A21, A12, F(1), A22 );
     }
 }
@@ -208,7 +208,7 @@ void LU( AbstractDistMatrix<F>& APre, DistPermutation& P )
         A12_STAR_VR.AlignWith( A22 );
         A12_STAR_VR = A12;
         LocalTrsm
-        ( LEFT, LOWER, NORMAL, UNIT, F(1), A11_STAR_STAR, A12_STAR_VR );
+        ( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A11_STAR_STAR, A12_STAR_VR );
 
         A12_STAR_MR.AlignWith( A22 );
         A12_STAR_MR = A12_STAR_VR;

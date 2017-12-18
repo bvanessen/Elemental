@@ -15,7 +15,7 @@ void Symmetric2x2Inv( UpperOrLower uplo, Matrix<Field>& D, bool conjugate )
 {
     EL_DEBUG_CSE
     typedef Base<Field> Real;
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         if( conjugate )
         {

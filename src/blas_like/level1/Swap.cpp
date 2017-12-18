@@ -262,7 +262,7 @@ void SymmetricSwap
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
     if( to > from )
         std::swap( to, from );
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         // Bottom swap
         if( from+1 < n )
@@ -362,7 +362,7 @@ void SymmetricSwap
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
     if( to > from )
         std::swap( to, from );
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         // Bottom swap
         if( from+1 < n )

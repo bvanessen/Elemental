@@ -357,7 +357,7 @@ void LowerPanel
         q21_MR.AlignWith( A22 );
         Zeros( q21_MR, a21.Height(), 1 );
         symv::LocalColAccumulate
-        ( LOWER, F(1), A22, a21_MC, a21_MR, p21_MC, q21_MR, true, ctrl );
+        ( UpperOrLower::LOWER, F(1), A22, a21_MC, a21_MR, p21_MC, q21_MR, true, ctrl );
 
         x01_MR.AlignWith( W20B );
         y01_MR.AlignWith( W20B );

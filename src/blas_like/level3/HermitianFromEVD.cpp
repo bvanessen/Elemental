@@ -26,10 +26,10 @@ void HermitianFromEVD
     const Int m = Z.Height();
     const Int n = Z.Width();
     A.Resize( m, m );
-    if( uplo == LOWER )
-        MakeTrapezoidal( UPPER, A, 1 );
+    if( uplo == UpperOrLower::LOWER )
+        MakeTrapezoidal( UpperOrLower::UPPER, A, 1 );
     else
-        MakeTrapezoidal( LOWER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::LOWER, A, -1 );
     const Int bsize = Blocksize();
     for( Int k=0; k<n; k+=bsize )
     {
@@ -68,10 +68,10 @@ void HermitianFromEVD
     const Int m = Z.Height();
     const Int n = Z.Width();
     A.Resize( m, m );
-    if( uplo == LOWER )
-        MakeTrapezoidal( UPPER, A, 1 );
+    if( uplo == UpperOrLower::LOWER )
+        MakeTrapezoidal( UpperOrLower::UPPER, A, 1 );
     else
-        MakeTrapezoidal( LOWER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::LOWER, A, -1 );
     const Int bsize = Blocksize();
     for( Int k=0; k<n; k+=bsize )
     {

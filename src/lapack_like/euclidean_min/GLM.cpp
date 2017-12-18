@@ -95,13 +95,13 @@ void Overwrite( Matrix<F>& A, Matrix<F>& B, Matrix<F>& D, Matrix<F>& Y )
 
     // Solve T22 C2 = G2
     C2 = G2;
-    Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), T22, C2, checkIfSingular );
+    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), T22, C2, checkIfSingular );
 
     // G1 := G1 - T12 C2
     Gemm( NORMAL, NORMAL, F(-1), T12, C2, F(1), G1 );
 
     // Solve R11 X = G1
-    Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), R11, G1, checkIfSingular );
+    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), R11, G1, checkIfSingular );
     D.Resize( n, numRhs );
 
     // Y := Z^H C
@@ -168,13 +168,13 @@ void Overwrite
 
     // Solve T22 C2 = G2
     C2 = G2;
-    Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), T22, C2, checkIfSingular );
+    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), T22, C2, checkIfSingular );
 
     // G1 := G1 - T12 C2
     Gemm( NORMAL, NORMAL, F(-1), T12, C2, F(1), G1 );
 
     // Solve R11 X = G1
-    Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), R11, G1, checkIfSingular );
+    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), R11, G1, checkIfSingular );
     D.Resize( n, numRhs );
 
     // Y := Z^H C

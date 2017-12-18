@@ -165,7 +165,7 @@ void Front<Field>::Pull
                 }
             }
             front.workSparse.ProcessQueues();
-            MakeSymmetric( LOWER, front.workSparse, front.isHermitian );
+            MakeSymmetric( UpperOrLower::LOWER, front.workSparse, front.isHermitian );
         }
         else
         {
@@ -400,7 +400,7 @@ void Front<Field>::Push
       };
     push( rootInfo, *this );
     A.ProcessQueues();
-    MakeSymmetric( LOWER, A, isHermitian );
+    MakeSymmetric( UpperOrLower::LOWER, A, isHermitian );
 }
 
 // TODO(poulson): Use lower-level access

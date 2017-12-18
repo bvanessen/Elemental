@@ -52,25 +52,25 @@ void Explicit( Matrix<F>& A, Matrix<F>& P, Matrix<F>& Q )
     {
         Q = A;
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, 0, Q, householderScalarsQ );
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, Q, householderScalarsQ );
         // TODO: Use ExpandPackedReflectors when it is available
         Identity( P, A.Width(), A.Width() );
         bidiag::ApplyP( LEFT, NORMAL, A, householderScalarsP, P );
 
-        MakeTrapezoidal( UPPER, A );
-        MakeTrapezoidal( LOWER, A, 1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A );
+        MakeTrapezoidal( UpperOrLower::LOWER, A, 1 );
     }
     else
     {
         Q = A;
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, -1, Q, householderScalarsQ );
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, -1, Q, householderScalarsQ );
         // TODO: Use ExpandPackedReflectors when it is available
         Identity( P, A.Width(), A.Width() );
         bidiag::ApplyP( LEFT, NORMAL, A, householderScalarsP, P );
 
-        MakeTrapezoidal( LOWER, A );
-        MakeTrapezoidal( UPPER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::LOWER, A );
+        MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
     }
 }
 
@@ -88,25 +88,25 @@ void Explicit
     {
         Q = A;
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, 0, Q, householderScalarsQ );
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, Q, householderScalarsQ );
         // TODO: Use ExpandPackedReflectors when it is available
         Identity( P, A.Width(), A.Width() );
         bidiag::ApplyP( LEFT, NORMAL, A, householderScalarsP, P );
 
-        MakeTrapezoidal( UPPER, A );
-        MakeTrapezoidal( LOWER, A, 1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A );
+        MakeTrapezoidal( UpperOrLower::LOWER, A, 1 );
     }
     else
     {
         Q = A;
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, -1, Q, householderScalarsQ );
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, -1, Q, householderScalarsQ );
         // TODO: Use ExpandPackedReflectors when it is available
         Identity( P, A.Width(), A.Width() );
         bidiag::ApplyP( LEFT, NORMAL, A, householderScalarsP, P );
 
-        MakeTrapezoidal( LOWER, A );
-        MakeTrapezoidal( UPPER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::LOWER, A );
+        MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
     }
 }
 
@@ -136,13 +136,13 @@ void ExplicitCondensed( Matrix<F>& A )
     Bidiag( A, householderScalarsP, householderScalarsQ );
     if( A.Height() >= A.Width() )
     {
-        MakeTrapezoidal( UPPER, A );
-        MakeTrapezoidal( LOWER, A, 1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A );
+        MakeTrapezoidal( UpperOrLower::LOWER, A, 1 );
     }
     else
     {
-        MakeTrapezoidal( LOWER, A );
-        MakeTrapezoidal( UPPER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::LOWER, A );
+        MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
     }
 }
 
@@ -155,13 +155,13 @@ void ExplicitCondensed( AbstractDistMatrix<F>& A )
     Bidiag( A, householderScalarsP, householderScalarsQ );
     if( A.Height() >= A.Width() )
     {
-        MakeTrapezoidal( UPPER, A );
-        MakeTrapezoidal( LOWER, A, 1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A );
+        MakeTrapezoidal( UpperOrLower::LOWER, A, 1 );
     }
     else
     {
-        MakeTrapezoidal( LOWER, A );
-        MakeTrapezoidal( UPPER, A, -1 );
+        MakeTrapezoidal( UpperOrLower::LOWER, A );
+        MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
     }
 }
 

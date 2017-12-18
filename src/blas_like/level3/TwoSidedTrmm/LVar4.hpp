@@ -55,19 +55,19 @@ void LVar4( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
         // Y10 := A11 L10
         Y10.Resize( nb, k );
         Zero( Y10 );
-        Hemm( LEFT, LOWER, F(1), A11, L10, F(0), Y10 );
+        Hemm( LEFT, UpperOrLower::LOWER, F(1), A11, L10, F(0), Y10 );
 
         // A10 := A10 + 1/2 Y10
         Axpy( F(1)/F(2), Y10, A10 );
 
         // A00 := A00 + (A10' L10 + L10' A10)
-        Her2k( LOWER, ADJOINT, F(1), A10, L10, Base<F>(1), A00 );
+        Her2k( UpperOrLower::LOWER, ADJOINT, F(1), A10, L10, Base<F>(1), A00 );
 
         // A10 := A10 + 1/2 Y10
         Axpy( F(1)/F(2), Y10, A10 );
 
         // A10 := L11' A10
-        Trmm( LEFT, LOWER, ADJOINT, diag, F(1), L11, A10 );
+        Trmm( LEFT, UpperOrLower::LOWER, ADJOINT, diag, F(1), L11, A10 );
 
         // A20 := A20 + A21 L10
         Gemm( NORMAL, NORMAL, F(1), A21, L10, F(1), A20 );
@@ -76,7 +76,7 @@ void LVar4( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
         twotrmm::LUnb( diag, A11, L11 );
 
         // A21 := A21 L11
-        Trmm( RIGHT, LOWER, NORMAL, diag, F(1), L11, A21 );
+        Trmm( RIGHT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11, A21 );
     }
 }
 
@@ -140,7 +140,7 @@ void LVar4
         Y10_STAR_VR.Resize( nb, k );
         Zero( Y10_STAR_VR );
         Hemm
-        ( LEFT, LOWER,
+        ( LEFT, UpperOrLower::LOWER,
           F(1), A11_STAR_STAR.LockedMatrix(), L10_STAR_VR.LockedMatrix(),
           F(0), Y10_STAR_VR.Matrix() );
 
@@ -157,7 +157,7 @@ void LVar4
         L10_STAR_MC.AlignWith( A00 );
         L10_STAR_MC = L10_STAR_VR;
         LocalTrr2k
-        ( LOWER, ADJOINT, ADJOINT, ADJOINT, NORMAL,
+        ( UpperOrLower::LOWER, ADJOINT, ADJOINT, ADJOINT, NORMAL,
           F(1), A10_STAR_MC, L10Adj_MR_STAR,
           F(1), L10_STAR_MC, A10_STAR_MR,
           F(1), A00 );
@@ -168,7 +168,7 @@ void LVar4
         // A10 := L11' A10
         L11_STAR_STAR = L11;
         LocalTrmm
-        ( LEFT, LOWER, ADJOINT, diag, F(1), L11_STAR_STAR, A10_STAR_VR );
+        ( LEFT, UpperOrLower::LOWER, ADJOINT, diag, F(1), L11_STAR_STAR, A10_STAR_VR );
         A10 = A10_STAR_VR;
 
         // A20 := A20 + A21 L10
@@ -178,13 +178,13 @@ void LVar4
         ( NORMAL, ADJOINT, F(1), A21_MC_STAR, L10Adj_MR_STAR, F(1), A20 );
 
         // A11 := L11' A11 L11
-        TwoSidedTrmm( LOWER, diag, A11_STAR_STAR, L11_STAR_STAR );
+        TwoSidedTrmm( UpperOrLower::LOWER, diag, A11_STAR_STAR, L11_STAR_STAR );
         A11 = A11_STAR_STAR;
 
         // A21 := A21 L11
         A21_VC_STAR = A21_MC_STAR;
         LocalTrmm
-        ( RIGHT, LOWER, NORMAL, diag, F(1), L11_STAR_STAR, A21_VC_STAR );
+        ( RIGHT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11_STAR_STAR, A21_VC_STAR );
         A21 = A21_VC_STAR;
     }
 }

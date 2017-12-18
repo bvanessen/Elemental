@@ -48,7 +48,7 @@ void UVar4( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         auto U12 = U( ind1, ind2 );
 
         // A01 := A01 inv(U11)
-        Trsm( RIGHT, UPPER, NORMAL, diag, F(1), U11, A01 );
+        Trsm( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11, A01 );
 
         // A11 := inv(U11)' A11 inv(U11)
         twotrsm::UUnb( diag, A11, U11 );
@@ -59,16 +59,16 @@ void UVar4( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         // Y12 := A11 U12
         Y12.Resize( A12.Height(), A12.Width() );
         Zero( Y12 );
-        Hemm( LEFT, UPPER, F(1), A11, U12, F(0), Y12 );
+        Hemm( LEFT, UpperOrLower::UPPER, F(1), A11, U12, F(0), Y12 );
 
         // A12 := inv(U11)' A12
-        Trsm( LEFT, UPPER, ADJOINT, diag, F(1), U11, A12 );
+        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U11, A12 );
 
         // A12 := A12 - 1/2 Y12
         Axpy( F(-1)/F(2), Y12, A12 );
 
         // A22 := A22 - (A12' U12 + U12' A12)
-        Her2k( UPPER, ADJOINT, F(-1), A12, U12, Base<F>(1), A22 );
+        Her2k( UpperOrLower::UPPER, ADJOINT, F(-1), A12, U12, Base<F>(1), A22 );
 
         // A12 := A12 - 1/2 Y12
         Axpy( F(-1)/F(2), Y12, A12 );
@@ -131,12 +131,12 @@ void UVar4
         A01_VC_STAR = A01;
         U11_STAR_STAR = U11;
         LocalTrsm
-        ( RIGHT, UPPER, NORMAL, diag, F(1), U11_STAR_STAR, A01_VC_STAR );
+        ( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11_STAR_STAR, A01_VC_STAR );
         A01 = A01_VC_STAR;
 
         // A11 := inv(U11)' A11 inv(U11)
         A11_STAR_STAR = A11;
-        TwoSidedTrsm( UPPER, diag, A11_STAR_STAR, U11_STAR_STAR );
+        TwoSidedTrsm( UpperOrLower::UPPER, diag, A11_STAR_STAR, U11_STAR_STAR );
         A11 = A11_STAR_STAR;
 
         // A02 := A02 - A01 U12
@@ -159,7 +159,7 @@ void UVar4
         Y12_STAR_VR.Resize( nb, A12.Width() );
         Zero( Y12_STAR_VR );
         Hemm
-        ( LEFT, UPPER,
+        ( LEFT, UpperOrLower::UPPER,
           F(1), A11_STAR_STAR.Matrix(), U12_STAR_VR.Matrix(),
           F(0), Y12_STAR_VR.Matrix() );
 
@@ -167,7 +167,7 @@ void UVar4
         A12_STAR_VR.AlignWith( A22 );
         A12_STAR_VR = A12;
         LocalTrsm
-        ( LEFT, UPPER, ADJOINT, diag, F(1), U11_STAR_STAR, A12_STAR_VR );
+        ( LEFT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U11_STAR_STAR, A12_STAR_VR );
 
         // A12 := A12 - 1/2 Y12
         Axpy( F(-1)/F(2), Y12_STAR_VR, A12_STAR_VR );
@@ -184,7 +184,7 @@ void UVar4
         U12_STAR_MC.AlignWith( A22 );
         U12_STAR_MC = U12_STAR_VC;
         LocalTrr2k
-        ( UPPER, ADJOINT, TRANSPOSE, ADJOINT, NORMAL,
+        ( UpperOrLower::UPPER, ADJOINT, TRANSPOSE, ADJOINT, NORMAL,
           F(-1), A12_STAR_MC, U12Trans_MR_STAR,
           F(-1), U12_STAR_MC, A12_STAR_MR,
           F(1), A22 );

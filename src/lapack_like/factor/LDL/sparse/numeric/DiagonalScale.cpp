@@ -34,7 +34,7 @@ void DiagonalScale
 
     if( PivotedFactorization(front.type) )
         QuasiDiagonalScale
-        ( LEFT, LOWER, front.diag, front.subdiag,
+        ( LEFT, UpperOrLower::LOWER, front.diag, front.subdiag,
           X.matrix, front.isHermitian );
     else
         DiagonalScale( LEFT, NORMAL, front.diag, X.matrix );
@@ -55,7 +55,7 @@ void DiagonalScale
 
     if( PivotedFactorization(front.type) )
         QuasiDiagonalScale
-        ( LEFT, LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
+        ( LEFT, UpperOrLower::LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
     else
         DiagonalScale( LEFT, NORMAL, front.diag, X.matrix );
 }
@@ -75,7 +75,7 @@ void DiagonalScale
 
     if( PivotedFactorization(front.type) )
         QuasiDiagonalScale
-        ( LEFT, LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
+        ( LEFT, UpperOrLower::LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
     else
         DiagonalScale( LEFT, NORMAL, front.diag, X.matrix );
 }

@@ -58,7 +58,7 @@ SVDInfo ChanUpper
             Matrix<Field> R;
             auto AT = A( IR(0,n), IR(0,n) );
             R = AT;
-            MakeTrapezoidal( UPPER, R );
+            MakeTrapezoidal( UpperOrLower::UPPER, R );
 
             // NOTE: This is only appropriate because U is not formed
             info = svd::GolubReinsch( R, U, s, V, ctrl );
@@ -85,7 +85,7 @@ SVDInfo ChanUpper
             Matrix<Field> R;
             auto AT = A( IR(0,n), IR(0,n) );
             R = AT;
-            MakeTrapezoidal( UPPER, R );
+            MakeTrapezoidal( UpperOrLower::UPPER, R );
 
             if( approach == FULL_SVD )
             {
@@ -176,7 +176,7 @@ SVDInfo ChanUpper
             DistMatrix<Field> R(g);
             auto AT = A( IR(0,n), IR(0,n) );
             R = AT;
-            MakeTrapezoidal( UPPER, R );
+            MakeTrapezoidal( UpperOrLower::UPPER, R );
 
             // NOTE: This is only appropriate because U is not formed
             info = svd::GolubReinsch( R, U, s, V, ctrl );
@@ -203,7 +203,7 @@ SVDInfo ChanUpper
             DistMatrix<Field> R(g);
             auto AT = A( IR(0,n), IR(0,n) );
             R = AT;
-            MakeTrapezoidal( UPPER, R );
+            MakeTrapezoidal( UpperOrLower::UPPER, R );
 
             if( approach == FULL_SVD )
             {

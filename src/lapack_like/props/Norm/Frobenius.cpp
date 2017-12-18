@@ -37,7 +37,7 @@ Base<Field> HermitianFrobeniusNorm( UpperOrLower uplo, const Matrix<Field>& A )
     Real scaledSquare = 1;
     const Int height = A.Height();
     const Int width = A.Width();
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
     {
         for( Int j=0; j<width; ++j )
         {
@@ -133,7 +133,7 @@ Base<Field> HermitianFrobeniusNorm
         const Int localWidth = A.LocalWidth();
         const Int localHeight = A.LocalHeight();
         const Matrix<Field>& ALoc = A.LockedMatrix();
-        if( uplo == UPPER )
+        if( uplo == UpperOrLower::UPPER )
         {
             for( Int jLoc=0; jLoc<localWidth; ++jLoc )
             {

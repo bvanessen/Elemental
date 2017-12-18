@@ -79,7 +79,7 @@ void PrepareBidiagonal
     UpperOrLower newUplo = uplo;
     if( !square )
     {
-        if( uplo == UPPER )
+        if( uplo == UpperOrLower::UPPER )
         {
             // Rotate into lower bidiagonal form via Givens from the right to
             // expose [0,0,...,1] as a member of the null space. The reduction
@@ -141,7 +141,7 @@ void PrepareBidiagonal
                   cDeflateList, sDeflateList, V );
             }
 
-            newUplo = LOWER;
+            newUplo = UpperOrLower::LOWER;
         }
         else
         {
@@ -153,11 +153,11 @@ void PrepareBidiagonal
                 cDeflateList.Resize( m-1, 1 );
                 sDeflateList.Resize( m-1, 1 );
             }
-            newUplo = UPPER;
+            newUplo = UpperOrLower::UPPER;
         }
     }
 
-    if( newUplo == LOWER )
+    if( newUplo == UpperOrLower::LOWER )
     {
         // We are currently square and lower bidiagonal, so apply Givens
         // rotations from the left to become square and upper bidiagonal
@@ -228,8 +228,8 @@ Helper
     if( mainDiag.Height() != offDiag.Height() &&
         mainDiag.Height() != offDiag.Height()+1 )
         LogicError("Invalid main and superdiagonal lengths");
-    const Int m = ( uplo==UPPER ? mainDiag.Height() : offDiag.Height()+1 );
-    const Int n = ( uplo==UPPER ? offDiag.Height()+1 : mainDiag.Height() );
+    const Int m = ( uplo==UpperOrLower::UPPER ? mainDiag.Height() : offDiag.Height()+1 );
+    const Int n = ( uplo==UpperOrLower::UPPER ? offDiag.Height()+1 : mainDiag.Height() );
     const Int minDim = Min(m,n);
     const bool square = ( m == n );
     BidiagSVDInfo info;
@@ -247,7 +247,7 @@ Helper
         info.qrInfo = bidiag_svd::QRAlg( s, offDiag, ctrl );
         Sort( s, DESCENDING );
     }
-    else if( uplo == LOWER )
+    else if( uplo == UpperOrLower::LOWER )
     {
         // We were non-square and lower bidiagonal.
         auto offDiag0 = offDiag( IR(0,n-1), ALL );
@@ -352,8 +352,8 @@ Helper
     if( mainDiag.Height() != offDiag.Height() &&
         mainDiag.Height() != offDiag.Height()+1 )
         LogicError("Invalid main and superdiagonal lengths");
-    const Int m = ( uplo==UPPER ? mainDiag.Height() : offDiag.Height()+1 );
-    const Int n = ( uplo==UPPER ? offDiag.Height()+1 : mainDiag.Height() );
+    const Int m = ( uplo==UpperOrLower::UPPER ? mainDiag.Height() : offDiag.Height()+1 );
+    const Int n = ( uplo==UpperOrLower::UPPER ? offDiag.Height()+1 : mainDiag.Height() );
     const Int minDim = Min(m,n);
     const bool square = ( m == n );
     const Grid& grid = mainDiag.Grid();
@@ -395,7 +395,7 @@ Helper
               bidiag_svd::QRAlg( s.Matrix(), offDiag.Matrix(), ctrl );
         }
     }
-    else if( uplo == LOWER )
+    else if( uplo == UpperOrLower::LOWER )
     {
         // We were non-square and lower bidiagonal.
         auto offDiag0 = offDiag( IR(0,n-1), ALL );
@@ -610,8 +610,8 @@ Helper
 {
     EL_DEBUG_CSE
 
-    const Int m = ( uplo==UPPER ? mainDiag.Height() : offDiag.Height()+1 );
-    const Int n = ( uplo==UPPER ? offDiag.Height()+1 : mainDiag.Height() );
+    const Int m = ( uplo==UpperOrLower::UPPER ? mainDiag.Height() : offDiag.Height()+1 );
+    const Int n = ( uplo==UpperOrLower::UPPER ? offDiag.Height()+1 : mainDiag.Height() );
     const Int minDim = Min(m,n);
     const bool square = ( m == n );
     if( mainDiag.Height() != offDiag.Height() &&
@@ -690,7 +690,7 @@ Helper
         if( ctrlMod.wantV )
             ApplyTaggedSortToEachRow( sortPairs, V );
     }
-    else if( uplo == LOWER )
+    else if( uplo == UpperOrLower::LOWER )
     {
         // We were non-square and lower bidiagonal. The last column of U has
         // been (at least implicitly) deflated.
@@ -807,7 +807,7 @@ Helper
     // opposite side to cheaply effect the transpose.
     if( ctrlMod.wantU && !ctrlMod.accumulateU )
     {
-        if( uplo == UPPER && !square )
+        if( uplo == UpperOrLower::UPPER && !square )
         {
             // Undo the flip from lower to upper bidiagonal.
             sFlipList *= Real(-1);
@@ -815,7 +815,7 @@ Helper
             ( LEFT, VARIABLE_GIVENS_SEQUENCE, BACKWARD,
               cFlipList, sFlipList, U );
         }
-        if( uplo == LOWER && !square )
+        if( uplo == UpperOrLower::LOWER && !square )
         {
             // TODO(poulson): Handle this after adding the original deflation
             LogicError("This case is not yet handled");
@@ -823,7 +823,7 @@ Helper
     }
     if( ctrlMod.wantV && !ctrlMod.accumulateV )
     {
-        if( uplo == UPPER && !square )
+        if( uplo == UpperOrLower::UPPER && !square )
         {
             sDeflateList *= Real(-1);
             ApplyGivensSequence
@@ -870,8 +870,8 @@ Helper
     EL_DEBUG_CSE
 
     const Grid& g = mainDiag.Grid();
-    const Int m = ( uplo==UPPER ? mainDiag.Height() : offDiag.Height()+1 );
-    const Int n = ( uplo==UPPER ? offDiag.Height()+1 : mainDiag.Height() );
+    const Int m = ( uplo==UpperOrLower::UPPER ? mainDiag.Height() : offDiag.Height()+1 );
+    const Int n = ( uplo==UpperOrLower::UPPER ? offDiag.Height()+1 : mainDiag.Height() );
     const Int minDim = Min(m,n);
     const bool square = ( m == n );
     if( mainDiag.Height() != offDiag.Height() &&
@@ -996,7 +996,7 @@ Helper
         if( ctrlMod.wantV )
             ApplyTaggedSortToEachRow( sortPairs, V );
     }
-    else if( uplo == LOWER )
+    else if( uplo == UpperOrLower::LOWER )
     {
         // We were non-square and lower bidiagonal. The last column of U has
         // been (at least implicitly) deflated.
@@ -1162,7 +1162,7 @@ Helper
     // opposite side to cheaply effect the transpose.
     if( ctrlMod.wantU && !ctrlMod.accumulateU )
     {
-        if( uplo == UPPER && !square )
+        if( uplo == UpperOrLower::UPPER && !square )
         {
             // Undo the flip from lower to upper bidiagonal.
             sFlipList *= Real(-1);
@@ -1172,7 +1172,7 @@ Helper
               cFlipList, sFlipList, U_STAR_VR.Matrix() );
             U = U_STAR_VR;
         }
-        if( uplo == LOWER && !square )
+        if( uplo == UpperOrLower::LOWER && !square )
         {
             // TODO(poulson): Handle this after adding the original deflation
             LogicError("This case is not yet handled");
@@ -1180,7 +1180,7 @@ Helper
     }
     if( ctrlMod.wantV && !ctrlMod.accumulateV )
     {
-        if( uplo == UPPER && !square )
+        if( uplo == UpperOrLower::UPPER && !square )
         {
             sDeflateList *= Real(-1);
             DistMatrix<Real,Dist::STAR,Dist::VR> V_STAR_VR( V );
@@ -1433,8 +1433,8 @@ Helper
     const Int offDiagHeight = offDiag.Height();
     if( mainDiagHeight != offDiagHeight && mainDiagHeight != offDiagHeight+1 )
         LogicError("Invalid lengths of mainDiag and offDiag");
-    const Int m = ( uplo==UPPER ? mainDiagHeight : offDiagHeight+1 );
-    const Int n = ( uplo==UPPER ? offDiagHeight+1 : mainDiagHeight );
+    const Int m = ( uplo==UpperOrLower::UPPER ? mainDiagHeight : offDiagHeight+1 );
+    const Int n = ( uplo==UpperOrLower::UPPER ? offDiagHeight+1 : mainDiagHeight );
 
     Matrix<Complex<Real>> UPhase, VPhase;
     if( ctrl.wantU || ctrl.wantV )
@@ -1442,7 +1442,7 @@ Helper
         Ones( UPhase, m, 1 );
         Ones( VPhase, n, 1 );
         Field alphaNew, betaNew;
-        if( uplo == UPPER )
+        if( uplo == UpperOrLower::UPPER )
         {
             for( Int i=0; i<mainDiagHeight; ++i )
             {
@@ -1517,8 +1517,8 @@ Helper
     const Int offDiagHeight = offDiag.Height();
     if( mainDiagHeight != offDiagHeight && mainDiagHeight != offDiagHeight+1 )
         LogicError("Invalid lengths of mainDiag and offDiag");
-    const Int m = ( uplo==UPPER ? mainDiagHeight : offDiagHeight+1 );
-    const Int n = ( uplo==UPPER ? offDiagHeight+1 : mainDiagHeight );
+    const Int m = ( uplo==UpperOrLower::UPPER ? mainDiagHeight : offDiagHeight+1 );
+    const Int n = ( uplo==UpperOrLower::UPPER ? offDiagHeight+1 : mainDiagHeight );
 
     auto& mainDiagLoc = mainDiag.Matrix();
     auto& offDiagLoc = offDiag.Matrix();
@@ -1531,7 +1531,7 @@ Helper
         auto& VPhaseLoc = VPhase.Matrix();
 
         Field alphaNew, betaNew;
-        if( uplo == UPPER )
+        if( uplo == UpperOrLower::UPPER )
         {
             for( Int i=0; i<mainDiagHeight; ++i )
             {

@@ -35,7 +35,7 @@ void BackwardMany
 {
     // TODO: Replace this with modified inline code?
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
-    Trsm( LEFT, LOWER, orientation, UNIT, F(1), L, X, false, TRSM_SMALL );
+    Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), L, X, false, TRSM_SMALL );
 }
 
 template<typename F>
@@ -73,7 +73,7 @@ void BackwardSingle
 
         // X1 := L11^-1 X1
         LocalTrsm
-        ( LEFT, UPPER, NORMAL, UNIT, F(1), L11Trans_STAR_STAR, Z1_STAR_STAR );
+        ( LEFT, UpperOrLower::UPPER, NORMAL, UNIT, F(1), L11Trans_STAR_STAR, Z1_STAR_STAR );
         X1 = Z1_STAR_STAR;
     }
 }
@@ -101,7 +101,7 @@ void FrontVanillaLowerBackwardSolve
 
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
     Gemm( orientation, NORMAL, F(-1), LB, XB, F(1), XT );
-    Trsm( LEFT, LOWER, orientation, UNIT, F(1), LT, XT, true );
+    Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), LT, XT, true );
 }
 
 template<typename F>
@@ -214,7 +214,7 @@ void FrontVanillaLowerBackwardSolve
 
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
     Gemm( orientation, NORMAL, F(-1), LB, XB, F(1), XT );
-    Trsm( LEFT, LOWER, orientation, UNIT, F(1), LT, XT );
+    Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), LT, XT );
 }
 
 template<typename F>
@@ -250,7 +250,7 @@ void FrontVanillaLowerBackwardSolve
 
     const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
     Gemm( orientation, NORMAL, F(-1), LB, XB, F(1), XT );
-    Trsm( LEFT, LOWER, orientation, UNIT, F(1), LT, XT );
+    Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), LT, XT );
 
     XPre = X;
 }

@@ -23,7 +23,7 @@ void LeftUnb
       if( shifts.Height() != X.Width() )
           LogicError("Incompatible number of shifts");
     )
-    const char uploChar = ( uplo==LOWER ? 'L' : 'U' );
+    const char uploChar = ( uplo==UpperOrLower::LOWER ? 'L' : 'U' );
     char orientChar;
     switch( orientation )
     {
@@ -66,7 +66,7 @@ void LUN( Matrix<F>& U, const Matrix<F>& shifts, Matrix<F>& X )
         auto X0 = X( ind0, ALL );
         auto X1 = X( ind1, ALL );
 
-        LeftUnb( UPPER, NORMAL, U11, shifts, X1 );
+        LeftUnb( UpperOrLower::UPPER, NORMAL, U11, shifts, X1 );
         Gemm( NORMAL, NORMAL, F(-1), U01, X1, F(1), X0 );
     }
 }

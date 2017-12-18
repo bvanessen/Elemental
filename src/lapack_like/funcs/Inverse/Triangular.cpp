@@ -18,7 +18,7 @@ template<typename Field>
 void Var3( UpperOrLower uplo, UnitOrNonUnit diag, Matrix<Field>& A  )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         LVar3( diag, A );
     else
         UVar3( diag, A );
@@ -29,7 +29,7 @@ void Var3
 ( UpperOrLower uplo, UnitOrNonUnit diag, AbstractDistMatrix<Field>& A  )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         LVar3( diag, A );
     else
         UVar3( diag, A );

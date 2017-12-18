@@ -55,7 +55,7 @@ void LocalAccumulateRUN
 
         D11.AlignWith( U11 );
         D11 = U11;
-        MakeTrapezoidal( UPPER, D11 );
+        MakeTrapezoidal( UpperOrLower::UPPER, D11 );
         if( diag == UNIT )
             FillDiagonal( D11, T(1) );
         LocalGemm( orientation, orientation, alpha, D11, X1, T(1), Z1Trans );
@@ -152,7 +152,7 @@ void RUNCOld
         X1_VC_STAR = X1;
         U11_STAR_STAR = U11;
         LocalTrmm
-        ( RIGHT, UPPER, NORMAL, diag, T(1), U11_STAR_STAR, X1_VC_STAR );
+        ( RIGHT, UpperOrLower::UPPER, NORMAL, diag, T(1), U11_STAR_STAR, X1_VC_STAR );
         X1 = X1_VC_STAR;
 
         U01_MR_STAR.AlignWith( X0 );
@@ -212,7 +212,7 @@ void RUNC
         X1_VC_STAR.AlignWith( X1 );
         X1_VC_STAR = X1_MC_STAR;
         LocalTrmm
-        ( RIGHT, UPPER, NORMAL, diag, T(1), U11_STAR_STAR, X1_VC_STAR );
+        ( RIGHT, UpperOrLower::UPPER, NORMAL, diag, T(1), U11_STAR_STAR, X1_VC_STAR );
         X1 = X1_VC_STAR;
     }
 }

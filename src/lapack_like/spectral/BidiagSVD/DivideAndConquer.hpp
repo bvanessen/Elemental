@@ -1745,7 +1745,7 @@ DivideAndConquer
         {
             ctrlMod.accumulateU = false;
             ctrlMod.accumulateV = false;
-            BidiagSVD( UPPER, mainDiag, superDiag, U, s, V, ctrlMod );
+            BidiagSVD( UpperOrLower::UPPER, mainDiag, superDiag, U, s, V, ctrlMod );
         }
         else
         {
@@ -1755,7 +1755,7 @@ DivideAndConquer
             Zeros( V, 2, n );
             V(0,0) = 1;
             V(1,n-1) = 1;
-            BidiagSVD( UPPER, mainDiag, superDiag, U, s, V, ctrlMod );
+            BidiagSVD( UpperOrLower::UPPER, mainDiag, superDiag, U, s, V, ctrlMod );
         }
         return info;
     }
@@ -1876,7 +1876,7 @@ DivideAndConquer
                 if( grid.VCRank() == 0 )
                 {
                     BidiagSVD
-                    ( UPPER, mainDiag, superDiag, ULoc, sLoc, VLoc, ctrlMod );
+                    ( UpperOrLower::UPPER, mainDiag, superDiag, ULoc, sLoc, VLoc, ctrlMod );
                 }
                 if( ctrl.wantU )
                 {
@@ -1892,7 +1892,7 @@ DivideAndConquer
             {
                 // Let's cross our fingers and ignore the forward instability
                 BidiagSVD
-                ( UPPER, mainDiag, superDiag, ULoc, sLoc, VLoc, ctrlMod );
+                ( UpperOrLower::UPPER, mainDiag, superDiag, ULoc, sLoc, VLoc, ctrlMod );
             }
         }
         else
@@ -1908,7 +1908,7 @@ DivideAndConquer
                 if( grid.VCRank() == 0 )
                 {
                     BidiagSVD
-                    ( UPPER, mainDiag, superDiag, ULoc, sLoc, VLoc, ctrlMod );
+                    ( UpperOrLower::UPPER, mainDiag, superDiag, ULoc, sLoc, VLoc, ctrlMod );
                 }
                 if( ctrl.wantU )
                 {
@@ -1923,7 +1923,7 @@ DivideAndConquer
             {
                 // Let's cross our fingers and ignore the forward instability
                 BidiagSVD
-                ( UPPER, mainDiag, superDiag, ULoc, sLoc, VLoc, ctrlMod );
+                ( UpperOrLower::UPPER, mainDiag, superDiag, ULoc, sLoc, VLoc, ctrlMod );
             }
         }
 

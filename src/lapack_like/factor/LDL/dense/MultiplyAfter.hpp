@@ -24,9 +24,9 @@ void MultiplyAfter( const Matrix<F>& A, Matrix<F>& B, bool conjugated )
     )
     const Orientation orientation = ( conjugated ? ADJOINT : TRANSPOSE );
     const auto d = GetDiagonal(A);
-    Trmm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
+    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
     DiagonalScale( LEFT, NORMAL, d, B );
-    Trmm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
+    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
 }
 
 template<typename F>
@@ -48,9 +48,9 @@ void MultiplyAfter
 
     const auto d = GetDiagonal(A);
 
-    Trmm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
+    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
     DiagonalScale( LEFT, NORMAL, d, B );
-    Trmm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
+    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
 }
 
 template<typename F>
@@ -73,9 +73,9 @@ void MultiplyAfter
     const auto d = GetDiagonal(A);
 
     P.PermuteRows( B );
-    Trmm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
-    QuasiDiagonalScale( LEFT, LOWER, d, dSub, B, conjugated );
-    Trmm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
+    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
+    QuasiDiagonalScale( LEFT, UpperOrLower::LOWER, d, dSub, B, conjugated );
+    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
     P.InversePermuteRows( B );
 }
 
@@ -106,9 +106,9 @@ void MultiplyAfter
     const auto d = GetDiagonal(A);
 
     P.PermuteRows( B );
-    Trmm( LEFT, LOWER, orientation, UNIT, F(1), A, B );
-    QuasiDiagonalScale( LEFT, LOWER, d, dSub, B, conjugated );
-    Trmm( LEFT, LOWER, NORMAL, UNIT, F(1), A, B );
+    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
+    QuasiDiagonalScale( LEFT, UpperOrLower::LOWER, d, dSub, B, conjugated );
+    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
     P.InversePermuteRows( B );
 }
 

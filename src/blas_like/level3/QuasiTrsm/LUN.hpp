@@ -175,7 +175,7 @@ void LUNLarge
 
         // X1[* ,VR] := U11^-1[* ,* ] X1[* ,VR]
         LocalQuasiTrsm
-        ( LEFT, UPPER, NORMAL, F(1), U11_STAR_STAR, X1_STAR_VR,
+        ( LEFT, UpperOrLower::UPPER, NORMAL, F(1), U11_STAR_STAR, X1_STAR_VR,
           checkIfSingular );
 
         X1_STAR_MR.AlignWith( X0 );
@@ -238,7 +238,7 @@ void LUNMedium
         // X1^T[MR,* ] := X1^T[MR,* ] U11^-T[* ,* ]
         //              = (U11^-1[* ,* ] X1[* ,MR])^T
         LocalQuasiTrsm
-        ( RIGHT, UPPER, TRANSPOSE,
+        ( RIGHT, UpperOrLower::UPPER, TRANSPOSE,
           F(1), U11_STAR_STAR, X1Trans_MR_STAR, checkIfSingular );
         Transpose( X1Trans_MR_STAR, X1 );
 
@@ -300,7 +300,7 @@ void LUNSmall
 
         // X1[* ,* ] := U11^-1[* ,* ] X1[* ,* ]
         LocalQuasiTrsm
-        ( LEFT, UPPER, NORMAL,
+        ( LEFT, UpperOrLower::UPPER, NORMAL,
           F(1), U11_STAR_STAR, X1_STAR_STAR, checkIfSingular );
         X1 = X1_STAR_STAR;
 

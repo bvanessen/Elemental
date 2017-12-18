@@ -22,7 +22,7 @@ void TriangEig( Matrix<Field>& U, Matrix<Field>& X )
 
     // Make X the negative of the strictly upper triangle of  U
     X = U;
-    MakeTrapezoidal( UPPER, X, 1 );
+    MakeTrapezoidal( UpperOrLower::UPPER, X, 1 );
     Scale( Field(-1), X );
 
     // Solve multi-shift triangular system
@@ -30,7 +30,7 @@ void TriangEig( Matrix<Field>& U, Matrix<Field>& X )
     GetDiagonal( U, shifts );
     // The following is a specialized alternative to
     //  SafeMultiShiftTrsm
-    //  ( LEFT, UPPER, NORMAL, Field(1), U, shifts, X, scales );
+    //  ( LEFT, UpperOrLower::UPPER, NORMAL, Field(1), U, shifts, X, scales );
     triang_eig::MultiShiftSolve( U, shifts, X, scales );
     SetDiagonal( X, scales );
 
@@ -56,7 +56,7 @@ void TriangEig
 
     // Make X the negative of the strictly upper triangle of  U
     X = U;
-    MakeTrapezoidal( UPPER, X, 1 );
+    MakeTrapezoidal( UpperOrLower::UPPER, X, 1 );
     Scale( Field(-1), X );
 
     // Solve multi-shift triangular system
@@ -65,7 +65,7 @@ void TriangEig
     GetDiagonal( U, shifts );
     // The following is a specialized alternative to
     //  SafeMultiShiftTrsm
-    //  ( LEFT, UPPER, NORMAL, Field(1), U, shifts, X, scales );
+    //  ( LEFT, UpperOrLower::UPPER, NORMAL, Field(1), U, shifts, X, scales );
     triang_eig::MultiShiftSolve( U, shifts, X, scales );
     SetDiagonal( X, scales );
 

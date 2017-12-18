@@ -35,7 +35,7 @@ void DiagonalSolve
 
     if( PivotedFactorization(front.type) )
         QuasiDiagonalSolve
-        ( LEFT, LOWER, front.diag, front.subdiag,
+        ( LEFT, UpperOrLower::LOWER, front.diag, front.subdiag,
           X.matrix, front.isHermitian );
     else
         DiagonalSolve( LEFT, NORMAL, front.diag, X.matrix, true );
@@ -56,7 +56,7 @@ void DiagonalSolve
 
     if( PivotedFactorization(front.type) )
         QuasiDiagonalSolve
-        ( LEFT, LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
+        ( LEFT, UpperOrLower::LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
     else
         DiagonalSolve( LEFT, NORMAL, front.diag, X.matrix, true );
 }
@@ -76,7 +76,7 @@ void DiagonalSolve
 
     if( PivotedFactorization(front.type) )
         QuasiDiagonalSolve
-        ( LEFT, LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
+        ( LEFT, UpperOrLower::LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
     else
         DiagonalSolve( LEFT, NORMAL, front.diag, X.matrix, true );
 }

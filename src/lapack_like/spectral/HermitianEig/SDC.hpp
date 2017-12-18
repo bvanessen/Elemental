@@ -50,7 +50,7 @@ QDWHDivide( UpperOrLower uplo, Matrix<F>& A, Matrix<F>& G, bool returnQ=false )
     const Base<F> oneA = OneNorm( A );
     if( returnQ )
     {
-        ExpandPackedReflectors( LOWER, VERTICAL, CONJUGATED, 0, G, t );
+        ExpandPackedReflectors( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, t );
         DiagonalScale( RIGHT, NORMAL, d, G );
         Matrix<F> B;
         Gemm( ADJOINT, NORMAL, F(1), G, A, B );
@@ -98,7 +98,7 @@ QDWHDivide
     const Base<F> oneA = OneNorm( A );
     if( returnQ )
     {
-        ExpandPackedReflectors( LOWER, VERTICAL, CONJUGATED, 0, G, t );
+        ExpandPackedReflectors( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, t );
         DiagonalScale( RIGHT, NORMAL, d, G );
         DistMatrix<F> B(g);
         Gemm( ADJOINT, NORMAL, F(1), G, A, B );
@@ -161,7 +161,7 @@ RandomizedSignDivide
         V = A;
         if( returnQ )
         {
-            ExpandPackedReflectors( LOWER, VERTICAL, CONJUGATED, 0, G, t );
+            ExpandPackedReflectors( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, t );
             DiagonalScale( RIGHT, NORMAL, d, G );
             Gemm( ADJOINT, NORMAL, F(1), G, A, B );
             Gemm( NORMAL, NORMAL, F(1), B, G, A );
@@ -232,7 +232,7 @@ RandomizedSignDivide
         V = A;
         if( returnQ )
         {
-            ExpandPackedReflectors( LOWER, VERTICAL, CONJUGATED, 0, G, t );
+            ExpandPackedReflectors( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, t );
             DiagonalScale( RIGHT, NORMAL, d, G );
             Gemm( ADJOINT, NORMAL, F(1), G, A, B );
             Gemm( NORMAL, NORMAL, F(1), B, G, A );
@@ -482,7 +482,7 @@ void SDC
     auto wT = w( ind1, ALL );
     auto wB = w( ind2, ALL );
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         Zero( ABL );
     else
         Zero( ATR );
@@ -527,7 +527,7 @@ void SDC
     auto QL = Q( ALL, ind1 );
     auto QR = Q( ALL, ind2 );
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         Zero( ABL );
     else
         Zero( ATR );
@@ -585,7 +585,7 @@ void SDC
     auto wT = w( ind1, ALL );
     auto wB = w( ind2, ALL );
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         Zero( ABL );
     else
         Zero( ATR );
@@ -651,7 +651,7 @@ void SDC
     auto QL = Q( ALL, ind1 );
     auto QR = Q( ALL, ind2 );
 
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         Zero( ABL );
     else
         Zero( ATR );

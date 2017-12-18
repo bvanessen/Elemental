@@ -61,7 +61,7 @@ void RLT
         X1_VC_STAR = X1;
 
         LocalTrsm
-        ( RIGHT, LOWER, orientation, diag,
+        ( RIGHT, UpperOrLower::LOWER, orientation, diag,
           F(1), L11_STAR_STAR, X1_VC_STAR, checkIfSingular );
 
         X1Trans_STAR_MC.AlignWith( X2 );

@@ -470,7 +470,7 @@ void MultiShiftHessSolve
         Matrix<Field>& X )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             mshs::LN( alpha, H, shifts, X );
@@ -496,7 +496,7 @@ void MultiShiftHessSolve
         AbstractDistMatrix<Field>& X )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
     {
         if( orientation == NORMAL )
             mshs::LN( alpha, H, shifts, X );

@@ -322,7 +322,7 @@ void LowerPanelSquare
         //   p21[MC] := tril(A22)[MC,MR] a21[MR]
         //   q21[MR] := tril(A22,-1)'[MR,MC] a21[MC]
         symv::LocalColAccumulate
-        ( LOWER, F(1), A22, a21_MC, a21_MR, p21_MC, q21_MR, true, ctrl );
+        ( UpperOrLower::LOWER, F(1), A22, a21_MC, a21_MR, p21_MC, q21_MR, true, ctrl );
 
         x01_MR.AlignWith( W20B );
         y01_MR.AlignWith( W20B );

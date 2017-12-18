@@ -37,8 +37,8 @@ void LVar1( Matrix<F>& L, bool conjugate=false )
 
         S10 = L10;
         DiagonalSolve( LEFT, NORMAL, d1, L10, true );
-        Trrk( LOWER, orientation, NORMAL, F(1), S10, L10, F(1), L00 );
-        Trmm( LEFT, LOWER, orientation, UNIT, F(1), L11, L10 );
+        Trrk( UpperOrLower::LOWER, orientation, NORMAL, F(1), S10, L10, F(1), L00 );
+        Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), L11, L10 );
         trdtrmm::LUnblocked( L11, conjugate );
     }
 }
@@ -73,9 +73,9 @@ void LVar1( Matrix<F>& L, const Matrix<F>& dSub, bool conjugate=false )
         auto d1 = GetDiagonal(L11);
 
         S10 = L10;
-        QuasiDiagonalSolve( LEFT, LOWER, d1, dSub1, L10, conjugate );
-        Trrk( LOWER, orientation, NORMAL, F(1), S10, L10, F(1), L00 );
-        Trmm( LEFT, LOWER, orientation, UNIT, F(1), L11, L10 );
+        QuasiDiagonalSolve( LEFT, UpperOrLower::LOWER, d1, dSub1, L10, conjugate );
+        Trrk( UpperOrLower::LOWER, orientation, NORMAL, F(1), S10, L10, F(1), L00 );
+        Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), L11, L10 );
         trdtrmm::LUnblocked( L11, dSub1, conjugate );
 
         k += nb;
@@ -127,14 +127,14 @@ void LVar1( AbstractDistMatrix<F>& LPre, bool conjugate=false )
         DiagonalSolve( LEFT, NORMAL, d1, L10_STAR_VR, true );
         L10_STAR_MR = L10_STAR_VR;
         LocalTrrk
-        ( LOWER, orientation, F(1), S10_STAR_MC, L10_STAR_MR, F(1), L00 );
+        ( UpperOrLower::LOWER, orientation, F(1), S10_STAR_MC, L10_STAR_MR, F(1), L00 );
 
         L11_STAR_STAR = L11;
         LocalTrmm
-        ( LEFT, LOWER, orientation, UNIT, F(1), L11_STAR_STAR, L10_STAR_VR );
+        ( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), L11_STAR_STAR, L10_STAR_VR );
         L10 = L10_STAR_VR;
 
-        Trdtrmm( LOWER, L11_STAR_STAR, conjugate );
+        Trdtrmm( UpperOrLower::LOWER, L11_STAR_STAR, conjugate );
         L11 = L11_STAR_STAR;
     }
 }
@@ -196,19 +196,19 @@ void LVar1
         dSub1_STAR_STAR = dSub1;
         // TODO: LocalQuasiDiagonalSolve?
         QuasiDiagonalSolve
-        ( LEFT, LOWER,
+        ( LEFT, UpperOrLower::LOWER,
           d1_STAR_STAR.LockedMatrix(), dSub1_STAR_STAR.LockedMatrix(),
           L10_STAR_VR.Matrix(), conjugate );
         L10_STAR_MR = L10_STAR_VR;
         LocalTrrk
-        ( LOWER, orientation, F(1), S10_STAR_MC, L10_STAR_MR, F(1), L00 );
+        ( UpperOrLower::LOWER, orientation, F(1), S10_STAR_MC, L10_STAR_MR, F(1), L00 );
 
         L11_STAR_STAR = L11;
         LocalTrmm
-        ( LEFT, LOWER, orientation, UNIT, F(1), L11_STAR_STAR, L10_STAR_VR );
+        ( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), L11_STAR_STAR, L10_STAR_VR );
         L10 = L10_STAR_VR;
 
-        Trdtrmm( LOWER, L11_STAR_STAR, dSub1_STAR_STAR, conjugate );
+        Trdtrmm( UpperOrLower::LOWER, L11_STAR_STAR, dSub1_STAR_STAR, conjugate );
         L11 = L11_STAR_STAR;
 
         k += nb;

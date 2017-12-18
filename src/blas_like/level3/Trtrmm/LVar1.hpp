@@ -31,8 +31,8 @@ void LVar1( Matrix<T>& L, bool conjugate=false )
         auto L10 = L( ind1, ind0 );
         auto L11 = L( ind1, ind1 );
 
-        Trrk( LOWER, orientation, NORMAL, T(1), L10, L10, T(1), L00 );
-        Trmm( LEFT, LOWER, orientation, NON_UNIT, T(1), L11, L10 );
+        Trrk( UpperOrLower::LOWER, orientation, NORMAL, T(1), L10, L10, T(1), L00 );
+        Trmm( LEFT, UpperOrLower::LOWER, orientation, NON_UNIT, T(1), L11, L10 );
         trtrmm::LUnblocked( L11, conjugate );
     }
 }
@@ -81,15 +81,15 @@ void LVar1( AbstractDistMatrix<T>& LPre, bool conjugate=false )
         L10_STAR_MC = L10_STAR_VC;
         L10_STAR_MR = L10_STAR_VR;
         LocalTrrk
-        ( LOWER, orientation, T(1), L10_STAR_MC, L10_STAR_MR, T(1), L00 );
+        ( UpperOrLower::LOWER, orientation, T(1), L10_STAR_MC, L10_STAR_MR, T(1), L00 );
 
         L11_STAR_STAR = L11;
         LocalTrmm
-        ( LEFT, LOWER, orientation, NON_UNIT,
+        ( LEFT, UpperOrLower::LOWER, orientation, NON_UNIT,
           T(1), L11_STAR_STAR, L10_STAR_VR );
         L10 = L10_STAR_VR;
 
-        Trtrmm( LOWER, L11_STAR_STAR, conjugate );
+        Trtrmm( UpperOrLower::LOWER, L11_STAR_STAR, conjugate );
         L11 = L11_STAR_STAR;
     }
 }

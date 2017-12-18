@@ -116,17 +116,17 @@ void LUHFBlocked
 
         // Convert to an explicit matrix of (scaled) Householder vectors
         Conjugate( HPan, HPanConj );
-        MakeTrapezoidal( UPPER, HPanConj );
+        MakeTrapezoidal( UpperOrLower::UPPER, HPanConj );
         FillDiagonal( HPanConj, F(1) );
 
         // Form the small triangular matrix needed for the UT transform
-        Herk( LOWER, NORMAL, Base<F>(1), HPanConj, SInv );
+        Herk( UpperOrLower::LOWER, NORMAL, Base<F>(1), HPanConj, SInv );
         FixDiagonal( conjugation, householderScalars1, SInv );
 
         // Z := conj(HPan) ABot
         Gemm( NORMAL, NORMAL, F(1), HPanConj, ABot, Z );
         // Z := inv(SInv) conj(HPan) ABot
-        Trsm( LEFT, LOWER, NORMAL, NON_UNIT, F(1), SInv, Z );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), SInv, Z );
         // ABot := (I - HPan^T inv(SInv) conj(HPan)) ABot
         Gemm( ADJOINT, NORMAL, F(-1), HPanConj, Z, F(1), ABot );
     }
@@ -265,14 +265,14 @@ void LUHFBlocked
         // Convert to an explicit matrix of (scaled) Householder vectors
         LockedView( *HPan, H, IR(ki,ki+nb), IR(kj,nH) );
         Conjugate( *HPan, HPanConj );
-        MakeTrapezoidal( UPPER, HPanConj );
+        MakeTrapezoidal( UpperOrLower::UPPER, HPanConj );
         FillDiagonal( HPanConj, F(1) );
 
         // Form the small triangular matrix needed for the UT transform
         HPan_STAR_VR = HPanConj;
         Zeros( SInv_STAR_STAR, nb, nb );
         Herk
-        ( LOWER, NORMAL,
+        ( UpperOrLower::LOWER, NORMAL,
           Base<F>(1), HPan_STAR_VR.LockedMatrix(),
           Base<F>(0), SInv_STAR_STAR.Matrix() );
         El::AllReduce( SInv_STAR_STAR, HPan_STAR_VR.RowComm() );
@@ -290,7 +290,7 @@ void LUHFBlocked
 
         // Z := inv(SInv) conj(HPan) ABot
         LocalTrsm
-        ( LEFT, LOWER, NORMAL, NON_UNIT, F(1), SInv_STAR_STAR, Z_STAR_VR );
+        ( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), SInv_STAR_STAR, Z_STAR_VR );
 
         // ABot := (I - HPan^T inv(SInv) conj(HPan)) ABot
         Z_STAR_MR = Z_STAR_VR;

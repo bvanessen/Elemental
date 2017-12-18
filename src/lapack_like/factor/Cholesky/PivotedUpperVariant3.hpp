@@ -44,7 +44,7 @@ void PivotedUpperUnblocked( Matrix<F>& A, Permutation& P )
 
         // Apply the pivot
         const Int from = k + pivot.from[0];
-        HermitianSwap( UPPER, A, k, from );
+        HermitianSwap( UpperOrLower::UPPER, A, k, from );
         P.Swap( k, from );
 
         // a12 := a12 / sqrt(alpha11)
@@ -56,7 +56,7 @@ void PivotedUpperUnblocked( Matrix<F>& A, Permutation& P )
         // A22 := A22 - a12' a12
         // NOTE: This is silly, but currently necessary
         Conjugate( a12 );
-        Her( UPPER, -F(1), a12, A22 );
+        Her( UpperOrLower::UPPER, -F(1), a12, A22 );
         Conjugate( a12 );
     }
 }
@@ -96,7 +96,7 @@ void PivotedUpperUnblocked
 
         // Apply the pivot
         const Int from = k + pivot.from[0];
-        HermitianSwap( UPPER, A, k, from );
+        HermitianSwap( UpperOrLower::UPPER, A, k, from );
         P.Swap( k, from );
 
         // a12 := a12 / sqrt(alpha11)
@@ -108,7 +108,7 @@ void PivotedUpperUnblocked
         // A22 := A22 - a12' a12
         // NOTE: This is silly, but currently necessary
         Conjugate( a12 );
-        Her( UPPER, -F(1), a12, A22 );
+        Her( UpperOrLower::UPPER, -F(1), a12, A22 );
         Conjugate( a12 );
     }
 }
@@ -161,7 +161,7 @@ void PivotedUpperPanel
         const Int from = k + pivot.from[0];
 
         // Apply the pivot
-        HermitianSwap( UPPER, AFull, k+off, from+off );
+        HermitianSwap( UpperOrLower::UPPER, AFull, k+off, from+off );
         PFull.Swap( k+off, from+off );
         RowSwap( dB, 0, pivot.from[0] );
         RowSwap( XB0, 0, pivot.from[0] );
@@ -232,7 +232,7 @@ PivotedUpperPanel
         const Int from = k + pivot.from[0];
 
         // Apply the pivot
-        HermitianSwap( UPPER, AFull, k+off, from+off );
+        HermitianSwap( UpperOrLower::UPPER, AFull, k+off, from+off );
         PFull.Swap( k+off, from+off );
         RowSwap( dB, 0, pivot.from[0] );
         RowSwap( XB0, 0, pivot.from[0] );
@@ -282,7 +282,7 @@ void PivotedUpperVariant3Blocked( Matrix<F>& A, Permutation& P )
         auto A22 = A( ind2, ind2 );
         auto X21 = XB1( ind2Pan, ind1Pan );
         auto Y21 = YB1( ind2Pan, ind1Pan );
-        Trrk( UPPER, NORMAL, TRANSPOSE, F(-1), X21, Y21, F(1), A22 );
+        Trrk( UpperOrLower::UPPER, NORMAL, TRANSPOSE, F(-1), X21, Y21, F(1), A22 );
     }
 }
 
@@ -321,7 +321,7 @@ void PivotedUpperVariant3Blocked
         auto A22 = A( ind2, ind2 );
         auto X21 = XB1( ind2Pan, ind1Pan );
         auto Y21 = YB1( ind2Pan, ind1Pan );
-        LocalTrrk( UPPER, TRANSPOSE, F(-1), X21, Y21, F(1), A22 );
+        LocalTrrk( UpperOrLower::UPPER, TRANSPOSE, F(-1), X21, Y21, F(1), A22 );
     }
 }
 

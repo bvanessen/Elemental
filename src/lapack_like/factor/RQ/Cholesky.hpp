@@ -22,9 +22,9 @@ void Cholesky( Matrix<F>& A, Matrix<F>& R )
     EL_DEBUG_CSE
     if( A.Height() > A.Width() )
         LogicError("A A^H will be singular");
-    Herk( UPPER, NORMAL, Base<F>(1), A, R );
-    El::ReverseCholesky( UPPER, R );
-    Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), R, A );
+    Herk( UpperOrLower::UPPER, NORMAL, Base<F>(1), A, R );
+    El::ReverseCholesky( UpperOrLower::UPPER, R );
+    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), R, A );
 }
 
 template<typename F>
@@ -42,10 +42,10 @@ void Cholesky( AbstractDistMatrix<F>& APre, AbstractDistMatrix<F>& RPre )
     auto& R = RProx.Get();
 
     Zeros( R, m, m );
-    Herk( UPPER, NORMAL, Base<F>(1), A.Matrix(), Base<F>(0), R.Matrix() );
+    Herk( UpperOrLower::UPPER, NORMAL, Base<F>(1), A.Matrix(), Base<F>(0), R.Matrix() );
     El::AllReduce( R, A.RowComm() );
-    El::ReverseCholesky( UPPER, R.Matrix() );
-    Trsm( LEFT, UPPER, NORMAL, NON_UNIT, F(1), R.Matrix(), A.Matrix() );
+    El::ReverseCholesky( UpperOrLower::UPPER, R.Matrix() );
+    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), R.Matrix(), A.Matrix() );
 }
 
 } // namespace rq

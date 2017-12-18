@@ -59,7 +59,7 @@ void LN_C
         Transpose( B1_VR_STAR, B1Trans_STAR_MR, conjugate );
 
         LocalTrr2k
-        ( LOWER, NORMAL, NORMAL, NORMAL, NORMAL,
+        ( UpperOrLower::LOWER, NORMAL, NORMAL, NORMAL, NORMAL,
           alpha,    A1_MC_STAR, B1Trans_STAR_MR,
           alphaSec, B1_MC_STAR, A1Trans_STAR_MR, T(1), C );
     }
@@ -105,7 +105,7 @@ void LN_Dot
 
         Z.Resize( nbOuter, nbOuter );
         Syr2k
-        ( LOWER, NORMAL, alpha, A1.Matrix(), B1.Matrix(), Z.Matrix(),
+        ( UpperOrLower::LOWER, NORMAL, alpha, A1.Matrix(), B1.Matrix(), Z.Matrix(),
           conjugate );
         AxpyContract( T(1), Z, C11 );
 

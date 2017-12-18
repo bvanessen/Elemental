@@ -73,9 +73,9 @@ void Syrk
 {
     EL_DEBUG_CSE
     ScaleTrapezoid( beta, uplo, C );
-    if( uplo == LOWER && orientation == NORMAL )
+    if( uplo == UpperOrLower::LOWER && orientation == NORMAL )
         syrk::LN( alpha, A, C, conjugate );
-    else if( uplo == LOWER )
+    else if( uplo == UpperOrLower::LOWER )
         syrk::LT( alpha, A, C, conjugate );
     else if( orientation == NORMAL )
         syrk::UN( alpha, A, C, conjugate );

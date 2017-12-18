@@ -26,7 +26,7 @@ void AfterLUPartialPiv( Matrix<Field>& A, const Permutation& P )
     if( A.Height() != A.Width() )
         LogicError("Cannot invert non-square matrices");
 
-    TriangularInverse( UPPER, NON_UNIT, A );
+    TriangularInverse( UpperOrLower::UPPER, NON_UNIT, A );
 
     const Int n = A.Height();
 
@@ -49,14 +49,14 @@ void AfterLUPartialPiv( Matrix<Field>& A, const Permutation& P )
         auto L21( A21 );
 
         // Zero the strictly lower triangular portion of A1
-        MakeTrapezoidal( UPPER, A11 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A11 );
         Zero( A21 );
 
         // Perform the lazy update of A1
         Gemm( NORMAL, NORMAL, Field(-1), A2, L21, Field(1), A1 );
 
         // Solve against this diagonal block of L11
-        Trsm( RIGHT, LOWER, NORMAL, UNIT, Field(1), L11, A1 );
+        Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, UNIT, Field(1), L11, A1 );
     }
 
     // inv(A) := inv(A) P
@@ -87,7 +87,7 @@ void AfterLUPartialPiv
     if( A.Height() != A.Width() )
         LogicError("Cannot invert non-square matrices");
 
-    TriangularInverse( UPPER, NON_UNIT, A );
+    TriangularInverse( UpperOrLower::UPPER, NON_UNIT, A );
 
     const Grid& g = A.Grid();
     DistMatrix<Field,Dist::VC,  Dist::STAR> A1_VC_STAR(g);
@@ -120,7 +120,7 @@ void AfterLUPartialPiv
         Transpose( L21_VR_STAR, L21Trans_STAR_MR );
 
         // Zero the strictly lower triangular portion of A1
-        MakeTrapezoidal( UPPER, A11 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A11 );
         Zero( A21 );
 
         // Perform the lazy update of A1
@@ -133,7 +133,7 @@ void AfterLUPartialPiv
         // Solve against this diagonal block of L11
         A1_VC_STAR = A1;
         LocalTrsm
-        ( RIGHT, LOWER, NORMAL, UNIT, Field(1), L11_STAR_STAR, A1_VC_STAR );
+        ( RIGHT, UpperOrLower::LOWER, NORMAL, UNIT, Field(1), L11_STAR_STAR, A1_VC_STAR );
         A1 = A1_VC_STAR;
     }
 

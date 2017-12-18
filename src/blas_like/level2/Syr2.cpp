@@ -91,7 +91,7 @@ void Syr2
 
         const T* xBuffer = x_MC_STAR.LockedBuffer();
         const T* yBuffer = y_MC_STAR.LockedBuffer();
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             for( Int jLoc=0; jLoc<localWidth; ++jLoc )
             {
@@ -145,7 +145,7 @@ void Syr2
         const T* xBuffer = x_MC_STAR.LockedBuffer();
         const T* yBuffer = y_STAR_MC.LockedBuffer();
         const Int incy = y_STAR_MC.LDim();
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             for( Int jLoc=0; jLoc<localWidth; ++jLoc )
             {
@@ -201,7 +201,7 @@ void Syr2
         const T* xBuffer = x_STAR_MC.LockedBuffer();
         const T* yBuffer = y_MC_STAR.LockedBuffer();
         const Int incx = x_STAR_MC.LDim();
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             for( Int jLoc=0; jLoc<localWidth; ++jLoc )
             {
@@ -254,7 +254,7 @@ void Syr2
         const T* yBuffer = y_STAR_MC.LockedBuffer();
         const Int incx = x_STAR_MC.LDim();
         const Int incy = y_STAR_MC.LDim();
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             for( Int jLoc=0; jLoc<localWidth; ++jLoc )
             {

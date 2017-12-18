@@ -67,11 +67,11 @@ void Symm
     }
 
     C *= beta;
-    if( side == LEFT && uplo == LOWER )
+    if( side == LEFT && uplo == UpperOrLower::LOWER )
         symm::LL( alpha, A, B, C, conjugate );
     else if( side == LEFT )
         symm::LU( alpha, A, B, C, conjugate );
-    else if( uplo == LOWER )
+    else if( uplo == UpperOrLower::LOWER )
         symm::RL( alpha, A, B, C, conjugate );
     else
         symm::RU( alpha, A, B, C, conjugate );

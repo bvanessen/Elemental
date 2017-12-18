@@ -58,7 +58,7 @@ void LocalAccumulateLLN
 
         D11.AlignWith( L11 );
         D11 = L11;
-        MakeTrapezoidal( LOWER, D11 );
+        MakeTrapezoidal( UpperOrLower::LOWER, D11 );
         if( diag == UNIT )
             FillDiagonal( D11, T(1) );
         LocalGemm( NORMAL, orientation, alpha, D11, X1Trans, T(1), Z1 );
@@ -156,7 +156,7 @@ void LLNCOld
 
         L11_STAR_STAR = L11;
         X1_STAR_VR = X1;
-        LocalTrmm( LEFT, LOWER, NORMAL, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
+        LocalTrmm( LEFT, UpperOrLower::LOWER, NORMAL, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
         X1 = X1_STAR_VR;
 
         L10_STAR_MC.AlignWith( X0 );
@@ -222,7 +222,7 @@ void LLNC
         L11_STAR_STAR = L11;
         X1_STAR_VR.AlignWith( X1 );
         Transpose( X1Trans_MR_STAR, X1_STAR_VR );
-        LocalTrmm( LEFT, LOWER, NORMAL, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
+        LocalTrmm( LEFT, UpperOrLower::LOWER, NORMAL, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
         X1 = X1_STAR_VR;
     }
 }

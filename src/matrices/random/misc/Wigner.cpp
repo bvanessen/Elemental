@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level1.hpp>
@@ -16,7 +16,7 @@ void Wigner( Matrix<F>& A, Int n, F mean, Base<F> stddev )
 {
     EL_DEBUG_CSE
     Gaussian( A, n, n, mean, stddev );
-    MakeHermitian( LOWER, A );
+    MakeHermitian( UpperOrLower::LOWER, A );
 }
 
 template<typename F>
@@ -24,7 +24,7 @@ void Wigner( ElementalMatrix<F>& A, Int n, F mean, Base<F> stddev )
 {
     EL_DEBUG_CSE
     Gaussian( A, n, n, mean, stddev );
-    MakeHermitian( LOWER, A );
+    MakeHermitian( UpperOrLower::LOWER, A );
 }
 
 #define PROTO(F) \

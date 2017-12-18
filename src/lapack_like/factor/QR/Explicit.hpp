@@ -27,7 +27,7 @@ void ExplicitTriang( Matrix<F>& A, const QRCtrl<Base<F>>& ctrl )
         Householder( A, householderScalars, signature );
 
     A.Resize( householderScalars.Height(), A.Width() );
-    MakeTrapezoidal( UPPER, A );
+    MakeTrapezoidal( UpperOrLower::UPPER, A );
 }
 
 template<typename F>
@@ -45,7 +45,7 @@ void ExplicitTriang( AbstractDistMatrix<F>& A, const QRCtrl<Base<F>>& ctrl )
         Householder( A, householderScalars, signature );
 
     A.Resize( householderScalars.Height(), A.Width() );
-    MakeTrapezoidal( UPPER, A );
+    MakeTrapezoidal( UpperOrLower::UPPER, A );
 }
 
 template<typename F>
@@ -67,7 +67,7 @@ void ExplicitUnitary
     {
         A.Resize( A.Height(), householderScalars.Height() );
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
         DiagonalScale( RIGHT, NORMAL, signature, A );
     }
     else
@@ -103,7 +103,7 @@ void ExplicitUnitary
     {
         A.Resize( A.Height(), householderScalars.Height() );
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
         DiagonalScale( RIGHT, NORMAL, signature, A );
     }
     else
@@ -139,13 +139,13 @@ void Explicit
 
     auto AT = A( IR(0,numIts), IR(0,n) );
     R = AT;
-    MakeTrapezoidal( UPPER, R );
+    MakeTrapezoidal( UpperOrLower::UPPER, R );
 
     if( thinQR )
     {
         A.Resize( m, numIts );
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
         DiagonalScale( RIGHT, NORMAL, signature, A );
     }
     else
@@ -186,13 +186,13 @@ void Explicit
 
     auto AT = A( IR(0,numIts), IR(0,n) );
     Copy( AT, R );
-    MakeTrapezoidal( UPPER, R );
+    MakeTrapezoidal( UpperOrLower::UPPER, R );
 
     if( thinQR )
     {
         A.Resize( m, numIts );
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
         DiagonalScale( RIGHT, NORMAL, signature, A );
     }
     else
@@ -224,13 +224,13 @@ void Explicit
 
     auto AT = A( IR(0,numIts), IR(0,n) );
     R = AT;
-    MakeTrapezoidal( UPPER, R );
+    MakeTrapezoidal( UpperOrLower::UPPER, R );
 
     if( thinQR )
     {
         A.Resize( m, numIts );
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
         DiagonalScale( RIGHT, NORMAL, signature, A );
     }
     else
@@ -269,13 +269,13 @@ void Explicit
 
     auto AT = A( IR(0,numIts), IR(0,n) );
     Copy( AT, R );
-    MakeTrapezoidal( UPPER, R );
+    MakeTrapezoidal( UpperOrLower::UPPER, R );
 
     if( thinQR )
     {
         A.Resize( m, numIts );
         ExpandPackedReflectors
-        ( LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
+        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
         DiagonalScale( RIGHT, NORMAL, signature, A );
     }
     else

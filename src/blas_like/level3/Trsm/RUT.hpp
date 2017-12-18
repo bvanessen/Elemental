@@ -62,7 +62,7 @@ void RUT
         X1_VC_STAR = X1;
 
         LocalTrsm
-        ( RIGHT, UPPER, orientation, diag,
+        ( RIGHT, UpperOrLower::UPPER, orientation, diag,
           F(1), U11_STAR_STAR, X1_VC_STAR, checkIfSingular );
 
         X1Trans_STAR_MC.AlignWith( X0 );

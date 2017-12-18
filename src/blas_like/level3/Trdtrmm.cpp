@@ -23,7 +23,7 @@ void Trdtrmm( UpperOrLower uplo, Matrix<F>& A, bool conjugate )
       if( A.Height() != A.Width() )
           LogicError("A must be square");
     )
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         trdtrmm::LVar1( A, conjugate );
     else
         trdtrmm::UVar1( A, conjugate );
@@ -38,7 +38,7 @@ void Trdtrmm
       if( A.Height() != A.Width() )
           LogicError("A must be square");
     )
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         trdtrmm::LVar1( A, dOff, conjugate );
     else
         LogicError("Not yet written");
@@ -52,7 +52,7 @@ void Trdtrmm( UpperOrLower uplo, AbstractDistMatrix<F>& A, bool conjugate )
       if( A.Height() != A.Width() )
           LogicError("A must be square");
     )
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         trdtrmm::LVar1( A, conjugate );
     else
         trdtrmm::UVar1( A, conjugate );
@@ -69,7 +69,7 @@ void Trdtrmm
       if( A.Height() != A.Width() )
           LogicError("A must be square");
     )
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         trdtrmm::LVar1( A, dOff, conjugate );
     else
         LogicError("Not yet written");

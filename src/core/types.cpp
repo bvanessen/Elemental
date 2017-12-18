@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -72,7 +72,7 @@ char LeftOrRightToChar( LeftOrRight side )
     }
     return sideChar;
 }
-    
+
 LeftOrRight CharToLeftOrRight( char c )
 {
     // Most compilers' logic for detecting potentially uninitialized variables
@@ -160,7 +160,7 @@ char UpperOrLowerToChar( UpperOrLower uplo )
     char uploChar;
     switch( uplo )
     {
-        case LOWER: uploChar = 'L'; break;
+        case UpperOrLower::LOWER: uploChar = 'L'; break;
         default:    uploChar = 'U'; break;
     }
     return uploChar;
@@ -170,11 +170,11 @@ UpperOrLower CharToUpperOrLower( char c )
 {
     // Most compilers' logic for detecting potentially uninitialized variables
     // is horrendously bad.
-    UpperOrLower uplo=LOWER;
+    UpperOrLower uplo=UpperOrLower::LOWER;
     switch( c )
     {
-        case 'L': uplo = LOWER; break;
-        case 'U': uplo = UPPER; break;
+        case 'L': uplo = UpperOrLower::LOWER; break;
+        case 'U': uplo = UpperOrLower::UPPER; break;
         default:
             LogicError("CharToUpperOrLower expects char in {L,U}");
     }

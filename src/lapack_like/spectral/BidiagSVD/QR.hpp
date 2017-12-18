@@ -912,7 +912,7 @@ LAPACKHelper
         Matrix<Real> superDiagPlus(n,1);
         superDiagPlus = superDiag;
         lapack::BidiagSVDQRAlg
-        ( UPPER, n, VAdj.Width(), U.Height(),
+        ( UpperOrLower::UPPER, n, VAdj.Width(), U.Height(),
           mainDiag.Buffer(), superDiagPlus.Buffer(),
           VAdj.Buffer(), VAdj.LDim(),
           U.Buffer(), U.LDim() );
@@ -920,7 +920,7 @@ LAPACKHelper
     else
     {
         lapack::BidiagSVDQRAlg
-        ( UPPER, n, VAdj.Width(), U.Height(),
+        ( UpperOrLower::UPPER, n, VAdj.Width(), U.Height(),
           mainDiag.Buffer(), superDiag.Buffer(),
           VAdj.Buffer(), VAdj.LDim(),
           U.Buffer(), U.LDim() );

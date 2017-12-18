@@ -100,7 +100,7 @@ Panel
             LogicError("Have not yet added diagonal update");
             const auto diagMax = VectorMaxAbsLoc( GetDiagonal(ABR) );
             SymmetricSwap
-            ( LOWER, AFull, off+k, off+k+diagMax.index, conjugate );
+            ( UpperOrLower::LOWER, AFull, off+k, off+k+diagMax.index, conjugate );
             PFull.Swap( off+k, off+k+diagMax.index );
             RowSwap( X0, k, k+diagMax.index );
             RowSwap( Y0, k, k+diagMax.index );
@@ -116,7 +116,7 @@ Panel
         }
 
         // Apply the symmetric pivot
-        SymmetricSwap( LOWER, AFull, off+to, off+from, conjugate );
+        SymmetricSwap( UpperOrLower::LOWER, AFull, off+to, off+from, conjugate );
         PFull.Swap( off+to, off+from );
         RowSwap( X0, to, from );
         RowSwap( Y0, to, from );
@@ -172,8 +172,8 @@ Panel
                 Y21 = A21;
 
             auto D11Inv = D11;
-            Symmetric2x2Inv( LOWER, D11Inv, conjugate );
-            MakeSymmetric( LOWER, D11Inv, conjugate );
+            Symmetric2x2Inv( UpperOrLower::LOWER, D11Inv, conjugate );
+            MakeSymmetric( UpperOrLower::LOWER, D11Inv, conjugate );
             Transform2x2Cols( D11Inv, A21, 0, 1 );
 
             X21 = A21;
@@ -237,7 +237,7 @@ Panel
             LogicError("Have not yet added diagonal update");
             const auto diagMax = VectorMaxAbsLoc( GetDiagonal(ABR) );
             SymmetricSwap
-            ( LOWER, AFull, off+k, off+k+diagMax.index, conjugate );
+            ( UpperOrLower::LOWER, AFull, off+k, off+k+diagMax.index, conjugate );
             PFull.Swap( off+k, off+k+diagMax.index );
             RowSwap( X0, k, k+diagMax.index );
             RowSwap( Y0, k, k+diagMax.index );
@@ -253,7 +253,7 @@ Panel
         }
 
         // Apply the symmetric pivot
-        SymmetricSwap( LOWER, AFull, off+to, off+from, conjugate );
+        SymmetricSwap( UpperOrLower::LOWER, AFull, off+to, off+from, conjugate );
         PFull.Swap( off+to, off+from );
         RowSwap( X0, to, from );
         RowSwap( Y0, to, from );
@@ -314,8 +314,8 @@ Panel
             D11_STAR_STAR = D11;
 
             D11Inv_STAR_STAR = D11_STAR_STAR;
-            Symmetric2x2Inv( LOWER, D11Inv_STAR_STAR.Matrix(), conjugate );
-            MakeSymmetric( LOWER, D11Inv_STAR_STAR.Matrix(), conjugate );
+            Symmetric2x2Inv( UpperOrLower::LOWER, D11Inv_STAR_STAR.Matrix(), conjugate );
+            MakeSymmetric( UpperOrLower::LOWER, D11Inv_STAR_STAR.Matrix(), conjugate );
             Transform2x2Cols( D11Inv_STAR_STAR, A21, 0, 1 );
 
             X21 = A21;

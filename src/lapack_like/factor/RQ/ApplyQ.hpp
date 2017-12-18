@@ -49,7 +49,7 @@ void ApplyQ
     }
 
     ApplyPackedReflectors
-    ( side, LOWER, HORIZONTAL, direction, conjugation, offset,
+    ( side, UpperOrLower::LOWER, HORIZONTAL, direction, conjugation, offset,
       A, householderScalars, B );
 
     if( !applyDFirst )
@@ -119,7 +119,7 @@ void ApplyQ
     }
 
     ApplyPackedReflectors
-    ( side, LOWER, HORIZONTAL, direction, conjugation, offset,
+    ( side, UpperOrLower::LOWER, HORIZONTAL, direction, conjugation, offset,
       A, householderScalars, B );
 
     if( !applyDFirst )

@@ -336,7 +336,7 @@ void LUTLarge
 
         // X1[* ,VR] := U11^-[T/H][*,*] X1[* ,VR]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UPPER, orientation, F(1), U11_STAR_STAR, shifts, X1_STAR_VR );
+        ( LEFT, UpperOrLower::UPPER, orientation, F(1), U11_STAR_STAR, shifts, X1_STAR_VR );
 
         X1_STAR_MR.AlignWith( X2 );
         X1_STAR_MR  = X1_STAR_VR; // X1[* ,MR]  <- X1[* ,VR]
@@ -410,7 +410,7 @@ void LUTLarge
 
         // X1[* ,VR] := U11^-[T/H][*,*] X1[* ,VR]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UPPER, orientation,
+        ( LEFT, UpperOrLower::UPPER, orientation,
           C(1), U11_STAR_STAR, shifts, X1Real_STAR_VR, X1Imag_STAR_VR );
 
         X1Real_STAR_MR.AlignWith( X2Real );
@@ -489,7 +489,7 @@ void LUTMedium
         shifts_MR_STAR_Align.AlignWith( X1Trans_MR_STAR );
         shifts_MR_STAR_Align = shifts_MR_STAR;
         LocalMultiShiftQuasiTrsm
-        ( RIGHT, UPPER, NORMAL,
+        ( RIGHT, UpperOrLower::UPPER, NORMAL,
           F(1), U11_STAR_STAR, shifts_MR_STAR_Align, X1Trans_MR_STAR );
 
         Transpose( X1Trans_MR_STAR, X1, (orientation==ADJOINT) );
@@ -568,7 +568,7 @@ void LUTMedium
         shifts_MR_STAR_Align.AlignWith( X1RealTrans_MR_STAR );
         shifts_MR_STAR_Align = shifts_MR_STAR;
         LocalMultiShiftQuasiTrsm
-        ( RIGHT, UPPER, NORMAL,
+        ( RIGHT, UpperOrLower::UPPER, NORMAL,
           C(1), U11_STAR_STAR, shifts_MR_STAR_Align,
                 X1RealTrans_MR_STAR, X1ImagTrans_MR_STAR );
 
@@ -636,7 +636,7 @@ void LUTSmall
 
         // X1[* ,* ] := U11^-[T/H][* ,* ] X1[* ,* ]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UPPER, orientation,
+        ( LEFT, UpperOrLower::UPPER, orientation,
           F(1), U11_STAR_STAR, shifts_STAR_STAR, X1_STAR_STAR );
 
         X1 = X1_STAR_STAR;
@@ -701,7 +701,7 @@ void LUTSmall
 
         // X1[* ,* ] := U11^-[T/H][* ,* ] X1[* ,* ]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UPPER, orientation,
+        ( LEFT, UpperOrLower::UPPER, orientation,
           C(1), U11_STAR_STAR, shifts_STAR_STAR,
                 X1Real_STAR_STAR, X1Imag_STAR_STAR );
 

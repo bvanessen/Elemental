@@ -71,7 +71,7 @@ PanelHouseholder
     auto sgn = []( const Real& delta )
                { return delta >= Real(0) ? Real(1) : Real(-1); };
     EntrywiseMap( signature, MakeFunction(sgn) );
-    DiagonalScaleTrapezoid( RIGHT, UPPER, NORMAL, signature, R, -iOff );
+    DiagonalScaleTrapezoid( RIGHT, UpperOrLower::UPPER, NORMAL, signature, R, -iOff );
 }
 
 template<typename Field>
@@ -146,7 +146,7 @@ PanelHouseholder
     auto sgn = []( const Real& delta )
                { return delta >= Real(0) ? Real(1) : Real(-1); };
     EntrywiseMap( signature, MakeFunction(sgn) );
-    DiagonalScaleTrapezoid( RIGHT, UPPER, NORMAL, signature, R, -iOff );
+    DiagonalScaleTrapezoid( RIGHT, UpperOrLower::UPPER, NORMAL, signature, R, -iOff );
 }
 
 } // namespace rq

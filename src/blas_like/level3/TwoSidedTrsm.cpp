@@ -21,7 +21,7 @@ void TwoSidedTrsm
   const Matrix<F>& B )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         twotrsm::LVar4( diag, A, B );
     else
         twotrsm::UVar4( diag, A, B );
@@ -34,7 +34,7 @@ void TwoSidedTrsm
   const AbstractDistMatrix<F>& B )
 {
     EL_DEBUG_CSE
-    if( uplo == LOWER )
+    if( uplo == UpperOrLower::LOWER )
         twotrsm::LVar4( diag, A, B );
     else
         twotrsm::UVar4( diag, A, B );

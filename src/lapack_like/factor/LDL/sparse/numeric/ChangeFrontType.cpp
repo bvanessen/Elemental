@@ -113,17 +113,17 @@ void ChangeFrontType( DistFront<F>& front, LDLFrontType type, bool recurse )
             {
                 const Int snSize = front.L1D.Width();
                 auto LT = front.L1D( IR(0,snSize), IR(0,snSize) );
-                TriangularInverse( LOWER, UNIT, LT );
+                TriangularInverse( UpperOrLower::LOWER, UNIT, LT );
                 FillDiagonal( LT, F(1) );
-                MakeTrapezoidal( LOWER, LT );
+                MakeTrapezoidal( UpperOrLower::LOWER, LT );
             }
             else
             {
                 const Int snSize = front.L2D.Width();
                 auto LT = front.L2D( IR(0,snSize), IR(0,snSize) );
-                TriangularInverse( LOWER, UNIT, LT );
+                TriangularInverse( UpperOrLower::LOWER, UNIT, LT );
                 FillDiagonal( LT, F(1) );
-                MakeTrapezoidal( LOWER, LT );
+                MakeTrapezoidal( UpperOrLower::LOWER, LT );
             }
         }
 

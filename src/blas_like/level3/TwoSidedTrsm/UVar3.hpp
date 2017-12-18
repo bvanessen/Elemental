@@ -58,7 +58,7 @@ void UVar3( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         Axpy( F(-1)/F(2), Y01, A01 );
 
         // A11 := A11 - (A01' U01 + U01' A01)
-        Her2k( UPPER, ADJOINT, F(-1), A01, U01, F(1), A11 );
+        Her2k( UpperOrLower::UPPER, ADJOINT, F(-1), A01, U01, F(1), A11 );
 
         // A11 := inv(U11)' A11 inv(U11)
         twotrsm::UUnb( diag, A11, U11 );
@@ -67,19 +67,19 @@ void UVar3( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         Gemm( ADJOINT, NORMAL, F(-1), U01, A02, F(1), A12 );
 
         // A12 := inv(U11)' A12
-        Trsm( LEFT, UPPER, ADJOINT, diag, F(1), U11, A12 );
+        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U11, A12 );
 
         // A01 := A01 - 1/2 Y01
         Axpy( F(-1)/F(2), Y01, A01 );
 
         // A01 := A01 inv(U11)
-        Trsm( RIGHT, UPPER, NORMAL, diag, F(1), U11, A01 );
+        Trsm( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11, A01 );
 
         // Y02 := Y02 + A01 U12
         Gemm( NORMAL, NORMAL, F(1), A01, U12, F(1), Y02 );
 
         // Y12 := Y12 + A11 U12
-        Hemm( LEFT, UPPER, F(1), A11, U12, F(1), Y12 );
+        Hemm( LEFT, UpperOrLower::UPPER, F(1), A11, U12, F(1), Y12 );
 
         // Y12 := Y12 + A01' U02
         Gemm( ADJOINT, NORMAL, F(1), A01, U02, F(1), Y12 );
@@ -158,16 +158,16 @@ void UVar3
         X11_STAR_STAR.Resize( A11.Height(), A11.Width() );
         Zero( X11_STAR_STAR );
         Her2k
-        ( UPPER, ADJOINT,
+        ( UpperOrLower::UPPER, ADJOINT,
           F(1), A01_VC_STAR.Matrix(), U01_VC_STAR.Matrix(),
           F(0), X11_STAR_STAR.Matrix() );
-        MakeTrapezoidal( UPPER, X11_STAR_STAR );
+        MakeTrapezoidal( UpperOrLower::UPPER, X11_STAR_STAR );
         AxpyContract( F(-1), X11_STAR_STAR, A11 );
 
         // A11 := inv(U11)' A11 inv(U11)
         A11_STAR_STAR = A11;
         U11_STAR_STAR = U11;
-        TwoSidedTrsm( UPPER, diag, A11_STAR_STAR, U11_STAR_STAR );
+        TwoSidedTrsm( UpperOrLower::UPPER, diag, A11_STAR_STAR, U11_STAR_STAR );
         A11 = A11_STAR_STAR;
 
         // A12 := A12 - U01' A02
@@ -181,7 +181,7 @@ void UVar3
         A12_STAR_VR.AlignWith( A12 );
         A12_STAR_VR = A12;
         LocalTrsm
-        ( LEFT, UPPER, ADJOINT, diag, F(1), U11_STAR_STAR, A12_STAR_VR );
+        ( LEFT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U11_STAR_STAR, A12_STAR_VR );
         A12 = A12_STAR_VR;
 
         // A01 := A01 - 1/2 Y01
@@ -190,7 +190,7 @@ void UVar3
         // A01 := A01 inv(U11)
         A01_VC_STAR = A01;
         LocalTrsm
-        ( RIGHT, UPPER, NORMAL, diag, F(1), U11_STAR_STAR, A01_VC_STAR );
+        ( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11_STAR_STAR, A01_VC_STAR );
         A01 = A01_VC_STAR;
 
         // Y02 := Y02 + A01 U12
@@ -202,7 +202,7 @@ void UVar3
         ( NORMAL, ADJOINT, F(1), A01_MC_STAR, U12Adj_MR_STAR, F(1), Y02 );
 
         // Y12 := Y12 + A11 U12
-        MakeHermitian( UPPER, A11_STAR_STAR );
+        MakeHermitian( UpperOrLower::UPPER, A11_STAR_STAR );
         A11_MC_STAR.AlignWith( Y12 );
         A11_MC_STAR = A11_STAR_STAR;
         LocalGemm

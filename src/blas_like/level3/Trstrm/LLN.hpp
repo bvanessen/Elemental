@@ -61,7 +61,7 @@ void LLN
 
     Matrix<F> Z11;
 
-    ScaleTrapezoid( alpha, LOWER, X );
+    ScaleTrapezoid( alpha, UpperOrLower::LOWER, X );
     for( Int k=0; k<n; k+=bsize )
     {
         const Int nb = Min(bsize,n-k);
@@ -78,11 +78,11 @@ void LLN
         auto X20 = X( ind2, ind0 );
         auto X21 = X( ind2, ind1 );
 
-        Trsm( LEFT, LOWER, NORMAL, diag, F(1), L11, X10, checkIfSingular );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11, X10, checkIfSingular );
         trstrm::LLNUnb( diag, F(1), L11, X11 );
         Gemm( NORMAL, NORMAL, F(-1), L21, X10, F(1), X20 );
         Z11 = X11;
-        MakeTrapezoidal( LOWER, Z11 );
+        MakeTrapezoidal( UpperOrLower::LOWER, Z11 );
         Gemm( NORMAL, NORMAL, F(-1), L21, Z11, F(1), X21 );
     }
 }
@@ -111,7 +111,7 @@ void LLN
     DistMatrix<F,Dist::STAR,Dist::MR  > X10_STAR_MR(g), X11_STAR_MR(g);
     DistMatrix<F,Dist::STAR,Dist::VR  > X10_STAR_VR(g);
 
-    ScaleTrapezoid( alpha, LOWER, X );
+    ScaleTrapezoid( alpha, UpperOrLower::LOWER, X );
     for( Int k=0; k<n; k+=bsize )
     {
         const Int nb = Min(bsize,n-k);
@@ -133,15 +133,15 @@ void LLN
         X10_STAR_VR = X10;
 
         LocalTrsm
-        ( LEFT, LOWER, NORMAL, diag, F(1), L11_STAR_STAR, X10_STAR_VR,
+        ( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11_STAR_STAR, X10_STAR_VR,
           checkIfSingular );
         Trstrm
-        ( LEFT, LOWER, NORMAL, diag, F(1), L11_STAR_STAR, X11_STAR_STAR,
+        ( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11_STAR_STAR, X11_STAR_STAR,
           checkIfSingular );
         X11 = X11_STAR_STAR;
         X11_STAR_MR.AlignWith( X21 );
         X11_STAR_MR = X11_STAR_STAR;
-        MakeTrapezoidal( LOWER, X11_STAR_MR );
+        MakeTrapezoidal( UpperOrLower::LOWER, X11_STAR_MR );
 
         X10_STAR_MR.AlignWith( X20 );
         X10_STAR_MR = X10_STAR_VR;

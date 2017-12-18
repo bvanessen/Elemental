@@ -165,7 +165,7 @@ void BusingerGolub
     GetRealPartOfDiagonal(R,signature);
     auto sgn = [&]( const Real& delta ) { return delta >= zero ? one : -one; };
     EntrywiseMap( signature, MakeFunction(sgn) );
-    DiagonalScaleTrapezoid( LEFT, UPPER, NORMAL, signature, R );
+    DiagonalScaleTrapezoid( LEFT, UpperOrLower::UPPER, NORMAL, signature, R );
 
     // Ensure that t is the correct length
     householderScalars.Resize( k, 1 );
@@ -483,7 +483,7 @@ void BusingerGolub
     GetRealPartOfDiagonal(R,signature);
     auto sgn = [&]( const Real& delta ) { return delta >= zero ? one : -one; };
     EntrywiseMap( signature, MakeFunction(sgn) );
-    DiagonalScaleTrapezoid( LEFT, UPPER, NORMAL, signature, R );
+    DiagonalScaleTrapezoid( LEFT, UpperOrLower::UPPER, NORMAL, signature, R );
 }
 
 } // namespace qr

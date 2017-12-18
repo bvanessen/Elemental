@@ -9,7 +9,13 @@
 #ifndef EL_BLAS2_HPP
 #define EL_BLAS2_HPP
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/Typedefs.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
 
 template<typename T> void SetLocalSymvBlocksize( Int blocksize );
 template<typename T> Int LocalSymvBlocksize();
@@ -161,7 +167,7 @@ template<typename T>
 void LocalColAccumulate
 ( UpperOrLower uplo, T alpha,
   const DistMatrix<T>& A,
-  const DistMatrix<T,Dist::MC,Dist::STAR>& x_Dist::MC_STAR,
+  const DistMatrix<T,Dist::MC,Dist::STAR>& x_MC_STAR,
   const DistMatrix<T,Dist::MR,Dist::STAR>& x_MR_STAR,
         DistMatrix<T,Dist::MC,Dist::STAR>& z_MC_STAR,
         DistMatrix<T,Dist::MR,Dist::STAR>& z_MR_STAR,

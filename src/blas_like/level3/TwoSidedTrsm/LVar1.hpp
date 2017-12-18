@@ -48,16 +48,16 @@ void LVar1( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
         // Y10 := L10 A00
         L10.Resize( L10.Height(), A00.Width() );
         Zero( L10 );
-        Hemm( RIGHT, LOWER, F(1), A00, L10, F(0), Y10 );
+        Hemm( RIGHT, UpperOrLower::LOWER, F(1), A00, L10, F(0), Y10 );
 
         // A10 := A10 inv(L00)'
-        Trsm( RIGHT, LOWER, ADJOINT, diag, F(1), L00, A10 );
+        Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, diag, F(1), L00, A10 );
 
         // A10 := A10 - 1/2 Y10
         Axpy( F(-1)/F(2), Y10, A10 );
 
         // A11 := A11 - (A10 L10' + L10 A10')
-        Her2k( LOWER, NORMAL, F(-1), A10, L10, F(1), A11 );
+        Her2k( UpperOrLower::LOWER, NORMAL, F(-1), A10, L10, F(1), A11 );
 
         // A11 := inv(L11) A11 inv(L11)'
         twotrsm::LUnb( diag, A11, L11 );
@@ -66,7 +66,7 @@ void LVar1( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
         Axpy( F(-1)/F(2), Y10, A10 );
 
         // A10 := inv(L11) A10
-        Trsm( LEFT, LOWER, NORMAL, diag, F(1), L11, A10 );
+        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11, A10 );
     }
 }
 
@@ -147,7 +147,7 @@ void LVar1
 
         // A10 := A10 inv(L00)'
         // This is the bottleneck because A10 only has blocksize rows
-        Trsm( RIGHT, LOWER, ADJOINT, diag, F(1), L00, A10 );
+        Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, diag, F(1), L00, A10 );
 
         // A10 := A10 - 1/2 Y10
         Axpy( F(-1)/F(2), Y10, A10 );
@@ -160,7 +160,7 @@ void LVar1
         X11_STAR_STAR.Resize( nb, nb );
         Zero( X11_STAR_STAR );
         Her2k
-        ( LOWER, NORMAL,
+        ( UpperOrLower::LOWER, NORMAL,
           F(-1), A10_STAR_VR.Matrix(), L10_STAR_VR.Matrix(),
           F(0), X11_STAR_STAR.Matrix() );
         AxpyContract( F(1), X11_STAR_STAR, A11 );
@@ -168,7 +168,7 @@ void LVar1
         // A11 := inv(L11) A11 inv(L11)'
         A11_STAR_STAR = A11;
         L11_STAR_STAR = L11;
-        TwoSidedTrsm( LOWER, diag, A11_STAR_STAR, L11_STAR_STAR );
+        TwoSidedTrsm( UpperOrLower::LOWER, diag, A11_STAR_STAR, L11_STAR_STAR );
         A11 = A11_STAR_STAR;
 
         // A10 := A10 - 1/2 Y10
@@ -177,7 +177,7 @@ void LVar1
         // A10 := inv(L11) A10
         A10_STAR_VR = A10;
         LocalTrsm
-        ( LEFT, LOWER, NORMAL, diag, F(1), L11_STAR_STAR, A10_STAR_VR );
+        ( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11_STAR_STAR, A10_STAR_VR );
         A10 = A10_STAR_VR;
     }
 }

@@ -40,7 +40,7 @@ Base<Ring> HermitianOneNorm( UpperOrLower uplo, const Matrix<Ring>& A )
         RuntimeError("Hermitian matrices must be square.");
 
     Real maxColSum = 0;
-    if( uplo == UPPER )
+    if( uplo == UpperOrLower::UPPER )
     {
         for( Int j=0; j<height; ++j )
         {
@@ -133,7 +133,7 @@ HermitianOneNorm( UpperOrLower uplo, const AbstractDistMatrix<Ring>& A )
         const Int localWidth = A.LocalWidth();
         const Matrix<Ring>& ALoc = A.LockedMatrix();
 
-        if( uplo == UPPER )
+        if( uplo == UpperOrLower::UPPER )
         {
             vector<Real> myPartialUpperColSums( localWidth ),
                          myPartialStrictlyUpperRowSums( localHeight );

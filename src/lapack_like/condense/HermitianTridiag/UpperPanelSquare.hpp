@@ -324,7 +324,7 @@ void UpperPanelSquare
         //   p01[MC] := triu(A00)[MC,MR] a01[MR]
         //   q01[MR] := triu(A00,+1)'[MR,MC] a01[MC]
         symv::LocalColAccumulate
-        ( UPPER, F(1), A00, a01_MC, a01_MR, p01_MC, q01_MR, true, ctrl );
+        ( UpperOrLower::UPPER, F(1), A00, a01_MC, a01_MR, p01_MC, q01_MR, true, ctrl );
 
         x21_MR.AlignWith( A02T );
         y21_MR.AlignWith( A02T );

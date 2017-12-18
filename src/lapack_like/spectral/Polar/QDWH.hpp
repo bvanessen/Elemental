@@ -96,11 +96,11 @@ QDWHInfo QDWHInner( Matrix<F>& A, Base<F> sMinUpper, const QDWHCtrl& ctrl )
             // Use faster Cholesky-based algorithm since A is well-conditioned
             //
             Identity( C, n, n );
-            Herk( LOWER, ADJOINT, c, A, Real(1), C );
-            Cholesky( LOWER, C );
+            Herk( UpperOrLower::LOWER, ADJOINT, c, A, Real(1), C );
+            Cholesky( UpperOrLower::LOWER, C );
             ATemp = A;
-            Trsm( RIGHT, LOWER, ADJOINT, NON_UNIT, F(1), C, ATemp );
-            Trsm( RIGHT, LOWER, NORMAL, NON_UNIT, F(1), C, ATemp );
+            Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), C, ATemp );
+            Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), C, ATemp );
             A *= beta;
             Axpy( alpha, ATemp, A );
             ++info.numCholIts;
@@ -134,7 +134,7 @@ QDWHInfo QDWH( Matrix<F>& A, const QDWHCtrl& ctrl )
         qr::ExplicitTriang( Y );
         try
         {
-            TriangularInverse( UPPER, NON_UNIT, Y );
+            TriangularInverse( UpperOrLower::UPPER, NON_UNIT, Y );
             sMinUpper = Real(1) / OneNorm( Y );
         } catch( SingularMatrixException& e ) { sMinUpper = 0; }
     }
@@ -157,8 +157,8 @@ QDWHInfo QDWH( Matrix<F>& A, Matrix<F>& P, const QDWHCtrl& ctrl )
     Matrix<F> ACopy( A );
     auto info = QDWH( A, ctrl );
     Zeros( P, A.Height(), A.Height() );
-    Trrk( LOWER, NORMAL, NORMAL, F(1), A, ACopy, F(0), P );
-    MakeHermitian( LOWER, P );
+    Trrk( UpperOrLower::LOWER, NORMAL, NORMAL, F(1), A, ACopy, F(0), P );
+    MakeHermitian( UpperOrLower::LOWER, P );
     return info;
 }
 
@@ -242,11 +242,11 @@ QDWHInner
             // Use faster Cholesky-based algorithm since A is well-conditioned
             //
             Identity( C, n, n );
-            Herk( LOWER, ADJOINT, c, A, Real(1), C );
-            Cholesky( LOWER, C );
+            Herk( UpperOrLower::LOWER, ADJOINT, c, A, Real(1), C );
+            Cholesky( UpperOrLower::LOWER, C );
             ATemp = A;
-            Trsm( RIGHT, LOWER, ADJOINT, NON_UNIT, F(1), C, ATemp );
-            Trsm( RIGHT, LOWER, NORMAL, NON_UNIT, F(1), C, ATemp );
+            Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), C, ATemp );
+            Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), C, ATemp );
             A *= beta;
             Axpy( alpha, ATemp, A );
             ++info.numCholIts;
@@ -285,7 +285,7 @@ QDWH( AbstractDistMatrix<F>& APre, const QDWHCtrl& ctrl )
         qr::ExplicitTriang( Y );
         try
         {
-            TriangularInverse( UPPER, NON_UNIT, Y );
+            TriangularInverse( UpperOrLower::UPPER, NON_UNIT, Y );
             sMinUpper = Real(1) / OneNorm( Y );
         } catch( SingularMatrixException& e ) { sMinUpper = 0; }
     }
@@ -318,8 +318,8 @@ QDWH
     DistMatrix<F> ACopy( A );
     auto info = QDWH( A, ctrl );
     Zeros( P, A.Height(), A.Height() );
-    Trrk( LOWER, NORMAL, NORMAL, F(1), A, ACopy, F(0), P );
-    MakeHermitian( LOWER, P );
+    Trrk( UpperOrLower::LOWER, NORMAL, NORMAL, F(1), A, ACopy, F(0), P );
+    MakeHermitian( UpperOrLower::LOWER, P );
     return info;
 }
 
@@ -410,11 +410,11 @@ QDWHInner
             // a custom routine for forming L^2, where L is strictly lower
             MakeHermitian( uplo, A );
             Identity( C, n, n );
-            Herk( LOWER, ADJOINT, c, A, Real(1), C );
-            Cholesky( LOWER, C );
+            Herk( UpperOrLower::LOWER, ADJOINT, c, A, Real(1), C );
+            Cholesky( UpperOrLower::LOWER, C );
             ATemp = A;
-            Trsm( RIGHT, LOWER, ADJOINT, NON_UNIT, F(1), C, ATemp );
-            Trsm( RIGHT, LOWER, NORMAL, NON_UNIT, F(1), C, ATemp );
+            Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), C, ATemp );
+            Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), C, ATemp );
             A *= beta;
             Axpy( alpha, ATemp, A );
             ++info.numCholIts;
@@ -562,11 +562,11 @@ QDWHInner
             // a custom routine for forming L^2, where L is strictly lower
             MakeHermitian( uplo, A );
             Identity( C, n, n );
-            Herk( LOWER, ADJOINT, c, A, Real(1), C );
-            Cholesky( LOWER, C );
+            Herk( UpperOrLower::LOWER, ADJOINT, c, A, Real(1), C );
+            Cholesky( UpperOrLower::LOWER, C );
             ATemp = A;
-            Trsm( RIGHT, LOWER, ADJOINT, NON_UNIT, F(1), C, ATemp );
-            Trsm( RIGHT, LOWER, NORMAL, NON_UNIT, F(1), C, ATemp );
+            Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), C, ATemp );
+            Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), C, ATemp );
             A *= beta;
             Axpy( alpha, ATemp, A );
             ++info.numCholIts;

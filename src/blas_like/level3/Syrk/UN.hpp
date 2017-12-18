@@ -43,7 +43,7 @@ void UN_C
 
         A1_VR_STAR = A1_MC_STAR = A1;
         Transpose( A1_VR_STAR, A1Trans_STAR_MR, conjugate );
-        LocalTrrk( UPPER, alpha, A1_MC_STAR, A1Trans_STAR_MR, T(1), C );
+        LocalTrrk( UpperOrLower::UPPER, alpha, A1_MC_STAR, A1Trans_STAR_MR, T(1), C );
     }
 }
 
@@ -78,7 +78,7 @@ void UN_Dot
         auto C11 = C( indOuter, indOuter );
 
         Z.Resize( nbOuter, nbOuter );
-        Syrk( UPPER, NORMAL, alpha, A1.Matrix(), Z.Matrix(), conjugate );
+        Syrk( UpperOrLower::UPPER, NORMAL, alpha, A1.Matrix(), Z.Matrix(), conjugate );
         AxpyContract( T(1), Z, C11 );
 
         for( Int kInner=0; kInner<kOuter; kInner+=blockSize )

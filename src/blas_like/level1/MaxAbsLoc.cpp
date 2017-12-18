@@ -238,7 +238,7 @@ Entry<Base<Ring>> SymmetricMaxAbsLoc( UpperOrLower uplo, const Matrix<Ring>& A )
     pivot.value = 0;
     for( Int j=0; j<n; ++j )
     {
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             for( Int i=j; i<n; ++i )
             {
@@ -302,7 +302,7 @@ Entry<Base<Ring>> SymmetricMaxAbsLoc
         for( Int jLoc=0; jLoc<nLocal; ++jLoc )
         {
             const Int j = A.GlobalCol(jLoc);
-            if( uplo == LOWER )
+            if( uplo == UpperOrLower::LOWER )
             {
                 const Int mLocBefore = A.LocalRowOffset(j);
                 for( Int iLoc=mLocBefore; iLoc<mLocal; ++iLoc )

@@ -82,7 +82,7 @@ void Syr
         x_MR_STAR = x_MC_STAR;
 
         const T* xBuffer = x_MC_STAR.LockedBuffer();
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             for( Int jLoc=0; jLoc<localWidth; ++jLoc )
             {
@@ -123,7 +123,7 @@ void Syr
 
         const T* xBuffer = x_STAR_MC.LockedBuffer();
         const Int incx = x_STAR_MC.LDim();
-        if( uplo == LOWER )
+        if( uplo == UpperOrLower::LOWER )
         {
             for( Int jLoc=0; jLoc<localWidth; ++jLoc )
             {

@@ -57,7 +57,7 @@ void LocalAccumulateLUT
 
         D11.AlignWith( U11 );
         D11 = U11;
-        MakeTrapezoidal( UPPER, D11 );
+        MakeTrapezoidal( UpperOrLower::UPPER, D11 );
         if( diag == UNIT )
             FillDiagonal( D11, T(1) );
         LocalGemm( orientation, NORMAL, alpha, D11, X1, T(1), Z1 );
@@ -163,7 +163,7 @@ void LUTCOld
         X1_STAR_VR = X1;
         U11_STAR_STAR = U11;
         LocalTrmm
-        ( LEFT, UPPER, orientation, diag, T(1), U11_STAR_STAR, X1_STAR_VR );
+        ( LEFT, UpperOrLower::UPPER, orientation, diag, T(1), U11_STAR_STAR, X1_STAR_VR );
         X1 = X1_STAR_VR;
 
         U01_MC_STAR.AlignWith( X0 );
@@ -234,7 +234,7 @@ void LUTC
         X1_STAR_VR.AlignWith( X1 );
         Transpose( X1Trans_MR_STAR, X1_STAR_VR );
         LocalTrmm
-        ( LEFT, UPPER, orientation, diag, T(1), U11_STAR_STAR, X1_STAR_VR );
+        ( LEFT, UpperOrLower::UPPER, orientation, diag, T(1), U11_STAR_STAR, X1_STAR_VR );
         X1 = X1_STAR_VR;
     }
 }

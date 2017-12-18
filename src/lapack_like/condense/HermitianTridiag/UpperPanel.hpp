@@ -333,7 +333,7 @@ void UpperPanel
         q01_MR.AlignWith( A00 );
         Zeros( q01_MR, kA, 1 );
         symv::LocalColAccumulate
-        ( UPPER, F(1), A00, a01_MC, a01_MR, p01_MC, q01_MR, true, ctrl );
+        ( UpperOrLower::UPPER, F(1), A00, a01_MC, a01_MR, p01_MC, q01_MR, true, ctrl );
 
         x21_MR.AlignWith( A02T );
         y21_MR.AlignWith( A02T );

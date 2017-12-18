@@ -94,12 +94,12 @@ HermitianGenDefEig
     auto info = HermitianEig( uplo, A, w, X, ctrl );
     if( pencil == AXBX || pencil == ABX )
     {
-        const Orientation orientation = ( uplo==LOWER ? ADJOINT : NORMAL );
+        const Orientation orientation = ( uplo==UpperOrLower::LOWER ? ADJOINT : NORMAL );
         Trsm( LEFT, uplo, orientation, NON_UNIT, Field(1), B, X );
     }
     else /* pencil == BAX */
     {
-        const Orientation orientation = ( uplo==LOWER ? NORMAL : ADJOINT );
+        const Orientation orientation = ( uplo==UpperOrLower::LOWER ? NORMAL : ADJOINT );
         Trmm( LEFT, uplo, orientation, NON_UNIT, Field(1), B, X );
     }
     return info;
@@ -137,12 +137,12 @@ HermitianGenDefEig
     auto info = HermitianEig( uplo, A, w, X, ctrl );
     if( pencil == AXBX || pencil == ABX )
     {
-        const Orientation orientation = ( uplo==LOWER ? ADJOINT : NORMAL );
+        const Orientation orientation = ( uplo==UpperOrLower::LOWER ? ADJOINT : NORMAL );
         Trsm( LEFT, uplo, orientation, NON_UNIT, Field(1), B, X );
     }
     else /* pencil == BAX */
     {
-        const Orientation orientation = ( uplo==LOWER ? NORMAL : ADJOINT );
+        const Orientation orientation = ( uplo==UpperOrLower::LOWER ? NORMAL : ADJOINT );
         Trmm( LEFT, uplo, orientation, NON_UNIT, Field(1), B, X );
     }
     return info;

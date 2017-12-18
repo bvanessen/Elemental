@@ -59,7 +59,7 @@ void LocalAccumulateRLT
 
         D11.AlignWith( L11 );
         D11 = L11;
-        MakeTrapezoidal( LOWER, D11 );
+        MakeTrapezoidal( UpperOrLower::LOWER, D11 );
         if( diag == UNIT )
             FillDiagonal( D11, T(1) );
         LocalGemm( NORMAL, NORMAL, alpha, D11, X1Trans, T(1), Z1Trans );
@@ -161,7 +161,7 @@ void RLTC
         X1_VC_STAR = X1;
         L11_STAR_STAR = L11;
         LocalTrmm
-        ( RIGHT, LOWER, orientation, diag, T(1), L11_STAR_STAR, X1_VC_STAR );
+        ( RIGHT, UpperOrLower::LOWER, orientation, diag, T(1), L11_STAR_STAR, X1_VC_STAR );
         X1 = X1_VC_STAR;
 
         L10Trans_MR_STAR.AlignWith( X0 );

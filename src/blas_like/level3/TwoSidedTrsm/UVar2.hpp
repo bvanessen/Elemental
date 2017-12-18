@@ -50,13 +50,13 @@ void UVar2( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         // Y01 := A00 U01
         Y01.Resize( A01.Height(), A01.Width() );
         Zero( Y01 );
-        Hemm( LEFT, UPPER, F(1), A00, U01, F(0), Y01 );
+        Hemm( LEFT, UpperOrLower::UPPER, F(1), A00, U01, F(0), Y01 );
 
         // A01 := A01 - 1/2 Y01
         Axpy( F(-1)/F(2), Y01, A01 );
 
         // A11 := A11 - (U01' A01 + A01' U01)
-        Her2k( UPPER, ADJOINT, F(-1), U01, A01, F(1), A11 );
+        Her2k( UpperOrLower::UPPER, ADJOINT, F(-1), U01, A01, F(1), A11 );
 
         // A11 := inv(U11)' A11 inv(U11)
         twotrsm::UUnb( diag, A11, U11 );
@@ -65,13 +65,13 @@ void UVar2( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         Gemm( ADJOINT, NORMAL, F(-1), A02, U01, F(1), A12 );
 
         // A12 := inv(U11)' A12
-        Trsm( LEFT, UPPER, ADJOINT, diag, F(1), U11, A12 );
+        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U11, A12 );
 
         // A01 := A01 - 1/2 Y01
         Axpy( F(-1)/F(2), Y01, A01 );
 
         // A01 := A01 inv(U11)
-        Trsm( RIGHT, UPPER, NORMAL, diag, F(1), U11, A01 );
+        Trsm( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11, A01 );
     }
 }
 
@@ -165,19 +165,19 @@ void UVar2
         LocalGemm( ADJOINT, NORMAL, F(1), A01_MC_STAR, U01, F(1), X11_STAR_MR );
         X11.AlignWith( A11 );
         Contract( X11_STAR_MR, X11 );
-        MakeTrapezoidal( UPPER, X11 );
+        MakeTrapezoidal( UpperOrLower::UPPER, X11 );
         A11 -= X11;
 
         // A01 := A01 inv(U11)
         U11_STAR_STAR = U11;
         A01_VC_STAR = A01_MC_STAR;
         LocalTrsm
-        ( RIGHT, UPPER, NORMAL, diag, F(1), U11_STAR_STAR, A01_VC_STAR );
+        ( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11_STAR_STAR, A01_VC_STAR );
         A01 = A01_VC_STAR;
 
         // A11 := inv(U11)' A11 inv(U11)
         A11_STAR_STAR = A11;
-        TwoSidedTrsm( UPPER, diag, A11_STAR_STAR, U11_STAR_STAR );
+        TwoSidedTrsm( UpperOrLower::UPPER, diag, A11_STAR_STAR, U11_STAR_STAR );
         A11 = A11_STAR_STAR;
 
         // A12 := A12 - A02' U01
@@ -191,7 +191,7 @@ void UVar2
         // A12 := inv(U11)' A12
         A12_STAR_VR = A12;
         LocalTrsm
-        ( LEFT, UPPER, ADJOINT, diag, F(1), U11_STAR_STAR, A12_STAR_VR );
+        ( LEFT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U11_STAR_STAR, A12_STAR_VR );
         A12 = A12_STAR_VR;
     }
 }

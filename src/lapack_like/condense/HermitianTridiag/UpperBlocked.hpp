@@ -49,10 +49,10 @@ void UpperBlocked( Matrix<F>& A, Matrix<F>& householderScalars )
         alpha01B(0) = F(1);
 
         Zeros( w01, k, 1 );
-        Hemv( UPPER, Conj(tau), A00, a01, F(0), w01 );
+        Hemv( UpperOrLower::UPPER, Conj(tau), A00, a01, F(0), w01 );
         const F alpha = -Conj(tau)*Dot( w01, a01 )/F(2);
         Axpy( alpha, a01, w01 );
-        Her2( UPPER, F(-1), a01, w01, A00 );
+        Her2( UpperOrLower::UPPER, F(-1), a01, w01, A00 );
         alpha01B(0) = epsilon1;
     }
 }
@@ -138,7 +138,7 @@ void UpperBlocked
             auto W01_MR_STAR = WPan_MR_STAR( ind0, ind1-k );
 
             LocalTrr2k
-            ( UPPER, NORMAL, ADJOINT, NORMAL, ADJOINT,
+            ( UpperOrLower::UPPER, NORMAL, ADJOINT, NORMAL, ADJOINT,
               F(-1), A01_MC_STAR, W01_MR_STAR,
               F(-1), W01_MC_STAR, A01_MR_STAR,
               F(1),  A00 );
@@ -150,7 +150,7 @@ void UpperBlocked
             A11_STAR_STAR = A11;
             householderScalars1_STAR_STAR.Resize( nb-1, 1 );
             HermitianTridiag
-            ( UPPER, A11_STAR_STAR.Matrix(),
+            ( UpperOrLower::UPPER, A11_STAR_STAR.Matrix(),
               householderScalars1_STAR_STAR.Matrix() );
             A11 = A11_STAR_STAR;
             householderScalars1 = householderScalars1_STAR_STAR;

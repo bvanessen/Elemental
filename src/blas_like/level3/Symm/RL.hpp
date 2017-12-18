@@ -73,7 +73,7 @@ void LocalAccumulateRL
 
         D11.AlignWith( A11 );
         D11 = A11;
-        MakeTrapezoidal( LOWER, D11 );
+        MakeTrapezoidal( UpperOrLower::LOWER, D11 );
         LocalGemm
         ( orientation, orientation,
           alpha, D11, B1_STAR_MC, T(1), Z1Trans_MR_STAR );
@@ -204,8 +204,8 @@ void RLC
         AB1_VR_STAR = AB1;
         AB1Trans_STAR_MR.AlignWith( CR );
         Transpose( AB1_VR_STAR, AB1Trans_STAR_MR, conjugate );
-        MakeTrapezoidal( UPPER, A1LTrans_MR_STAR, -k );
-        MakeTrapezoidal( UPPER, AB1Trans_STAR_MR, 1 );
+        MakeTrapezoidal( UpperOrLower::UPPER, A1LTrans_MR_STAR, -k );
+        MakeTrapezoidal( UpperOrLower::UPPER, AB1Trans_STAR_MR, 1 );
 
         B1_MC_STAR = B1;
         LocalGemm
