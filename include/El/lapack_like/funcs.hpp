@@ -9,8 +9,13 @@
 #ifndef EL_FUNCS_HPP
 #define EL_FUNCS_HPP
 
-#include <El/lapack_like/factor.hpp>
-#include <El/lapack_like/spectral.hpp>
+#include "El/core/DistMatrix_decl.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/spectral.hpp"
+#include "El/Types/Enums.hpp"
 
 namespace El {
 
@@ -47,20 +52,20 @@ struct SquareRootCtrl
 template<typename Field>
 void HermitianFunction
 ( UpperOrLower uplo, Matrix<Field>& A,
-  function<Base<Field>(const Base<Field>&)> func );
+  std::function<Base<Field>(const Base<Field>&)> func );
 template<typename Field>
 void HermitianFunction
 ( UpperOrLower uplo, AbstractDistMatrix<Field>& A,
-  function<Base<Field>(const Base<Field>&)> func );
+  std::function<Base<Field>(const Base<Field>&)> func );
 
 template<typename Real>
 void HermitianFunction
 ( UpperOrLower uplo, Matrix<Complex<Real>>& A,
-  function<Complex<Real>(const Real&)> func );
+  std::function<Complex<Real>(const Real&)> func );
 template<typename Real>
 void HermitianFunction
 ( UpperOrLower uplo, AbstractDistMatrix<Complex<Real>>& A,
-  function<Complex<Real>(const Real&)> func );
+  std::function<Complex<Real>(const Real&)> func );
 
 // Inverse
 // =======
@@ -69,7 +74,7 @@ void Inverse( Matrix<Field>& A );
 template<typename Field>
 void Inverse( AbstractDistMatrix<Field>& A );
 template<typename Field>
-void LocalInverse( DistMatrix<Field,STAR,STAR>& A );
+void LocalInverse( DistMatrix<Field,Dist::STAR,Dist::STAR>& A );
 namespace inverse {
 template<typename Field>
 void AfterLUPartialPiv
@@ -86,7 +91,7 @@ void HPDInverse( UpperOrLower uplo, Matrix<Field>& A );
 template<typename Field>
 void HPDInverse( UpperOrLower uplo, AbstractDistMatrix<Field>& A );
 template<typename Field>
-void LocalHPDInverse( UpperOrLower uplo, DistMatrix<Field,STAR,STAR>& A );
+void LocalHPDInverse( UpperOrLower uplo, DistMatrix<Field,Dist::STAR,Dist::STAR>& A );
 
 template<typename Field>
 void HermitianInverse
@@ -98,7 +103,7 @@ void HermitianInverse
   const LDLPivotCtrl<Base<Field>>& ctrl=LDLPivotCtrl<Base<Field>>() );
 template<typename Field>
 void LocalHermitianInverse
-( UpperOrLower uplo, DistMatrix<Field,STAR,STAR>& A,
+( UpperOrLower uplo, DistMatrix<Field,Dist::STAR,Dist::STAR>& A,
   const LDLPivotCtrl<Base<Field>>& ctrl=LDLPivotCtrl<Base<Field>>() );
 
 template<typename Field>
@@ -111,7 +116,7 @@ void SymmetricInverse
   const LDLPivotCtrl<Base<Field>>& ctrl=LDLPivotCtrl<Base<Field>>() );
 template<typename Field>
 void LocalSymmetricInverse
-( UpperOrLower uplo, DistMatrix<Field,STAR,STAR>& A, bool conjugate=false,
+( UpperOrLower uplo, DistMatrix<Field,Dist::STAR,Dist::STAR>& A, bool conjugate=false,
   const LDLPivotCtrl<Base<Field>>& ctrl=LDLPivotCtrl<Base<Field>>() );
 
 template<typename Field>
@@ -122,7 +127,7 @@ void TriangularInverse
 ( UpperOrLower uplo, UnitOrNonUnit diag, AbstractDistMatrix<Field>& A  );
 template<typename Field>
 void LocalTriangularInverse
-( UpperOrLower uplo, UnitOrNonUnit diag, DistMatrix<Field,STAR,STAR>& A );
+( UpperOrLower uplo, UnitOrNonUnit diag, DistMatrix<Field,Dist::STAR,Dist::STAR>& A );
 
 // Pseudoinverse
 // =============

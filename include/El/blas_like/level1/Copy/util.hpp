@@ -10,6 +10,8 @@
 #define EL_BLAS_COPY_UTIL_HPP
 
 #include "El/core/imports/lapack.hpp"
+#include "El/core/indexing/decl.hpp"
+#include "El/core/indexing/impl.hpp"
 #include "El/Typedefs.hpp"
 
 namespace El

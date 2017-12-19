@@ -10,6 +10,9 @@
 #define EL_DISTMATRIX_ELEMENTAL_MC_MR_HPP
 
 #include "El/core/DistMatrix_decl.hpp"
+#include "El/core/DistMatrix/Element.hpp"
+#include "El/core/DistMatrix/Element/MR_MC.hpp"
+
 #include "El/core/Grid.hpp"
 #include "El/macros.h"
 

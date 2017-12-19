@@ -28,13 +28,13 @@ void FoxLi( Matrix<Complex<Real>>& A, Int n, Real omega )
     }
     Matrix<Real> x, Z;
     HermitianTridiagEigCtrl<Real> ctrl;
-    ctrl.sort = UNSORTED;
+    ctrl.sort = SortType::UNSORTED;
     HermitianTridiagEig( d, e, x, Z, ctrl );
     auto z = Z( IR(0), ALL );
     Matrix<Real> sqrtWeights( z ), sqrtWeightsTrans;
     for( Int j=0; j<n; ++j )
         sqrtWeights(0,j) = Sqrt(Real(2))*Abs(sqrtWeights(0,j));
-    auto sortPairs = TaggedSort( x, ASCENDING );
+    auto sortPairs = TaggedSort( x, SortType::ASCENDING );
     for( Int j=0; j<n; ++j )
         x(j) = sortPairs[j].value;
     ApplyTaggedSortToEachRow( sortPairs, sqrtWeights );
@@ -84,14 +84,14 @@ void FoxLi( AbstractDistMatrix<Complex<Real>>& APre, Int n, Real omega )
     DistMatrix<Real,Dist::VR,Dist::STAR> x(g);
     DistMatrix<Real,Dist::STAR,Dist::VR> Z(g);
     HermitianTridiagEigCtrl<Real> ctrl;
-    ctrl.sort = UNSORTED;
+    ctrl.sort = SortType::UNSORTED;
     HermitianTridiagEig( d, e, x, Z, ctrl );
     auto z = Z( IR(0), ALL );
     DistMatrix<Real,Dist::STAR,Dist::VR> sqrtWeights( z );
     auto& sqrtWeightsLoc = sqrtWeights.Matrix();
     for( Int jLoc=0; jLoc<sqrtWeights.LocalWidth(); ++jLoc )
         sqrtWeightsLoc(0,jLoc) = Sqrt(Real(2))*Abs(sqrtWeightsLoc(0,jLoc));
-    auto sortPairs = TaggedSort( x, ASCENDING );
+    auto sortPairs = TaggedSort( x, SortType::ASCENDING );
     for( Int j=0; j<n; ++j )
         x.Set( j, 0, sortPairs[j].value );
     ApplyTaggedSortToEachRow( sortPairs, sqrtWeights );

@@ -18,14 +18,14 @@ template<typename Real,
 void Sort( Matrix<Real>& X, SortType sort, bool stable )
 {
     EL_DEBUG_CSE
-    if( sort == UNSORTED )
+    if( sort == SortType::UNSORTED )
         return;
     const Int m = X.Height();
     const Int n = X.Width();
     for( Int j=0; j<n; ++j )
     {
         Real* XCol = X.Buffer(0,j);
-        if( sort == ASCENDING )
+        if( sort == SortType::ASCENDING )
         {
             if( stable )
                 std::stable_sort( XCol, XCol+m );
@@ -47,7 +47,7 @@ template<typename Real,
 void Sort( AbstractDistMatrix<Real>& X, SortType sort, bool stable )
 {
     EL_DEBUG_CSE
-    if( sort == UNSORTED )
+    if( sort == SortType::UNSORTED )
         return;
 
     if( (X.ColDist()==STAR && X.RowDist()==STAR) ||
@@ -94,7 +94,7 @@ TaggedSort( const Matrix<Real>& x, SortType sort, bool stable )
         pairs[i].index = i;
     }
 
-    if( sort == ASCENDING )
+    if( sort == SortType::ASCENDING )
     {
         if( stable )
             std::stable_sort
@@ -102,7 +102,7 @@ TaggedSort( const Matrix<Real>& x, SortType sort, bool stable )
         else
             std::sort( pairs.begin(), pairs.end(), ValueInt<Real>::Lesser );
     }
-    else if( sort == DESCENDING )
+    else if( sort == SortType::DESCENDING )
     {
         if( stable )
             std::stable_sort
@@ -251,11 +251,11 @@ void MergeSortingPermutation
         pairs[i].index = i;
     }
 
-    if( sort == ASCENDING )
+    if( sort == SortType::ASCENDING )
         std::inplace_merge
         ( pairs.begin(), pairs.begin()+n0, pairs.end(),
           ValueInt<Real>::Lesser );
-    else if( sort == DESCENDING )
+    else if( sort == SortType::DESCENDING )
         std::inplace_merge
         ( pairs.begin(), pairs.begin()+n0, pairs.end(),
           ValueInt<Real>::Greater );

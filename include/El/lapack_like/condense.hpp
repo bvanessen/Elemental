@@ -9,9 +9,12 @@
 #ifndef EL_CONDENSE_HPP
 #define EL_CONDENSE_HPP
 
-#include <El/blas_like/level2.hpp>
+#include "El/blas_like/level2.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Grid.hpp"
 
-namespace El {
+namespace El
+{
 
 // Bidiag
 // ======
@@ -20,71 +23,71 @@ namespace El {
 // ----------------------------------------------
 template<typename Field>
 void Bidiag
-( Matrix<Field>& A,
+(Matrix<Field>& A,
   Matrix<Field>& householderScalarsP,
-  Matrix<Field>& householderScalarsQ );
+  Matrix<Field>& householderScalarsQ);
 
 template<typename Field>
 void Bidiag
-( AbstractDistMatrix<Field>& A,
+(AbstractDistMatrix<Field>& A,
   AbstractDistMatrix<Field>& householderScalarsP,
-  AbstractDistMatrix<Field>& householderScalarsQ );
+  AbstractDistMatrix<Field>& householderScalarsQ);
 template<typename Field>
 void Bidiag
-( AbstractDistMatrix<Field>& A,
+(AbstractDistMatrix<Field>& A,
   AbstractDistMatrix<Field>& householderScalarsP,
-  AbstractDistMatrix<Field>& householderScalarsQ );
+  AbstractDistMatrix<Field>& householderScalarsQ);
 
 namespace bidiag {
 
 // Overwrite A with B = Q^H A P and additionally return P and Q
 template<typename Field>
 void Explicit
-( Matrix<Field>& A,
+(Matrix<Field>& A,
   Matrix<Field>& P,
-  Matrix<Field>& Q );
+  Matrix<Field>& Q);
 template<typename Field>
 void Explicit
-( AbstractDistMatrix<Field>& A,
+(AbstractDistMatrix<Field>& A,
   AbstractDistMatrix<Field>& P,
-  AbstractDistMatrix<Field>& Q );
+  AbstractDistMatrix<Field>& Q);
 template<typename Field>
 void Explicit
-( DistMatrix<Field>& A,
+(DistMatrix<Field>& A,
   DistMatrix<Field>& P,
-  DistMatrix<Field>& Q );
+  DistMatrix<Field>& Q);
 
 // Only return the condensed bidiagonal matrix
 template<typename Field>
-void ExplicitCondensed( Matrix<Field>& A );
+void ExplicitCondensed(Matrix<Field>& A);
 template<typename Field>
-void ExplicitCondensed( AbstractDistMatrix<Field>& A );
+void ExplicitCondensed(AbstractDistMatrix<Field>& A);
 
 template<typename Field>
 void ApplyQ
-( LeftOrRight side, Orientation orientation,
+(LeftOrRight side, Orientation orientation,
   const Matrix<Field>& A,
   const Matrix<Field>& householderScalars,
-        Matrix<Field>& B );
+        Matrix<Field>& B);
 template<typename Field>
 void ApplyQ
-( LeftOrRight side, Orientation orientation,
+(LeftOrRight side, Orientation orientation,
   const AbstractDistMatrix<Field>& A,
   const AbstractDistMatrix<Field>& householderScalars,
-        AbstractDistMatrix<Field>& B );
+        AbstractDistMatrix<Field>& B);
 
 template<typename Field>
 void ApplyP
-( LeftOrRight side, Orientation orientation,
+(LeftOrRight side, Orientation orientation,
   const Matrix<Field>& A,
   const Matrix<Field>& householderScalars,
-        Matrix<Field>& B );
+        Matrix<Field>& B);
 template<typename Field>
 void ApplyP
-( LeftOrRight side, Orientation orientation,
+(LeftOrRight side, Orientation orientation,
   const AbstractDistMatrix<Field>& A,
   const AbstractDistMatrix<Field>& householderScalars,
-        AbstractDistMatrix<Field>& B );
+        AbstractDistMatrix<Field>& B);
 
 } // namespace bidiag
 
@@ -105,41 +108,41 @@ template<typename Field>
 struct HermitianTridiagCtrl
 {
     HermitianTridiagApproach approach=HERMITIAN_TRIDIAG_SQUARE;
-    GridOrder order=ROW_MAJOR;
+    GridOrder order=GridOrder::ROW_MAJOR;
     SymvCtrl<Field> symvCtrl;
 };
 
 template<typename Field>
 void HermitianTridiag
-( UpperOrLower uplo, Matrix<Field>& A, Matrix<Field>& householderScalars );
+(UpperOrLower uplo, Matrix<Field>& A, Matrix<Field>& householderScalars);
 template<typename Field>
 void HermitianTridiag
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   AbstractDistMatrix<Field>& A,
   AbstractDistMatrix<Field>& householderScalars,
-  const HermitianTridiagCtrl<Field>& ctrl=HermitianTridiagCtrl<Field>() );
+  const HermitianTridiagCtrl<Field>& ctrl=HermitianTridiagCtrl<Field>());
 
 namespace herm_tridiag {
 
 template<typename Field>
-void ExplicitCondensed( UpperOrLower uplo, Matrix<Field>& A );
+void ExplicitCondensed(UpperOrLower uplo, Matrix<Field>& A);
 template<typename Field>
 void ExplicitCondensed
-( UpperOrLower uplo, AbstractDistMatrix<Field>& A,
-  const HermitianTridiagCtrl<Field>& ctrl=HermitianTridiagCtrl<Field>() );
+(UpperOrLower uplo, AbstractDistMatrix<Field>& A,
+  const HermitianTridiagCtrl<Field>& ctrl=HermitianTridiagCtrl<Field>());
 
 template<typename Field>
 void ApplyQ
-( LeftOrRight side, UpperOrLower uplo, Orientation orientation,
+(LeftOrRight side, UpperOrLower uplo, Orientation orientation,
   const Matrix<Field>& A,
   const Matrix<Field>& householderScalars,
-        Matrix<Field>& B );
+        Matrix<Field>& B);
 template<typename Field>
 void ApplyQ
-( LeftOrRight side, UpperOrLower uplo, Orientation orientation,
+(LeftOrRight side, UpperOrLower uplo, Orientation orientation,
   const AbstractDistMatrix<Field>& A,
   const AbstractDistMatrix<Field>& householderScalars,
-        AbstractDistMatrix<Field>& B );
+        AbstractDistMatrix<Field>& B);
 
 } // namespace herm_tridiag
 
@@ -147,44 +150,44 @@ void ApplyQ
 // ==========
 template<typename Field>
 void Hessenberg
-( UpperOrLower uplo, Matrix<Field>& A, Matrix<Field>& householderScalars );
+(UpperOrLower uplo, Matrix<Field>& A, Matrix<Field>& householderScalars);
 template<typename Field>
 void Hessenberg
-( UpperOrLower uplo, AbstractDistMatrix<Field>& A,
-  AbstractDistMatrix<Field>& householderScalars );
+(UpperOrLower uplo, AbstractDistMatrix<Field>& A,
+  AbstractDistMatrix<Field>& householderScalars);
 
 namespace hessenberg {
 
 template<typename Field>
-void ExplicitCondensed( UpperOrLower uplo, Matrix<Field>& A );
+void ExplicitCondensed(UpperOrLower uplo, Matrix<Field>& A);
 template<typename Field>
-void ExplicitCondensed( UpperOrLower uplo, AbstractDistMatrix<Field>& A );
+void ExplicitCondensed(UpperOrLower uplo, AbstractDistMatrix<Field>& A);
 
 template<typename Field>
 void ApplyQ
-( LeftOrRight side, UpperOrLower uplo, Orientation orientation,
+(LeftOrRight side, UpperOrLower uplo, Orientation orientation,
   const Matrix<Field>& A,
   const Matrix<Field>& householderScalars,
-        Matrix<Field>& B );
+        Matrix<Field>& B);
 template<typename Field>
 void ApplyQ
-( LeftOrRight side, UpperOrLower uplo, Orientation orientation,
+(LeftOrRight side, UpperOrLower uplo, Orientation orientation,
   const AbstractDistMatrix<Field>& A,
   const AbstractDistMatrix<Field>& householderScalars,
-        AbstractDistMatrix<Field>& B );
+        AbstractDistMatrix<Field>& B);
 
 template<typename Field>
 void FormQ
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const Matrix<Field>& A,
   const Matrix<Field>& householderScalars,
-        Matrix<Field>& Q );
+        Matrix<Field>& Q);
 template<typename Field>
 void FormQ
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const AbstractDistMatrix<Field>& A,
   const AbstractDistMatrix<Field>& householderScalars,
-        AbstractDistMatrix<Field>& Q );
+        AbstractDistMatrix<Field>& Q);
 
 } // namespace hessenberg
 

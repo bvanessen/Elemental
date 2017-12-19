@@ -9,8 +9,12 @@
 #ifndef EL_BLAS_COPY_GENERALPURPOSE_HPP
 #define EL_BLAS_COPY_GENERALPURPOSE_HPP
 
-namespace El {
-namespace copy {
+#include "El/blas_like/level1/Broadcast.hpp"
+
+namespace El
+{
+namespace copy
+{
 
 template<typename S,typename T,typename=EnableIf<CanCast<S,T>>>
 void Helper

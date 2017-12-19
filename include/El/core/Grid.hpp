@@ -15,6 +15,7 @@
 
 #include "El/core/Dist.hpp"
 #include "El/core/environment/decl.hpp" // LogicError
+#include "El/core/environment/impl.hpp" // LogicError
 #include "El/core/imports/mpi.hpp"
 
 namespace El

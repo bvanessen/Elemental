@@ -19,24 +19,24 @@ template<typename T>
 void Read( Matrix<T>& A, const string filename, FileFormat format )
 {
     EL_DEBUG_CSE
-    if( format == AUTO )
+    if( format == FileFormat::AUTO )
         format = DetectFormat( filename );
 
     switch( format )
     {
-    case ASCII:
+    case FileFormat::ASCII:
         read::Ascii( A, filename );
         break;
-    case ASCII_MATLAB:
+    case FileFormat::ASCII_MATLAB:
         read::AsciiMatlab( A, filename );
         break;
-    case BINARY:
+    case FileFormat::BINARY:
         read::Binary( A, filename );
         break;
-    case BINARY_FLAT:
+    case FileFormat::BINARY_FLAT:
         read::BinaryFlat( A, A.Height(), A.Width(), filename );
         break;
-    case MATRIX_MARKET:
+    case FileFormat::MATRIX_MARKET:
         read::MatrixMarket( A, filename );
         break;
     default:
@@ -50,7 +50,7 @@ void Read
   bool sequential )
 {
     EL_DEBUG_CSE
-    if( format == AUTO )
+    if( format == FileFormat::AUTO )
         format = DetectFormat( filename );
 
     if( A.ColStride() == 1 && A.RowStride() == 1 )
@@ -65,7 +65,7 @@ void Read
     else if( sequential )
     {
         DistMatrix<T,Dist::CIRC,Dist::CIRC> A_CIRC_CIRC( A.Grid() );
-        if( format == BINARY_FLAT )
+        if( format == FileFormat::BINARY_FLAT )
             A_CIRC_CIRC.Resize( A.Height(), A.Width() );
         if( A_CIRC_CIRC.CrossRank() == A_CIRC_CIRC.Root() )
         {
@@ -80,19 +80,19 @@ void Read
     {
         switch( format )
         {
-        case ASCII:
+        case FileFormat::ASCII:
             read::Ascii( A, filename );
             break;
-        case ASCII_MATLAB:
+        case FileFormat::ASCII_MATLAB:
             read::AsciiMatlab( A, filename );
             break;
-        case BINARY:
+        case FileFormat::BINARY:
             read::Binary( A, filename );
             break;
-        case BINARY_FLAT:
+        case FileFormat::BINARY_FLAT:
             read::BinaryFlat( A, A.Height(), A.Width(), filename );
             break;
-        case MATRIX_MARKET:
+        case FileFormat::MATRIX_MARKET:
             read::MatrixMarket( A, filename );
             break;
         default:

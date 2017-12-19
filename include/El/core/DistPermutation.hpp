@@ -10,8 +10,16 @@
 #define EL_PERM_DISTPERMUTATION_HPP
 
 #include <map>
+#include <vector>
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element.hpp"
+#include "El/core/DistMatrix/Element/VC_STAR.hpp"
+#include "El/core/imports/mpi.hpp"
+#include "El/core/Permutation.hpp"
+
+namespace El
+{
 
 struct PermutationMeta
 {
@@ -19,19 +27,19 @@ struct PermutationMeta
     mpi::Comm comm;
 
     // Will treat vector lengths as one
-    vector<int> sendCounts, sendDispls,
-                recvCounts, recvDispls;
+    std::vector<int> sendCounts, sendDispls,
+        recvCounts, recvDispls;
 
-    vector<int> sendIdx, sendRanks,
-                recvIdx, recvRanks;
+    std::vector<int> sendIdx, sendRanks,
+        recvIdx, recvRanks;
 
     int TotalSend() const { return sendCounts.back()+sendDispls.back(); }
     int TotalRecv() const { return recvCounts.back()+recvDispls.back(); }
 
-    void ScaleUp( Int length )
+    void ScaleUp(Int length)
     {
         const int p = sendCounts.size();
-        for( int q=0; q<p; ++q )
+        for(int q=0; q<p; ++q)
         {
             sendCounts[q] *= length;
             sendDispls[q] *= length;
@@ -39,10 +47,10 @@ struct PermutationMeta
             recvDispls[q] *= length;
         }
     }
-    void ScaleDown( Int length )
+    void ScaleDown(Int length)
     {
         const int p = sendCounts.size();
-        for( int q=0; q<p; ++q )
+        for(int q=0; q<p; ++q)
         {
             sendCounts[q] /= length;
             sendDispls[q] /= length;
@@ -58,57 +66,57 @@ struct PermutationMeta
     { }
 
     PermutationMeta
-    ( const DistMatrix<Int,Dist::STAR,Dist::STAR>& p,
+    (const DistMatrix<Int,Dist::STAR,Dist::STAR>& p,
       const DistMatrix<Int,Dist::STAR,Dist::STAR>& pInv,
             Int permAlign,
-            mpi::Comm permComm );
+            mpi::Comm permComm);
 
     void Update
-    ( const DistMatrix<Int,Dist::STAR,Dist::STAR>& p,
+    (const DistMatrix<Int,Dist::STAR,Dist::STAR>& p,
       const DistMatrix<Int,Dist::STAR,Dist::STAR>& pInv,
             Int permAlign,
-            mpi::Comm permComm );
+            mpi::Comm permComm);
 };
 
 // TODO(poulson): Convert to accepting Grid rather than mpi::Comm
 class DistPermutation
 {
 public:
-    DistPermutation( const Grid& g=Grid::Default() );
+    DistPermutation(const Grid& g=Grid::Default());
 
-    void SetGrid( const Grid& g );
+    void SetGrid(const Grid& g);
 
     void Empty();
-    void MakeIdentity( Int size );
+    void MakeIdentity(Int size);
 
-    void ReserveSwaps( Int maxSwaps );
+    void ReserveSwaps(Int maxSwaps);
     void MakeArbitrary() const;
 
-    const DistPermutation& operator=( const Permutation& p );
-    const DistPermutation& operator=( const DistPermutation& p );
+    const DistPermutation& operator=(const Permutation& p);
+    const DistPermutation& operator=(const DistPermutation& p);
 
-    void Swap( Int origin, Int dest );
-    void SwapSequence( const DistPermutation& perm, Int offset=0 );
+    void Swap(Int origin, Int dest);
+    void SwapSequence(const DistPermutation& perm, Int offset=0);
     void SwapSequence
-    ( const ElementalMatrix<Int>& swapOrigins,
-      const ElementalMatrix<Int>& swapDests, Int offset=0 );
+    (const ElementalMatrix<Int>& swapOrigins,
+      const ElementalMatrix<Int>& swapDests, Int offset=0);
 
     void ImplicitSwapSequence
-    ( const ElementalMatrix<Int>& swapDests, Int offset=0 );
+    (const ElementalMatrix<Int>& swapDests, Int offset=0);
 
     // Explicit (pre)image queries or modifications force the permutation to
     // switch from an explicit sequence of swaps to storing an explicit
     // permutation
-    Int Image( Int origin ) const;
-    Int Preimage( Int dest ) const;
-    void SetImage( Int origin, Int dest );
+    Int Image(Int origin) const;
+    Int Preimage(Int dest) const;
+    void SetImage(Int origin, Int dest);
 
     // Since local image queries require the permutation to already be explicit,
     // calling this routine when the permutation is a swap sequence will throw
     // an error. These routines are [ADVANCED] since they require knowledge of
     // the distribution of the perm_ and invPerm_ distributed matrices.
-    Int LocalImage( Int localOrigin ) const;
-    Int LocalPreimage( Int localDest ) const;
+    Int LocalImage(Int localOrigin) const;
+    Int LocalPreimage(Int localDest) const;
 
     // The following return the same result but follow the usual convention
     Int Height() const;
@@ -126,40 +134,40 @@ public:
 
     template<typename T>
     void PermuteCols
-    ( AbstractDistMatrix<T>& A,
-      Int offset=0 ) const;
+    (AbstractDistMatrix<T>& A,
+      Int offset=0) const;
     template<typename T>
     void InversePermuteCols
-    ( AbstractDistMatrix<T>& A,
-      Int offset=0 ) const;
+    (AbstractDistMatrix<T>& A,
+      Int offset=0) const;
 
     template<typename T>
     void PermuteRows
-    ( AbstractDistMatrix<T>& A,
-      Int offset=0 ) const;
+    (AbstractDistMatrix<T>& A,
+      Int offset=0) const;
     template<typename T>
     void InversePermuteRows
-    ( AbstractDistMatrix<T>& A,
-      Int offset=0 ) const;
+    (AbstractDistMatrix<T>& A,
+      Int offset=0) const;
 
     template<typename T>
     void PermuteSymmetrically
-    ( UpperOrLower uplo,
+    (UpperOrLower uplo,
       AbstractDistMatrix<T>& A,
       bool conjugate=false,
-      Int offset=0 ) const;
+      Int offset=0) const;
     template<typename T>
     void InversePermuteSymmetrically
-    ( UpperOrLower uplo,
+    (UpperOrLower uplo,
       AbstractDistMatrix<T>& A,
       bool conjugate=false,
-      Int offset=0 ) const;
+      Int offset=0) const;
 
     // Form the permutation vector p so that P A = A(p,:)
-    void ExplicitVector( AbstractDistMatrix<Int>& p ) const;
+    void ExplicitVector(AbstractDistMatrix<Int>& p) const;
 
     // Form the permutation matrix P so that P A = A(p,:)
-    void ExplicitMatrix( AbstractDistMatrix<Int>& P ) const;
+    void ExplicitMatrix(AbstractDistMatrix<Int>& P) const;
 
 private:
     Int size_=0;

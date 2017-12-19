@@ -11,7 +11,8 @@
 
 #include <El/blas_like/level1/Axpy/util.hpp>
 
-namespace El {
+namespace El
+{
 
 template<typename T,typename S>
 void Axpy( S alphaS, const Matrix<T>& X, Matrix<T>& Y )

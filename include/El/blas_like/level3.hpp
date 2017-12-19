@@ -253,13 +253,13 @@ void LocalAccumulateRL
         DistMatrix<T,Dist::MR,  Dist::STAR>& ZTrans_MR_STAR);
 
 template<typename T>
-void LocalAccumulateRU
-(Orientation orientation, T alpha,
-  const DistMatrix<T,Dist::MC,  Dist::MR  >& A,
-  const DistMatrix<T,STAR,Dist::MC  >& B_STAR_MC,
-  const DistMatrix<T,Dist::MR,  Dist::STAR>& BTrans_MR_STAR,
-        DistMatrix<T,Dist::MC,  Dist::STAR>& ZTrans_MC_STAR,
-        DistMatrix<T,Dist::MR,  Dist::STAR>& ZTrans_MR_STAR);
+void LocalAccumulateRU(
+    Orientation orientation, T alpha,
+    const DistMatrix<T,Dist::MC,  Dist::MR  >& A,
+    const DistMatrix<T,Dist::STAR,Dist::MC  >& B_STAR_MC,
+    const DistMatrix<T,Dist::MR,  Dist::STAR>& BTrans_MR_STAR,
+    DistMatrix<T,Dist::MC,  Dist::STAR>& ZTrans_MC_STAR,
+    DistMatrix<T,Dist::MR,  Dist::STAR>& ZTrans_MR_STAR);
 
 } // namespace symm
 

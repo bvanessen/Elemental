@@ -237,7 +237,7 @@ Merge
     // d to remain in place.
     Permutation combineSortPerm;
     bool stableSort = true;
-    SortingPermutation( d, combineSortPerm, ASCENDING, stableSort );
+    SortingPermutation( d, combineSortPerm, SortType::ASCENDING, stableSort );
     combineSortPerm.PermuteRows( d );
     combineSortPerm.PermuteRows( r );
     combineSortPerm.PermuteRows( columnTypes );
@@ -1105,7 +1105,7 @@ Merge
     // d to remain in place.
     Permutation combineSortPerm;
     bool stableSort = true;
-    SortingPermutation( dLoc, combineSortPerm, ASCENDING, stableSort );
+    SortingPermutation( dLoc, combineSortPerm, SortType::ASCENDING, stableSort );
     combineSortPerm.PermuteRows( dLoc );
     combineSortPerm.PermuteRows( r );
     combineSortPerm.PermuteRows( columnTypes );

@@ -6,6 +6,14 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
+
+// FIXME (trb 12/19/2017): OMG THIS IS AWFULLLLLLLL
+}//namespace El
+#include "El/core/Element/Complex/decl.hpp"
+#include "El/core/Element/Complex/impl.hpp"
+namespace El
+{
+
 #ifndef PROTO_INT
 # define PROTO_INT(T) PROTO(T)
 #endif

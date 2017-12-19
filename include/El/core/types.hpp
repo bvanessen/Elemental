@@ -115,31 +115,31 @@ using namespace DistWrapNS;
 // ------------
 template<Dist U,Dist V> constexpr Dist DiagCol() { return ( U==STAR ? V : U ); }
 template<Dist U,Dist V> constexpr Dist DiagRow() { return ( U==STAR ? U : V ); }
-template<> constexpr Dist DiagCol<MC,MR>() { return MD; }
-template<> constexpr Dist DiagRow<MC,MR>() { return STAR; }
-template<> constexpr Dist DiagCol<MR,MC>() { return MD; }
-template<> constexpr Dist DiagRow<MR,MC>() { return STAR; }
+template<> constexpr Dist DiagCol<MC,Dist::MR>() { return MD; }
+template<> constexpr Dist DiagRow<MC,Dist::MR>() { return STAR; }
+template<> constexpr Dist DiagCol<MR,Dist::MC>() { return MD; }
+template<> constexpr Dist DiagRow<MR,Dist::MC>() { return STAR; }
 
 // Runtime
 // -------
 inline Dist DiagCol( Dist U, Dist V ) EL_NO_EXCEPT
 {
-    if( U == MC && V == MR )
+    if( U == Dist::MC && V == Dist::MR )
         return MD;
-    else if( U == MR && V == MC )
+    else if( U == Dist::MR && V == Dist::MC )
         return MD;
-    else if( U == STAR )
+    else if( U == Dist::STAR )
         return V;
     else
         return U;
 }
 inline Dist DiagRow( Dist U, Dist V ) EL_NO_EXCEPT
 {
-    if( U == MC && V == MR )
+    if( U == Dist::MC && V == Dist::MR )
         return STAR;
-    else if( U == MR && V == MC )
+    else if( U == Dist::MR && V == Dist::MC )
         return STAR;
-    else if( U == STAR )
+    else if( U == Dist::STAR )
         return U;
     else
         return V;
@@ -154,10 +154,10 @@ template<Dist U,Dist V>
 constexpr Dist DiagInvCol() { return ( U==STAR ? V : U ); }
 template<Dist U,Dist V>
 constexpr Dist DiagInvRow() { return ( U==STAR ? U : V ); }
-template<> constexpr Dist DiagInvCol<MD,STAR>() { return MC; }
-template<> constexpr Dist DiagInvRow<MD,STAR>() { return MR; }
-template<> constexpr Dist DiagInvCol<STAR,MD>() { return MC; }
-template<> constexpr Dist DiagInvRow<STAR,MD>() { return MR; }
+template<> constexpr Dist DiagInvCol<MD,Dist::STAR>() { return MC; }
+template<> constexpr Dist DiagInvRow<MD,Dist::STAR>() { return MR; }
+template<> constexpr Dist DiagInvCol<STAR,Dist::MD>() { return MC; }
+template<> constexpr Dist DiagInvRow<STAR,Dist::MD>() { return MR; }
 
 // TODO: Runtime version?
 
@@ -169,7 +169,7 @@ template<Dist U> constexpr Dist Collect()       { return STAR; }
 template<>       constexpr Dist Collect<CIRC>() { return CIRC; }
 // Run-time
 // --------
-inline Dist Collect( Dist U ) EL_NO_EXCEPT { return ( U==CIRC ? CIRC : STAR ); }
+inline Dist Collect( Dist U ) EL_NO_EXCEPT { return ( U==CIRC ? Dist::CIRC : Dist::STAR ); }
 
 // Union the distribution over its corresponding partial communicator
 // ==================================================================
@@ -182,9 +182,9 @@ template<>       constexpr Dist Partial<VR>() { return MR; }
 // --------
 inline Dist Partial( Dist U ) EL_NO_EXCEPT
 {
-    if( U == VC )
+    if( U == Dist::VC )
         return MC;
-    else if( U == VR )
+    else if( U == Dist::VR )
         return MR;
     else
         return U;
@@ -195,16 +195,16 @@ inline Dist Partial( Dist U ) EL_NO_EXCEPT
 // Compile-time
 // ------------
 template<Dist U,Dist V> constexpr Dist PartialUnionRow()          { return V;  }
-template<>              constexpr Dist PartialUnionRow<VC,STAR>() { return MR; }
-template<>              constexpr Dist PartialUnionRow<VR,STAR>() { return MC; }template<Dist U,Dist V> constexpr Dist PartialUnionCol()
+template<>              constexpr Dist PartialUnionRow<VC,Dist::STAR>() { return MR; }
+template<>              constexpr Dist PartialUnionRow<VR,Dist::STAR>() { return MC; }template<Dist U,Dist V> constexpr Dist PartialUnionCol()
 { return PartialUnionRow<V,U>(); }
 // Run-time
 // --------
 inline Dist PartialUnionRow( Dist U, Dist V ) EL_NO_EXCEPT
 {
-    if( U == VC )
+    if( U == Dist::VC )
         return MR;
-    else if( U == VR )
+    else if( U == Dist::VR )
         return MC;
     else
         return V;
@@ -217,31 +217,31 @@ inline Dist PartialUnionCol( Dist U, Dist V ) EL_NO_EXCEPT
 // Compile-time
 // ------------
 template<Dist U,Dist V> constexpr Dist ProductDist() { return CIRC; }
-template<>              constexpr Dist ProductDist<MC,  MR  >() { return VC;   }
-template<>              constexpr Dist ProductDist<MC,  STAR>() { return MC;   }
-template<>              constexpr Dist ProductDist<MD,  STAR>() { return MD;   }
-template<>              constexpr Dist ProductDist<MR,  MC  >() { return VR;   }
-template<>              constexpr Dist ProductDist<MR,  STAR>() { return MR;   }
-template<>              constexpr Dist ProductDist<STAR,MC  >() { return MC;   }
-template<>              constexpr Dist ProductDist<STAR,MD  >() { return MD;   }
-template<>              constexpr Dist ProductDist<STAR,MR  >() { return MR;   }
-template<>              constexpr Dist ProductDist<STAR,STAR>() { return STAR; }
-template<>              constexpr Dist ProductDist<STAR,VC  >() { return VC;   }
-template<>              constexpr Dist ProductDist<STAR,VR  >() { return VR;   }
-template<>              constexpr Dist ProductDist<VC,  STAR>() { return VC;   }
-template<>              constexpr Dist ProductDist<VR,  STAR>() { return VR;   }
+template<>              constexpr Dist ProductDist<MC,  Dist::MR  >() { return VC;   }
+template<>              constexpr Dist ProductDist<MC,  Dist::STAR>() { return MC;   }
+template<>              constexpr Dist ProductDist<MD,  Dist::STAR>() { return MD;   }
+template<>              constexpr Dist ProductDist<MR,  Dist::MC  >() { return VR;   }
+template<>              constexpr Dist ProductDist<MR,  Dist::STAR>() { return MR;   }
+template<>              constexpr Dist ProductDist<STAR,Dist::MC  >() { return MC;   }
+template<>              constexpr Dist ProductDist<STAR,Dist::MD  >() { return MD;   }
+template<>              constexpr Dist ProductDist<STAR,Dist::MR  >() { return MR;   }
+template<>              constexpr Dist ProductDist<STAR,Dist::STAR>() { return STAR; }
+template<>              constexpr Dist ProductDist<STAR,Dist::VC  >() { return VC;   }
+template<>              constexpr Dist ProductDist<STAR,Dist::VR  >() { return VR;   }
+template<>              constexpr Dist ProductDist<VC,  Dist::STAR>() { return VC;   }
+template<>              constexpr Dist ProductDist<VR,  Dist::STAR>() { return VR;   }
 template<Dist U,Dist V>
 constexpr Dist ProductDistPartner() { return STAR; }
 template<>
-constexpr Dist ProductDistPartner<CIRC,CIRC>() { return CIRC; }
+constexpr Dist ProductDistPartner<CIRC,Dist::CIRC>() { return CIRC; }
 // Runtime
 // -------
 inline Dist ProductDist( Dist U, Dist V ) EL_NO_EXCEPT
 {
-    if(      U == STAR ) return V;
-    else if( V == STAR ) return U;
-    else if( U == MC   && V == MR   ) return VC;
-    else if( U == MR   && V == MC   ) return VR;
+    if(      U == Dist::STAR ) return V;
+    else if( V == Dist::STAR ) return U;
+    else if( U == Dist::MC   && V == Dist::MR   ) return VC;
+    else if( U == Dist::MR   && V == Dist::MC   ) return VR;
     else if( U == CIRC && V == CIRC ) return CIRC;
     else { return STAR; } // NOTE: This branch should not be possible
 }

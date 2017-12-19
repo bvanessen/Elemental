@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_WRITE_IMAGE_HPP
@@ -22,8 +22,8 @@ namespace write {
 #ifdef EL_HAVE_QT5
 inline void
 SaveQImage
-( const QImage& image, string basename="matrix", 
-  FileFormat format=PNG )
+( const QImage& image, string basename="matrix",
+  FileFormat format=FileFormat::PNG )
 {
     EL_DEBUG_CSE
     string filename = basename + "." + FileExtension(format);
@@ -35,7 +35,7 @@ SaveQImage
 
 template<typename T>
 void RealPartImage
-( const Matrix<T>& A, string basename="matrix", FileFormat format=PNG )
+( const Matrix<T>& A, string basename="matrix", FileFormat format=FileFormat::PNG )
 {
     EL_DEBUG_CSE
 #ifdef EL_HAVE_QT5
@@ -44,7 +44,7 @@ void RealPartImage
     const Int n = A.Width();
 
     // Compute the maximum and minimum values
-    double minVal=0, maxVal=0; 
+    double minVal=0, maxVal=0;
     if( m != 0 && n != 0 )
     {
         minVal = maxVal = double(A.GetRealPart( 0, 0 ));
@@ -84,7 +84,7 @@ void RealPartImage
 
 template<typename T>
 void ImagPartImage
-( const Matrix<T>& A, string basename="matrix", FileFormat format=PNG )
+( const Matrix<T>& A, string basename="matrix", FileFormat format=FileFormat::PNG )
 {
     EL_DEBUG_CSE
 #ifdef EL_HAVE_QT5
@@ -93,7 +93,7 @@ void ImagPartImage
     const Int n = A.Width();
 
     // Compute the maximum and minimum values
-    double minVal=0, maxVal=0; 
+    double minVal=0, maxVal=0;
     if( m != 0 && n != 0 )
     {
         minVal = maxVal = double(A.GetImagPart( 0, 0 ));
@@ -133,7 +133,7 @@ void ImagPartImage
 
 template<typename Real>
 void Image
-( const Matrix<Real>& A, string basename="matrix", FileFormat format=PNG )
+( const Matrix<Real>& A, string basename="matrix", FileFormat format=FileFormat::PNG )
 {
     EL_DEBUG_CSE
     RealPartImage( A, basename, format );
@@ -141,8 +141,8 @@ void Image
 
 template<typename Real>
 void Image
-( const Matrix<Complex<Real>>& A, string basename="matrix", 
-  FileFormat format=PNG )
+( const Matrix<Complex<Real>>& A, string basename="matrix",
+  FileFormat format=FileFormat::PNG )
 {
     EL_DEBUG_CSE
     RealPartImage( A, basename+"_real", format );

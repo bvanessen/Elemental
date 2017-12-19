@@ -9,11 +9,14 @@
 #ifndef EL_BLAS_COPY_HPP
 #define EL_BLAS_COPY_HPP
 
-#include <El/blas_like/level1/Copy/internal_decl.hpp>
-#include <El/blas_like/level1/Copy/GeneralPurpose.hpp>
-#include <El/blas_like/level1/Copy/util.hpp>
+#include "El/blas_like/level1/Copy/internal_decl.hpp"
+#include "El/blas_like/level1/Copy/GeneralPurpose.hpp"
+#include "El/blas_like/level1/Copy/util.hpp"
 
-namespace El {
+#include "El/core/imports/omp.hpp"
+
+namespace El
+{
 
 template<typename T>
 void Copy( const Matrix<T>& A, Matrix<T>& B )

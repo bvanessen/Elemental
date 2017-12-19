@@ -140,7 +140,7 @@ Merge
     }
 
     Permutation combineSortPerm;
-    SortingPermutation( d, combineSortPerm, ASCENDING );
+    SortingPermutation( d, combineSortPerm, SortType::ASCENDING );
     combineSortPerm.PermuteRows( d );
     combineSortPerm.PermuteRows( z );
     combineSortPerm.PermuteRows( columnTypes );
@@ -700,7 +700,7 @@ Merge
     }
 
     Permutation combineSortPerm;
-    SortingPermutation( dLoc, combineSortPerm, ASCENDING );
+    SortingPermutation( dLoc, combineSortPerm, SortType::ASCENDING );
     combineSortPerm.PermuteRows( dLoc );
     combineSortPerm.PermuteRows( z );
     combineSortPerm.PermuteRows( columnTypes );

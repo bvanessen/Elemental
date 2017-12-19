@@ -9,6 +9,8 @@
 #ifndef EL_ELEMENT_COMPLEX_IMPL_HPP
 #define EL_ELEMENT_COMPLEX_IMPL_HPP
 
+#include "El/core/Element/Complex/decl.hpp"
+#include "El/core/environment/decl.hpp"
 #include "El/core/limits.hpp"
 
 namespace El

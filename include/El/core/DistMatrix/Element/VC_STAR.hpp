@@ -12,6 +12,7 @@
 #include "El/core/DistMatrix_decl.hpp"
 #include "El/core/Grid.hpp"
 #include "El/macros.h"
+#include "STAR_VC.hpp"
 
 namespace El
 {

@@ -17,7 +17,7 @@ void MatrixMarket( const Matrix<T>& A, string basename="matrix" )
 {
     EL_DEBUG_CSE
 
-    string filename = basename + "." + FileExtension(MATRIX_MARKET);
+    string filename = basename + "." + FileExtension(FileFormat::MATRIX_MARKET);
     ofstream file( filename.c_str(), std::ios::binary );
     if( !file.is_open() )
         RuntimeError("Could not open ",filename);

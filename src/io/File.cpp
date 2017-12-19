@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -13,13 +13,13 @@ const char* QtImageFormat( FileFormat format )
 {
     switch( format )
     {
-    case BMP:  return "BMP";  break;
-    case JPG:  return "JPG";  break;
-    case JPEG: return "JPEG"; break;
-    case PNG:  return "PNG";  break;
-    case PPM:  return "PPM";  break;
-    case XBM:  return "XBM";  break;
-    case XPM:  return "XPM";  break;
+    case FileFormat::BMP:  return "FileFormat::BMP";  break;
+    case FileFormat::JPG:  return "JPG";  break;
+    case FileFormat::JPEG: return "JPEG"; break;
+    case FileFormat::PNG:  return "PNG";  break;
+    case FileFormat::PPM:  return "PPM";  break;
+    case FileFormat::XBM:  return "XBM";  break;
+    case FileFormat::XPM:  return "XPM";  break;
     default: LogicError("Invalid image format"); return "N/A"; break;
     }
 }
@@ -28,18 +28,18 @@ string FileExtension( FileFormat format )
 {
     switch( format )
     {
-    case ASCII:            return "txt";  break;
-    case ASCII_MATLAB:     return "m";    break;
-    case BINARY:           return "bin";  break;
-    case BINARY_FLAT:      return "dat";  break;
-    case BMP:              return "bmp";  break;
-    case JPG:              return "jpg";  break;
-    case JPEG:             return "jpeg"; break;
-    case MATRIX_MARKET:    return "mm";   break;
-    case PNG:              return "png";  break;
-    case PPM:              return "ppm";  break;
-    case XBM:              return "xbm";  break;
-    case XPM:              return "xpm";  break;
+    case FileFormat::ASCII:            return "txt";  break;
+    case FileFormat::ASCII_MATLAB:     return "m";    break;
+    case FileFormat::BINARY:           return "bin";  break;
+    case FileFormat::BINARY_FLAT:      return "dat";  break;
+    case FileFormat::BMP:              return "bmp";  break;
+    case FileFormat::JPG:              return "jpg";  break;
+    case FileFormat::JPEG:             return "jpeg"; break;
+    case FileFormat::MATRIX_MARKET:    return "mm";   break;
+    case FileFormat::PNG:              return "png";  break;
+    case FileFormat::PPM:              return "ppm";  break;
+    case FileFormat::XBM:              return "xbm";  break;
+    case FileFormat::XPM:              return "xpm";  break;
     default: LogicError("Format not found"); return "N/A"; break;
     }
 }
@@ -47,7 +47,7 @@ string FileExtension( FileFormat format )
 FileFormat FormatFromExtension( const string ext )
 {
     bool foundFormat = false;
-    FileFormat format = BINARY;
+    FileFormat format = FileFormat::BINARY;
     for( int j=1; j<FileFormat_MAX; ++j )
     {
         format = static_cast<FileFormat>(j);

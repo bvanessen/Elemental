@@ -181,7 +181,7 @@ void HPSDSquareRoot
     Matrix<Real> w;
     Matrix<Field> Q;
     auto ctrlMod( ctrl );
-    ctrlMod.tridiagEigCtrl.sort = UNSORTED;
+    ctrlMod.tridiagEigCtrl.sort = SortType::UNSORTED;
     HermitianEig( uplo, A, w, Q, ctrlMod );
 
     // Compute the two-norm of A as the maximum absolute value of the eigvals
@@ -235,7 +235,7 @@ void HPSDSquareRoot
     DistMatrix<Real,Dist::VR,Dist::STAR> w(g);
     DistMatrix<Field> Q(g);
     auto ctrlMod( ctrl );
-    ctrlMod.tridiagEigCtrl.sort = UNSORTED;
+    ctrlMod.tridiagEigCtrl.sort = SortType::UNSORTED;
     HermitianEig( uplo, A, w, Q, ctrlMod );
 
     // Compute the two-norm of A as the maximum absolute value of the eigvals

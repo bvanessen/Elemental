@@ -69,11 +69,11 @@ void Print( const vector<T>& x, string title="vector", ostream& os=cout );
 // Read
 // ====
 template<typename T>
-void Read( Matrix<T>& A, const string filename, FileFormat format=AUTO );
+void Read( Matrix<T>& A, const string filename, FileFormat format=FileFormat::AUTO );
 template<typename T>
 void Read
 ( AbstractDistMatrix<T>& A,
-  const string filename, FileFormat format=AUTO, bool sequential=false );
+  const string filename, FileFormat format=FileFormat::AUTO, bool sequential=false );
 
 // Spy
 // ===
@@ -87,12 +87,12 @@ void Spy
 // =====
 template<typename T>
 void Write
-( const Matrix<T>& A, string basename="Matrix", FileFormat format=BINARY,
+( const Matrix<T>& A, string basename="Matrix", FileFormat format=FileFormat::BINARY,
   string title="" );
 template<typename T>
 void Write
 ( const AbstractDistMatrix<T>& A, string basename="DistMatrix",
-  FileFormat format=BINARY, string title="" );
+  FileFormat format=FileFormat::BINARY, string title="" );
 
 } // namespace El
 

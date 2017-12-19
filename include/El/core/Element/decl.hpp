@@ -9,7 +9,7 @@
 #ifndef EL_ELEMENT_DECL_HPP
 #define EL_ELEMENT_DECL_HPP
 
-#include <El/core/Element/Complex/decl.hpp>
+#include "El/core/Element/Complex/decl.hpp"
 #include "El/Types/Entry.hpp"
 #include "El/Types/ValueInt.hpp"
 

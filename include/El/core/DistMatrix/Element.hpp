@@ -9,7 +9,10 @@
 #ifndef EL_DISTMATRIX_ELEMENTAL_HPP
 #define EL_DISTMATRIX_ELEMENTAL_HPP
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+
+namespace El
+{
 
 template<typename Ring>
 class ElementalMatrix : public AbstractDistMatrix<Ring>

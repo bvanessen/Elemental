@@ -51,7 +51,7 @@ void HermitianSVD
         }
     }
 
-    auto pairs = TaggedSort( s, DESCENDING );
+    auto pairs = TaggedSort( s, SortType::DESCENDING );
     Matrix<Field> VPerm(n,n);
     Matrix<Base<Field>> sSgnPerm(n,1);
     for( Int j=0; j<n; ++j )
@@ -109,7 +109,7 @@ void HermitianSVD
     auto absLambda = []( const Real& sigma ) { return Abs(sigma); };
     EntrywiseMap( s, MakeFunction(absLambda) );
 
-    auto pairs = TaggedSort( s, DESCENDING );
+    auto pairs = TaggedSort( s, SortType::DESCENDING );
     DistMatrix<Field,Dist::VC,Dist::STAR> V_VC_STAR( V );
     DistMatrix<Field,Dist::VC,Dist::STAR> VPerm_VC_STAR(A.Grid());
     DistMatrix<Real,Dist::STAR,Dist::STAR> sSgnPerm(n,1,A.Grid());
@@ -170,7 +170,7 @@ void HermitianSVD
     auto absLambda = []( const Real& sigma ) { return Abs(sigma); };
     EntrywiseMap( s, MakeFunction(absLambda) );
 
-    Sort( s, DESCENDING );
+    Sort( s, SortType::DESCENDING );
 }
 
 template<typename Field>
@@ -205,7 +205,7 @@ void HermitianSVD
     auto absLambda = []( const Real& sigma ) { return Abs(sigma); };
     EntrywiseMap( s, MakeFunction(absLambda) );
 
-    Sort( s, DESCENDING );
+    Sort( s, SortType::DESCENDING );
 }
 
 template<typename Field>

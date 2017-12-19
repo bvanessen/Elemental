@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 
+#include "El/core/imports/blas.hpp"
 #include "El/core/imports/mpi.hpp"
 
 namespace El

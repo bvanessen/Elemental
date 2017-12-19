@@ -66,7 +66,7 @@ SVDInfo TallAbsoluteProduct
     subset.upperBound = 2*frobNorm*frobNorm;
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, V, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
 
@@ -124,7 +124,7 @@ SVDInfo TallRelativeProduct
 
     // [V,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, V, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
     const Real twoNorm = Sqrt(MaxNorm(s));
@@ -227,7 +227,7 @@ SVDInfo TallAbsoluteProduct
     subset.upperBound = 2*frobNorm*frobNorm;
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, V, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
 
@@ -307,7 +307,7 @@ SVDInfo TallRelativeProduct
 
     // [V,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, V, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
     const Real twoNorm = Sqrt(MaxNorm(s));
@@ -434,7 +434,7 @@ SVDInfo TallAbsoluteProduct
     subset.upperBound = 2*frobNorm*frobNorm;
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, V, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
     const int k = s.Height();
@@ -518,7 +518,7 @@ SVDInfo TallRelativeProduct
 
     // [V,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, V, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
     const Real twoNorm = Sqrt(MaxNorm(s));
@@ -642,7 +642,7 @@ SVDInfo WideAbsoluteProduct
     subset.upperBound = 2*frobNorm*frobNorm;
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, U, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
 
@@ -698,7 +698,7 @@ SVDInfo WideRelativeProduct
 
     // [U,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, U, ctrl );
     // TODO(poulson): Incorporate HermitianEigInfo into SVDInfo
     const Real twoNorm = Sqrt(MaxNorm(s));
@@ -798,7 +798,7 @@ SVDInfo WideAbsoluteProduct
     subset.upperBound = 2*frobNorm*frobNorm;
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, U, ctrl );
 
     // Sigma := sqrt(Sigma^2)
@@ -875,7 +875,7 @@ SVDInfo WideRelativeProduct
 
     // [U,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, U, ctrl );
     const Real twoNorm = Sqrt(MaxNorm(s));
 
@@ -1035,7 +1035,7 @@ SVDInfo TallAbsoluteProduct
     subset.upperBound = 2*frobNorm*frobNorm;
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
 
     // Sigma := sqrt(Sigma^2)
@@ -1069,7 +1069,7 @@ SVDInfo TallRelativeProduct
 
     // [Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
     const Real twoNorm = Sqrt(MaxNorm(s));
 
@@ -1147,7 +1147,7 @@ SVDInfo TallAbsoluteProduct
     //       be lower than the finite-precision result in practice
     subset.upperBound = 2*frobNorm*frobNorm;
     HermitianEigCtrl<Field> ctrl;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     ctrl.tridiagEigCtrl.subset = subset;
     HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
 
@@ -1197,7 +1197,7 @@ SVDInfo TallRelativeProduct
 
     // [Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
     const Real twoNorm = Sqrt(MaxNorm(s));
 
@@ -1294,7 +1294,7 @@ SVDInfo TallAbsoluteProduct
     subset.upperBound = 2*frobNorm*frobNorm;
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
     const int k = s.Height();
 
@@ -1346,7 +1346,7 @@ SVDInfo TallRelativeProduct
 
     // [V,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
     const Real twoNorm = Sqrt(MaxNorm(s));
 
@@ -1437,7 +1437,7 @@ SVDInfo WideAbsoluteProduct
     subset.upperBound = 2*frobNorm*frobNorm;
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
 
     // Sigma := sqrt(Sigma^2)
@@ -1471,7 +1471,7 @@ SVDInfo WideRelativeProduct
 
     // [Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
     const Real twoNorm = Sqrt(MaxNorm(s));
 
@@ -1549,7 +1549,7 @@ SVDInfo WideAbsoluteProduct
     subset.upperBound = 2*frobNorm*frobNorm;
     HermitianEigCtrl<Field> ctrl;
     ctrl.tridiagEigCtrl.subset = subset;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
 
     // Sigma := sqrt(Sigma^2)
@@ -1598,7 +1598,7 @@ SVDInfo WideRelativeProduct
 
     // [Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
-    ctrl.tridiagEigCtrl.sort = DESCENDING;
+    ctrl.tridiagEigCtrl.sort = SortType::DESCENDING;
     HermitianEig( UpperOrLower::LOWER, C, s, ctrl );
     const Real twoNorm = Sqrt(MaxNorm(s));
 

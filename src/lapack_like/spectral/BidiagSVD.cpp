@@ -244,7 +244,7 @@ Helper
     {
         s = mainDiag;
         info.qrInfo = bidiag_svd::QRAlg( s, offDiag, ctrl );
-        Sort( s, DESCENDING );
+        Sort( s, SortType::DESCENDING );
     }
     else if( uplo == UpperOrLower::LOWER )
     {
@@ -252,7 +252,7 @@ Helper
         auto offDiag0 = offDiag( IR(0,n-1), ALL );
         s = mainDiag;
         info.qrInfo = bidiag_svd::QRAlg( s, offDiag0, ctrl );
-        Sort( s, DESCENDING );
+        Sort( s, SortType::DESCENDING );
     }
     else
     {
@@ -260,7 +260,7 @@ Helper
         auto offDiag0 = offDiag( IR(0,m-1), ALL );
         s = mainDiag;
         info.qrInfo = bidiag_svd::QRAlg( s, offDiag0, ctrl );
-        Sort( s, DESCENDING );
+        Sort( s, SortType::DESCENDING );
     }
 
     if( ctrl.approach == THIN_SVD )
@@ -452,7 +452,7 @@ Helper
               bidiag_svd::QRAlg( s.Matrix(), offDiag0.Matrix(), ctrl );
         }
     }
-    Sort( s, DESCENDING );
+    Sort( s, SortType::DESCENDING );
 
     if( ctrl.approach == THIN_SVD )
     {
@@ -682,7 +682,7 @@ Helper
               ( mainDiag, offDiag, U, s, V, ctrlMod );
         }
 
-        auto sortPairs = TaggedSort( s, DESCENDING );
+        auto sortPairs = TaggedSort( s, SortType::DESCENDING );
         ApplyTaggedSortToEachColumn( sortPairs, s );
         if( ctrlMod.wantU )
             ApplyTaggedSortToEachRow( sortPairs, U );
@@ -714,7 +714,7 @@ Helper
               ( mainDiag, offDiag0, U0, s, V, ctrlMod );
         }
 
-        auto sortPairs = TaggedSort( s, DESCENDING );
+        auto sortPairs = TaggedSort( s, SortType::DESCENDING );
         ApplyTaggedSortToEachColumn( sortPairs, s );
         if( ctrl.wantU )
             ApplyTaggedSortToEachRow( sortPairs, U0 );
@@ -746,7 +746,7 @@ Helper
               ( mainDiag, offDiag0, U, s, V0, ctrl );
         }
 
-        auto sortPairs = TaggedSort( s, DESCENDING );
+        auto sortPairs = TaggedSort( s, SortType::DESCENDING );
         ApplyTaggedSortToEachColumn( sortPairs, s );
         if( ctrlMod.wantU )
             ApplyTaggedSortToEachRow( sortPairs, U );
@@ -988,7 +988,7 @@ Helper
                 V = V_MC_MR;
         }
 
-        auto sortPairs = TaggedSort( s, DESCENDING );
+        auto sortPairs = TaggedSort( s, SortType::DESCENDING );
         ApplyTaggedSortToEachColumn( sortPairs, s );
         if( ctrlMod.wantU )
             ApplyTaggedSortToEachRow( sortPairs, U );
@@ -1044,7 +1044,7 @@ Helper
                 V = V_MC_MR;
         }
 
-        auto sortPairs = TaggedSort( s, DESCENDING );
+        auto sortPairs = TaggedSort( s, SortType::DESCENDING );
         ApplyTaggedSortToEachColumn( sortPairs, s );
         if( ctrl.wantU )
             ApplyTaggedSortToEachRow( sortPairs, U0 );
@@ -1100,7 +1100,7 @@ Helper
                 V0 = V0_MC_MR;
         }
 
-        auto sortPairs = TaggedSort( s, DESCENDING );
+        auto sortPairs = TaggedSort( s, SortType::DESCENDING );
         ApplyTaggedSortToEachColumn( sortPairs, s );
         if( ctrlMod.wantU )
             ApplyTaggedSortToEachRow( sortPairs, U );

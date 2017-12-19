@@ -9,9 +9,15 @@
 #ifndef EL_SPECTRAL_HPP
 #define EL_SPECTRAL_HPP
 
-#include <El/lapack_like/condense.hpp>
+#include <functional>
+#include <string>
 
-namespace El {
+#include "El/core/indexing/decl.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/lapack_like/condense.hpp"
+
+namespace El
+{
 
 // Cubic Secular
 // =============
@@ -42,14 +48,14 @@ template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 CubicSecularInfo
 CubicSecular
-( bool initialize,
+(bool initialize,
   bool rightRoot,
   const Real& rho,
   const Matrix<Real>& z,
   const Matrix<Real>& d,
   const Real& originEval,
         Real& root,
-  const CubicSecularCtrl& ctrl=CubicSecularCtrl() );
+  const CubicSecularCtrl& ctrl=CubicSecularCtrl());
 
 // Secular Eigenvalue Decomposition
 // ================================
@@ -104,23 +110,23 @@ template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 SecularEVDInfo
 SecularEigenvalue
-( Int whichValue,
+(Int whichValue,
   const Matrix<Real>& d,
   const Real& rho,
   const Matrix<Real>& z,
         Real& eigenvalue,
-  const SecularEVDCtrl<Real>& ctrl=SecularEVDCtrl<Real>() );
+  const SecularEVDCtrl<Real>& ctrl=SecularEVDCtrl<Real>());
 template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 SecularEVDInfo
 SecularEigenvalue
-( Int whichValue,
+(Int whichValue,
   const Matrix<Real>& d,
   const Real& rho,
   const Matrix<Real>& z,
         Real& eigenvalue,
         Matrix<Real>& dMinusShift,
-  const SecularEVDCtrl<Real>& ctrl=SecularEVDCtrl<Real>() );
+  const SecularEVDCtrl<Real>& ctrl=SecularEVDCtrl<Real>());
 
 // Note that this routine requires that d(0) <= d(1) <= ... <= d(n-1) and
 // that || z ||_2 = 1.
@@ -128,12 +134,12 @@ template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 SecularEVDInfo
 SecularEVD
-( const Matrix<Real>& d,
+(const Matrix<Real>& d,
   const Real& rho,
   const Matrix<Real>& z,
         Matrix<Real>& w,
         Matrix<Real>& Q,
-  const SecularEVDCtrl<Real>& ctrl=SecularEVDCtrl<Real>() );
+  const SecularEVDCtrl<Real>& ctrl=SecularEVDCtrl<Real>());
 
 // Secular Singular Value Decomposition
 // ====================================
@@ -196,24 +202,24 @@ template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 SecularSVDInfo
 SecularSingularValue
-( Int whichValue,
+(Int whichValue,
   const Matrix<Real>& d,
   const Real& rho,
   const Matrix<Real>& z,
         Real& singularValue,
-  const SecularSVDCtrl<Real>& ctrl=SecularSVDCtrl<Real>() );
+  const SecularSVDCtrl<Real>& ctrl=SecularSVDCtrl<Real>());
 template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 SecularSVDInfo
 SecularSingularValue
-( Int whichValue,
+(Int whichValue,
   const Matrix<Real>& d,
   const Real& rho,
   const Matrix<Real>& z,
         Real& singularValue,
         Matrix<Real>& dMinusShift,
         Matrix<Real>& dPlusShift,
-  const SecularSVDCtrl<Real>& ctrl=SecularSVDCtrl<Real>() );
+  const SecularSVDCtrl<Real>& ctrl=SecularSVDCtrl<Real>());
 
 // Note that this routine requires that 0 = d(0) <= d(1) <= ... <= d(n-1) and
 // that || z ||_2 = 1.
@@ -221,13 +227,13 @@ template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 SecularSVDInfo
 SecularSVD
-( const Matrix<Real>& d,
+(const Matrix<Real>& d,
   const Real& rho,
   const Matrix<Real>& z,
         Matrix<Real>& U,
         Matrix<Real>& s,
         Matrix<Real>& V,
-  const SecularSVDCtrl<Real>& ctrl=SecularSVDCtrl<Real>() );
+  const SecularSVDCtrl<Real>& ctrl=SecularSVDCtrl<Real>());
 
 
 template<typename Real>
@@ -346,7 +352,7 @@ struct HermitianTridiagEigCtrl
 {
     bool wantEigVecs=true;
     bool accumulateEigVecs=false;
-    SortType sort=ASCENDING;
+    SortType sort=SortType::ASCENDING;
     HermitianEigSubset<Real> subset;
     bool progress=false;
 
@@ -361,39 +367,39 @@ struct HermitianTridiagEigCtrl
 template<typename Field>
 HermitianTridiagEigInfo
 HermitianTridiagEig
-( const Matrix<Base<Field>>& d,
+(const Matrix<Base<Field>>& d,
   const Matrix<Field>& dSub,
         Matrix<Base<Field>>& w,
   const HermitianTridiagEigCtrl<Base<Field>>& ctrl=
-        HermitianTridiagEigCtrl<Base<Field>>() );
+        HermitianTridiagEigCtrl<Base<Field>>());
 template<typename Field>
 HermitianTridiagEigInfo
 HermitianTridiagEig
-( const AbstractDistMatrix<Base<Field>>& d,
+(const AbstractDistMatrix<Base<Field>>& d,
   const AbstractDistMatrix<Field>& dSub,
         AbstractDistMatrix<Base<Field>>& w,
   const HermitianTridiagEigCtrl<Base<Field>>& ctrl=
-        HermitianTridiagEigCtrl<Base<Field>>() );
+        HermitianTridiagEigCtrl<Base<Field>>());
 // Compute eigenpairs
 // ------------------
 template<typename Field>
 HermitianTridiagEigInfo
 HermitianTridiagEig
-( const Matrix<Base<Field>>& d,
+(const Matrix<Base<Field>>& d,
   const Matrix<Field>& dSub,
         Matrix<Base<Field>>& w,
         Matrix<Field>& Q,
   const HermitianTridiagEigCtrl<Base<Field>>& ctrl=
-        HermitianTridiagEigCtrl<Base<Field>>() );
+        HermitianTridiagEigCtrl<Base<Field>>());
 template<typename Field>
 HermitianTridiagEigInfo
 HermitianTridiagEig
-( const AbstractDistMatrix<Base<Field>>& d,
+(const AbstractDistMatrix<Base<Field>>& d,
   const AbstractDistMatrix<Field>& dSub,
         AbstractDistMatrix<Base<Field>>& w,
         AbstractDistMatrix<Field>& Q,
   const HermitianTridiagEigCtrl<Base<Field>>& ctrl=
-        HermitianTridiagEigCtrl<Base<Field>>() );
+        HermitianTridiagEigCtrl<Base<Field>>());
 
 // Hermitian eigenvalue solvers
 // ============================
@@ -429,56 +435,56 @@ struct HermitianEigInfo
 template<typename Field>
 HermitianEigInfo
 HermitianEig
-(       UpperOrLower uplo,
+(      UpperOrLower uplo,
         Matrix<Field>& A,
         Matrix<Base<Field>>& w,
-  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>() );
+  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>());
 template<typename Field>
 HermitianEigInfo
 HermitianEig
-(       UpperOrLower uplo,
+(      UpperOrLower uplo,
         AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Base<Field>>& w,
-  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>() );
+  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>());
 
 // Compute eigenpairs
 // ------------------
 template<typename Field>
 HermitianEigInfo
 HermitianEig
-(       UpperOrLower uplo,
+(      UpperOrLower uplo,
         Matrix<Field>& A,
         Matrix<Base<Field>>& w,
         Matrix<Field>& Q,
-  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>() );
+  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>());
 template<typename Field>
 HermitianEigInfo
 HermitianEig
-(       UpperOrLower uplo,
+(      UpperOrLower uplo,
         AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Base<Field>>& w,
         AbstractDistMatrix<Field>& Q,
-  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>() );
+  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>());
 
 namespace herm_eig {
 
 template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 void TwoByTwo
-( const Real& alpha00,
+(const Real& alpha00,
   const Real& alpha01,
   const Real& alpha11,
   Real& lambda0, Real& lambda1,
-  bool fullAccuracy=true );
+  bool fullAccuracy=true);
 template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 void TwoByTwo
-( const Real& alpha00,
+(const Real& alpha00,
   const Real& alpha01,
   const Real& alpha11,
   Real& lambda0, Real& lambda1,
   Real& c, Real& s,
-  bool fullAccuracy=true );
+  bool fullAccuracy=true);
 
 } // namespace herm_eig
 
@@ -489,40 +495,40 @@ void TwoByTwo
 template<typename Field>
 HermitianEigInfo
 SkewHermitianEig
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const Matrix<Field>& G,
         Matrix<Base<Field>>& wImag,
   const HermitianEigCtrl<Complex<Base<Field>>>& ctrl=
-        HermitianEigCtrl<Complex<Base<Field>>>() );
+        HermitianEigCtrl<Complex<Base<Field>>>());
 template<typename Field>
 HermitianEigInfo
 SkewHermitianEig
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const AbstractDistMatrix<Field>& G,
         AbstractDistMatrix<Base<Field>>& wImag,
   const HermitianEigCtrl<Complex<Base<Field>>>& ctrl=
-        HermitianEigCtrl<Complex<Base<Field>>>() );
+        HermitianEigCtrl<Complex<Base<Field>>>());
 
 // Compute eigenpairs
 // ------------------
 template<typename Field>
 HermitianEigInfo
 SkewHermitianEig
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const Matrix<Field>& G,
         Matrix<Base<Field>>& wImag,
         Matrix<Complex<Base<Field>>>& Q,
   const HermitianEigCtrl<Complex<Base<Field>>>& ctrl=
-        HermitianEigCtrl<Complex<Base<Field>>>() );
+        HermitianEigCtrl<Complex<Base<Field>>>());
 template<typename Field>
 HermitianEigInfo
 SkewHermitianEig
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const AbstractDistMatrix<Field>& G,
         AbstractDistMatrix<Base<Field>>& wImag,
         AbstractDistMatrix<Complex<Base<Field>>>& Q,
   const HermitianEigCtrl<Complex<Base<Field>>>& ctrl=
-        HermitianEigCtrl<Complex<Base<Field>>>() );
+        HermitianEigCtrl<Complex<Base<Field>>>());
 
 // Hermitian generalized definite eigenvalue solvers
 // =================================================
@@ -543,43 +549,43 @@ using namespace PencilNS;
 template<typename Field>
 HermitianEigInfo
 HermitianGenDefEig
-(       Pencil pencil,
+(      Pencil pencil,
         UpperOrLower uplo,
         Matrix<Field>& A,
         Matrix<Field>& B,
         Matrix<Base<Field>>& w,
-  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>() );
+  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>());
 template<typename Field>
 HermitianEigInfo
 HermitianGenDefEig
-(       Pencil pencil,
+(      Pencil pencil,
         UpperOrLower uplo,
         AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Field>& B,
         AbstractDistMatrix<Base<Field>>& w,
-  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>() );
+  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>());
 // Compute eigenpairs
 // ------------------
 template<typename Field>
 HermitianEigInfo
 HermitianGenDefEig
-(       Pencil pencil,
+(      Pencil pencil,
         UpperOrLower uplo,
         Matrix<Field>& A,
         Matrix<Field>& B,
         Matrix<Base<Field>>& w,
         Matrix<Field>& X,
-  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>() );
+  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>());
 template<typename Field>
 HermitianEigInfo
 HermitianGenDefEig
-(       Pencil pencil,
+(      Pencil pencil,
         UpperOrLower uplo,
         AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Field>& B,
         AbstractDistMatrix<Base<Field>>& w,
         AbstractDistMatrix<Field>& X,
-  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>() );
+  const HermitianEigCtrl<Field>& ctrl=HermitianEigCtrl<Field>());
 
 // Polar decomposition
 // ===================
@@ -609,42 +615,42 @@ struct PolarInfo
 
 template<typename Field>
 PolarInfo
-Polar( Matrix<Field>& A, const PolarCtrl& ctrl=PolarCtrl() );
+Polar(Matrix<Field>& A, const PolarCtrl& ctrl=PolarCtrl());
 template<typename Field>
 PolarInfo
-Polar( AbstractDistMatrix<Field>& A, const PolarCtrl& ctrl=PolarCtrl() );
+Polar(AbstractDistMatrix<Field>& A, const PolarCtrl& ctrl=PolarCtrl());
 template<typename Field>
 PolarInfo Polar
-( Matrix<Field>& A,
+(Matrix<Field>& A,
   Matrix<Field>& P,
-  const PolarCtrl& ctrl=PolarCtrl() );
+  const PolarCtrl& ctrl=PolarCtrl());
 template<typename Field>
 PolarInfo Polar
-( AbstractDistMatrix<Field>& A,
+(AbstractDistMatrix<Field>& A,
   AbstractDistMatrix<Field>& P,
-  const PolarCtrl& ctrl=PolarCtrl() );
+  const PolarCtrl& ctrl=PolarCtrl());
 template<typename Field>
 PolarInfo HermitianPolar
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   Matrix<Field>& A,
-  const PolarCtrl& ctrl=PolarCtrl() );
+  const PolarCtrl& ctrl=PolarCtrl());
 template<typename Field>
 PolarInfo HermitianPolar
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   AbstractDistMatrix<Field>& A,
-  const PolarCtrl& ctrl=PolarCtrl() );
+  const PolarCtrl& ctrl=PolarCtrl());
 template<typename Field>
 PolarInfo HermitianPolar
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   Matrix<Field>& A,
   Matrix<Field>& P,
-  const PolarCtrl& ctrl=PolarCtrl() );
+  const PolarCtrl& ctrl=PolarCtrl());
 template<typename Field>
 PolarInfo HermitianPolar
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   AbstractDistMatrix<Field>& A,
   AbstractDistMatrix<Field>& P,
-  const PolarCtrl& ctrl=PolarCtrl() );
+  const PolarCtrl& ctrl=PolarCtrl());
 
 // Hessenberg Schur decomposition
 // ==============================
@@ -658,7 +664,7 @@ namespace hess_schur {
 
 namespace multibulge {
 
-inline Int NumBulgesPerBlock( Int blockHeight )
+inline Int NumBulgesPerBlock(Int blockHeight)
 { return (blockHeight-1) / 6; }
 
 } // namespace multibulge
@@ -667,49 +673,49 @@ namespace aed {
 
 // Cf. LAPACK's IPARMQ for these choices. The primary difference here is that
 // we do not use a fixed value (of 256) for windows of size at least 6000.
-inline Int NumShifts( Int /*n*/, Int winSize )
+inline Int NumShifts(Int /*n*/, Int winSize)
 {
     Int numShifts;
-    if( winSize < 30 )
+    if(winSize < 30)
         numShifts = 2;
-    else if( winSize < 60 )
+    else if(winSize < 60)
         numShifts = 4;
-    else if( winSize < 150 )
+    else if(winSize < 150)
         numShifts = 10;
-    else if( winSize < 590 )
-        numShifts = Max( 10, winSize/Int(Log2(double(winSize))) );
-    else if( winSize < 3000 )
+    else if(winSize < 590)
+        numShifts = Max(10, winSize/Int(Log2(double(winSize))));
+    else if(winSize < 3000)
         numShifts = 64;
-    else if( winSize < 6000 )
+    else if(winSize < 6000)
         numShifts = 128;
     else
-        numShifts = Max( 256, winSize/Int(2*Log2(double(winSize))) );
+        numShifts = Max(256, winSize/Int(2*Log2(double(winSize))));
 
-    numShifts = Min( numShifts, winSize );
-    numShifts = Max( 2, numShifts-Mod(numShifts,2) );
+    numShifts = Min(numShifts, winSize);
+    numShifts = Max(2, numShifts-Mod(numShifts,2));
 
     return numShifts;
 }
 
 // Cf. LAPACK's IPARMQ for these deflation window sizes
-inline Int DeflationSize( Int n, Int winSize, Int numShifts )
+inline Int DeflationSize(Int n, Int winSize, Int numShifts)
 {
     Int deflationSize;
-    if( winSize <= 500 )
+    if(winSize <= 500)
         deflationSize = numShifts;
     else
         deflationSize = (3*numShifts) / 2;
 
-    deflationSize = Min( deflationSize, winSize );
-    deflationSize = Min( deflationSize, (n-1)/3 );
-    deflationSize = Max( 2, deflationSize-Mod(deflationSize,2) );
+    deflationSize = Min(deflationSize, winSize);
+    deflationSize = Min(deflationSize, (n-1)/3);
+    deflationSize = Max(2, deflationSize-Mod(deflationSize,2));
 
     return deflationSize;
 }
 
 // Cf. LAPACK's IPARMQ for the choice of skipping a QR sweep if at least
 // 14% of the eigenvalues in a window deflated
-inline Int SufficientDeflation( Int deflationSize )
+inline Int SufficientDeflation(Int deflationSize)
 {
     const Int nibble = 14;
     return (nibble*deflationSize) / 100;
@@ -746,14 +752,14 @@ struct HessenbergSchurCtrl
     Int minMultiBulgeSize = 75;
     Int minDistMultiBulgeSize = 400;
 
-    function<Int(Int,Int)> numShifts =
-      function<Int(Int,Int)>(hess_schur::aed::NumShifts);
+    std::function<Int(Int,Int)> numShifts =
+      std::function<Int(Int,Int)>(hess_schur::aed::NumShifts);
 
-    function<Int(Int,Int,Int)> deflationSize =
-      function<Int(Int,Int,Int)>(hess_schur::aed::DeflationSize);
+    std::function<Int(Int,Int,Int)> deflationSize =
+      std::function<Int(Int,Int,Int)>(hess_schur::aed::DeflationSize);
 
-    function<Int(Int)> sufficientDeflation =
-      function<Int(Int)>(hess_schur::aed::SufficientDeflation);
+    std::function<Int(Int)> sufficientDeflation =
+      std::function<Int(Int)>(hess_schur::aed::SufficientDeflation);
 
     // For the distributed Hessenberg QR algorithm
     // TODO(poulson): Move this into a substructure?
@@ -761,53 +767,53 @@ struct HessenbergSchurCtrl
     Int blockHeight=DefaultBlockHeight();
     // A map from the block height to the number of bulges per diagonal block in
     // the distributed multibulge algorithm.
-    function<Int(Int)> numBulgesPerBlock =
-      function<Int(Int)>(hess_schur::multibulge::NumBulgesPerBlock);
+    std::function<Int(Int)> numBulgesPerBlock =
+      std::function<Int(Int)>(hess_schur::multibulge::NumBulgesPerBlock);
 };
 
 template<typename Field>
 HessenbergSchurInfo
 HessenbergSchur
-( Matrix<Field>& H,
+(Matrix<Field>& H,
   Matrix<Complex<Base<Field>>>& w,
-  const HessenbergSchurCtrl& ctrl=HessenbergSchurCtrl() );
+  const HessenbergSchurCtrl& ctrl=HessenbergSchurCtrl());
 template<typename Field>
 HessenbergSchurInfo
 HessenbergSchur
-( Matrix<Field>& H,
+(Matrix<Field>& H,
   Matrix<Complex<Base<Field>>>& w,
   Matrix<Field>& Z,
-  const HessenbergSchurCtrl& ctrl=HessenbergSchurCtrl() );
+  const HessenbergSchurCtrl& ctrl=HessenbergSchurCtrl());
 
 template<typename Field>
 HessenbergSchurInfo
 HessenbergSchur
-( AbstractDistMatrix<Field>& H,
+(AbstractDistMatrix<Field>& H,
   AbstractDistMatrix<Complex<Base<Field>>>& w,
-  const HessenbergSchurCtrl& ctrl=HessenbergSchurCtrl() );
+  const HessenbergSchurCtrl& ctrl=HessenbergSchurCtrl());
 template<typename Field>
 HessenbergSchurInfo
 HessenbergSchur
-( AbstractDistMatrix<Field>& H,
+(AbstractDistMatrix<Field>& H,
   AbstractDistMatrix<Complex<Base<Field>>>& w,
   AbstractDistMatrix<Field>& Z,
-  const HessenbergSchurCtrl& ctrl=HessenbergSchurCtrl() );
+  const HessenbergSchurCtrl& ctrl=HessenbergSchurCtrl());
 
 namespace hess_schur {
 
 template<typename Field>
 void Sweep
-( Matrix<Field>& H,
+(Matrix<Field>& H,
   Matrix<Complex<Base<Field>>>& shifts,
   Matrix<Field>& Z,
-  const HessenbergSchurCtrl& ctrl );
+  const HessenbergSchurCtrl& ctrl);
 // TODO(poulson): Generalize to AbstractDistMatrix?
 template<typename Field>
 void Sweep
-( DistMatrix<Field,MC,MR,BLOCK>& H,
-  DistMatrix<Complex<Base<Field>>,STAR,STAR>& shifts,
-  DistMatrix<Field,MC,MR,BLOCK>& Z,
-  const HessenbergSchurCtrl& ctrl );
+(DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& H,
+  DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& shifts,
+  DistMatrix<Field,Dist::MC,Dist::MR,DistWrap::BLOCK>& Z,
+  const HessenbergSchurCtrl& ctrl);
 
 } // namespace hess_schur
 
@@ -840,108 +846,108 @@ struct SchurCtrl
 
 template<typename Field>
 void Schur
-( Matrix<Field>& A,
+(Matrix<Field>& A,
   Matrix<Complex<Base<Field>>>& w,
-  const SchurCtrl<Base<Field>>& ctrl=SchurCtrl<Base<Field>>() );
+  const SchurCtrl<Base<Field>>& ctrl=SchurCtrl<Base<Field>>());
 template<typename Field>
 void Schur
-( AbstractDistMatrix<Field>& A,
+(AbstractDistMatrix<Field>& A,
   AbstractDistMatrix<Complex<Base<Field>>>& w,
-  const SchurCtrl<Base<Field>>& ctrl=SchurCtrl<Base<Field>>() );
+  const SchurCtrl<Base<Field>>& ctrl=SchurCtrl<Base<Field>>());
 
 template<typename Field>
 void Schur
-( Matrix<Field>& A,
+(Matrix<Field>& A,
   Matrix<Complex<Base<Field>>>& w,
   Matrix<Field>& Q,
-  const SchurCtrl<Base<Field>>& ctrl=SchurCtrl<Base<Field>>() );
+  const SchurCtrl<Base<Field>>& ctrl=SchurCtrl<Base<Field>>());
 template<typename Field>
 void Schur
-( AbstractDistMatrix<Field>& A,
+(AbstractDistMatrix<Field>& A,
   AbstractDistMatrix<Complex<Base<Field>>>& w,
   AbstractDistMatrix<Field>& Q,
-  const SchurCtrl<Base<Field>>& ctrl=SchurCtrl<Base<Field>>() );
+  const SchurCtrl<Base<Field>>& ctrl=SchurCtrl<Base<Field>>());
 
 namespace schur {
 
 template<typename Real>
-void CheckRealSchur( const Matrix<Real>& U, bool standardForm=false );
+void CheckRealSchur(const Matrix<Real>& U, bool standardForm=false);
 template<typename Real>
 void CheckRealSchur
-( const AbstractDistMatrix<Real>& U, bool standardForm=false );
+(const AbstractDistMatrix<Real>& U, bool standardForm=false);
 
 // NOTE: These will always throw an error
 template<typename Real>
 void CheckRealSchur
-( const Matrix<Complex<Real>>& U, bool standardForm=false );
+(const Matrix<Complex<Real>>& U, bool standardForm=false);
 template<typename Real>
 void CheckRealSchur
-( const AbstractDistMatrix<Complex<Real>>& U, bool standardForm=false );
+(const AbstractDistMatrix<Complex<Real>>& U, bool standardForm=false);
 
 template<typename Field>
 void QuasiTriangEig
-( const Matrix<Field>& dMain,
+(const Matrix<Field>& dMain,
   const Matrix<Field>& dSub,
   const Matrix<Field>& dSup,
-  Matrix<Complex<Base<Field>>>& w );
+  Matrix<Complex<Base<Field>>>& w);
 
 template<typename Field>
 void QuasiTriangEig
-( const Matrix<Field>& U,
-        Matrix<Complex<Base<Field>>>& w );
+(const Matrix<Field>& U,
+        Matrix<Complex<Base<Field>>>& w);
 template<typename Field>
 void QuasiTriangEig
-( const AbstractDistMatrix<Field>& U,
-        AbstractDistMatrix<Complex<Base<Field>>>& w );
+(const AbstractDistMatrix<Field>& U,
+        AbstractDistMatrix<Complex<Base<Field>>>& w);
 
 template<typename Field>
-Matrix<Complex<Base<Field>>> QuasiTriangEig( const Matrix<Field>& U );
+Matrix<Complex<Base<Field>>> QuasiTriangEig(const Matrix<Field>& U);
 template<typename Field>
-DistMatrix<Complex<Base<Field>>,VR,STAR>
-QuasiTriangEig( const AbstractDistMatrix<Field>& U );
+DistMatrix<Complex<Base<Field>>,Dist::VR,Dist::STAR>
+QuasiTriangEig(const AbstractDistMatrix<Field>& U);
 
 template<typename Real>
 void RealToComplex
-( const Matrix<Real>& UQuasi, Matrix<Complex<Real>>& U );
+(const Matrix<Real>& UQuasi, Matrix<Complex<Real>>& U);
 template<typename Real>
 void RealToComplex
-( const AbstractDistMatrix<Real>& UQuasi,
-        AbstractDistMatrix<Complex<Real>>& U );
+(const AbstractDistMatrix<Real>& UQuasi,
+        AbstractDistMatrix<Complex<Real>>& U);
 
 template<typename Real>
 void RealToComplex
-( const Matrix<Real>& UQuasi,
+(const Matrix<Real>& UQuasi,
   const Matrix<Real>& QQuasi,
         Matrix<Complex<Real>>& U,
-        Matrix<Complex<Real>>& Q );
+        Matrix<Complex<Real>>& Q);
 template<typename Real>
 void RealToComplex
-( const AbstractDistMatrix<Real>& UQuasi,
+(const AbstractDistMatrix<Real>& UQuasi,
   const AbstractDistMatrix<Real>& QQuasi,
         AbstractDistMatrix<Complex<Real>>& U,
-        AbstractDistMatrix<Complex<Real>>& Q );
+        AbstractDistMatrix<Complex<Real>>& Q);
 
 template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 void TwoByTwo
-( Real& alpha00, Real& alpha01,
+(Real& alpha00, Real& alpha01,
   Real& alpha10, Real& alpha11,
   Complex<Real>& lambda0,
-  Complex<Real>& lambda1 );
+  Complex<Real>& lambda1);
 template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 void TwoByTwo
-( Real& alpha00, Real& alpha01,
+(Real& alpha00, Real& alpha01,
   Real& alpha10, Real& alpha11,
   Complex<Real>& lambda0,
   Complex<Real>& lambda1,
-  Real& c, Real& s );
+  Real& c, Real& s);
 
 template<typename Real>
 void TwoByTwo
-( Complex<Real>& alpha00, Complex<Real>& alpha01,
+(Complex<Real>& alpha00, Complex<Real>& alpha01,
   Complex<Real>& alpha10, Complex<Real>& alpha11,
-  Complex<Real>& lambda0, Complex<Real>& lambda1 );
+  Complex<Real>& lambda0, Complex<Real>& lambda1);
 
 } // namespace schur
 
@@ -949,25 +955,25 @@ void TwoByTwo
 // ===========================================
 template<typename Field>
 void TriangEig
-(       Matrix<Field>& U,
-        Matrix<Field>& X );
+(      Matrix<Field>& U,
+        Matrix<Field>& X);
 template<typename Field>
 void TriangEig
-( const AbstractDistMatrix<Field>& U,
-        AbstractDistMatrix<Field>& X );
+(const AbstractDistMatrix<Field>& U,
+        AbstractDistMatrix<Field>& X);
 
 // Compute the eigendecomposition of a square matrix
 // =================================================
 template<typename Field>
 void Eig
-( Matrix<Field>& A,
+(Matrix<Field>& A,
   Matrix<Complex<Base<Field>>>& w,
-  Matrix<Complex<Base<Field>>>& X );
+  Matrix<Complex<Base<Field>>>& X);
 template<typename Field>
 void Eig
-( AbstractDistMatrix<Field>& A,
+(AbstractDistMatrix<Field>& A,
   AbstractDistMatrix<Complex<Base<Field>>>& w,
-  AbstractDistMatrix<Complex<Base<Field>>>& X );
+  AbstractDistMatrix<Complex<Base<Field>>>& X);
 
 // Bidiagonal Singular Value Decomposition
 // =======================================
@@ -1142,69 +1148,69 @@ namespace bidiag_svd {
 // For determining a consistent threshold for setting singular values to zero
 template<typename Real>
 Real APosterioriThreshold
-( Int m, Int n,
+(Int m, Int n,
   const Real& twoNorm,
-  const BidiagSVDCtrl<Real>& ctrl );
+  const BidiagSVDCtrl<Real>& ctrl);
 
 } // namespace bidiag_svd
 
 template<typename Field>
 BidiagSVDInfo
 BidiagSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const Matrix<Field>& mainDiag,
   const Matrix<Field>& offDiag,
         Matrix<Base<Field>>& s,
-  const BidiagSVDCtrl<Base<Field>>& ctrl=BidiagSVDCtrl<Base<Field>>() );
+  const BidiagSVDCtrl<Base<Field>>& ctrl=BidiagSVDCtrl<Base<Field>>());
 template<typename Field>
 BidiagSVDInfo
 BidiagSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const Matrix<Field>& mainDiag,
   const Matrix<Field>& offDiag,
         Matrix<Field>& U,
         Matrix<Base<Field>>& s,
         Matrix<Field>& V,
-  const BidiagSVDCtrl<Base<Field>>& ctrl=BidiagSVDCtrl<Base<Field>>() );
+  const BidiagSVDCtrl<Base<Field>>& ctrl=BidiagSVDCtrl<Base<Field>>());
 template<typename Field>
 BidiagSVDInfo
 BidiagSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const Matrix<Base<Field>>& mainDiag,
   const Matrix<Base<Field>>& offDiag,
         Matrix<Field>& U,
         Matrix<Base<Field>>& s,
         Matrix<Field>& V,
-  const BidiagSVDCtrl<Base<Field>>& ctrl=BidiagSVDCtrl<Base<Field>>() );
+  const BidiagSVDCtrl<Base<Field>>& ctrl=BidiagSVDCtrl<Base<Field>>());
 
 template<typename Field>
 BidiagSVDInfo
 BidiagSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const AbstractDistMatrix<Field>& mainDiag,
   const AbstractDistMatrix<Field>& offDiag,
         AbstractDistMatrix<Base<Field>>& s,
-  const BidiagSVDCtrl<Base<Field>>& ctrl=BidiagSVDCtrl<Base<Field>>() );
+  const BidiagSVDCtrl<Base<Field>>& ctrl=BidiagSVDCtrl<Base<Field>>());
 template<typename Field>
 BidiagSVDInfo
 BidiagSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const AbstractDistMatrix<Field>& mainDiag,
   const AbstractDistMatrix<Field>& offDiag,
         AbstractDistMatrix<Field>& U,
         AbstractDistMatrix<Base<Field>>& s,
         AbstractDistMatrix<Field>& V,
-  const BidiagSVDCtrl<Base<Field>>& ctrl=BidiagSVDCtrl<Base<Field>>() );
+  const BidiagSVDCtrl<Base<Field>>& ctrl=BidiagSVDCtrl<Base<Field>>());
 template<typename Field>
 BidiagSVDInfo
 BidiagSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const AbstractDistMatrix<Base<Field>>& mainDiag,
   const AbstractDistMatrix<Base<Field>>& offDiag,
         AbstractDistMatrix<Field>& U,
         AbstractDistMatrix<Base<Field>>& s,
         AbstractDistMatrix<Field>& V,
-  const BidiagSVDCtrl<Base<Field>>& ctrl=BidiagSVDCtrl<Base<Field>>() );
+  const BidiagSVDCtrl<Base<Field>>& ctrl=BidiagSVDCtrl<Base<Field>>());
 
 // Singular Value Decomposition
 // ============================
@@ -1244,42 +1250,42 @@ struct SVDCtrl
 // ---------------------------
 template<typename Field>
 SVDInfo SVD
-(       Matrix<Field>& A,
+(      Matrix<Field>& A,
         Matrix<Base<Field>>& s,
-  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>() );
+  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>());
 template<typename Field>
 SVDInfo SVD
-( const Matrix<Field>& A,
+(const Matrix<Field>& A,
         Matrix<Base<Field>>& s,
-  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>() );
+  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>());
 
 template<typename Field>
 SVDInfo SVD
-(       AbstractDistMatrix<Field>& A,
+(      AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Base<Field>>& s,
-  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>() );
+  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>());
 template<typename Field>
 SVDInfo SVD
-( const AbstractDistMatrix<Field>& A,
+(const AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Base<Field>>& s,
-  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>() );
+  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>());
 
 namespace svd {
 
 template<typename Field>
 SVDInfo TSQR
-(       AbstractDistMatrix<Field>& A,
+(      AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Base<Field>>& s,
-  bool overwrite=false );
+  bool overwrite=false);
 template<typename Field>
 SVDInfo TSQR
-( const AbstractDistMatrix<Field>& A,
-        AbstractDistMatrix<Base<Field>>& s );
+(const AbstractDistMatrix<Field>& A,
+        AbstractDistMatrix<Base<Field>>& s);
 
 template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 void TwoByTwoUpper
-( const Real& alpha00,
+(const Real& alpha00,
   const Real& alpha01,
   const Real& alpha11,
         Real& sigmaMax,
@@ -1289,11 +1295,11 @@ void TwoByTwoUpper
         Real& cU,
         Real& sU,
         Real& cV,
-        Real& sV );
+        Real& sV);
 template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 void TwoByTwoUpperStandard
-( const Real& alpha00,
+(const Real& alpha00,
   const Real& alpha01,
   const Real& alpha11,
         Real& sigmaMax,
@@ -1301,16 +1307,16 @@ void TwoByTwoUpperStandard
         Real& cU,
         Real& sU,
         Real& cV,
-        Real& sV );
+        Real& sV);
 
 template<typename Real,
          typename=EnableIf<IsReal<Real>>>
 void TwoByTwoUpper
-( const Real& alpha00,
+(const Real& alpha00,
   const Real& alpha01,
   const Real& alpha11,
         Real& sigmaMax,
-        Real& sigmaMin );
+        Real& sigmaMin);
 
 } // namespace svd
 
@@ -1318,42 +1324,42 @@ void TwoByTwoUpper
 // --------------------
 template<typename Field>
 SVDInfo SVD
-(       Matrix<Field>& A,
+(      Matrix<Field>& A,
         Matrix<Field>& U,
         Matrix<Base<Field>>& s,
         Matrix<Field>& V,
-  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>() );
+  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>());
 template<typename Field>
 SVDInfo SVD
-( const Matrix<Field>& A,
+(const Matrix<Field>& A,
         Matrix<Field>& U,
         Matrix<Base<Field>>& s,
         Matrix<Field>& V,
-  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>() );
+  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>());
 
 template<typename Field>
 SVDInfo SVD
-(       AbstractDistMatrix<Field>& A,
+(      AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Field>& U,
         AbstractDistMatrix<Base<Field>>& s,
         AbstractDistMatrix<Field>& V,
-  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>() );
+  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>());
 template<typename Field>
 SVDInfo SVD
-( const AbstractDistMatrix<Field>& A,
+(const AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Field>& U,
         AbstractDistMatrix<Base<Field>>& s,
         AbstractDistMatrix<Field>& V,
-  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>() );
+  const SVDCtrl<Base<Field>>& ctrl=SVDCtrl<Base<Field>>());
 
 namespace svd {
 
 template<typename Field>
 SVDInfo TSQR
-( const AbstractDistMatrix<Field>& A,
+(const AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Field>& U,
         AbstractDistMatrix<Base<Field>>& s,
-        AbstractDistMatrix<Field>& V );
+        AbstractDistMatrix<Field>& V);
 
 } // namespace svd
 
@@ -1364,61 +1370,61 @@ SVDInfo TSQR
 // ---------------------------
 template<typename Field>
 void HermitianSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
         Matrix<Field>& A,
         Matrix<Base<Field>>& s,
-  bool overwrite=false );
+  bool overwrite=false);
 template<typename Field>
 void HermitianSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const Matrix<Field>& A,
-        Matrix<Base<Field>>& s );
+        Matrix<Base<Field>>& s);
 
 template<typename Field>
 void HermitianSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
         AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Base<Field>>& s,
-  bool overwrite=false );
+  bool overwrite=false);
 template<typename Field>
 void HermitianSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const AbstractDistMatrix<Field>& A,
-        AbstractDistMatrix<Base<Field>>& s );
+        AbstractDistMatrix<Base<Field>>& s);
 
 // Compute the full SVD
 // --------------------
 template<typename Field>
 void HermitianSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
         Matrix<Field>& A,
         Matrix<Field>& U,
         Matrix<Base<Field>>& s,
         Matrix<Field>& V,
-  bool overwrite=false );
+  bool overwrite=false);
 template<typename Field>
 void HermitianSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const Matrix<Field>& A,
         Matrix<Field>& U,
         Matrix<Base<Field>>& s,
-        Matrix<Field>& V );
+        Matrix<Field>& V);
 
 template<typename Field>
 void HermitianSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   AbstractDistMatrix<Field>& A,
   AbstractDistMatrix<Field>& U,
   AbstractDistMatrix<Base<Field>>& s,
   AbstractDistMatrix<Field>& V,
-  bool overwrite=false );
+  bool overwrite=false);
 template<typename Field>
 void HermitianSVD
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   const AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Field>& U,
         AbstractDistMatrix<Base<Field>>& s,
-        AbstractDistMatrix<Field>& V );
+        AbstractDistMatrix<Field>& V);
 
 // Image and kernel
 // ================
@@ -1427,32 +1433,32 @@ void HermitianSVD
 
 template<typename Field>
 void ImageAndKernel
-( const Matrix<Field>& A,
+(const Matrix<Field>& A,
         Matrix<Field>& M,
-        Matrix<Field>& K );
+        Matrix<Field>& K);
 template<typename Field>
 void ImageAndKernel
-( const AbstractDistMatrix<Field>& A,
+(const AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Field>& M,
-        AbstractDistMatrix<Field>& K );
+        AbstractDistMatrix<Field>& K);
 
 template<typename Field>
 void Image
-( const Matrix<Field>& A,
-        Matrix<Field>& M );
+(const Matrix<Field>& A,
+        Matrix<Field>& M);
 template<typename Field>
 void Image
-( const AbstractDistMatrix<Field>& A,
-        AbstractDistMatrix<Field>& M );
+(const AbstractDistMatrix<Field>& A,
+        AbstractDistMatrix<Field>& M);
 
 template<typename Field>
 void Kernel
-( const Matrix<Field>& A,
-        Matrix<Field>& K );
+(const Matrix<Field>& A,
+        Matrix<Field>& K);
 template<typename Field>
 void Kernel
-( const AbstractDistMatrix<Field>& A,
-        AbstractDistMatrix<Field>& K );
+(const AbstractDistMatrix<Field>& A,
+        AbstractDistMatrix<Field>& K);
 
 
 // Pseudospectra
@@ -1471,8 +1477,8 @@ struct SnapshotCtrl
 
     Int imgSaveFreq=-1, numSaveFreq=-1, imgDispFreq=-1;
     Int imgSaveCount=0, numSaveCount=0, imgDispCount=0;
-    string imgBase="ps", numBase="ps";
-    FileFormat imgFormat=PNG, numFormat=ASCII_MATLAB;
+    std::string imgBase="ps", numBase="ps";
+    FileFormat imgFormat=FileFormat::PNG, numFormat=FileFormat::ASCII_MATLAB;
     bool itCounts=true;
 
     void ResetCounts()
@@ -1534,128 +1540,128 @@ struct SpectralBox
 // said square cells
 template<typename Field>
 Matrix<Int> SpectralPortrait
-( const Matrix<Field>& A,
+(const Matrix<Field>& A,
         Matrix<Base<Field>>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Base<Field>>& box,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
 DistMatrix<Int> SpectralPortrait
-( const AbstractDistMatrix<Field>& A,
+(const AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Base<Field>>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Base<Field>>& box,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 template<typename Field>
 Matrix<Int> TriangularSpectralPortrait
-( const Matrix<Field>& U,
+(const Matrix<Field>& U,
         Matrix<Base<Field>>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Base<Field>>& box,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
 DistMatrix<Int> TriangularSpectralPortrait
-( const AbstractDistMatrix<Field>& U,
+(const AbstractDistMatrix<Field>& U,
         AbstractDistMatrix<Base<Field>>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Base<Field>>& box,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 template<typename Field>
 Matrix<Int> TriangularSpectralPortrait
-( const Matrix<Field>& U,
+(const Matrix<Field>& U,
   const Matrix<Field>& Q,
         Matrix<Base<Field>>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Base<Field>>& box,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
 DistMatrix<Int> TriangularSpectralPortrait
-( const AbstractDistMatrix<Field>& U,
+(const AbstractDistMatrix<Field>& U,
   const AbstractDistMatrix<Field>& Q,
         AbstractDistMatrix<Base<Field>>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Base<Field>>& box,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 template<typename Real>
 Matrix<Int> QuasiTriangularSpectralPortrait
-( const Matrix<Real>& U,
+(const Matrix<Real>& U,
         Matrix<Real>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Real>& box,
-        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>() );
+        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>());
 template<typename Real>
 DistMatrix<Int> QuasiTriangularSpectralPortrait
-( const AbstractDistMatrix<Real>& U,
+(const AbstractDistMatrix<Real>& U,
         AbstractDistMatrix<Real>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Real>& box,
-        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>() );
+        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>());
 
 template<typename Real>
 Matrix<Int> QuasiTriangularSpectralPortrait
-( const Matrix<Real>& U,
+(const Matrix<Real>& U,
   const Matrix<Real>& Q,
         Matrix<Real>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Real>& box,
-        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>() );
+        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>());
 template<typename Real>
 DistMatrix<Int> QuasiTriangularSpectralPortrait
-( const AbstractDistMatrix<Real>& U,
+(const AbstractDistMatrix<Real>& U,
   const AbstractDistMatrix<Real>& Q,
         AbstractDistMatrix<Real>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Real>& box,
-        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>() );
+        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>());
 
 template<typename Field>
 Matrix<Int> HessenbergSpectralPortrait
-( const Matrix<Field>& H,
+(const Matrix<Field>& H,
         Matrix<Base<Field>>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Base<Field>>& box,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
 DistMatrix<Int> HessenbergSpectralPortrait
-( const AbstractDistMatrix<Field>& H,
+(const AbstractDistMatrix<Field>& H,
         AbstractDistMatrix<Base<Field>>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Base<Field>>& box,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 template<typename Field>
 Matrix<Int> HessenbergSpectralPortrait
-( const Matrix<Field>& H,
+(const Matrix<Field>& H,
   const Matrix<Field>& Q,
         Matrix<Base<Field>>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Base<Field>>& box,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
 DistMatrix<Int> HessenbergSpectralPortrait
-( const AbstractDistMatrix<Field>& H,
+(const AbstractDistMatrix<Field>& H,
   const AbstractDistMatrix<Field>& Q,
         AbstractDistMatrix<Base<Field>>& invNormMap,
         Int realSize,
         Int imagSize,
         SpectralBox<Base<Field>>& box,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 // (Pseudo-)Spectral window
 // ------------------------
@@ -1663,49 +1669,49 @@ DistMatrix<Int> HessenbergSpectralPortrait
 // said square cells
 template<typename Field>
 Matrix<Int> SpectralWindow
-( const Matrix<Field>& A,
+(const Matrix<Field>& A,
         Matrix<Base<Field>>& invNormMap,
         Complex<Base<Field>> center,
         Base<Field> realWidth,
         Base<Field> imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
 DistMatrix<Int> SpectralWindow
-( const AbstractDistMatrix<Field>& A,
+(const AbstractDistMatrix<Field>& A,
         AbstractDistMatrix<Base<Field>>& invNormMap,
         Complex<Base<Field>> center,
         Base<Field> realWidth,
         Base<Field> imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 template<typename Field>
 Matrix<Int> TriangularSpectralWindow
-( const Matrix<Field>& U,
+(const Matrix<Field>& U,
         Matrix<Base<Field>>& invNormMap,
         Complex<Base<Field>> center,
         Base<Field> realWidth,
         Base<Field> imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
 DistMatrix<Int> TriangularSpectralWindow
-( const AbstractDistMatrix<Field>& U,
+(const AbstractDistMatrix<Field>& U,
         AbstractDistMatrix<Base<Field>>& invNormMap,
         Complex<Base<Field>> center,
         Base<Field> realWidth,
         Base<Field> imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 template<typename Field>
 Matrix<Int> TriangularSpectralWindow
-( const Matrix<Field>& U,
+(const Matrix<Field>& U,
   const Matrix<Field>& Q,
         Matrix<Base<Field>>& invNormMap,
         Complex<Base<Field>> center,
@@ -1713,10 +1719,10 @@ Matrix<Int> TriangularSpectralWindow
         Base<Field> imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
 DistMatrix<Int> TriangularSpectralWindow
-( const AbstractDistMatrix<Field>& U,
+(const AbstractDistMatrix<Field>& U,
   const AbstractDistMatrix<Field>& Q,
         AbstractDistMatrix<Base<Field>>& invNormMap,
         Complex<Base<Field>> center,
@@ -1724,32 +1730,32 @@ DistMatrix<Int> TriangularSpectralWindow
         Base<Field> imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 template<typename Real>
 Matrix<Int> QuasiTriangularSpectralWindow
-( const Matrix<Real>& U,
+(const Matrix<Real>& U,
         Matrix<Real>& invNormMap,
         Complex<Real> center,
         Real realWidth,
         Real imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>() );
+        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>());
 template<typename Real>
 DistMatrix<Int> QuasiTriangularSpectralWindow
-( const AbstractDistMatrix<Real>& U,
+(const AbstractDistMatrix<Real>& U,
         AbstractDistMatrix<Real>& invNormMap,
         Complex<Real> center,
         Real realWidth,
         Real imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>() );
+        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>());
 
 template<typename Real>
 Matrix<Int> QuasiTriangularSpectralWindow
-( const Matrix<Real>& U,
+(const Matrix<Real>& U,
   const Matrix<Real>& Q,
         Matrix<Real>& invNormMap,
         Complex<Real> center,
@@ -1757,10 +1763,10 @@ Matrix<Int> QuasiTriangularSpectralWindow
         Real imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>() );
+        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>());
 template<typename Real>
 DistMatrix<Int> QuasiTriangularSpectralWindow
-( const AbstractDistMatrix<Real>& U,
+(const AbstractDistMatrix<Real>& U,
   const AbstractDistMatrix<Real>& Q,
         AbstractDistMatrix<Real>& invNormMap,
         Complex<Real> center,
@@ -1768,32 +1774,32 @@ DistMatrix<Int> QuasiTriangularSpectralWindow
         Real imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>() );
+        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>());
 
 template<typename Field>
 Matrix<Int> HessenbergSpectralWindow
-( const Matrix<Field>& H,
+(const Matrix<Field>& H,
         Matrix<Base<Field>>& invNormMap,
         Complex<Base<Field>> center,
         Base<Field> realWidth,
         Base<Field> imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
 DistMatrix<Int> HessenbergSpectralWindow
-( const AbstractDistMatrix<Field>& H,
+(const AbstractDistMatrix<Field>& H,
         AbstractDistMatrix<Base<Field>>& invNormMap,
         Complex<Base<Field>> center,
         Base<Field> realWidth,
         Base<Field> imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 template<typename Field>
 Matrix<Int> HessenbergSpectralWindow
-( const Matrix<Field>& H,
+(const Matrix<Field>& H,
   const Matrix<Field>& Q,
         Matrix<Base<Field>>& invNormMap,
         Complex<Base<Field>> center,
@@ -1801,10 +1807,10 @@ Matrix<Int> HessenbergSpectralWindow
         Base<Field> imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
 DistMatrix<Int> HessenbergSpectralWindow
-( const AbstractDistMatrix<Field>& H,
+(const AbstractDistMatrix<Field>& H,
   const AbstractDistMatrix<Field>& Q,
         AbstractDistMatrix<Base<Field>>& invNormMap,
         Complex<Base<Field>> center,
@@ -1812,106 +1818,106 @@ DistMatrix<Int> HessenbergSpectralWindow
         Base<Field> imagWidth,
         Int realSize,
         Int imagSize,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 // (Pseudo-)Spectral cloud
 // -----------------------
 template<typename Field>
 Matrix<Int> SpectralCloud
-( const Matrix<Field>& A,
+(const Matrix<Field>& A,
   const Matrix<Complex<Base<Field>>>& shifts,
         Matrix<Base<Field>>& invNorms,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
-DistMatrix<Int,VR,STAR> SpectralCloud
-( const AbstractDistMatrix<Field>& A,
+DistMatrix<Int,Dist::VR,Dist::STAR> SpectralCloud
+(const AbstractDistMatrix<Field>& A,
   const AbstractDistMatrix<Complex<Base<Field>>>& shifts,
         AbstractDistMatrix<Base<Field>>& invNorms,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 template<typename Field>
 Matrix<Int> TriangularSpectralCloud
-( const Matrix<Field>& U,
+(const Matrix<Field>& U,
   const Matrix<Complex<Base<Field>>>& shifts,
         Matrix<Base<Field>>& invNorms,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
-DistMatrix<Int,VR,STAR> TriangularSpectralCloud
-( const AbstractDistMatrix<Field>& U,
+DistMatrix<Int,Dist::VR,Dist::STAR> TriangularSpectralCloud
+(const AbstractDistMatrix<Field>& U,
   const AbstractDistMatrix<Complex<Base<Field>>>& shifts,
         AbstractDistMatrix<Base<Field>>& invNorms,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 template<typename Field>
 Matrix<Int> TriangularSpectralCloud
-( const Matrix<Field>& U,
+(const Matrix<Field>& U,
   const Matrix<Field>& Q,
   const Matrix<Complex<Base<Field>>>& shifts,
         Matrix<Base<Field>>& invNorms,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
-DistMatrix<Int,VR,STAR> TriangularSpectralCloud
-( const AbstractDistMatrix<Field>& U,
+DistMatrix<Int,Dist::VR,Dist::STAR> TriangularSpectralCloud
+(const AbstractDistMatrix<Field>& U,
   const AbstractDistMatrix<Field>& Q,
   const AbstractDistMatrix<Complex<Base<Field>>>& shifts,
         AbstractDistMatrix<Base<Field>>& invNorms,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 template<typename Real>
 Matrix<Int> QuasiTriangularSpectralCloud
-( const Matrix<Real>& U,
+(const Matrix<Real>& U,
   const Matrix<Complex<Real>>& shifts,
         Matrix<Real>& invNorms,
-        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>() );
+        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>());
 template<typename Real>
-DistMatrix<Int,VR,STAR> QuasiTriangularSpectralCloud
-( const AbstractDistMatrix<Real>& U,
+DistMatrix<Int,Dist::VR,Dist::STAR> QuasiTriangularSpectralCloud
+(const AbstractDistMatrix<Real>& U,
   const AbstractDistMatrix<Complex<Real>>& shifts,
         AbstractDistMatrix<Real>& invNorms,
-        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>() );
+        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>());
 
 template<typename Real>
 Matrix<Int> QuasiTriangularSpectralCloud
-( const Matrix<Real>& U,
+(const Matrix<Real>& U,
   const Matrix<Real>& Q,
   const Matrix<Complex<Real>>& shifts,
         Matrix<Real>& invNorms,
-        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>() );
+        PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>());
 template<typename Real>
-DistMatrix<Int,VR,STAR> QuasiTriangularSpectralCloud
-( const AbstractDistMatrix<Real>& U,
+DistMatrix<Int,Dist::VR,Dist::STAR> QuasiTriangularSpectralCloud
+(const AbstractDistMatrix<Real>& U,
   const AbstractDistMatrix<Real>& Q,
   const AbstractDistMatrix<Complex<Real>>& shifts,
         AbstractDistMatrix<Real>& invNorms,
-  PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>() );
+  PseudospecCtrl<Real> psCtrl=PseudospecCtrl<Real>());
 
 template<typename Field>
 Matrix<Int> HessenbergSpectralCloud
-( const Matrix<Field>& H,
+(const Matrix<Field>& H,
   const Matrix<Complex<Base<Field>>>& shifts,
         Matrix<Base<Field>>& invNorms,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
-DistMatrix<Int,VR,STAR> HessenbergSpectralCloud
-( const AbstractDistMatrix<Field>& H,
+DistMatrix<Int,Dist::VR,Dist::STAR> HessenbergSpectralCloud
+(const AbstractDistMatrix<Field>& H,
   const AbstractDistMatrix<Complex<Base<Field>>>& shifts,
         AbstractDistMatrix<Base<Field>>& invNorms,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 template<typename Field>
 Matrix<Int> HessenbergSpectralCloud
-( const Matrix<Field>& H,
+(const Matrix<Field>& H,
   const Matrix<Field>& Q,
   const Matrix<Complex<Base<Field>>>& shifts,
         Matrix<Base<Field>>& invNorms,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 template<typename Field>
-DistMatrix<Int,VR,STAR> HessenbergSpectralCloud
-( const AbstractDistMatrix<Field>& H,
+DistMatrix<Int,Dist::VR,Dist::STAR> HessenbergSpectralCloud
+(const AbstractDistMatrix<Field>& H,
   const AbstractDistMatrix<Field>& Q,
   const AbstractDistMatrix<Complex<Base<Field>>>& shifts,
         AbstractDistMatrix<Base<Field>>& invNorms,
-        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>() );
+        PseudospecCtrl<Base<Field>> psCtrl=PseudospecCtrl<Base<Field>>());
 
 } // namespace El
 

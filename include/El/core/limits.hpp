@@ -11,7 +11,10 @@
 
 #include <climits> // for INT_MIN et al. due to the Intel C++11 limitations
 
-namespace El {
+#include "El/core/Element/decl.hpp"
+
+namespace El
+{
 
 template<typename Real>
 struct IsFixedPrecision

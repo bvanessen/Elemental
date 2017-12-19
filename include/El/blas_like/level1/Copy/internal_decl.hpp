@@ -9,9 +9,15 @@
 #ifndef EL_BLAS1_COPYINTERNAL_DECL_HPP
 #define EL_BLAS1_COPYINTERNAL_DECL_HPP
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Block.hpp"
+#include "El/core/DistMatrix/Element.hpp"
 
-namespace copy {
+namespace El
+{
+
+namespace copy
+{
 
 template<typename S,typename T,typename=EnableIf<CanCast<S,T>>>
 void GeneralPurpose

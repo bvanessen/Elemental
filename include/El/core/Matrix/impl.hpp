@@ -9,7 +9,8 @@
 #ifndef EL_MATRIX_IMPL_HPP
 #define EL_MATRIX_IMPL_HPP
 
-namespace El {
+namespace El
+{
 
 // Public routines
 // ###############
@@ -44,7 +45,7 @@ Matrix<Ring>::Matrix( Int height, Int width, Int leadingDimension )
 template<typename Ring>
 Matrix<Ring>::Matrix
 ( Int height, Int width, const Ring* buffer, Int leadingDimension )
-: viewType_(LOCKED_VIEW),
+: viewType_(ViewType::LOCKED_VIEW),
   height_(height), width_(width), leadingDimension_(leadingDimension),
   data_(const_cast<Ring*>(buffer))
 {
@@ -55,7 +56,7 @@ Matrix<Ring>::Matrix
 template<typename Ring>
 Matrix<Ring>::Matrix
 ( Int height, Int width, Ring* buffer, Int leadingDimension )
-: viewType_(VIEW),
+: viewType_(ViewType::VIEW),
   height_(height), width_(width), leadingDimension_(leadingDimension),
   data_(buffer)
 {
@@ -199,7 +200,7 @@ const Matrix<Ring> Matrix<Ring>::operator()( Range<Int> I, Range<Int> J ) const
 // -------------------------------------------------------
 template<typename Ring>
 Matrix<Ring> Matrix<Ring>::operator()
-( Range<Int> I, const vector<Int>& J ) const
+( Range<Int> I, const std::vector<Int>& J ) const
 {
     EL_DEBUG_CSE
     Matrix<Ring> ASub;
@@ -209,7 +210,7 @@ Matrix<Ring> Matrix<Ring>::operator()
 
 template<typename Ring>
 Matrix<Ring> Matrix<Ring>::operator()
-( const vector<Int>& I, Range<Int> J ) const
+( const std::vector<Int>& I, Range<Int> J ) const
 {
     EL_DEBUG_CSE
     Matrix<Ring> ASub;
@@ -219,7 +220,7 @@ Matrix<Ring> Matrix<Ring>::operator()
 
 template<typename Ring>
 Matrix<Ring> Matrix<Ring>::operator()
-( const vector<Int>& I, const vector<Int>& J ) const
+( const std::vector<Int>& I, const std::vector<Int>& J ) const
 {
     EL_DEBUG_CSE
     Matrix<Ring> ASub;
@@ -353,9 +354,12 @@ bool Matrix<Ring>::Viewing() const EL_NO_EXCEPT
 template<typename Ring>
 void Matrix<Ring>::FixSize() EL_NO_EXCEPT
 {
+    using UT = std::underlying_type<El::ViewType>::type;
+
     // A view is marked as fixed if its second bit is nonzero
     // (and OWNER_FIXED is zero except in its second bit).
-    viewType_ = static_cast<El::ViewType>(viewType_ | OWNER_FIXED);
+    viewType_ = static_cast<El::ViewType>(
+        static_cast<UT>(viewType_) | static_cast<UT>(ViewType::OWNER_FIXED));
 }
 
 template<typename Ring>
@@ -578,46 +582,58 @@ void Matrix<Ring>::ShallowSwap( Matrix<Ring>& A )
 template<typename Ring>
 void Matrix<Ring>::Empty_( bool freeMemory )
 {
+    using UT = std::underlying_type<El::ViewType>::type;
+
     if( freeMemory )
         memory_.Empty();
     height_ = 0;
     width_ = 0;
     leadingDimension_ = 1;
     data_ = nullptr;
-    viewType_ = static_cast<El::ViewType>( viewType_ & ~LOCKED_VIEW );
+    viewType_ = static_cast<El::ViewType>(
+        static_cast<UT>(viewType_) & ~static_cast<UT>(ViewType::LOCKED_VIEW));
 }
 
 template<typename Ring>
 void Matrix<Ring>::Attach_
 ( Int height, Int width, Ring* buffer, Int leadingDimension )
 {
+    using UT = std::underlying_type<El::ViewType>::type;
+
     height_ = height;
     width_ = width;
     leadingDimension_ = leadingDimension;
     data_ = buffer;
-    viewType_ = static_cast<El::ViewType>( (viewType_ & ~LOCKED_OWNER) | VIEW );
+    viewType_ = static_cast<El::ViewType>(
+        (static_cast<UT>(viewType_) & ~static_cast<UT>(ViewType::LOCKED_OWNER))
+        | static_cast<UT>(ViewType::VIEW));
 }
 
 template<typename Ring>
 void Matrix<Ring>::LockedAttach_
 ( Int height, Int width, const Ring* buffer, Int leadingDimension )
 {
+    using UT = std::underlying_type<El::ViewType>::type;
+
     height_ = height;
     width_ = width;
     leadingDimension_ = leadingDimension;
     data_ = const_cast<Ring*>(buffer);
-    viewType_ = static_cast<El::ViewType>( viewType_ | LOCKED_VIEW );
+    viewType_ = static_cast<El::ViewType>(
+        static_cast<UT>(viewType_) & ~static_cast<UT>(ViewType::LOCKED_VIEW));
 }
 
 template<typename Ring>
 void Matrix<Ring>::Control_
 ( Int height, Int width, Ring* buffer, Int leadingDimension )
 {
+    using UT = std::underlying_type<El::ViewType>::type;
     height_ = height;
     width_ = width;
     leadingDimension_ = leadingDimension;
     data_ = buffer;
-    viewType_ = static_cast<El::ViewType>( viewType_ & ~LOCKED_VIEW );
+    viewType_ = static_cast<El::ViewType>(
+        static_cast<UT>(viewType_) & ~static_cast<UT>(ViewType::LOCKED_VIEW));
 }
 
 

@@ -9,8 +9,15 @@
 #ifndef EL_QR_PROXY_HOUSEHOLDER_HPP
 #define EL_QR_PROXY_HOUSEHOLDER_HPP
 
-namespace El {
-namespace qr {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/core/Proxy.hpp"
+
+namespace El
+{
+namespace qr
+{
 
 // The following implementation is based upon the algorithm in Fig. 3 from
 //
@@ -99,7 +106,7 @@ public:
         const Int m = APre.Height();
         const Grid& g = APre.Grid();
 
-        DistMatrixReadProxy<Field,Field,MC,MR> AProxy( APre );
+        DistMatrixReadProxy<Field,Field,Dist::MC,Dist::MR> AProxy( APre );
         auto& A = AProxy.GetLocked();
 
         // Generate a Gaussian random matrix
@@ -107,7 +114,7 @@ public:
         Gaussian( G, numPivots+numOversample_, m );
         // TODO(poulson): Force the row norms to be one?
         /*
-        DistMatrix<Base<Field>,MC,STAR> rowNorms(g);
+        DistMatrix<Base<Field>,Dist::MC,Dist::STAR> rowNorms(g);
         RowTwoNorms( G, rowNorms );
         DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, rowNorms, G );
         */
@@ -125,8 +132,8 @@ public:
         ctrl.boundRank = true;
         ctrl.maxRank = numPivots;
         ctrl.smallestFirst = smallestFirst;
-        DistMatrix<Field,MD,STAR> phase(g);
-        DistMatrix<Base<Field>,MD,STAR> signature(g);
+        DistMatrix<Field,Dist::MD,Dist::STAR> phase(g);
+        DistMatrix<Base<Field>,Dist::MD,Dist::STAR> signature(g);
         QR( Y, phase, signature, Omega, ctrl );
     }
 };
@@ -216,9 +223,9 @@ ProxyHouseholder
     const Int minDim = Min(m,n);
     const Grid& g = APre.Grid();
 
-    DistMatrixReadWriteProxy<Field,Field,MC,MR> AProx( APre );
-    DistMatrixWriteProxy<Field,Field,MD,STAR> phaseProx( phasePre );
-    DistMatrixWriteProxy<Base<Field>,Base<Field>,MD,STAR>
+    DistMatrixReadWriteProxy<Field,Field,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<Field,Field,Dist::MD,Dist::STAR> phaseProx( phasePre );
+    DistMatrixWriteProxy<Base<Field>,Base<Field>,Dist::MD,Dist::STAR>
       signatureProx( signaturePre );
     auto& A = AProx.Get();
     auto& phase = phaseProx.Get();

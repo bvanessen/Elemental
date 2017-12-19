@@ -346,11 +346,11 @@ struct DistFront
     // When this node is a duplicate of a sequential node, L1D or L2D will be
     // attached to the sequential L matrix of the duplicate
 
-    DistMatrix<Field,VC,STAR> L1D;
+    DistMatrix<Field,Dist::VC,STAR> L1D;
     DistMatrix<Field> L2D;
 
-    DistMatrix<Field,VC,STAR> diag;
-    DistMatrix<Field,VC,STAR> subdiag;
+    DistMatrix<Field,Dist::VC,STAR> diag;
+    DistMatrix<Field,Dist::VC,STAR> subdiag;
     DistPermutation p;
 
     DistMatrix<Field> work;
@@ -535,7 +535,7 @@ public:
 
     vector<Int>& InverseMap();
     const vector<Int>& InverseMap() const;
-    
+
 private:
     bool initialized_=false;
     bool factored_=false;

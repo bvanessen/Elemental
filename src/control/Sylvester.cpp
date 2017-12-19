@@ -6,10 +6,20 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/lapack_like/funcs.hpp>
-#include <El/control.hpp>
 
-namespace El {
+#include "El/blas_like/level1/Copy.hpp"
+#include "El/blas_like/level1/Zero.hpp"
+#include "El/core/DistMatrix.hpp"
+#include "El/core/DistMatrix/Element.hpp"
+#include "El/core/DistMatrix/Element/MC_MR.hpp"
+#include "El/core/FlamePart/Partition.hpp"
+#include "El/core/Grid.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/funcs.hpp"
+#include "El/control.hpp"
+
+namespace El
+{
 
 // W = | A -C |, where A is m x m, B is n x n, and both are assumed to have
 //     | 0 -B |  all of their eigenvalues in the open right-half plane.

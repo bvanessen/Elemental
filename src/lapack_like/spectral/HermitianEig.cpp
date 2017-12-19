@@ -928,7 +928,7 @@ MRRR
     //       reallocate a buffer
     if( subset.rangeSubset )
         info.tridiagEigInfo = herm_tridiag_eig::MRRRPostEstimate
-        ( d_STAR_STAR, e_STAR_STAR, w, Q_STAR_VR, UNSORTED,
+        ( d_STAR_STAR, e_STAR_STAR, w, Q_STAR_VR, SortType::UNSORTED,
           subset.lowerBound, subset.upperBound );
     else
         info.tridiagEigInfo = HermitianTridiagEig

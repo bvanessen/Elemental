@@ -265,7 +265,7 @@ void HermitianSign
     Matrix<Real> w;
     Matrix<Field> Q;
     auto ctrlMod( ctrl );
-    ctrlMod.tridiagEigCtrl.sort = UNSORTED;
+    ctrlMod.tridiagEigCtrl.sort = SortType::UNSORTED;
     HermitianEig( uplo, A, w, Q, ctrlMod );
 
     const Int n = A.Height();
@@ -296,7 +296,7 @@ void HermitianSign
     Matrix<Real> w;
     Matrix<Field> Q;
     auto ctrlMod( ctrl );
-    ctrlMod.tridiagEigCtrl.sort = UNSORTED;
+    ctrlMod.tridiagEigCtrl.sort = SortType::UNSORTED;
     HermitianEig( uplo, A, w, Q, ctrlMod );
 
     const Int n = A.Height();
@@ -338,7 +338,7 @@ void HermitianSign
     DistMatrix<Real,Dist::VR,Dist::STAR> w(g);
     DistMatrix<Field> Q(g);
     auto ctrlMod( ctrl );
-    ctrlMod.tridiagEigCtrl.sort = UNSORTED;
+    ctrlMod.tridiagEigCtrl.sort = SortType::UNSORTED;
     HermitianEig( uplo, A, w, Q, ctrlMod );
 
     const Int numLocalEigs = w.LocalHeight();
@@ -375,7 +375,7 @@ void HermitianSign
     DistMatrix<Real,Dist::VR,Dist::STAR> w(g);
     DistMatrix<Field> Q(g);
     auto ctrlMod( ctrl );
-    ctrlMod.tridiagEigCtrl.sort = UNSORTED;
+    ctrlMod.tridiagEigCtrl.sort = SortType::UNSORTED;
     HermitianEig( uplo, A, w, Q, ctrlMod );
 
     const Int n = A.Height();

@@ -9,7 +9,11 @@
 #ifndef EL_BLAS_BROADCAST_HPP
 #define EL_BLAS_BROADCAST_HPP
 
-namespace El {
+#include "El/core/imports/mpi.hpp"
+#include "El/blas_like/level1/Copy/util.hpp"
+
+namespace El
+{
 
 template<typename T>
 void Broadcast( Matrix<T>& A, mpi::Comm comm, int rank )

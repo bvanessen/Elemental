@@ -7,106 +7,109 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level2.hpp>
+#include "El/core/imports/blas.hpp"
+#include "El/core/Matrix/decl.hpp"
 
-namespace El {
+namespace El
+{
 
 template<typename T>
 void Syr
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   T alpha,
   const Matrix<T>& x,
         Matrix<T>& A,
-  bool conjugate )
+  bool conjugate)
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( A.Height() != A.Width() )
+      if(A.Height() != A.Width())
           LogicError("A must be square");
-      if( x.Width() != 1 && x.Height() != 1 )
+      if(x.Width() != 1 && x.Height() != 1)
           LogicError("x must be a vector");
-      const Int xLength = ( x.Width()==1 ? x.Height() : x.Width() );
-      if( xLength != A.Height() )
+      const Int xLength = (x.Width()==1 ? x.Height() : x.Width());
+      if(xLength != A.Height())
           LogicError("x must conform with A");
-    )
-    const char uploChar = UpperOrLowerToChar( uplo );
+   )
+    const char uploChar = UpperOrLowerToChar(uplo);
     const Int m = A.Height();
-    const Int incx = ( x.Width()==1 ? 1 : x.LDim() );
-    if( conjugate )
+    const Int incx = (x.Width()==1 ? 1 : x.LDim());
+    if(conjugate)
     {
         blas::Her
-        ( uploChar, m,
-          RealPart(alpha), x.LockedBuffer(), incx, A.Buffer(), A.LDim() );
+        (uploChar, m,
+          RealPart(alpha), x.LockedBuffer(), incx, A.Buffer(), A.LDim());
     }
     else
     {
         blas::Syr
-        ( uploChar, m, alpha, x.LockedBuffer(), incx, A.Buffer(), A.LDim() );
+        (uploChar, m, alpha, x.LockedBuffer(), incx, A.Buffer(), A.LDim());
     }
 }
 
 template<typename T>
 void Syr
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   T alpha,
   const AbstractDistMatrix<T>& x,
         AbstractDistMatrix<T>& APre,
-  bool conjugate )
+  bool conjugate)
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      AssertSameGrids( APre, x );
-      if( APre.Height() != APre.Width() )
+      AssertSameGrids(APre, x);
+      if(APre.Height() != APre.Width())
           LogicError("A must be square");
-      const Int xLength = ( x.Width()==1 ? x.Height() : x.Width() );
-      if( APre.Height() != xLength )
+      const Int xLength = (x.Width()==1 ? x.Height() : x.Width());
+      if(APre.Height() != xLength)
           LogicError
           ("A must conform with x: \n",DimsString(APre,"A"),"\n",
            DimsString(x,"x"));
-    )
+   )
 
-    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> AProx(APre);
     auto& A = AProx.Get();
 
     const Grid& g = A.Grid();
     const Int localHeight = A.LocalHeight();
     const Int localWidth = A.LocalWidth();
 
-    if( x.Width() == 1 )
+    if(x.Width() == 1)
     {
         DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
-        x_MC_STAR.AlignWith( A );
+        x_MC_STAR.AlignWith(A);
         x_MC_STAR = x;
 
         DistMatrix<T,Dist::MR,Dist::STAR> x_MR_STAR(g);
-        x_MR_STAR.AlignWith( A );
+        x_MR_STAR.AlignWith(A);
         x_MR_STAR = x_MC_STAR;
 
         const T* xBuffer = x_MC_STAR.LockedBuffer();
-        if( uplo == UpperOrLower::LOWER )
+        if(uplo == UpperOrLower::LOWER)
         {
-            for( Int jLoc=0; jLoc<localWidth; ++jLoc )
+            for(Int jLoc=0; jLoc<localWidth; ++jLoc)
             {
                 const Int j = A.GlobalCol(jLoc);
                 const Int heightAboveDiag = A.LocalRowOffset(j);
 
                 const T beta = x_MR_STAR.GetLocal(jLoc,0);
-                const T gamma = ( conjugate ? alpha*Conj(beta) : alpha*beta );
+                const T gamma = (conjugate ? alpha*Conj(beta) : alpha*beta);
                 T* ACol = A.Buffer(0,jLoc);
-                for( Int iLoc=heightAboveDiag; iLoc<localHeight; ++iLoc )
+                for(Int iLoc=heightAboveDiag; iLoc<localHeight; ++iLoc)
                     ACol[iLoc] += gamma*xBuffer[iLoc];
             }
         }
         else
         {
-            for( Int jLoc=0; jLoc<localWidth; ++jLoc )
+            for(Int jLoc=0; jLoc<localWidth; ++jLoc)
             {
                 const Int j = A.GlobalCol(jLoc);
                 const Int heightToDiag = A.LocalRowOffset(j+1);
 
                 const T beta = x_MR_STAR.GetLocal(jLoc,0);
-                const T gamma = ( conjugate ? alpha*Conj(beta) : alpha*beta );
+                const T gamma = (conjugate ? alpha*Conj(beta) : alpha*beta);
                 T* ACol = A.Buffer(0,jLoc);
-                for( Int iLoc=0; iLoc<heightToDiag; ++iLoc )
+                for(Int iLoc=0; iLoc<heightToDiag; ++iLoc)
                     ACol[iLoc] += gamma*xBuffer[iLoc];
             }
         }
@@ -114,40 +117,40 @@ void Syr
     else
     {
         DistMatrix<T,Dist::STAR,Dist::MR> x_STAR_MR(g);
-        x_STAR_MR.AlignWith( A );
+        x_STAR_MR.AlignWith(A);
         x_STAR_MR = x;
 
         DistMatrix<T,Dist::STAR,Dist::MC> x_STAR_MC(g);
-        x_STAR_MC.AlignWith( A );
+        x_STAR_MC.AlignWith(A);
         x_STAR_MC = x_STAR_MR;
 
         const T* xBuffer = x_STAR_MC.LockedBuffer();
         const Int incx = x_STAR_MC.LDim();
-        if( uplo == UpperOrLower::LOWER )
+        if(uplo == UpperOrLower::LOWER)
         {
-            for( Int jLoc=0; jLoc<localWidth; ++jLoc )
+            for(Int jLoc=0; jLoc<localWidth; ++jLoc)
             {
                 const Int j = A.GlobalCol(jLoc);
                 const Int heightAboveDiag = A.LocalRowOffset(j);
 
                 const T beta = x_STAR_MR.GetLocal(0,jLoc);
-                const T gamma = ( conjugate ? alpha*Conj(beta) : alpha*beta );
+                const T gamma = (conjugate ? alpha*Conj(beta) : alpha*beta);
                 T* ACol = A.Buffer(0,jLoc);
-                for( Int iLoc=heightAboveDiag; iLoc<localHeight; ++iLoc )
+                for(Int iLoc=heightAboveDiag; iLoc<localHeight; ++iLoc)
                     ACol[iLoc] += gamma*xBuffer[iLoc*incx];
             }
         }
         else
         {
-            for( Int jLoc=0; jLoc<localWidth; ++jLoc )
+            for(Int jLoc=0; jLoc<localWidth; ++jLoc)
             {
                 const Int j = A.GlobalCol(jLoc);
                 const Int heightToDiag = A.LocalRowOffset(j+1);
 
                 const T beta = x_STAR_MR.GetLocal(0,jLoc);
-                const T gamma = ( conjugate ? alpha*Conj(beta) : alpha*beta );
+                const T gamma = (conjugate ? alpha*Conj(beta) : alpha*beta);
                 T* ACol = A.Buffer(0,jLoc);
-                for( Int iLoc=0; iLoc<heightToDiag; ++iLoc )
+                for(Int iLoc=0; iLoc<heightToDiag; ++iLoc)
                     ACol[iLoc] += gamma*xBuffer[iLoc*incx];
             }
         }
@@ -156,11 +159,11 @@ void Syr
 
 #define PROTO(T) \
   template void Syr \
-  ( UpperOrLower uplo, T alpha, \
-    const Matrix<T>& x, Matrix<T>& A, bool conjugate ); \
+  (UpperOrLower uplo, T alpha, \
+    const Matrix<T>& x, Matrix<T>& A, bool conjugate); \
   template void Syr \
-  ( UpperOrLower uplo, T alpha, \
-    const AbstractDistMatrix<T>& x, AbstractDistMatrix<T>& A, bool conjugate );
+  (UpperOrLower uplo, T alpha, \
+    const AbstractDistMatrix<T>& x, AbstractDistMatrix<T>& A, bool conjugate);
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

@@ -9,7 +9,12 @@
 #ifndef EL_SPECTRAL_LANCZOS_HPP
 #define EL_SPECTRAL_LANCZOS_HPP
 
-namespace El {
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Matrix/impl.hpp"
+#include "El/core/random/decl.hpp"
+
+namespace El
+{
 
 // Form
 //

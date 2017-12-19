@@ -24,18 +24,18 @@ void Write
     EL_DEBUG_CSE
     switch( format )
     {
-    case ASCII:         write::Ascii( A, basename, title );       break;
-    case ASCII_MATLAB:  write::AsciiMatlab( A, basename, title ); break;
-    case BINARY:        write::Binary( A, basename );             break;
-    case BINARY_FLAT:   write::BinaryFlat( A, basename );         break;
-    case MATRIX_MARKET: write::MatrixMarket( A, basename );       break;
-    case BMP:
-    case JPG:
-    case JPEG:
-    case PNG:
-    case PPM:
-    case XBM:
-    case XPM:
+    case FileFormat::ASCII:         write::Ascii( A, basename, title );       break;
+    case FileFormat::ASCII_MATLAB:  write::AsciiMatlab( A, basename, title ); break;
+    case FileFormat::BINARY:        write::Binary( A, basename );             break;
+    case FileFormat::BINARY_FLAT:   write::BinaryFlat( A, basename );         break;
+    case FileFormat::MATRIX_MARKET: write::MatrixMarket( A, basename );       break;
+    case FileFormat::BMP:
+    case FileFormat::JPG:
+    case FileFormat::JPEG:
+    case FileFormat::PNG:
+    case FileFormat::PPM:
+    case FileFormat::XBM:
+    case FileFormat::XPM:
         write::Image( A, basename, format ); break;
     default:
         LogicError("Invalid file format");
