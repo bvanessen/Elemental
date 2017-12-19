@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 #include "./HermitianTridiagEig/QR.hpp"
 #include "./HermitianTridiagEig/DivideAndConquer.hpp"
@@ -965,7 +964,7 @@ Helper
     HermitianTridiagEig( d, dSubReal, w, QReal, ctrl );
 
     Copy( QReal, Q );
-    DiagonalScale( LEFT, NORMAL, phase, Q );
+    DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, phase, Q );
 
     return info;
 }
@@ -1049,7 +1048,7 @@ QRHelper
         info.qrInfo = QRAlg( d_STAR_STAR, dSubReal, Q, ctrl );
         herm_eig::SortAndFilter( d_STAR_STAR, Q, ctrl );
 
-        DiagonalScale( LEFT, NORMAL, phase, Q );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, phase, Q );
     }
     else
     {
@@ -1061,7 +1060,7 @@ QRHelper
         herm_eig::SortAndFilter( d_STAR_STAR, QReal, ctrl );
 
         Copy( QReal, QPre );
-        DiagonalScale( LEFT, NORMAL, phase, QPre );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, phase, QPre );
     }
     Copy( d_STAR_STAR, w );
 
@@ -1144,7 +1143,7 @@ DCHelper
         herm_eig::SortAndFilter( w, QReal, ctrl );
 
         Copy( QReal, Q );
-        DiagonalScale( LEFT, NORMAL, phase, Q );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, phase, Q );
     }
 
     return info;
@@ -1320,7 +1319,7 @@ MRRRHelper
     ApplyTaggedSortToEachRow( sortPairs, QReal );
 
     Copy( QReal, Q );
-    DiagonalScale( LEFT, NORMAL, phase, Q );
+    DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, phase, Q );
 
     return info;
 }

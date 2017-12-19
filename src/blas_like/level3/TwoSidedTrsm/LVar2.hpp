@@ -50,28 +50,28 @@ void LVar2( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
         // Y10 := L10 A00
         Y10.Resize( nb, k );
         Zero( Y10 );
-        Hemm( RIGHT, UpperOrLower::LOWER, F(1), A00, L10, F(0), Y10 );
+        Hemm( LeftOrRight::RIGHT, UpperOrLower::LOWER, F(1), A00, L10, F(0), Y10 );
 
         // A10 := A10 - 1/2 Y10
         Axpy( F(-1)/F(2), Y10, A10 );
 
         // A11 := A11 - (A10 L10' + L10 A10')
-        Her2k( UpperOrLower::LOWER, NORMAL, F(-1), A10, L10, F(1), A11 );
+        Her2k( UpperOrLower::LOWER, Orientation::NORMAL, F(-1), A10, L10, F(1), A11 );
 
         // A11 := inv(L11) A11 inv(L11)'
         twotrsm::LUnb( diag, A11, L11 );
 
         // A21 := A21 - A20 L10'
-        Gemm( NORMAL, ADJOINT, F(-1), A20, L10, F(1), A21 );
+        Gemm( Orientation::NORMAL, Orientation::ADJOINT, F(-1), A20, L10, F(1), A21 );
 
         // A21 := A21 inv(L11)'
-        Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, diag, F(1), L11, A21 );
+        Trsm( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::ADJOINT, diag, F(1), L11, A21 );
 
         // A10 := A10 - 1/2 Y10
         Axpy( F(-1)/F(2), Y10, A10 );
 
         // A10 := inv(L11) A10
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11, A10 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag, F(1), L11, A10 );
     }
 }
 
@@ -145,7 +145,7 @@ void LVar2
         Zero( Y10Adj_MC_STAR );
         Zero( F10Adj_MR_STAR );
         symm::LocalAccumulateRL
-        ( ADJOINT,
+        ( Orientation::ADJOINT,
           F(1), A00, L10_STAR_MC, L10Adj_MR_STAR,
           Y10Adj_MC_STAR, F10Adj_MR_STAR );
         Contract( Y10Adj_MC_STAR, Y10Adj );
@@ -156,7 +156,7 @@ void LVar2
 
         // X11 := A10 L10'
         X11_MC_STAR.AlignWith( L10 );
-        LocalGemm( NORMAL, NORMAL, F(1), A10, L10Adj_MR_STAR, X11_MC_STAR );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(1), A10, L10Adj_MR_STAR, X11_MC_STAR );
 
         // A10 := A10 - Y10
         A10.Matrix() -= Y10Local;
@@ -165,7 +165,7 @@ void LVar2
 
         // A11 := A11 - (X11 + L10 A10') = A11 - (A10 L10' + L10 A10')
         LocalGemm
-        ( NORMAL, NORMAL, F(1), L10, A10Adj_MR_STAR, F(1), X11_MC_STAR );
+        ( Orientation::NORMAL, Orientation::NORMAL, F(1), L10, A10Adj_MR_STAR, F(1), X11_MC_STAR );
         X11.AlignWith( A11 );
         Contract( X11_MC_STAR, X11 );
         AxpyTrapezoid( UpperOrLower::LOWER, F(-1), X11, A11 );
@@ -174,7 +174,7 @@ void LVar2
         L11_STAR_STAR = L11;
         Adjoint( A10Adj_MR_STAR, A10_STAR_VR );
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11_STAR_STAR, A10_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag, F(1), L11_STAR_STAR, A10_STAR_VR );
         A10 = A10_STAR_VR;
 
         // A11 := inv(L11) A11 inv(L11)'
@@ -184,13 +184,13 @@ void LVar2
 
         // A21 := A21 - A20 L10'
         X21_MC_STAR.AlignWith( A20 );
-        LocalGemm( NORMAL, NORMAL, F(1), A20, L10Adj_MR_STAR, X21_MC_STAR );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(1), A20, L10Adj_MR_STAR, X21_MC_STAR );
         AxpyContract( F(-1), X21_MC_STAR, A21 );
 
         // A21 := A21 inv(L11)'
         A21_VC_STAR =  A21;
         LocalTrsm
-        ( RIGHT, UpperOrLower::LOWER, ADJOINT, diag, F(1), L11_STAR_STAR, A21_VC_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::ADJOINT, diag, F(1), L11_STAR_STAR, A21_VC_STAR );
         A21 = A21_VC_STAR;
     }
 }

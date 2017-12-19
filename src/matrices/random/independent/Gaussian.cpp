@@ -6,6 +6,8 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
+#include <functional>
+
 #include <El/blas_like/level1.hpp>
 #include <El/matrices.hpp>
 
@@ -17,7 +19,7 @@ void MakeGaussian( Matrix<F>& A, F mean, Base<F> stddev )
 {
     EL_DEBUG_CSE
     auto sampleNormal = [=]() { return SampleNormal(mean,stddev); };
-    EntrywiseFill( A, function<F()>(sampleNormal) );
+    EntrywiseFill( A, std::function<F()>(sampleNormal) );
 }
 
 template<typename F>

@@ -363,8 +363,8 @@ void LowerPanel
         y01_MR.AlignWith( W20B );
         Zeros( x01_MR, W20B.Width(), 1 );
         Zeros( y01_MR, W20B.Width(), 1 );
-        LocalGemv( ADJOINT, F(1), W20B, a21B_MC, F(0), x01_MR );
-        LocalGemv( ADJOINT, F(1), A20B, a21B_MC, F(0), y01_MR );
+        LocalGemv( Orientation::ADJOINT, F(1), W20B, a21B_MC, F(0), x01_MR );
+        LocalGemv( Orientation::ADJOINT, F(1), A20B, a21B_MC, F(0), y01_MR );
 
         // Combine the AllReduce column summations of x01[MR], y01[MR],
         // and q21[MR]
@@ -396,8 +396,8 @@ void LowerPanel
               &colSumRecvBuf[2*x01LocalHeight], q21LocalHeight );
         }
 
-        LocalGemv( NORMAL, F(-1), A20B, x01_MR, F(1), p21B_MC );
-        LocalGemv( NORMAL, F(-1), W20B, y01_MR, F(1), p21B_MC );
+        LocalGemv( Orientation::NORMAL, F(-1), A20B, x01_MR, F(1), p21B_MC );
+        LocalGemv( Orientation::NORMAL, F(-1), W20B, y01_MR, F(1), p21B_MC );
 
         if( W22.Width() > 0 )
         {

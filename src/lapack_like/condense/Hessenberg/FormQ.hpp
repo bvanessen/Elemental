@@ -23,7 +23,7 @@ void FormQ
     // TODO: Make this smarter
     const Int n = A.Height();
     Identity( Q, n, n );
-    ApplyQ( LEFT, uplo, NORMAL, A, householderScalars, Q );
+    ApplyQ( LeftOrRight::LEFT, uplo, Orientation::NORMAL, A, householderScalars, Q );
 }
 
 template<typename F>
@@ -37,7 +37,7 @@ void FormQ
     // TODO: Make this smarter
     const Int n = A.Height();
     Identity( Q, n, n );
-    ApplyQ( LEFT, uplo, NORMAL, A, householderScalars, Q );
+    ApplyQ( LeftOrRight::LEFT, uplo, Orientation::NORMAL, A, householderScalars, Q );
 }
 
 } // namespace hessenberg

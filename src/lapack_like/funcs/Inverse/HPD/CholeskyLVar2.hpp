@@ -43,14 +43,14 @@ CholeskyLVar2( Matrix<Field>& A )
         auto A22 = A( ind2, ind2 );
 
         Cholesky( UpperOrLower::LOWER, A11 );
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, Field(1), A11, A10 );
-        Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, Field(1), A11, A21 );
-        Herk( UpperOrLower::LOWER, ADJOINT, Base<Field>(1), A10, Base<Field>(1), A00 );
-        Gemm( NORMAL, NORMAL, Field(-1), A21, A10, Field(1), A20 );
-        Herk( UpperOrLower::LOWER, NORMAL, Base<Field>(-1), A21, Base<Field>(1), A22 );
-        Trsm( LEFT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, Field(1), A11, A10 );
-        Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, NON_UNIT, Field(-1), A11, A21 );
-        TriangularInverse( UpperOrLower::LOWER, NON_UNIT, A11 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, Field(1), A11, A10 );
+        Trsm( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, Field(1), A11, A21 );
+        Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Base<Field>(1), A10, Base<Field>(1), A00 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(-1), A21, A10, Field(1), A20 );
+        Herk( UpperOrLower::LOWER, Orientation::NORMAL, Base<Field>(-1), A21, Base<Field>(1), A22 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, Field(1), A11, A10 );
+        Trsm( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, Field(-1), A11, A21 );
+        TriangularInverse( UpperOrLower::LOWER, UnitOrNonUnit::NON_UNIT, A11 );
         Trtrmm( UpperOrLower::LOWER, A11, true );
     }
 }
@@ -105,12 +105,12 @@ CholeskyLVar2( AbstractDistMatrix<Field>& APre )
         A10_STAR_VR.AlignWith( A00 );
         A10_STAR_VR = A10;
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, Field(1), A11_STAR_STAR, A10_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, Field(1), A11_STAR_STAR, A10_STAR_VR );
 
         A21_VC_STAR.AlignWith( A20 );
         A21_VC_STAR = A21;
         LocalTrsm
-        ( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT,
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT,
           Field(1), A11_STAR_STAR, A21_VC_STAR );
 
         A10_STAR_MC.AlignWith( A00 );
@@ -118,29 +118,29 @@ CholeskyLVar2( AbstractDistMatrix<Field>& APre )
         A10_STAR_MR.AlignWith( A00 );
         A10_STAR_MR = A10_STAR_VR;
         LocalTrrk
-        ( UpperOrLower::LOWER, ADJOINT,
+        ( UpperOrLower::LOWER, Orientation::ADJOINT,
           Field(1), A10_STAR_MC, A10_STAR_MR, Field(1), A00 );
 
         Transpose( A21_VC_STAR, A21Trans_STAR_MC );
         LocalGemm
-        ( TRANSPOSE, NORMAL,
+        ( Orientation::TRANSPOSE, Orientation::NORMAL,
           Field(-1), A21Trans_STAR_MC, A10_STAR_MR, Field(1), A20 );
 
         A21_VR_STAR = A21_VC_STAR;
         Adjoint( A21_VR_STAR, A21Adj_STAR_MR );
         LocalTrrk
-        ( UpperOrLower::LOWER, TRANSPOSE,
+        ( UpperOrLower::LOWER, Orientation::TRANSPOSE,
           Field(-1), A21Trans_STAR_MC, A21Adj_STAR_MR, Field(1), A22 );
 
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, ADJOINT, NON_UNIT,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT,
           Field(1), A11_STAR_STAR, A10_STAR_VR );
 
         LocalTrsm
-        ( RIGHT, UpperOrLower::LOWER, NORMAL, NON_UNIT,
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT,
           Field(-1), A11_STAR_STAR, A21_VC_STAR );
 
-        LocalTriangularInverse( UpperOrLower::LOWER, NON_UNIT, A11_STAR_STAR );
+        LocalTriangularInverse( UpperOrLower::LOWER, UnitOrNonUnit::NON_UNIT, A11_STAR_STAR );
 
         Trtrmm( UpperOrLower::LOWER, A11_STAR_STAR, true );
 

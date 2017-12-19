@@ -25,7 +25,7 @@ void Herk
   Base<T> alpha, const Matrix<T>& A, Matrix<T>& C )
 {
     EL_DEBUG_CSE
-    const Int n = ( orientation==NORMAL ? A.Height() : A.Width() );
+    const Int n = ( orientation==Orientation::NORMAL ? A.Height() : A.Width() );
     C.Resize( n, n );
     Zero( C );
     Syrk( uplo, orientation, T(alpha), A, T(0), C, true );
@@ -47,7 +47,7 @@ void Herk
   Base<T> alpha, const AbstractDistMatrix<T>& A, AbstractDistMatrix<T>& C )
 {
     EL_DEBUG_CSE
-    const Int n = ( orientation==NORMAL ? A.Height() : A.Width() );
+    const Int n = ( orientation==Orientation::NORMAL ? A.Height() : A.Width() );
     C.Resize( n, n );
     Zero( C );
     Syrk( uplo, orientation, T(alpha), A, T(0), C, true );

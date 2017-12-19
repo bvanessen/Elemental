@@ -27,8 +27,8 @@ void TrrkNT
       if( CPre.Height() != CPre.Width() || APre.Height() != CPre.Height() ||
           BPre.Height() != CPre.Width() || APre.Width() != BPre.Width() )
           LogicError("Nonconformal TrrkNT");
-      if( orientationOfB == NORMAL )
-          LogicError("Orientation must be ADJOINT or TRANSPOSE");
+      if( orientationOfB == Orientation::NORMAL )
+          LogicError("Orientation must be Orientation::ADJOINT or Orientation::TRANSPOSE");
     )
     const Int r = APre.Width();
     const Int bsize = Blocksize();
@@ -59,7 +59,7 @@ void TrrkNT
 
         A1_MC_STAR = A1;
         B1_VR_STAR = B1;
-        Transpose( B1_VR_STAR, B1Trans_STAR_MR, (orientationOfB==ADJOINT) );
+        Transpose( B1_VR_STAR, B1Trans_STAR_MR, (orientationOfB==Orientation::ADJOINT) );
         LocalTrrk( uplo, alpha, A1_MC_STAR, B1Trans_STAR_MR, T(1), C );
     }
 }

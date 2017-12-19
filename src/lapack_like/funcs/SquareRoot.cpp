@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 // See Eq. 6.3 of Nicholas J. Higham and Awad H. Al-Mohy's "Computing Matrix
 // Functions", which is currently available at:
@@ -33,7 +32,7 @@ NewtonStep
     Permutation P;
     LU( XTmp, P );
     XNew = A;
-    lu::SolveAfter( NORMAL, XTmp, P, XNew );
+    lu::SolveAfter( Orientation::NORMAL, XTmp, P, XNew );
 
     // XNew := 1/2 ( X + XNew )
     typedef Base<Field> Real;
@@ -54,7 +53,7 @@ NewtonStep
     DistPermutation P(X.Grid());
     LU( XTmp, P );
     XNew = A;
-    lu::SolveAfter( NORMAL, XTmp, P, XNew );
+    lu::SolveAfter( Orientation::NORMAL, XTmp, P, XNew );
 
     // XNew := 1/2 ( X + XNew )
     typedef Base<Field> Real;

@@ -23,7 +23,7 @@ void Syrk
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
       {
           if( A.Height() != C.Height() || A.Height() != C.Width() )
               LogicError("Nonconformal Syrk");
@@ -36,7 +36,7 @@ void Syrk
     )
     const char uploChar = UpperOrLowerToChar( uplo );
     const char transChar = OrientationToChar( orientation );
-    const Int k = ( orientation == NORMAL ? A.Width() : A.Height() );
+    const Int k = ( orientation == Orientation::NORMAL ? A.Width() : A.Height() );
     if( conjugate )
     {
         blas::Herk
@@ -59,7 +59,7 @@ void Syrk
   T alpha, const Matrix<T>& A, Matrix<T>& C, bool conjugate )
 {
     EL_DEBUG_CSE
-    const Int n = ( orientation==NORMAL ? A.Height() : A.Width() );
+    const Int n = ( orientation==Orientation::NORMAL ? A.Height() : A.Width() );
     C.Resize( n, n );
     Zero( C );
     Syrk( uplo, orientation, alpha, A, T(0), C, conjugate );
@@ -73,11 +73,11 @@ void Syrk
 {
     EL_DEBUG_CSE
     ScaleTrapezoid( beta, uplo, C );
-    if( uplo == UpperOrLower::LOWER && orientation == NORMAL )
+    if( uplo == UpperOrLower::LOWER && orientation == Orientation::NORMAL )
         syrk::LN( alpha, A, C, conjugate );
     else if( uplo == UpperOrLower::LOWER )
         syrk::LT( alpha, A, C, conjugate );
-    else if( orientation == NORMAL )
+    else if( orientation == Orientation::NORMAL )
         syrk::UN( alpha, A, C, conjugate );
     else
         syrk::UT( alpha, A, C, conjugate );
@@ -90,7 +90,7 @@ void Syrk
                  AbstractDistMatrix<T>& C, bool conjugate )
 {
     EL_DEBUG_CSE
-    const Int n = ( orientation==NORMAL ? A.Height() : A.Width() );
+    const Int n = ( orientation==Orientation::NORMAL ? A.Height() : A.Width() );
     C.Resize( n, n );
     Zero( C );
     Syrk( uplo, orientation, alpha, A, T(0), C, conjugate );

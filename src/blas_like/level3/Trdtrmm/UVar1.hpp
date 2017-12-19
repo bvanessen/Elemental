@@ -18,7 +18,7 @@ void UVar1( Matrix<F>& U, bool conjugate=false )
       if( U.Height() != U.Width() )
           LogicError("U must be square");
     )
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     Matrix<F> S01;
 
@@ -38,9 +38,9 @@ void UVar1( Matrix<F>& U, bool conjugate=false )
         auto d1 = GetDiagonal(U11);
 
         S01 = U01;
-        DiagonalSolve( LEFT, NORMAL, d1, U01, true );
-        Trrk( UpperOrLower::UPPER, NORMAL, orientation, F(1), U01, S01, F(1), U00 );
-        Trmm( RIGHT, UpperOrLower::UPPER, orientation, UNIT, F(1), U11, U01 );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d1, U01, true );
+        Trrk( UpperOrLower::UPPER, Orientation::NORMAL, orientation, F(1), U01, S01, F(1), U00 );
+        Trmm( LeftOrRight::RIGHT, UpperOrLower::UPPER, orientation, UnitOrNonUnit::UNIT, F(1), U11, U01 );
         trdtrmm::UUnblocked( U11, conjugate );
     }
 }
@@ -56,7 +56,7 @@ void UVar1( AbstractDistMatrix<F>& UPre, bool conjugate=false )
     const Int n = UPre.Height();
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> UProx( UPre );
     auto& U = UProx.Get();
@@ -88,13 +88,13 @@ void UVar1( AbstractDistMatrix<F>& UPre, bool conjugate=false )
         S01_MC_STAR = U01;
         S01_VC_STAR = S01_MC_STAR;
         U01_VR_STAR = S01_VC_STAR;
-        DiagonalSolve( RIGHT, NORMAL, d1, U01_VR_STAR );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, d1, U01_VR_STAR );
         Transpose( U01_VR_STAR, U01Trans_STAR_MR, conjugate );
         LocalTrrk( UpperOrLower::UPPER, F(1), S01_MC_STAR, U01Trans_STAR_MR, F(1), U00 );
 
         U11_STAR_STAR = U11;
         LocalTrmm
-        ( RIGHT, UpperOrLower::UPPER, orientation, UNIT, F(1), U11_STAR_STAR, U01_VR_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, orientation, UnitOrNonUnit::UNIT, F(1), U11_STAR_STAR, U01_VR_STAR );
         U01 = U01_VR_STAR;
 
         Trdtrmm( UpperOrLower::UPPER, U11_STAR_STAR, conjugate );

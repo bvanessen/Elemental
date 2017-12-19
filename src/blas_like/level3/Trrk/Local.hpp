@@ -76,7 +76,7 @@ void CheckInputNT
 ( Orientation orientationOfB,
   const Matrix<T>& A, const Matrix<T>& B, const Matrix<T>& C )
 {
-    if( orientationOfB == NORMAL )
+    if( orientationOfB == Orientation::NORMAL )
         LogicError("B must be (Conjugate)Transpose'd");
     if( A.Height() != C.Height() || B.Height() != C.Width() ||
         A.Width()  != B.Width()  || A.Height() != B.Height() )
@@ -91,7 +91,7 @@ void CheckInputTN
 ( Orientation orientationOfA,
   const Matrix<T>& A, const Matrix<T>& B, const Matrix<T>& C )
 {
-    if( orientationOfA == NORMAL )
+    if( orientationOfA == Orientation::NORMAL )
         LogicError("A must be (Conjugate)Transpose'd");
     if( A.Width() != C.Height() || B.Width() != C.Width() ||
         A.Height() != B.Height() || A.Width() != B.Width() )
@@ -107,9 +107,9 @@ void CheckInputTT
   Orientation orientationOfB,
   const Matrix<T>& A, const Matrix<T>& B, const Matrix<T>& C )
 {
-    if( orientationOfA == NORMAL )
+    if( orientationOfA == Orientation::NORMAL )
         LogicError("A must be (Conjugate)Transpose'd");
-    if( orientationOfB == NORMAL )
+    if( orientationOfB == Orientation::NORMAL )
         LogicError("B must be (Conjugate)Transpose'd");
     if( A.Width() != C.Height() || B.Height() != C.Width() ||
         A.Height() != B.Width() || A.Width() != B.Height() )
@@ -144,22 +144,22 @@ void TrrkNNKernel
     if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
-        Gemm( NORMAL, NORMAL, alpha, AB, BL, T(1), CBL );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, alpha, AB, BL, T(1), CBL );
     }
     else
     {
         auto CTR = C(indTL,indBR);
-        Gemm( NORMAL, NORMAL, alpha, AT, BR, T(1), CTR );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, alpha, AT, BR, T(1), CTR );
     }
 
     // TODO(poulson): Avoid the temporary copy
     Matrix<T> DTL;
-    Gemm( NORMAL, NORMAL, alpha, AT, BL, DTL );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, alpha, AT, BL, DTL );
     AxpyTrapezoid( uplo, T(1), DTL, CTL );
 
     // TODO(poulson): Avoid the temporary copy
     Matrix<T> DBR;
-    Gemm( NORMAL, NORMAL, alpha, AB, BR, DBR );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, alpha, AB, BR, DBR );
     AxpyTrapezoid( uplo, T(1), DBR, CBR );
 }
 
@@ -189,24 +189,24 @@ void LocalTrrkKernel
     if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
-        LocalGemm( NORMAL, NORMAL, alpha, AB, BL, T(1), CBL );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, alpha, AB, BL, T(1), CBL );
     }
     else
     {
         auto CTR = C(indTL,indBR);
-        LocalGemm( NORMAL, NORMAL, alpha, AT, BR, T(1), CTR );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, alpha, AT, BR, T(1), CTR );
     }
 
     // TODO(poulson): Avoid the temporary copy
     DistMatrix<T> DTL(g);
     DTL.AlignWith( CTL );
-    LocalGemm( NORMAL, NORMAL, alpha, AT, BL, DTL );
+    LocalGemm( Orientation::NORMAL, Orientation::NORMAL, alpha, AT, BL, DTL );
     LocalAxpyTrapezoid( uplo, T(1), DTL, CTL );
 
     // TODO(poulson): Avoid the temporary copy
     DistMatrix<T> DBR(g);
     DBR.AlignWith( CBR );
-    LocalGemm( NORMAL, NORMAL, alpha, AB, BR, DBR );
+    LocalGemm( Orientation::NORMAL, Orientation::NORMAL, alpha, AB, BR, DBR );
     LocalAxpyTrapezoid( uplo, T(1), DBR, CBR );
 }
 
@@ -235,22 +235,22 @@ void TrrkNTKernel
     if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
-        Gemm( NORMAL, orientationOfB, alpha, AB, BT, T(1), CBL );
+        Gemm( Orientation::NORMAL, orientationOfB, alpha, AB, BT, T(1), CBL );
     }
     else
     {
         auto CTR = C(indTL,indBR);
-        Gemm( NORMAL, orientationOfB, alpha, AT, BB, T(1), CTR );
+        Gemm( Orientation::NORMAL, orientationOfB, alpha, AT, BB, T(1), CTR );
     }
 
     // TODO(poulson): Avoid the temporary copy
     Matrix<T> DTL;
-    Gemm( NORMAL, orientationOfB, alpha, AT, BT, DTL );
+    Gemm( Orientation::NORMAL, orientationOfB, alpha, AT, BT, DTL );
     AxpyTrapezoid( uplo, T(1), DTL, CTL );
 
     // TODO(poulson): Avoid the temporary copy
     Matrix<T> DBR;
-    Gemm( NORMAL, orientationOfB, alpha, AB, BB, DBR );
+    Gemm( Orientation::NORMAL, orientationOfB, alpha, AB, BB, DBR );
     AxpyTrapezoid( uplo, T(1), DBR, CBR );
 }
 
@@ -281,24 +281,24 @@ void LocalTrrkKernel
     if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
-        LocalGemm( NORMAL, orientationOfB, alpha, AB, BT, T(1), CBL );
+        LocalGemm( Orientation::NORMAL, orientationOfB, alpha, AB, BT, T(1), CBL );
     }
     else
     {
         auto CTR = C(indTL,indBR);
-        LocalGemm( NORMAL, orientationOfB, alpha, AT, BB, T(1), CTR );
+        LocalGemm( Orientation::NORMAL, orientationOfB, alpha, AT, BB, T(1), CTR );
     }
 
     // TODO(poulson): Avoid the temporary copy
     DistMatrix<T> DTL(g);
     DTL.AlignWith( CTL );
-    LocalGemm( NORMAL, orientationOfB, alpha, AT, BT, DTL );
+    LocalGemm( Orientation::NORMAL, orientationOfB, alpha, AT, BT, DTL );
     LocalAxpyTrapezoid( uplo, T(1), DTL, CTL );
 
     // TODO(poulson): Avoid the temporary copy
     DistMatrix<T> DBR(g);
     DBR.AlignWith( CBR );
-    LocalGemm( NORMAL, orientationOfB, alpha, AB, BB, DBR );
+    LocalGemm( Orientation::NORMAL, orientationOfB, alpha, AB, BB, DBR );
     LocalAxpyTrapezoid( uplo, T(1), DBR, CBR );
 }
 
@@ -327,22 +327,22 @@ void TrrkTNKernel
     if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
-        Gemm( orientationOfA, NORMAL, alpha, AR, BL, T(1), CBL );
+        Gemm( orientationOfA, Orientation::NORMAL, alpha, AR, BL, T(1), CBL );
     }
     else
     {
         auto CTR = C(indTL,indBR);
-        Gemm( orientationOfA, NORMAL, alpha, AL, BR, T(1), CTR );
+        Gemm( orientationOfA, Orientation::NORMAL, alpha, AL, BR, T(1), CTR );
     }
 
     // TODO(poulson): Avoid the temporary copy
     Matrix<T> DTL;
-    Gemm( orientationOfA, NORMAL, alpha, AL, BL, DTL );
+    Gemm( orientationOfA, Orientation::NORMAL, alpha, AL, BL, DTL );
     AxpyTrapezoid( uplo, T(1), DTL, CTL );
 
     // TODO(poulson): Avoid the temporary copy
     Matrix<T> DBR;
-    Gemm( orientationOfA, NORMAL, alpha, AR, BR, DBR );
+    Gemm( orientationOfA, Orientation::NORMAL, alpha, AR, BR, DBR );
     AxpyTrapezoid( uplo, T(1), DBR, CBR );
 }
 
@@ -373,24 +373,24 @@ void LocalTrrkKernel
     if( uplo == UpperOrLower::LOWER )
     {
         auto CBL = C(indBR,indTL);
-        LocalGemm( orientationOfA, NORMAL, alpha, AR, BL, T(1), CBL );
+        LocalGemm( orientationOfA, Orientation::NORMAL, alpha, AR, BL, T(1), CBL );
     }
     else
     {
         auto CTR = C(indTL,indBR);
-        LocalGemm( orientationOfA, NORMAL, alpha, AL, BR, T(1), CTR );
+        LocalGemm( orientationOfA, Orientation::NORMAL, alpha, AL, BR, T(1), CTR );
     }
 
     // TODO(poulson): Avoid the temporary copy
     DistMatrix<T> DTL(g);
     DTL.AlignWith( CTL );
-    LocalGemm( orientationOfA, NORMAL, alpha, AL, BL, DTL );
+    LocalGemm( orientationOfA, Orientation::NORMAL, alpha, AL, BL, DTL );
     LocalAxpyTrapezoid( uplo, T(1), DTL, CTL );
 
     // TODO(poulson): Avoid the temporary copy
     DistMatrix<T> DBR(g);
     DBR.AlignWith( CBR );
-    LocalGemm( orientationOfA, NORMAL, alpha, AR, BR, DBR );
+    LocalGemm( orientationOfA, Orientation::NORMAL, alpha, AR, BR, DBR );
     LocalAxpyTrapezoid( uplo, T(1), DBR, CBR );
 }
 
@@ -520,12 +520,12 @@ void TrrkNN
         if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
-            Gemm( NORMAL, NORMAL, alpha, AB, BL, T(1), CBL );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, alpha, AB, BL, T(1), CBL );
         }
         else
         {
             auto CTR = C(indTL,indBR);
-            Gemm( NORMAL, NORMAL, alpha, AT, BR, T(1), CTR );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, alpha, AT, BR, T(1), CTR );
         }
 
         // Recurse
@@ -567,12 +567,12 @@ void TrrkNT
         if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
-            Gemm( NORMAL, orientationOfB, alpha, AB, BT, T(1), CBL );
+            Gemm( Orientation::NORMAL, orientationOfB, alpha, AB, BT, T(1), CBL );
         }
         else
         {
             auto CTR = C(indTL,indBR);
-            Gemm( NORMAL, orientationOfB, alpha, AT, BB, T(1), CTR );
+            Gemm( Orientation::NORMAL, orientationOfB, alpha, AT, BB, T(1), CTR );
         }
 
         // Recurse
@@ -614,12 +614,12 @@ void TrrkTN
         if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
-            Gemm( orientationOfA, NORMAL, alpha, AR, BL, T(1), CBL );
+            Gemm( orientationOfA, Orientation::NORMAL, alpha, AR, BL, T(1), CBL );
         }
         else
         {
             auto CTR = C(indTL,indBR);
-            Gemm( orientationOfA, NORMAL, alpha, AL, BR, T(1), CTR );
+            Gemm( orientationOfA, Orientation::NORMAL, alpha, AL, BR, T(1), CTR );
         }
 
         // Recurse
@@ -713,12 +713,12 @@ void LocalTrrk
         if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
-            LocalGemm( NORMAL, NORMAL, alpha, AB, BL, T(1), CBL );
+            LocalGemm( Orientation::NORMAL, Orientation::NORMAL, alpha, AB, BL, T(1), CBL );
         }
         else
         {
             auto CTR = C(indTL,indBR);
-            LocalGemm( NORMAL, NORMAL, alpha, AT, BR, T(1), CTR );
+            LocalGemm( Orientation::NORMAL, Orientation::NORMAL, alpha, AT, BR, T(1), CTR );
         }
 
         // Recurse
@@ -764,12 +764,12 @@ void LocalTrrk
         if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
-            LocalGemm( NORMAL, orientationOfB, alpha, AB, BT, T(1), CBL );
+            LocalGemm( Orientation::NORMAL, orientationOfB, alpha, AB, BT, T(1), CBL );
         }
         else
         {
             auto CTR = C(indTL,indBR);
-            LocalGemm( NORMAL, orientationOfB, alpha, AT, BB, T(1), CTR );
+            LocalGemm( Orientation::NORMAL, orientationOfB, alpha, AT, BB, T(1), CTR );
         }
 
         // Recurse
@@ -815,12 +815,12 @@ void LocalTrrk
         if( uplo == UpperOrLower::LOWER )
         {
             auto CBL = C(indBR,indTL);
-            LocalGemm( orientationOfA, NORMAL, alpha, AR, BL, T(1), CBL );
+            LocalGemm( orientationOfA, Orientation::NORMAL, alpha, AR, BL, T(1), CBL );
         }
         else
         {
             auto CTR = C(indTL,indBR);
-            LocalGemm( orientationOfA, NORMAL, alpha, AL, BR, T(1), CTR );
+            LocalGemm( orientationOfA, Orientation::NORMAL, alpha, AL, BR, T(1), CTR );
         }
 
         // Recurse

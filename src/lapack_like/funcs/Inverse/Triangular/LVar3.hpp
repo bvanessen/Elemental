@@ -26,14 +26,14 @@ LVar3Unb( UnitOrNonUnit diag, Matrix<Field>& L )
     Field* LBuffer = L.Buffer();
     for( Int j=0; j<n; ++j )
     {
-        const Field lambda = ( diag==NON_UNIT ? LBuffer[j+j*ldl] : Field(1) );
+        const Field lambda = ( diag==UnitOrNonUnit::NON_UNIT ? LBuffer[j+j*ldl] : Field(1) );
         for( Int k=0; k<j; ++k )
             LBuffer[j+k*ldl] /= -lambda;
         blas::Geru
         ( n-(j+1), j, Field(1),
           &LBuffer[(j+1)+j*ldl], 1, &LBuffer[j], ldl,
           &LBuffer[j+1], ldl );
-        if( diag == NON_UNIT )
+        if( diag == UnitOrNonUnit::NON_UNIT )
         {
             for( Int k=j+1; k<n; ++k )
                 LBuffer[k+j*ldl] /= lambda;
@@ -66,9 +66,9 @@ LVar3( UnitOrNonUnit diag, Matrix<Field>& L )
         auto L20 = L( ind2, ind0 );
         auto L21 = L( ind2, ind1 );
 
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, diag, Field(-1), L11, L10 );
-        Gemm( NORMAL, NORMAL, Field(1), L21, L10, Field(1), L20 );
-        Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, diag, Field(1), L11, L21 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag, Field(-1), L11, L10 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), L21, L10, Field(1), L20 );
+        Trsm( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, diag, Field(1), L11, L21 );
         LVar3Unb( diag, L11 );
     }
 }
@@ -111,19 +111,19 @@ LVar3( UnitOrNonUnit diag, AbstractDistMatrix<Field>& LPre )
         L10_STAR_VR = L10;
         L11_STAR_STAR = L11;
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, diag, Field(-1), L11_STAR_STAR, L10_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag, Field(-1), L11_STAR_STAR, L10_STAR_VR );
 
         L21_MC_STAR.AlignWith( L20 );
         L21_MC_STAR = L21;
         L10_STAR_MR.AlignWith( L20 );
         L10_STAR_MR = L10_STAR_VR;
         LocalGemm
-        ( NORMAL, NORMAL, Field(1), L21_MC_STAR, L10_STAR_MR, Field(1), L20 );
+        ( Orientation::NORMAL, Orientation::NORMAL, Field(1), L21_MC_STAR, L10_STAR_MR, Field(1), L20 );
         L10 = L10_STAR_MR;
 
         L21_VC_STAR = L21_MC_STAR;
         LocalTrsm
-        ( RIGHT, UpperOrLower::LOWER, NORMAL, diag, Field(1), L11_STAR_STAR, L21_VC_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, diag, Field(1), L11_STAR_STAR, L21_VC_STAR );
         LocalTriangularInverse( UpperOrLower::LOWER, diag, L11_STAR_STAR );
         L11 = L11_STAR_STAR;
         L21 = L21_VC_STAR;

@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 
@@ -34,10 +33,10 @@ void Pseudoinverse( Matrix<Field>& A, Base<Field> tolerance )
     SVD( A, U, s, V, ctrl );
 
     // Scale U with the inverted (nonzero) singular values, U := U / Sigma
-    DiagonalSolve( RIGHT, NORMAL, s, U );
+    DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, s, U );
 
     // Form pinvA = (U Sigma V^H)^H = V (U Sigma)^H
-    Gemm( NORMAL, ADJOINT, Field(1), V, U, A );
+    Gemm( Orientation::NORMAL, Orientation::ADJOINT, Field(1), V, U, A );
 }
 
 template<typename Field>
@@ -99,10 +98,10 @@ void Pseudoinverse( AbstractDistMatrix<Field>& APre, Base<Field> tolerance )
     SVD( A, U, s, V, ctrl );
 
     // Scale U with the inverted (nonzero) singular values, U := U / Sigma
-    DiagonalSolve( RIGHT, NORMAL, s, U );
+    DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, s, U );
 
     // Form pinvA = (U Sigma V^H)^H = V (U Sigma)^H
-    Gemm( NORMAL, ADJOINT, Field(1), V, U, A );
+    Gemm( Orientation::NORMAL, Orientation::ADJOINT, Field(1), V, U, A );
 }
 
 template<typename Field>

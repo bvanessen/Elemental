@@ -26,19 +26,19 @@ void SolveAfter
       if( A.Height() != B.Height() )
           LogicError("A and B must be the same height");
     )
-    if( orientation == TRANSPOSE )
+    if( orientation == Orientation::TRANSPOSE )
         Conjugate( B );
     if( uplo == UpperOrLower::LOWER )
     {
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A, B );
     }
     else
     {
-        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A, B );
     }
-    if( orientation == TRANSPOSE )
+    if( orientation == Orientation::TRANSPOSE )
         Conjugate( B );
 }
 
@@ -58,19 +58,19 @@ void SolveAfter
           LogicError("A and B must be the same height");
     )
     P.PermuteRows( B );
-    if( orientation == TRANSPOSE )
+    if( orientation == Orientation::TRANSPOSE )
         Conjugate( B );
     if( uplo == UpperOrLower::LOWER )
     {
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A, B );
     }
     else
     {
-        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A, B );
     }
-    if( orientation == TRANSPOSE )
+    if( orientation == Orientation::TRANSPOSE )
         Conjugate( B );
     P.InversePermuteRows( B );
 }
@@ -90,19 +90,19 @@ void SolveAfter
       if( A.Height() != B.Height() )
           LogicError("A and B must be the same height");
     )
-    if( orientation == TRANSPOSE )
+    if( orientation == Orientation::TRANSPOSE )
         Conjugate( B );
     if( uplo == UpperOrLower::LOWER )
     {
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A, B );
     }
     else
     {
-        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A, B );
     }
-    if( orientation == TRANSPOSE )
+    if( orientation == Orientation::TRANSPOSE )
         Conjugate( B );
 }
 
@@ -123,19 +123,19 @@ void SolveAfter
           LogicError("A and B must be the same height");
     )
     P.PermuteRows( B );
-    if( orientation == TRANSPOSE )
+    if( orientation == Orientation::TRANSPOSE )
         Conjugate( B );
     if( uplo == UpperOrLower::LOWER )
     {
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A, B );
     }
     else
     {
-        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), A, B );
-        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A, B );
     }
-    if( orientation == TRANSPOSE )
+    if( orientation == Orientation::TRANSPOSE )
         Conjugate( B );
     P.InversePermuteRows( B );
 }

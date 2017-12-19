@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 
@@ -55,8 +54,8 @@ void FoxLi( Matrix<Complex<Real>>& A, Int n, Real omega )
     }
 
     // Apply the weighting
-    DiagonalScale( LEFT, NORMAL, sqrtWeightsTrans, A );
-    DiagonalScale( RIGHT, NORMAL, sqrtWeightsTrans, A );
+    DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, sqrtWeightsTrans, A );
+    DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, sqrtWeightsTrans, A );
 }
 
 template<typename Real>
@@ -123,8 +122,8 @@ void FoxLi( AbstractDistMatrix<Complex<Real>>& APre, Int n, Real omega )
     // Apply the weighting
     DistMatrix<Real,Dist::VR,Dist::STAR> sqrtWeightsTrans(g);
     Transpose( sqrtWeights, sqrtWeightsTrans );
-    DiagonalScale( LEFT, NORMAL, sqrtWeightsTrans, A );
-    DiagonalScale( RIGHT, NORMAL, sqrtWeightsTrans, A );
+    DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, sqrtWeightsTrans, A );
+    DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, sqrtWeightsTrans, A );
 }
 
 #define PROTO(Real) \

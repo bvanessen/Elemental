@@ -54,7 +54,7 @@ void ExplicitUnitary( Matrix<F>& A )
     // TODO: Replace this with an in-place expansion of Q
     Matrix<F> Q;
     Identity( Q, A.Height(), A.Width() );
-    lq::ApplyQ( RIGHT, NORMAL, A, householderScalars, signature, Q );
+    lq::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, A, householderScalars, signature, Q );
     A = Q;
 }
 
@@ -75,7 +75,7 @@ void ExplicitUnitary( AbstractDistMatrix<F>& APre )
     DistMatrix<F> Q(g);
     Q.AlignWith( A );
     Identity( Q, A.Height(), A.Width() );
-    lq::ApplyQ( RIGHT, NORMAL, A, householderScalars, signature, Q );
+    lq::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, A, householderScalars, signature, Q );
     Copy( Q, APre );
 }
 
@@ -97,7 +97,7 @@ void Explicit( Matrix<F>& L, Matrix<F>& A )
     // TODO: Replace this with an in-place expansion of Q
     Matrix<F> Q;
     Identity( Q, A.Height(), A.Width() );
-    lq::ApplyQ( RIGHT, NORMAL, A, householderScalars, signature, Q );
+    lq::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, A, householderScalars, signature, Q );
     A = Q;
 }
 
@@ -124,7 +124,7 @@ void Explicit( AbstractDistMatrix<F>& L, AbstractDistMatrix<F>& APre )
     // TODO: Replace this with an in-place expansion of Q
     DistMatrix<F> Q(g);
     Identity( Q, A.Height(), A.Width() );
-    lq::ApplyQ( RIGHT, NORMAL, A, householderScalars, signature, Q );
+    lq::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, A, householderScalars, signature, Q );
     Copy( Q, APre );
 }
 

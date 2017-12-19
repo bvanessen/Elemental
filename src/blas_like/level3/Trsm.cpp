@@ -36,7 +36,7 @@ void Trsm
     EL_DEBUG_ONLY(
       if( A.Height() != A.Width() )
           LogicError("Triangular matrix must be square");
-      if( side == LEFT )
+      if( side == LeftOrRight::LEFT )
       {
           if( A.Height() != B.Height() )
               LogicError("Nonconformal Trsm");
@@ -51,7 +51,7 @@ void Trsm
     const char uploChar = UpperOrLowerToChar( uplo );
     const char transChar = OrientationToChar( orientation );
     const char diagChar = UnitOrNonUnitToChar( diag );
-    if( checkIfSingular && diag != UNIT )
+    if( checkIfSingular && diag != UnitOrNonUnit::UNIT )
     {
         const Int n = A.Height();
         for( Int j=0; j<n; ++j )
@@ -80,7 +80,7 @@ void Trsm
       AssertSameGrids( A, B );
       if( A.Height() != A.Width() )
           LogicError("A must be square");
-      if( side == LEFT )
+      if( side == LeftOrRight::LEFT )
       {
           if( A.Height() != B.Height() )
               LogicError("Nonconformal Trsm");
@@ -94,7 +94,7 @@ void Trsm
     B *= alpha;
 
     // Call the single right-hand side algorithm if appropriate
-    if( side == LEFT && B.Width() == 1 )
+    if( side == LeftOrRight::LEFT && B.Width() == 1 )
     {
         Trsv( uplo, orientation, diag, A, B );
         return;
@@ -102,7 +102,7 @@ void Trsm
     // TODO: Compute appropriate transpose/conjugation options to convert
     //       to Trsv.
     /*
-    else if( side == RIGHT && B.Height() == 1 )
+    else if( side == LeftOrRight::RIGHT && B.Height() == 1 )
     {
         Trsv( uplo, orientation, diag, A, B );
         return;
@@ -110,9 +110,9 @@ void Trsm
     */
 
     const Int p = B.Grid().Size();
-    if( side == LEFT && uplo == UpperOrLower::LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
         {
             if( alg == TRSM_DEFAULT )
             {
@@ -239,9 +239,9 @@ void Trsm
                 LogicError("Unsupported TRSM algorithm");
         }
     }
-    else if( side == LEFT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
         {
             if( alg == TRSM_DEFAULT )
             {
@@ -338,9 +338,9 @@ void Trsm
                 LogicError("Unsupported TRSM algorithm");
         }
     }
-    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
         {
             if( alg == TRSM_DEFAULT )
                 trsm::RLN( diag, A, B, checkIfSingular );
@@ -355,9 +355,9 @@ void Trsm
                 LogicError("Unsupported TRSM algorithm");
         }
     }
-    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
         {
             if( alg == TRSM_DEFAULT )
                 trsm::RUN( diag, A, B, checkIfSingular );
@@ -387,8 +387,8 @@ void LocalTrsm
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( (side == LEFT && X.ColDist() != STAR) ||
-          (side == RIGHT && X.RowDist() != STAR) )
+      if( (side == LeftOrRight::LEFT && X.ColDist() != STAR) ||
+          (side == LeftOrRight::RIGHT && X.RowDist() != STAR) )
           LogicError
           ("Dist of RHS must conform with that of triangle");
     )

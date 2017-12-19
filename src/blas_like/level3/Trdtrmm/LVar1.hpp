@@ -18,7 +18,7 @@ void LVar1( Matrix<F>& L, bool conjugate=false )
       if( L.Height() != L.Width() )
           LogicError("L must be square");
     )
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
     Matrix<F> S10;
 
     const Int n = L.Height();
@@ -36,9 +36,9 @@ void LVar1( Matrix<F>& L, bool conjugate=false )
         auto d1 = GetDiagonal(L11);
 
         S10 = L10;
-        DiagonalSolve( LEFT, NORMAL, d1, L10, true );
-        Trrk( UpperOrLower::LOWER, orientation, NORMAL, F(1), S10, L10, F(1), L00 );
-        Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), L11, L10 );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d1, L10, true );
+        Trrk( UpperOrLower::LOWER, orientation, Orientation::NORMAL, F(1), S10, L10, F(1), L00 );
+        Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), L11, L10 );
         trdtrmm::LUnblocked( L11, conjugate );
     }
 }
@@ -51,7 +51,7 @@ void LVar1( Matrix<F>& L, const Matrix<F>& dSub, bool conjugate=false )
       if( L.Height() != L.Width() )
           LogicError("L must be square");
     )
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
     Matrix<F> S10;
 
     const Int n = L.Height();
@@ -73,9 +73,9 @@ void LVar1( Matrix<F>& L, const Matrix<F>& dSub, bool conjugate=false )
         auto d1 = GetDiagonal(L11);
 
         S10 = L10;
-        QuasiDiagonalSolve( LEFT, UpperOrLower::LOWER, d1, dSub1, L10, conjugate );
-        Trrk( UpperOrLower::LOWER, orientation, NORMAL, F(1), S10, L10, F(1), L00 );
-        Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), L11, L10 );
+        QuasiDiagonalSolve( LeftOrRight::LEFT, UpperOrLower::LOWER, d1, dSub1, L10, conjugate );
+        Trrk( UpperOrLower::LOWER, orientation, Orientation::NORMAL, F(1), S10, L10, F(1), L00 );
+        Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), L11, L10 );
         trdtrmm::LUnblocked( L11, dSub1, conjugate );
 
         k += nb;
@@ -93,7 +93,7 @@ void LVar1( AbstractDistMatrix<F>& LPre, bool conjugate=false )
     const Int n = LPre.Height();
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
     auto& L = LProx.Get();
@@ -124,14 +124,14 @@ void LVar1( AbstractDistMatrix<F>& LPre, bool conjugate=false )
         L10_STAR_VR = L10;
         S10_STAR_VC = L10_STAR_VR;
         S10_STAR_MC = S10_STAR_VC;
-        DiagonalSolve( LEFT, NORMAL, d1, L10_STAR_VR, true );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d1, L10_STAR_VR, true );
         L10_STAR_MR = L10_STAR_VR;
         LocalTrrk
         ( UpperOrLower::LOWER, orientation, F(1), S10_STAR_MC, L10_STAR_MR, F(1), L00 );
 
         L11_STAR_STAR = L11;
         LocalTrmm
-        ( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), L11_STAR_STAR, L10_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), L11_STAR_STAR, L10_STAR_VR );
         L10 = L10_STAR_VR;
 
         Trdtrmm( UpperOrLower::LOWER, L11_STAR_STAR, conjugate );
@@ -153,7 +153,7 @@ void LVar1
     const Int n = LPre.Height();
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> LProx( LPre );
     DistMatrixReadProxy<F,F,Dist::MD,Dist::STAR> dSubProx( dSubPre );
@@ -196,7 +196,7 @@ void LVar1
         dSub1_STAR_STAR = dSub1;
         // TODO: LocalQuasiDiagonalSolve?
         QuasiDiagonalSolve
-        ( LEFT, UpperOrLower::LOWER,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER,
           d1_STAR_STAR.LockedMatrix(), dSub1_STAR_STAR.LockedMatrix(),
           L10_STAR_VR.Matrix(), conjugate );
         L10_STAR_MR = L10_STAR_VR;
@@ -205,7 +205,7 @@ void LVar1
 
         L11_STAR_STAR = L11;
         LocalTrmm
-        ( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), L11_STAR_STAR, L10_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), L11_STAR_STAR, L10_STAR_VR );
         L10 = L10_STAR_VR;
 
         Trdtrmm( UpperOrLower::LOWER, L11_STAR_STAR, dSub1_STAR_STAR, conjugate );

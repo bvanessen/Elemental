@@ -134,7 +134,7 @@ PanelBunchKaufmanD
     {
         auto XB0 = X( indB, ind0 );
         auto y10 = Y( ind1, ind0 );
-        Gemv( NORMAL, F(-1), XB0, y10, F(1), zB1 );
+        Gemv( Orientation::NORMAL, F(-1), XB0, y10, F(1), zB1 );
     }
 
     const Real alpha11Abs = Abs(zB1(0));
@@ -168,14 +168,14 @@ PanelBunchKaufmanD
     {
         auto xr10 = X( indr1, ind0 );
         auto YrM0 = Y( indrM, ind0 );
-        Gemv( NORMAL, F(-1), YrM0, xr10, F(1), zLeft );
+        Gemv( Orientation::NORMAL, F(-1), YrM0, xr10, F(1), zLeft );
     }
 
     // A(r:n-1,r) -= X(r:n-1,0:k-1) Y(r,0:k-1)^T
     {
         auto XrB0 = X( indrB, ind0 );
         auto yr10 = Y( indr1, ind0 );
-        Gemv( NORMAL, F(-1), XrB0, yr10, F(1), zBottom );
+        Gemv( Orientation::NORMAL, F(-1), XrB0, yr10, F(1), zBottom );
     }
 
     const auto leftMax   = VectorMaxAbsLoc( zLeft );
@@ -225,7 +225,7 @@ PanelBunchKaufmanD
     {
         auto XB0 = X( indB, ind0 );
         auto y10 = Y( ind1, ind0 );
-        LocalGemv( NORMAL, F(-1), XB0, y10, F(1), zB1 );
+        LocalGemv( Orientation::NORMAL, F(-1), XB0, y10, F(1), zB1 );
     }
 
     const Real alpha11Abs = Abs(zB1.Get(0,0));
@@ -260,7 +260,7 @@ PanelBunchKaufmanD
     {
         auto xr10 = X( indr1, ind0 );
         auto YrM0 = Y( indrM, ind0 );
-        LocalGemv( NORMAL, F(-1), YrM0, xr10, F(1), zLeft );
+        LocalGemv( Orientation::NORMAL, F(-1), YrM0, xr10, F(1), zLeft );
     }
 
     // A(r:n-1,r) -= X(r:n-1,0:k-1) Y(r,0:k-1)^T
@@ -268,7 +268,7 @@ PanelBunchKaufmanD
     {
         auto XrB0 = X( indrB, ind0 );
         auto yr10 = Y( indr1, ind0 );
-        LocalGemv( NORMAL, F(-1), XrB0, yr10, F(1), zBottom );
+        LocalGemv( Orientation::NORMAL, F(-1), XrB0, yr10, F(1), zBottom );
     }
 
     const auto leftMax   = VectorMaxAbsLoc( zLeft );

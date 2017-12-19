@@ -6,9 +6,9 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
-namespace El {
+namespace El
+{
 
 // Grab the full SVD of the general matrix A, A = U diag(s) V^H
 // ============================================================
@@ -62,7 +62,7 @@ void HermitianSVD
     }
     V = VPerm;
     U = V;
-    DiagonalScale( RIGHT, NORMAL, sSgnPerm, U );
+    DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, sSgnPerm, U );
 }
 
 template<typename Field>
@@ -126,7 +126,7 @@ void HermitianSVD
     }
     Copy( VPerm_VC_STAR, V );
     Copy( V, U );
-    DiagonalScale( RIGHT, NORMAL, sSgnPerm, U );
+    DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, sSgnPerm, U );
 }
 
 template<typename Field>

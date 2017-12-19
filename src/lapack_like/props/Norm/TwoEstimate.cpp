@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 
@@ -27,7 +26,7 @@ TwoNormEstimate( const Matrix<Field>& A, Base<Field> tol, Int maxIts )
     do
     {
         lastEst = estimate;
-        Gemv( NORMAL, Field(1), A, y, x );
+        Gemv( Orientation::NORMAL, Field(1), A, y, x );
         Real xNorm = FrobeniusNorm( x );
         if( xNorm == Real(0) )
         {
@@ -35,7 +34,7 @@ TwoNormEstimate( const Matrix<Field>& A, Base<Field> tol, Int maxIts )
             xNorm = FrobeniusNorm( x );
         }
         x *= Real(1)/xNorm;
-        Gemv( ADJOINT, Field(1), A, x, y );
+        Gemv( Orientation::ADJOINT, Field(1), A, x, y );
         estimate = FrobeniusNorm( y );
     } while( ++numIts < maxIts && Abs(estimate-lastEst) > tol*Max(m,n) );
 
@@ -67,7 +66,7 @@ Base<Field> TwoNormEstimate
     do
     {
         lastEst = estimate;
-        Gemv( NORMAL, Field(1), A, y, x );
+        Gemv( Orientation::NORMAL, Field(1), A, y, x );
         Real xNorm = FrobeniusNorm( x );
         if( xNorm == Real(0) )
         {
@@ -75,7 +74,7 @@ Base<Field> TwoNormEstimate
             xNorm = FrobeniusNorm( x );
         }
         x *= Real(1)/xNorm;
-        Gemv( ADJOINT, Field(1), A, x, y );
+        Gemv( Orientation::ADJOINT, Field(1), A, x, y );
         estimate = FrobeniusNorm( y );
     } while( ++numIts < maxIts && Abs(estimate-lastEst) > tol*Max(m,n) );
 

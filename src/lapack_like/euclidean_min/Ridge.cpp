@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 
@@ -21,10 +20,10 @@ void Ridge
 {
     EL_DEBUG_CSE
 
-    const bool normal = ( orientation==NORMAL );
+    const bool normal = ( orientation==Orientation::NORMAL );
     const Int m = ( normal ? A.Height() : A.Width()  );
     const Int n = ( normal ? A.Width()  : A.Height() );
-    if( orientation == TRANSPOSE && IsComplex<Field>::value )
+    if( orientation == Orientation::TRANSPOSE && IsComplex<Field>::value )
         LogicError("Transpose version of complex Ridge not yet supported");
 
     if( m >= n )
@@ -32,24 +31,24 @@ void Ridge
         Matrix<Field> Z;
         if( alg == RIDGE_CHOLESKY )
         {
-            if( orientation == NORMAL )
-                Herk( UpperOrLower::LOWER, ADJOINT, Base<Field>(1), A, Z );
+            if( orientation == Orientation::NORMAL )
+                Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Base<Field>(1), A, Z );
             else
-                Herk( UpperOrLower::LOWER, NORMAL, Base<Field>(1), A, Z );
+                Herk( UpperOrLower::LOWER, Orientation::NORMAL, Base<Field>(1), A, Z );
             ShiftDiagonal( Z, Field(gamma*gamma) );
             Cholesky( UpperOrLower::LOWER, Z );
-            if( orientation == NORMAL )
-                Gemm( ADJOINT, NORMAL, Field(1), A, B, X );
+            if( orientation == Orientation::NORMAL )
+                Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), A, B, X );
             else
-                Gemm( NORMAL, NORMAL, Field(1), A, B, X );
-            cholesky::SolveAfter( UpperOrLower::LOWER, NORMAL, Z, X );
+                Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), A, B, X );
+            cholesky::SolveAfter( UpperOrLower::LOWER, Orientation::NORMAL, Z, X );
         }
         else if( alg == RIDGE_QR )
         {
             Zeros( Z, m+n, n );
             auto ZT = Z( IR(0,m),   IR(0,n) );
             auto ZB = Z( IR(m,m+n), IR(0,n) );
-            if( orientation == NORMAL )
+            if( orientation == Orientation::NORMAL )
                 ZT = A;
             else
                 Adjoint( A, ZT );
@@ -57,17 +56,17 @@ void Ridge
             // NOTE: This QR factorization could exploit the upper-triangular
             //       structure of the diagonal matrix ZB
             qr::ExplicitTriang( Z );
-            if( orientation == NORMAL )
-                Gemm( ADJOINT, NORMAL, Field(1), A, B, X );
+            if( orientation == Orientation::NORMAL )
+                Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), A, B, X );
             else
-                Gemm( NORMAL, NORMAL, Field(1), A, B, X );
-            cholesky::SolveAfter( UpperOrLower::LOWER, NORMAL, Z, X );
+                Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), A, B, X );
+            cholesky::SolveAfter( UpperOrLower::LOWER, Orientation::NORMAL, Z, X );
         }
         else
         {
             Matrix<Field> U, V;
             Matrix<Base<Field>> s;
-            if( orientation == NORMAL )
+            if( orientation == Orientation::NORMAL )
             {
                 SVDCtrl<Base<Field>> ctrl;
                 ctrl.overwrite = false;
@@ -86,10 +85,10 @@ void Ridge
               [=]( const Base<Field>& sigma )
               { return sigma / (sigma*sigma + gamma*gamma); };
             EntrywiseMap( s, MakeFunction(sigmaMap) );
-            Gemm( ADJOINT, NORMAL, Field(1), U, B, X );
-            DiagonalScale( LEFT, NORMAL, s, X );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), U, B, X );
+            DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, s, X );
             U = X;
-            Gemm( NORMAL, NORMAL, Field(1), V, U, X );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), V, U, X );
         }
     }
     else
@@ -118,10 +117,10 @@ void Ridge
     auto& B = BProx.GetLocked();
     auto& X = XProx.Get();
 
-    const bool normal = ( orientation==NORMAL );
+    const bool normal = ( orientation==Orientation::NORMAL );
     const Int m = ( normal ? A.Height() : A.Width()  );
     const Int n = ( normal ? A.Width()  : A.Height() );
-    if( orientation == TRANSPOSE && IsComplex<Field>::value )
+    if( orientation == Orientation::TRANSPOSE && IsComplex<Field>::value )
         LogicError("Transpose version of complex Ridge not yet supported");
 
     if( m >= n )
@@ -129,24 +128,24 @@ void Ridge
         DistMatrix<Field> Z(A.Grid());
         if( alg == RIDGE_CHOLESKY )
         {
-            if( orientation == NORMAL )
-                Herk( UpperOrLower::LOWER, ADJOINT, Base<Field>(1), A, Z );
+            if( orientation == Orientation::NORMAL )
+                Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Base<Field>(1), A, Z );
             else
-                Herk( UpperOrLower::LOWER, NORMAL, Base<Field>(1), A, Z );
+                Herk( UpperOrLower::LOWER, Orientation::NORMAL, Base<Field>(1), A, Z );
             ShiftDiagonal( Z, Field(gamma*gamma) );
             Cholesky( UpperOrLower::LOWER, Z );
-            if( orientation == NORMAL )
-                Gemm( ADJOINT, NORMAL, Field(1), A, B, X );
+            if( orientation == Orientation::NORMAL )
+                Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), A, B, X );
             else
-                Gemm( NORMAL, NORMAL, Field(1), A, B, X );
-            cholesky::SolveAfter( UpperOrLower::LOWER, NORMAL, Z, X );
+                Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), A, B, X );
+            cholesky::SolveAfter( UpperOrLower::LOWER, Orientation::NORMAL, Z, X );
         }
         else if( alg == RIDGE_QR )
         {
             Zeros( Z, m+n, n );
             auto ZT = Z( IR(0,m),   IR(0,n) );
             auto ZB = Z( IR(m,m+n), IR(0,n) );
-            if( orientation == NORMAL )
+            if( orientation == Orientation::NORMAL )
                 ZT = A;
             else
                 Adjoint( A, ZT );
@@ -154,17 +153,17 @@ void Ridge
             // NOTE: This QR factorization could exploit the upper-triangular
             //       structure of the diagonal matrix ZB
             qr::ExplicitTriang( Z );
-            if( orientation == NORMAL )
-                Gemm( ADJOINT, NORMAL, Field(1), A, B, X );
+            if( orientation == Orientation::NORMAL )
+                Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), A, B, X );
             else
-                Gemm( NORMAL, NORMAL, Field(1), A, B, X );
-            cholesky::SolveAfter( UpperOrLower::LOWER, NORMAL, Z, X );
+                Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), A, B, X );
+            cholesky::SolveAfter( UpperOrLower::LOWER, Orientation::NORMAL, Z, X );
         }
         else
         {
             DistMatrix<Field> U(A.Grid()), V(A.Grid());
             DistMatrix<Base<Field>,Dist::VR,Dist::STAR> s(A.Grid());
-            if( orientation == NORMAL )
+            if( orientation == Orientation::NORMAL )
             {
                 SVDCtrl<Base<Field>> ctrl;
                 ctrl.overwrite = false;
@@ -184,10 +183,10 @@ void Ridge
               [=]( const Base<Field>& sigma )
               { return sigma / (sigma*sigma + gamma*gamma); };
             EntrywiseMap( s, MakeFunction(sigmaMap) );
-            Gemm( ADJOINT, NORMAL, Field(1), U, B, X );
-            DiagonalScale( LEFT, NORMAL, s, X );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), U, B, X );
+            DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, s, X );
             U = X;
-            Gemm( NORMAL, NORMAL, Field(1), V, U, X );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), V, U, X );
         }
     }
     else

@@ -68,9 +68,9 @@ void LowerBlocked
             const F epsilon = A21(0,nb-1);
             A21(0,nb-1) = F(1);
 
-            Gemm( NORMAL, NORMAL, F(-1), A21, Y12, F(1), A22 );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), A21, Y12, F(1), A22 );
             Conjugate( A12 );
-            Gemm( NORMAL, NORMAL, F(-1), X21, A12, F(1), A22 );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), X21, A12, F(1), A22 );
             Conjugate( A12 );
 
             // Put back top-right entry of A21
@@ -164,10 +164,10 @@ LowerBlocked
             auto A12_STAR_MR = A1R_STAR_MR( IR(0,nb),   IR(nb,n-k) );
 
             LocalGemm
-            ( NORMAL, ADJOINT, F(-1), A21_MC_STAR, Y12Adj_MR_STAR, F(1), A22 );
+            ( Orientation::NORMAL, Orientation::ADJOINT, F(-1), A21_MC_STAR, Y12Adj_MR_STAR, F(1), A22 );
             Conjugate( A12_STAR_MR );
             LocalGemm
-            ( NORMAL, NORMAL, F(-1), X21_MC_STAR, A12_STAR_MR, F(1), A22 );
+            ( Orientation::NORMAL, Orientation::NORMAL, F(-1), X21_MC_STAR, A12_STAR_MR, F(1), A22 );
         }
         else
         {

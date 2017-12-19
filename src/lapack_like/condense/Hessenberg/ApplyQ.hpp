@@ -20,9 +20,9 @@ void ApplyQ
         Matrix<F>& B )
 {
     EL_DEBUG_CSE
-    const bool normal = (orientation==NORMAL);
-    const bool onLeft = (side==LEFT);
-    const ForwardOrBackward direction = ( normal==onLeft ? BACKWARD : FORWARD );
+    const bool normal = (orientation==Orientation::NORMAL);
+    const bool onLeft = (side==LeftOrRight::LEFT);
+    const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
     if( uplo == UpperOrLower::LOWER )
     {
         const Conjugation conjugation = ( normal ? UNCONJUGATED : CONJUGATED );
@@ -47,9 +47,9 @@ void ApplyQ
         AbstractDistMatrix<F>& B )
 {
     EL_DEBUG_CSE
-    const bool normal = (orientation==NORMAL);
-    const bool onLeft = (side==LEFT);
-    const ForwardOrBackward direction = ( normal==onLeft ? BACKWARD : FORWARD );
+    const bool normal = (orientation==Orientation::NORMAL);
+    const bool onLeft = (side==LeftOrRight::LEFT);
+    const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
     if( uplo == UpperOrLower::LOWER )
     {
         const Conjugation conjugation = ( normal ? UNCONJUGATED : CONJUGATED );

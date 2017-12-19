@@ -17,7 +17,7 @@ void Hilbert( Matrix<F>& A, Int n )
     EL_DEBUG_CSE
     A.Resize( n, n );
     auto hilbertFill = []( Int i, Int j ) { return F(1)/F(i+j+1); };
-    IndexDependentFill( A, function<F(Int,Int)>(hilbertFill) );
+    IndexDependentFill( A, std::function<F(Int,Int)>(hilbertFill) );
 }
 
 template<typename F>
@@ -26,7 +26,7 @@ void Hilbert( AbstractDistMatrix<F>& A, Int n )
     EL_DEBUG_CSE
     A.Resize( n, n );
     auto hilbertFill = []( Int i, Int j ) { return F(1)/F(i+j+1); };
-    IndexDependentFill( A, function<F(Int,Int)>(hilbertFill) );
+    IndexDependentFill( A, std::function<F(Int,Int)>(hilbertFill) );
 }
 
 #define PROTO(F) \

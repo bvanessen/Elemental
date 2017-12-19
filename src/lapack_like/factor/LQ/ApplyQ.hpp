@@ -22,12 +22,12 @@ void ApplyQ
         Matrix<F>& B )
 {
     EL_DEBUG_CSE
-    const bool normal = (orientation==NORMAL);
-    const bool onLeft = (side==LEFT);
+    const bool normal = (orientation==Orientation::NORMAL);
+    const bool onLeft = (side==LeftOrRight::LEFT);
     const bool applyDFirst = normal!=onLeft;
     const Int minDim = Min(A.Height(),A.Width());
 
-    const ForwardOrBackward direction = ( normal==onLeft ? FORWARD : BACKWARD );
+    const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::FORWARD : ForwardOrBackward::BACKWARD );
     const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
 
     const Int m = B.Height();
@@ -76,12 +76,12 @@ void ApplyQ
         AbstractDistMatrix<F>& BPre )
 {
     EL_DEBUG_CSE
-    const bool normal = (orientation==NORMAL);
-    const bool onLeft = (side==LEFT);
+    const bool normal = (orientation==Orientation::NORMAL);
+    const bool onLeft = (side==LeftOrRight::LEFT);
     const bool applyDFirst = normal!=onLeft;
     const Int minDim = Min(APre.Height(),APre.Width());
 
-    const ForwardOrBackward direction = ( normal==onLeft ? FORWARD : BACKWARD );
+    const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::FORWARD : ForwardOrBackward::BACKWARD );
     const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
 
     DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );

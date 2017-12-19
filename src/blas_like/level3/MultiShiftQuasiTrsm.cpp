@@ -34,7 +34,7 @@ void MultiShiftQuasiTrsm
     EL_DEBUG_ONLY(
       if( A.Height() != A.Width() )
           LogicError("A must be square");
-      if( side == LEFT )
+      if( side == LeftOrRight::LEFT )
       {
           if( A.Height() != B.Height() )
               LogicError("Nonconformal");
@@ -48,32 +48,32 @@ void MultiShiftQuasiTrsm
     B *= alpha;
     // TODO(poulson): Call the single right-hand side algorithm if appropriate
 
-    if( side == LEFT && uplo == UpperOrLower::LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             msquasitrsm::LLN( A, shifts, B );
         else
             msquasitrsm::LLT( orientation, A, shifts, B );
     }
-    else if( side == LEFT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             msquasitrsm::LUN( A, shifts, B );
         else
             msquasitrsm::LUT( orientation, A, shifts, B );
     }
-    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //msquasitrsm::RLN( A, B );
             LogicError("This case not yet handled");
         else
             //msquasitrsm::RLT( orientation, A, B );
             LogicError("This case not yet handled");
     }
-    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //msquasitrsm::RUN( A, B );
             LogicError("This case not yet handled");
         else
@@ -97,7 +97,7 @@ void MultiShiftQuasiTrsm
     EL_DEBUG_ONLY(
       if( A.Height() != A.Width() )
           LogicError("A must be square");
-      if( side == LEFT )
+      if( side == LeftOrRight::LEFT )
       {
           if( A.Height() != BReal.Height() )
               LogicError("Nonconformal");
@@ -111,34 +111,34 @@ void MultiShiftQuasiTrsm
     Scale( alpha, BReal, BImag );
     // TODO: Call the single right-hand side algorithm if appropriate
 
-    if( side == LEFT && uplo == UpperOrLower::LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //msquasitrsm::LLN( A, shifts, BReal, BImag );
             LogicError("This case not yet handled");
         else
             //msquasitrsm::LLT( orientation, A, shifts, BReal, BImag );
             LogicError("This case not yet handled");
     }
-    else if( side == LEFT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             msquasitrsm::LUN( A, shifts, BReal, BImag );
         else
             msquasitrsm::LUT( orientation, A, shifts, BReal, BImag );
     }
-    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //msquasitrsm::RLN( A, BReal, BImag );
             LogicError("This case not yet handled");
         else
             //msquasitrsm::RLT( orientation, A, BReal, BImag );
             LogicError("This case not yet handled");
     }
-    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //msquasitrsm::RUN( A, BReal, BImag );
             LogicError("This case not yet handled");
         else
@@ -162,7 +162,7 @@ void MultiShiftQuasiTrsm
       AssertSameGrids( A, B );
       if( A.Height() != A.Width() )
           LogicError("A must be square");
-      if( side == LEFT )
+      if( side == LeftOrRight::LEFT )
       {
           if( A.Height() != B.Height() )
               LogicError("Nonconformal");
@@ -177,9 +177,9 @@ void MultiShiftQuasiTrsm
     // TODO(poulson): Call the single right-hand side algorithm if appropriate
 
     //const Int p = B.Grid().Size();
-    if( side == LEFT && uplo == UpperOrLower::LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
         {
             msquasitrsm::LLNLarge( A, shifts, B );
             /*
@@ -200,9 +200,9 @@ void MultiShiftQuasiTrsm
             */
         }
     }
-    else if( side == LEFT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
         {
             msquasitrsm::LUNLarge( A, shifts, B );
             /*
@@ -223,18 +223,18 @@ void MultiShiftQuasiTrsm
             */
         }
     }
-    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //msquasitrsm::RLN( A, shifts, B );
             LogicError("This case not yet handled");
         else
             //msquasitrsm::RLT( orientation, A, shifts, B );
             LogicError("This case not yet handled");
     }
-    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //msquasitrsm::RUN( A, shifts, B );
             LogicError("This case not yet handled");
         else
@@ -262,7 +262,7 @@ void MultiShiftQuasiTrsm
       if( BReal.Height() != BImag.Height() ||
           BReal.Width() != BImag.Width() )
           LogicError("BReal and BImag must be the same size");
-      if( side == LEFT )
+      if( side == LeftOrRight::LEFT )
       {
           if( A.Height() != BReal.Height() )
               LogicError("Nonconformal");
@@ -277,9 +277,9 @@ void MultiShiftQuasiTrsm
     // TODO: Call the single right-hand side algorithm if appropriate
 
     const Int p = BReal.Grid().Size();
-    if( side == LEFT && uplo == UpperOrLower::LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
         {
             if( BReal.Width() > 5*p )
                 //msquasitrsm::LLNLarge( A, shifts, BReal, BImag );
@@ -298,9 +298,9 @@ void MultiShiftQuasiTrsm
                 LogicError("This case not yet handled");
         }
     }
-    else if( side == LEFT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
         {
             msquasitrsm::LUNLarge( A, shifts, BReal, BImag );
             /*
@@ -321,18 +321,18 @@ void MultiShiftQuasiTrsm
             */
         }
     }
-    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //msquasitrsm::RLN( A, shifts, BReal, BImag );
             LogicError("This case not yet handled");
         else
             //msquasitrsm::RLT( orientation, A, shifts, BReal, BImag );
             LogicError("This case not yet handled");
     }
-    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //msquasitrsm::RUN( A, shifts, BReal, BImag );
             LogicError("This case not yet handled");
         else
@@ -355,9 +355,9 @@ void LocalMultiShiftQuasiTrsm
     EL_DEBUG_ONLY(
       if( shifts.RowDist() != Dist::STAR )
           LogicError("shifts must only be distributed within columns");
-      if( (side == LEFT &&
+      if( (side == LeftOrRight::LEFT &&
            (X.ColDist() != Dist::STAR || shifts.ColDist() != X.RowDist())) ||
-          (side == RIGHT &&
+          (side == LeftOrRight::RIGHT &&
            (X.RowDist() != Dist::STAR || shifts.ColDist() != X.ColDist())) )
           LogicError
           ("Dist of RHS and shifts must conform with that of triangle");
@@ -385,9 +385,9 @@ void LocalMultiShiftQuasiTrsm
       if( XReal.ColDist() != XImag.ColDist() ||
           XReal.RowDist() != XImag.RowDist() )
           LogicError("XReal and XImag must have the same distribution");
-      if( (side == LEFT &&
+      if( (side == LeftOrRight::LEFT &&
            (XReal.ColDist() != Dist::STAR || shifts.ColDist() != XReal.RowDist())) ||
-          (side == RIGHT &&
+          (side == LeftOrRight::RIGHT &&
            (XReal.RowDist() != Dist::STAR || shifts.ColDist() != XReal.ColDist())) )
           LogicError
           ("Dist of RHS and shifts must conform with that of triangle");

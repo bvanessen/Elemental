@@ -78,9 +78,9 @@ void Trr2kTNTT
         C1_STAR_MC = C1;
         Transpose( B1, B1Trans_MR_STAR );
         D1_VR_STAR = D1;
-        Transpose( D1_VR_STAR, D1Trans_STAR_MR, (orientD==ADJOINT) );
+        Transpose( D1_VR_STAR, D1Trans_STAR_MR, (orientD==Orientation::ADJOINT) );
         LocalTrr2k
-        ( uplo, orientA, TRANSPOSE, orientC, NORMAL,
+        ( uplo, orientA, Orientation::TRANSPOSE, orientC, Orientation::NORMAL,
           alpha, A1_STAR_MC, B1Trans_MR_STAR,
           beta,  C1_STAR_MC, D1Trans_STAR_MR, T(1), E );
     }

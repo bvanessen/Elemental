@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 #include "El/core/FlamePart.hpp"
 
@@ -77,7 +76,7 @@ void Overwrite( Matrix<F>& A, Matrix<F>& B, Matrix<F>& D, Matrix<F>& Y )
     GQR( A, tA, dA, B, tB, dB );
 
     // G := Q^H D
-    qr::ApplyQ( LEFT, ADJOINT, A, tA, dA, D );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, A, tA, dA, D );
 
     // Partition the relevant matrices
     Matrix<F> G1, G2;
@@ -95,17 +94,17 @@ void Overwrite( Matrix<F>& A, Matrix<F>& B, Matrix<F>& D, Matrix<F>& Y )
 
     // Solve T22 C2 = G2
     C2 = G2;
-    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), T22, C2, checkIfSingular );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), T22, C2, checkIfSingular );
 
     // G1 := G1 - T12 C2
-    Gemm( NORMAL, NORMAL, F(-1), T12, C2, F(1), G1 );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), T12, C2, F(1), G1 );
 
     // Solve R11 X = G1
-    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), R11, G1, checkIfSingular );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), R11, G1, checkIfSingular );
     D.Resize( n, numRhs );
 
     // Y := Z^H C
-    rq::ApplyQ( LEFT, ADJOINT, B, tB, dB, Y );
+    rq::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, B, tB, dB, Y );
 }
 
 template<typename F>
@@ -150,7 +149,7 @@ void Overwrite
     GQR( A, tA, dA, B, tB, dB );
 
     // G := Q^H D
-    qr::ApplyQ( LEFT, ADJOINT, A, tA, dA, D );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, A, tA, dA, D );
 
     // Partition the relevant matrices
     DistMatrix<F> G1(g), G2(g);
@@ -168,17 +167,17 @@ void Overwrite
 
     // Solve T22 C2 = G2
     C2 = G2;
-    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), T22, C2, checkIfSingular );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), T22, C2, checkIfSingular );
 
     // G1 := G1 - T12 C2
-    Gemm( NORMAL, NORMAL, F(-1), T12, C2, F(1), G1 );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), T12, C2, F(1), G1 );
 
     // Solve R11 X = G1
-    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), R11, G1, checkIfSingular );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), R11, G1, checkIfSingular );
     D.Resize( n, numRhs );
 
     // Y := Z^H C
-    rq::ApplyQ( LEFT, ADJOINT, B, tB, dB, Y );
+    rq::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, B, tB, dB, Y );
 }
 
 } // namespace glm

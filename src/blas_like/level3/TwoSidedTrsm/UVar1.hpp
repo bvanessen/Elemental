@@ -48,16 +48,16 @@ void UVar1( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         // Y01 := A00 U01
         Y01.Resize( A01.Height(), A01.Width() );
         Zero( Y01 );
-        Hemm( LEFT, UpperOrLower::UPPER, F(1), A00, U01, F(0), Y01 );
+        Hemm( LeftOrRight::LEFT, UpperOrLower::UPPER, F(1), A00, U01, F(0), Y01 );
 
         // A01 := inv(U00)' A01
-        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U00, A01 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, diag, F(1), U00, A01 );
 
         // A01 := A01 - 1/2 Y01
         Axpy( F(-1)/F(2), Y01, A01 );
 
         // A11 := A11 - (U01' A01 + A01' U01)
-        Her2k( UpperOrLower::UPPER, ADJOINT, F(-1), U01, A01, F(1), A11 );
+        Her2k( UpperOrLower::UPPER, Orientation::ADJOINT, F(-1), U01, A01, F(1), A11 );
 
         // A11 := inv(U11)' A11 inv(U11)
         twotrsm::UUnb( diag, A11, U11 );
@@ -66,7 +66,7 @@ void UVar1( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         Axpy( F(-1)/F(2), Y01, A01 );
 
         // A01 := A01 inv(U11)
-        Trsm( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11, A01 );
+        Trsm( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, diag, F(1), U11, A01 );
     }
 }
 
@@ -134,7 +134,7 @@ void UVar1
         Zero( Z01_MC_STAR );
         Zero( Z01_MR_STAR );
         symm::LocalAccumulateLU
-        ( ADJOINT,
+        ( Orientation::ADJOINT,
           F(1), A00, U01_MC_STAR, U01Adj_STAR_MR, Z01_MC_STAR, Z01_MR_STAR );
         Z01_MR_MC.AlignWith( A01 );
         Contract( Z01_MR_STAR, Z01_MR_MC );
@@ -145,7 +145,7 @@ void UVar1
         // A01 := inv(U00)' A01
         //
         // This is the bottleneck because A01 only has blocksize columns
-        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U00, A01 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, diag, F(1), U00, A01 );
 
         // A01 := A01 - 1/2 Y01
         Axpy( F(-1)/F(2), Y01, A01 );
@@ -158,7 +158,7 @@ void UVar1
         X11_STAR_STAR.Resize( A11.Height(), A11.Width() );
         Zero( X11_STAR_STAR );
         Her2k
-        ( UpperOrLower::UPPER, ADJOINT,
+        ( UpperOrLower::UPPER, Orientation::ADJOINT,
           F(-1), A01_VC_STAR.Matrix(), U01_VC_STAR.Matrix(),
           F(0), X11_STAR_STAR.Matrix() );
         AxpyContract( F(1), X11_STAR_STAR, A11 );
@@ -175,7 +175,7 @@ void UVar1
         // A01 := A01 inv(U11)
         A01_VC_STAR = A01;
         LocalTrsm
-        ( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11_STAR_STAR, A01_VC_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, diag, F(1), U11_STAR_STAR, A01_VC_STAR );
         A01 = A01_VC_STAR;
     }
 }

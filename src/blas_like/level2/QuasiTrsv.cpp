@@ -23,14 +23,14 @@ void QuasiTrsv
     EL_DEBUG_CSE
     if( uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             quasitrsv::LN( A, x, checkIfSingular );
         else
             quasitrsv::LT( orientation, A, x, checkIfSingular );
     }
     else
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             quasitrsv::UN( A, x, checkIfSingular );
         else
             quasitrsv::UT( orientation, A, x, checkIfSingular );
@@ -46,14 +46,14 @@ void QuasiTrsv
     EL_DEBUG_CSE
     if( uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             quasitrsv::LN( A, x, checkIfSingular );
         else
             quasitrsv::LT( orientation, A, x, checkIfSingular );
     }
     else
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             quasitrsv::UN( A, x, checkIfSingular );
         else
             quasitrsv::UT( orientation, A, x, checkIfSingular );

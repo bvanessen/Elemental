@@ -75,7 +75,7 @@ void LocalColAccumulateUGeneral
           LogicError("Partial matrix distributions are misaligned");
     )
     const Grid& g = A.Grid();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrix<T> D11(g);
 
@@ -101,7 +101,7 @@ void LocalColAccumulateUGeneral
         // TODO: These diagonal block updates can be greatly improved
         D11 = A11;
         MakeTrapezoidal( UpperOrLower::UPPER, D11 );
-        LocalGemv( NORMAL,      alpha, D11, x1_MR_STAR, T(1), z1_MC_STAR );
+        LocalGemv( Orientation::NORMAL,      alpha, D11, x1_MR_STAR, T(1), z1_MC_STAR );
         FillDiagonal( D11, T(0) );
         LocalGemv( orientation, alpha, D11, x1_MC_STAR, T(1), z1_MR_STAR );
 
@@ -112,7 +112,7 @@ void LocalColAccumulateUGeneral
           z1_MC_STAR.Matrix(),       z2_MR_STAR.Matrix(), ctrl.bsize );
         // NOTE: The following are mathematically equivalent but should
         //       be slower in practice for cache reasons
-        //LocalGemv( NORMAL,      alpha, A12, x2_MR_STAR, T(1), z1_MC_STAR );
+        //LocalGemv( Orientation::NORMAL,      alpha, A12, x2_MR_STAR, T(1), z1_MC_STAR );
         //LocalGemv( orientation, alpha, A12, x1_MC_STAR, T(1), z2_MR_STAR );
     }
 }
@@ -300,7 +300,7 @@ void LocalRowAccumulateU
           LogicError("Partial matrix distributions are misaligned");
     )
     const Grid& g = A.Grid();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrix<T> D11(g);
 
@@ -326,11 +326,11 @@ void LocalRowAccumulateU
         // TODO: These diagonal block updates can be greatly improved
         D11 = A11;
         MakeTrapezoidal( UpperOrLower::UPPER, D11 );
-        LocalGemv( NORMAL,      alpha, D11, x1_STAR_MR, T(1), z1_STAR_MC );
+        LocalGemv( Orientation::NORMAL,      alpha, D11, x1_STAR_MR, T(1), z1_STAR_MC );
         FillDiagonal( D11, T(0) );
         LocalGemv( orientation, alpha, D11, x1_STAR_MC, T(1), z1_STAR_MR );
 
-        LocalGemv( NORMAL,      alpha, A12, x2_STAR_MR, T(1), z1_STAR_MC );
+        LocalGemv( Orientation::NORMAL,      alpha, A12, x2_STAR_MR, T(1), z1_STAR_MC );
         LocalGemv( orientation, alpha, A12, x1_STAR_MC, T(1), z2_STAR_MR );
     }
 }

@@ -51,15 +51,15 @@ QDWHDivide( UpperOrLower uplo, Matrix<F>& A, Matrix<F>& G, bool returnQ=false )
     if( returnQ )
     {
         ExpandPackedReflectors( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, t );
-        DiagonalScale( RIGHT, NORMAL, d, G );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, d, G );
         Matrix<F> B;
-        Gemm( ADJOINT, NORMAL, F(1), G, A, B );
-        Gemm( NORMAL, NORMAL, F(1), B, G, A );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), B, G, A );
     }
     else
     {
-        qr::ApplyQ( LEFT, ADJOINT, G, t, d, A );
-        qr::ApplyQ( RIGHT, NORMAL, G, t, d, A );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, G, t, d, A );
+        qr::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, G, t, d, A );
     }
 
     // Return || E21 ||1 / || A ||1 and the chosen rank
@@ -99,15 +99,15 @@ QDWHDivide
     if( returnQ )
     {
         ExpandPackedReflectors( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, t );
-        DiagonalScale( RIGHT, NORMAL, d, G );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, d, G );
         DistMatrix<F> B(g);
-        Gemm( ADJOINT, NORMAL, F(1), G, A, B );
-        Gemm( NORMAL, NORMAL, F(1), B, G, A );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), B, G, A );
     }
     else
     {
-        qr::ApplyQ( LEFT, ADJOINT, G, t, d, A );
-        qr::ApplyQ( RIGHT, NORMAL, G, t, d, A );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, G, t, d, A );
+        qr::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, G, t, d, A );
     }
 
     // Return || E21 ||1 / || A ||1 and the chosen rank
@@ -154,7 +154,7 @@ RandomizedSignDivide
 
         // Compute the RURV of the spectral projector
         ImplicitHaar( V, t, d, n );
-        qr::ApplyQ( RIGHT, NORMAL, V, t, d, G );
+        qr::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, V, t, d, G );
         El::QR( G, t, d );
 
         // A := Q^H A Q [and reuse space for V for keeping original A]
@@ -162,14 +162,14 @@ RandomizedSignDivide
         if( returnQ )
         {
             ExpandPackedReflectors( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, t );
-            DiagonalScale( RIGHT, NORMAL, d, G );
-            Gemm( ADJOINT, NORMAL, F(1), G, A, B );
-            Gemm( NORMAL, NORMAL, F(1), B, G, A );
+            DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, d, G );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), B, G, A );
         }
         else
         {
-            qr::ApplyQ( LEFT, ADJOINT, G, t, d, A );
-            qr::ApplyQ( RIGHT, NORMAL, G, t, d, A );
+            qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, G, t, d, A );
+            qr::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, G, t, d, A );
         }
 
         // || E21 ||1 / || A ||1 and the chosen rank
@@ -225,7 +225,7 @@ RandomizedSignDivide
 
         // Compute the RURV of the spectral projector
         ImplicitHaar( V, t, d, n );
-        qr::ApplyQ( RIGHT, NORMAL, V, t, d, G );
+        qr::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, V, t, d, G );
         El::QR( G, t, d );
 
         // A := Q^H A Q [and reuse space for V for keeping original A]
@@ -233,14 +233,14 @@ RandomizedSignDivide
         if( returnQ )
         {
             ExpandPackedReflectors( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, t );
-            DiagonalScale( RIGHT, NORMAL, d, G );
-            Gemm( ADJOINT, NORMAL, F(1), G, A, B );
-            Gemm( NORMAL, NORMAL, F(1), B, G, A );
+            DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, d, G );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), B, G, A );
         }
         else
         {
-            qr::ApplyQ( LEFT, ADJOINT, G, t, d, A );
-            qr::ApplyQ( RIGHT, NORMAL, G, t, d, A );
+            qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, G, t, d, A );
+            qr::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, G, t, d, A );
         }
 
         // || E21 ||1 / || A ||1 and the chosen rank
@@ -536,12 +536,12 @@ void SDC
     Matrix<F> Z;
     SDC( uplo, ATL, wT, Z, ctrl );
     auto G( QL );
-    Gemm( NORMAL, NORMAL, F(1), G, Z, QL );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), G, Z, QL );
 
     // Recurse on the bottom-right quadrant and update eigenvectors
     SDC( uplo, ABR, wB, Z, ctrl );
     G = QR;
-    Gemm( NORMAL, NORMAL, F(1), G, Z, QR );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), G, Z, QR );
 }
 
 template<typename F>
@@ -674,9 +674,9 @@ void SDC
 
     // Update the eigen vectors
     auto G( QL );
-    Gemm( NORMAL, NORMAL, F(1), G, ZT, QL );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), G, ZT, QL );
     G = QR;
-    Gemm( NORMAL, NORMAL, F(1), G, ZB, QR );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), G, ZB, QR );
 }
 
 } // namespace herm_eig

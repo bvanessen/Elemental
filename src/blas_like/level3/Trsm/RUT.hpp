@@ -25,7 +25,7 @@ void RUT
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
     )
     const Int n = XPre.Width();
@@ -62,7 +62,7 @@ void RUT
         X1_VC_STAR = X1;
 
         LocalTrsm
-        ( RIGHT, UpperOrLower::UPPER, orientation, diag,
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, orientation, diag,
           F(1), U11_STAR_STAR, X1_VC_STAR, checkIfSingular );
 
         X1Trans_STAR_MC.AlignWith( X0 );
@@ -71,12 +71,12 @@ void RUT
         U01_VR_STAR.AlignWith( X0 );
         U01_VR_STAR = U01;
         U01Trans_STAR_MR.AlignWith( X0 );
-        Transpose( U01_VR_STAR, U01Trans_STAR_MR, (orientation==ADJOINT) );
+        Transpose( U01_VR_STAR, U01Trans_STAR_MR, (orientation==Orientation::ADJOINT) );
 
         // X0[MC,MR] -= X1[MC,* ] (U01[MR,* ])^(T/H)
         //            = X1^T[* ,MC] (U01^(T/H))[* ,MR]
         LocalGemm
-        ( TRANSPOSE, NORMAL,
+        ( Orientation::TRANSPOSE, Orientation::NORMAL,
           F(-1), X1Trans_STAR_MC, U01Trans_STAR_MR, F(1), X0 );
     }
 }

@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 #include "./Bidiag/Apply.hpp"
 #include "./Bidiag/LowerBlocked.hpp"
@@ -55,7 +54,7 @@ void Explicit( Matrix<F>& A, Matrix<F>& P, Matrix<F>& Q )
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, Q, householderScalarsQ );
         // TODO: Use ExpandPackedReflectors when it is available
         Identity( P, A.Width(), A.Width() );
-        bidiag::ApplyP( LEFT, NORMAL, A, householderScalarsP, P );
+        bidiag::ApplyP( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalarsP, P );
 
         MakeTrapezoidal( UpperOrLower::UPPER, A );
         MakeTrapezoidal( UpperOrLower::LOWER, A, 1 );
@@ -67,7 +66,7 @@ void Explicit( Matrix<F>& A, Matrix<F>& P, Matrix<F>& Q )
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, -1, Q, householderScalarsQ );
         // TODO: Use ExpandPackedReflectors when it is available
         Identity( P, A.Width(), A.Width() );
-        bidiag::ApplyP( LEFT, NORMAL, A, householderScalarsP, P );
+        bidiag::ApplyP( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalarsP, P );
 
         MakeTrapezoidal( UpperOrLower::LOWER, A );
         MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );
@@ -91,7 +90,7 @@ void Explicit
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, Q, householderScalarsQ );
         // TODO: Use ExpandPackedReflectors when it is available
         Identity( P, A.Width(), A.Width() );
-        bidiag::ApplyP( LEFT, NORMAL, A, householderScalarsP, P );
+        bidiag::ApplyP( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalarsP, P );
 
         MakeTrapezoidal( UpperOrLower::UPPER, A );
         MakeTrapezoidal( UpperOrLower::LOWER, A, 1 );
@@ -103,7 +102,7 @@ void Explicit
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, -1, Q, householderScalarsQ );
         // TODO: Use ExpandPackedReflectors when it is available
         Identity( P, A.Width(), A.Width() );
-        bidiag::ApplyP( LEFT, NORMAL, A, householderScalarsP, P );
+        bidiag::ApplyP( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalarsP, P );
 
         MakeTrapezoidal( UpperOrLower::LOWER, A );
         MakeTrapezoidal( UpperOrLower::UPPER, A, -1 );

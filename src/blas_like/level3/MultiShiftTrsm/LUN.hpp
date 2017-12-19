@@ -27,8 +27,8 @@ void LeftUnb
     char orientChar;
     switch( orientation )
     {
-    case NORMAL:    orientChar = 'N'; break;
-    case TRANSPOSE: orientChar = 'T'; break;
+    case Orientation::NORMAL:    orientChar = 'N'; break;
+    case Orientation::TRANSPOSE: orientChar = 'T'; break;
     default:        orientChar = 'C';
     }
     auto diag = GetDiagonal(T);
@@ -66,8 +66,8 @@ void LUN( Matrix<F>& U, const Matrix<F>& shifts, Matrix<F>& X )
         auto X0 = X( ind0, ALL );
         auto X1 = X( ind1, ALL );
 
-        LeftUnb( UpperOrLower::UPPER, NORMAL, U11, shifts, X1 );
-        Gemm( NORMAL, NORMAL, F(-1), U01, X1, F(1), X0 );
+        LeftUnb( UpperOrLower::UPPER, Orientation::NORMAL, U11, shifts, X1 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), U01, X1, F(1), X0 );
     }
 }
 
@@ -124,7 +124,7 @@ void LUN
         // X0[MC,MR] -= U01[MC,* ] X1[* ,MR]
         U01_MC_STAR.AlignWith( X0 );
         U01_MC_STAR = U01; // U01[MC,* ] <- U01[MC,MR]
-        LocalGemm( NORMAL, NORMAL, F(-1), U01_MC_STAR, X1_STAR_MR, F(1), X0 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), U01_MC_STAR, X1_STAR_MR, F(1), X0 );
     }
 }
 

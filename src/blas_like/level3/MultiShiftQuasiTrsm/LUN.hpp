@@ -223,7 +223,7 @@ void LUN( const Matrix<F>& U, const Matrix<F>& shifts, Matrix<F>& X )
         auto X1 = X( ind1, ALL );
 
         LUNUnb( U11, shifts, X1 );
-        Gemm( NORMAL, NORMAL, F(-1), U01, X1, F(1), X0 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), U01, X1, F(1), X0 );
 
         if( k == 0 )
             break;
@@ -262,8 +262,8 @@ void LUN
         auto X1Imag = XImag( ind1, ALL );
 
         LUNUnb( U11, shifts, X1Real, X1Imag );
-        Gemm( NORMAL, NORMAL, Real(-1), U01, X1Real, Real(1), X0Real );
-        Gemm( NORMAL, NORMAL, Real(-1), U01, X1Imag, Real(1), X0Imag );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(-1), U01, X1Real, Real(1), X0Real );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(-1), U01, X1Imag, Real(1), X0Imag );
 
         if( k == 0 )
             break;
@@ -319,7 +319,7 @@ void LUNLarge
 
         // X1[* ,VR] := U11^-1[* ,* ] X1[* ,VR]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UpperOrLower::UPPER, NORMAL, F(1), U11_STAR_STAR, shifts, X1_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, F(1), U11_STAR_STAR, shifts, X1_STAR_VR );
 
         X1_STAR_MR.AlignWith( X0 );
         X1_STAR_MR  = X1_STAR_VR; // X1[* ,MR]  <- X1[* ,VR]
@@ -328,7 +328,7 @@ void LUNLarge
         U01_MC_STAR = U01;        // U01[MC,* ] <- U01[MC,MR]
 
         // X0[MC,MR] -= U01[MC,* ] X1[* ,MR]
-        LocalGemm( NORMAL, NORMAL, F(-1), U01_MC_STAR, X1_STAR_MR, F(1), X0 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), U01_MC_STAR, X1_STAR_MR, F(1), X0 );
 
         if( k == 0 )
             break;
@@ -394,7 +394,7 @@ void LUNLarge
 
         // X1[* ,VR] := U11^-1[* ,* ] X1[* ,VR]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UpperOrLower::UPPER, NORMAL, C(1),
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1),
           U11_STAR_STAR, shifts, X1Real_STAR_VR, X1Imag_STAR_VR );
 
         X1Real_STAR_MR.AlignWith( X0Real );
@@ -408,10 +408,10 @@ void LUNLarge
 
         // X0[MC,MR] -= U01[MC,* ] X1[* ,MR]
         LocalGemm
-        ( NORMAL, NORMAL,
+        ( Orientation::NORMAL, Orientation::NORMAL,
           Real(-1), U01_MC_STAR, X1Real_STAR_MR, Real(1), X0Real );
         LocalGemm
-        ( NORMAL, NORMAL,
+        ( Orientation::NORMAL, Orientation::NORMAL,
           Real(-1), U01_MC_STAR, X1Imag_STAR_MR, Real(1), X0Imag );
 
         if( k == 0 )
@@ -473,7 +473,7 @@ void LUNMedium
         shifts_MR_STAR_Align.AlignWith( X1Trans_MR_STAR );
         shifts_MR_STAR_Align = shifts_MR_STAR;
         LocalMultiShiftQuasiTrsm
-        ( RIGHT, UpperOrLower::UPPER, TRANSPOSE,
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::TRANSPOSE,
           F(1), U11_STAR_STAR, shifts_MR_STAR_Align, X1Trans_MR_STAR );
         Transpose( X1Trans_MR_STAR, X1 );
 
@@ -482,7 +482,7 @@ void LUNMedium
 
         // X0[MC,MR] -= U01[MC,* ] X1[* ,MR]
         LocalGemm
-        ( NORMAL, TRANSPOSE, F(-1), U01_MC_STAR, X1Trans_MR_STAR, F(1), X0 );
+        ( Orientation::NORMAL, Orientation::TRANSPOSE, F(-1), U01_MC_STAR, X1Trans_MR_STAR, F(1), X0 );
 
         if( k == 0 )
             break;
@@ -554,7 +554,7 @@ void LUNMedium
         shifts_MR_STAR_Align.AlignWith( X1RealTrans_MR_STAR );
         shifts_MR_STAR_Align = shifts_MR_STAR;
         LocalMultiShiftQuasiTrsm
-        ( RIGHT, UpperOrLower::UPPER, TRANSPOSE,
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::TRANSPOSE,
           C(1), U11_STAR_STAR, shifts_MR_STAR_Align,
                 X1RealTrans_MR_STAR, X1ImagTrans_MR_STAR );
         Transpose( X1RealTrans_MR_STAR, X1Real );
@@ -565,10 +565,10 @@ void LUNMedium
 
         // X0[MC,MR] -= U01[MC,* ] X1[* ,MR]
         LocalGemm
-        ( NORMAL, TRANSPOSE,
+        ( Orientation::NORMAL, Orientation::TRANSPOSE,
           Real(-1), U01_MC_STAR, X1RealTrans_MR_STAR, Real(1), X0Real );
         LocalGemm
-        ( NORMAL, TRANSPOSE,
+        ( Orientation::NORMAL, Orientation::TRANSPOSE,
           Real(-1), U01_MC_STAR, X1ImagTrans_MR_STAR, Real(1), X0Imag );
 
         if( k == 0 )
@@ -625,12 +625,12 @@ void LUNSmall
 
         // X1[* ,* ] := U11^-1[* ,* ] X1[* ,* ]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UpperOrLower::UPPER, NORMAL,
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL,
           F(1), U11_STAR_STAR, shifts_STAR_STAR, X1_STAR_STAR );
         X1 = X1_STAR_STAR;
 
         // X0[VC,* ] -= U01[VC,* ] X1[* ,* ]
-        LocalGemm( NORMAL, NORMAL, F(-1), U01, X1_STAR_STAR, F(1), X0 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), U01, X1_STAR_STAR, F(1), X0 );
 
         if( k == 0 )
             break;
@@ -696,7 +696,7 @@ void LUNSmall
 
         // X1[* ,* ] := U11^-1[* ,* ] X1[* ,* ]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UpperOrLower::UPPER, NORMAL,
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL,
           C(1), U11_STAR_STAR, shifts_STAR_STAR,
                 X1Real_STAR_STAR, X1Imag_STAR_STAR );
         X1Real = X1Real_STAR_STAR;
@@ -704,9 +704,9 @@ void LUNSmall
 
         // X0[VC,* ] -= U01[VC,* ] X1[* ,* ]
         LocalGemm
-        ( NORMAL, NORMAL, Real(-1), U01, X1Real_STAR_STAR, Real(1), X0Real );
+        ( Orientation::NORMAL, Orientation::NORMAL, Real(-1), U01, X1Real_STAR_STAR, Real(1), X0Real );
         LocalGemm
-        ( NORMAL, NORMAL, Real(-1), U01, X1Imag_STAR_STAR, Real(1), X0Imag );
+        ( Orientation::NORMAL, Orientation::NORMAL, Real(-1), U01, X1Imag_STAR_STAR, Real(1), X0Imag );
 
         if( k == 0 )
             break;

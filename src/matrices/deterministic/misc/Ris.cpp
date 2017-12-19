@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level1.hpp>
@@ -11,14 +11,14 @@
 
 namespace El {
 
-template<typename F> 
+template<typename F>
 void Ris( Matrix<F>& R, Int n )
 {
     EL_DEBUG_CSE
     R.Resize( n, n );
     const F oneHalf = F(1)/F(2);
     auto risFill = [=]( Int i, Int j ) { return oneHalf/(F(n-i-j)-oneHalf); };
-    IndexDependentFill( R, function<F(Int,Int)>(risFill) );
+    IndexDependentFill( R, std::function<F(Int,Int)>(risFill) );
 }
 
 template<typename F>
@@ -28,7 +28,7 @@ void Ris( AbstractDistMatrix<F>& R, Int n )
     R.Resize( n, n );
     const F oneHalf = F(1)/F(2);
     auto risFill = [=]( Int i, Int j ) { return oneHalf/(F(n-i-j)-oneHalf); };
-    IndexDependentFill( R, function<F(Int,Int)>(risFill) );
+    IndexDependentFill( R, std::function<F(Int,Int)>(risFill) );
 }
 
 #define PROTO(F) \

@@ -74,17 +74,17 @@ void LocalAccumulateLL
         D11 = A11;
         MakeTrapezoidal( UpperOrLower::LOWER, D11 );
         LocalGemm
-        ( NORMAL, orientation, alpha, D11, B1Trans_STAR_MR, T(1), Z1_MC_STAR );
+        ( Orientation::NORMAL, orientation, alpha, D11, B1Trans_STAR_MR, T(1), Z1_MC_STAR );
         FillDiagonal( D11, T(0) );
 
         LocalGemm
-        ( orientation, NORMAL, alpha, D11, B1_MC_STAR, T(1), Z1_MR_STAR );
+        ( orientation, Orientation::NORMAL, alpha, D11, B1_MC_STAR, T(1), Z1_MR_STAR );
 
         LocalGemm
-        ( NORMAL, orientation, alpha, A21, B1Trans_STAR_MR, T(1), Z2_MC_STAR );
+        ( Orientation::NORMAL, orientation, alpha, A21, B1Trans_STAR_MR, T(1), Z2_MC_STAR );
 
         LocalGemm
-        ( orientation, NORMAL, alpha, A21, B2_MC_STAR, T(1), Z1_MR_STAR );
+        ( orientation, Orientation::NORMAL, alpha, A21, B2_MC_STAR, T(1), Z1_MR_STAR );
     }
 }
 
@@ -102,7 +102,7 @@ void LLA
     const Int n = CPre.Width();
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre ), BProx( BPre );
     DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
@@ -163,7 +163,7 @@ void LLC
     const Int m = CPre.Height();
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre ), BProx( BPre );
     DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
@@ -204,11 +204,11 @@ void LLC
         Transpose( B1, B1Trans_MR_STAR );
 
         LocalGemm
-        ( NORMAL, TRANSPOSE,
+        ( Orientation::NORMAL, Orientation::TRANSPOSE,
           alpha, AB1_MC_STAR, B1Trans_MR_STAR, T(1), CB );
 
         LocalGemm
-        ( orientation, TRANSPOSE,
+        ( orientation, Orientation::TRANSPOSE,
           alpha, A1L_STAR_MC, B1Trans_MR_STAR, T(1), CT );
     }
 }

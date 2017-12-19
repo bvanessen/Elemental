@@ -52,7 +52,7 @@ void PanelHouseholder
         //      = (I - tau aB1 aB1^H) AB2
         //      = AB2 - tau aB1 (AB2^H aB1)^H
         Zeros( z21, AB2.Width(), 1 );
-        Gemv( ADJOINT, F(1), AB2, aB1, F(0), z21 );
+        Gemv( Orientation::ADJOINT, F(1), AB2, aB1, F(0), z21 );
         Ger( -tau, aB1, z21, AB2 );
 
         // Replace alpha11's value
@@ -64,7 +64,7 @@ void PanelHouseholder
     auto sgn = []( const Real& delta )
                { return delta >= Real(0) ? Real(1) : Real(-1); };
     EntrywiseMap( signature, MakeFunction(sgn) );
-    DiagonalScaleTrapezoid( LEFT, UpperOrLower::UPPER, NORMAL, signature, R );
+    DiagonalScaleTrapezoid( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, signature, R );
 }
 
 template<typename F>
@@ -123,7 +123,7 @@ void PanelHouseholder
         aB1_MC_STAR = aB1;
         z21_MR_STAR.AlignWith( AB2 );
         Zeros( z21_MR_STAR, AB2.Width(), 1 );
-        LocalGemv( ADJOINT, F(1), AB2, aB1_MC_STAR, F(0), z21_MR_STAR );
+        LocalGemv( Orientation::ADJOINT, F(1), AB2, aB1_MC_STAR, F(0), z21_MR_STAR );
         El::AllReduce( z21_MR_STAR, AB2.ColComm() );
         Ger
         ( -tau, aB1_MC_STAR.LockedMatrix(), z21_MR_STAR.LockedMatrix(),
@@ -139,7 +139,7 @@ void PanelHouseholder
     auto sgn = []( const Real& delta )
                { return delta >= Real(0) ? Real(1) : Real(-1); };
     EntrywiseMap( signature, MakeFunction(sgn) );
-    DiagonalScaleTrapezoid( LEFT, UpperOrLower::UPPER, NORMAL, signature, R );
+    DiagonalScaleTrapezoid( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, signature, R );
 }
 
 } // namespace qr

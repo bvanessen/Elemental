@@ -6,10 +6,13 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/blas_like/level1.hpp>
-#include <El/matrices.hpp>
+#include <functional>
 
-namespace El {
+#include "El/blas_like/level1.hpp"
+#include "El/matrices.hpp"
+
+namespace El
+{
 
 // Draw each entry from a uniform PDF over a closed ball.
 
@@ -18,7 +21,7 @@ void MakeUniform( Matrix<T>& A, T center, Base<T> radius )
 {
     EL_DEBUG_CSE
     auto sampleBall = [=]() { return SampleBall(center,radius); };
-    EntrywiseFill( A, function<T()>(sampleBall) );
+    EntrywiseFill( A, std::function<T()>(sampleBall) );
 }
 
 template<typename T>

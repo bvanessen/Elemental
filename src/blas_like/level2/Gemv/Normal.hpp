@@ -7,134 +7,138 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
-namespace gemv {
+#include "El/core/Proxy.hpp"
+
+namespace El
+{
+namespace gemv
+{
 
 template<typename T>
 void Normal
-( T alpha,
+(T alpha,
   const AbstractDistMatrix<T>& APre,
   const AbstractDistMatrix<T>& x,
   T beta,
-        AbstractDistMatrix<T>& yPre )
+        AbstractDistMatrix<T>& yPre)
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      AssertSameGrids( APre, x, yPre );
-      if( ( x.Width() != 1 && x.Height() != 1 ) ||
-          ( yPre.Width() != 1 && yPre.Height() != 1 )   )
+      AssertSameGrids(APre, x, yPre);
+      if((x.Width() != 1 && x.Height() != 1) ||
+          (yPre.Width() != 1 && yPre.Height() != 1)  )
           LogicError("x and y are assumed to be vectors");
-      const Int xLength = ( x.Width()==1 ? x.Height() : x.Width() );
-      const Int yLength = ( yPre.Width()==1 ? yPre.Height() : yPre.Width() );
-      if( APre.Height() != yLength || APre.Width() != xLength )
+      const Int xLength = (x.Width()==1 ? x.Height() : x.Width());
+      const Int yLength = (yPre.Width()==1 ? yPre.Height() : yPre.Width());
+      if(APre.Height() != yLength || APre.Width() != xLength)
           LogicError
           ("Nonconformal: \n",DimsString(APre,"A"),"\n",
            DimsString(x,"x"),"\n",DimsString(yPre,"y"));
-    )
+   )
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
-    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> yProx( yPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx(APre);
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> yProx(yPre);
     auto& A = AProx.GetLocked();
     auto& y = yProx.Get();
 
     y *= beta;
-    if( x.Width() == 1 && y.Width() == 1 )
+    if(x.Width() == 1 && y.Width() == 1)
     {
         DistMatrix<T,Dist::MR,Dist::STAR> x_MR_STAR(g);
-        x_MR_STAR.AlignWith( A );
+        x_MR_STAR.AlignWith(A);
         x_MR_STAR = x;
 
         DistMatrix<T,Dist::MC,Dist::STAR> z_MC_STAR(g);
-        z_MC_STAR.AlignWith( A );
-        z_MC_STAR.Resize( A.Height(), 1 );
-        Zero( z_MC_STAR );
-        LocalGemv( NORMAL, alpha, A, x_MR_STAR, T(0), z_MC_STAR );
-        AxpyContract( T(1), z_MC_STAR, y );
+        z_MC_STAR.AlignWith(A);
+        z_MC_STAR.Resize(A.Height(), 1);
+        Zero(z_MC_STAR);
+        LocalGemv(Orientation::NORMAL, alpha, A, x_MR_STAR, T(0), z_MC_STAR);
+        AxpyContract(T(1), z_MC_STAR, y);
     }
-    else if( x.Width() == 1 )
+    else if(x.Width() == 1)
     {
         DistMatrix<T,Dist::MR,Dist::STAR> x_MR_STAR(g);
-        x_MR_STAR.AlignWith( A );
+        x_MR_STAR.AlignWith(A);
         x_MR_STAR = x;
 
         DistMatrix<T,Dist::MC,Dist::STAR> z_MC_STAR(g);
-        z_MC_STAR.AlignWith( A );
-        z_MC_STAR.Resize( A.Height(), 1 );
-        Zero( z_MC_STAR );
-        LocalGemv( NORMAL, alpha, A, x_MR_STAR, T(0), z_MC_STAR );
+        z_MC_STAR.AlignWith(A);
+        z_MC_STAR.Resize(A.Height(), 1);
+        Zero(z_MC_STAR);
+        LocalGemv(Orientation::NORMAL, alpha, A, x_MR_STAR, T(0), z_MC_STAR);
 
         DistMatrix<T> z(g), zTrans(g);
-        z.AlignWith( y );
-        zTrans.AlignWith( y );
-        Contract( z_MC_STAR, z );
-        Transpose( z, zTrans );
-        Axpy( T(1), zTrans, y );
+        z.AlignWith(y);
+        zTrans.AlignWith(y);
+        Contract(z_MC_STAR, z);
+        Transpose(z, zTrans);
+        Axpy(T(1), zTrans, y);
     }
-    else if( y.Width() == 1 )
+    else if(y.Width() == 1)
     {
         DistMatrix<T,Dist::STAR,Dist::MR> x_STAR_MR(g);
-        x_STAR_MR.AlignWith( A );
+        x_STAR_MR.AlignWith(A);
         x_STAR_MR = x;
         DistMatrix<T,Dist::MC,  Dist::STAR> z_MC_STAR(g);
-        z_MC_STAR.AlignWith( A );
-        z_MC_STAR.Resize( A.Height(), 1 );
-        Zero( z_MC_STAR );
-        LocalGemv( NORMAL, alpha, A, x_STAR_MR, T(0), z_MC_STAR );
-        AxpyContract( T(1), z_MC_STAR, y );
+        z_MC_STAR.AlignWith(A);
+        z_MC_STAR.Resize(A.Height(), 1);
+        Zero(z_MC_STAR);
+        LocalGemv(Orientation::NORMAL, alpha, A, x_STAR_MR, T(0), z_MC_STAR);
+        AxpyContract(T(1), z_MC_STAR, y);
     }
     else
     {
         DistMatrix<T,Dist::STAR,Dist::MR> x_STAR_MR(g);
-        x_STAR_MR.AlignWith( A );
+        x_STAR_MR.AlignWith(A);
         x_STAR_MR = x;
 
         DistMatrix<T,Dist::MC,  Dist::STAR> z_MC_STAR(g);
-        z_MC_STAR.AlignWith( A );
-        z_MC_STAR.Resize( A.Height(), 1 );
-        Zero( z_MC_STAR );
-        LocalGemv( NORMAL, alpha, A, x_STAR_MR, T(0), z_MC_STAR );
+        z_MC_STAR.AlignWith(A);
+        z_MC_STAR.Resize(A.Height(), 1);
+        Zero(z_MC_STAR);
+        LocalGemv(Orientation::NORMAL, alpha, A, x_STAR_MR, T(0), z_MC_STAR);
 
         DistMatrix<T> z(g), zTrans(g);
-        z.AlignWith( y );
-        zTrans.AlignWith( y );
-        Contract( z_MC_STAR, z );
-        Transpose( z, zTrans );
-        Axpy( T(1), zTrans, y );
+        z.AlignWith(y);
+        zTrans.AlignWith(y);
+        Contract(z_MC_STAR, z);
+        Transpose(z, zTrans);
+        Axpy(T(1), zTrans, y);
     }
 }
 
 template<typename T>
 void Normal
-( T alpha,
+(T alpha,
   const DistMatrix<T>& A,
   const AbstractDistMatrix<T>& x,
   T beta,
-        DistMatrix<T,Dist::VC,Dist::STAR>& y )
+        DistMatrix<T,Dist::VC,Dist::STAR>& y)
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      AssertSameGrids( A, x, y );
-      if( x.Width() != 1 || y.Width() != 1 )
+      AssertSameGrids(A, x, y);
+      if(x.Width() != 1 || y.Width() != 1)
           LogicError("x and y are assumed to be column vectors");
-      if( A.Height() != y.Height() || A.Width() != x.Height() )
+      if(A.Height() != y.Height() || A.Width() != x.Height())
           LogicError
           ("Nonconformal: \n",DimsString(A,"A"),"\n",
            DimsString(x,"x"),"\n",DimsString(y,"y"));
-    )
+   )
     const Grid& g = A.Grid();
     y *= beta;
 
     DistMatrix<T,Dist::MR,Dist::STAR> x_MR_STAR(g);
-    x_MR_STAR.AlignWith( A );
+    x_MR_STAR.AlignWith(A);
     x_MR_STAR = x;
 
     DistMatrix<T,Dist::MC,Dist::STAR> z_MC_STAR(g);
-    z_MC_STAR.AlignWith( A );
-    z_MC_STAR.Resize( A.Height(), 1 );
-    Zero( z_MC_STAR );
-    LocalGemv( NORMAL, alpha, A, x_MR_STAR, T(0), z_MC_STAR );
-    AxpyContract( T(1), z_MC_STAR, y );
+    z_MC_STAR.AlignWith(A);
+    z_MC_STAR.Resize(A.Height(), 1);
+    Zero(z_MC_STAR);
+    LocalGemv(Orientation::NORMAL, alpha, A, x_MR_STAR, T(0), z_MC_STAR);
+    AxpyContract(T(1), z_MC_STAR, y);
 }
 
 } // namespace gemv

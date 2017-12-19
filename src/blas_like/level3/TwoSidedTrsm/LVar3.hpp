@@ -58,31 +58,31 @@ void LVar3( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
         Axpy( F(-1)/F(2), Y10, A10 );
 
         // A11 := A11 - (A10 L10' + L10 A10')
-        Her2k( UpperOrLower::LOWER, NORMAL, F(-1), A10, L10, F(1), A11 );
+        Her2k( UpperOrLower::LOWER, Orientation::NORMAL, F(-1), A10, L10, F(1), A11 );
 
         // A11 := inv(L11) A11 inv(L11)'
         twotrsm::LUnb( diag, A11, L11 );
 
         // A21 := A21 - A20 L10'
-        Gemm( NORMAL, ADJOINT, F(-1), A20, L10, F(1), A21 );
+        Gemm( Orientation::NORMAL, Orientation::ADJOINT, F(-1), A20, L10, F(1), A21 );
 
         // A21 := A21 inv(L11)'
-        Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, diag, F(1), L11, A21 );
+        Trsm( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::ADJOINT, diag, F(1), L11, A21 );
 
         // A10 := A10 - 1/2 Y10
         Axpy( F(-1)/F(2), Y10, A10 );
 
         // A10 := inv(L11) A10
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11, A10 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag, F(1), L11, A10 );
 
         // Y20 := Y20 + L21 A10
-        Gemm( NORMAL, NORMAL, F(1), L21, A10, F(1), Y20 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), L21, A10, F(1), Y20 );
 
         // Y21 := L21 A11
-        Hemm( RIGHT, UpperOrLower::LOWER, F(1), A11, L21, F(0), Y21 );
+        Hemm( LeftOrRight::RIGHT, UpperOrLower::LOWER, F(1), A11, L21, F(0), Y21 );
 
         // Y21 := Y21 + L20 A10'
-        Gemm( NORMAL, ADJOINT, F(1), L20, A10, F(1), Y21 );
+        Gemm( Orientation::NORMAL, Orientation::ADJOINT, F(1), L20, A10, F(1), Y21 );
     }
 }
 
@@ -157,7 +157,7 @@ void LVar3
         X11_STAR_STAR.Resize( nb, nb );
         Zero( X11_STAR_STAR );
         Her2k
-        ( UpperOrLower::LOWER, NORMAL,
+        ( UpperOrLower::LOWER, Orientation::NORMAL,
           F(1), A10_STAR_VR.Matrix(), L10_STAR_VR.Matrix(),
           F(0), X11_STAR_STAR.Matrix() );
         MakeTrapezoidal( UpperOrLower::LOWER, X11_STAR_STAR );
@@ -173,14 +173,14 @@ void LVar3
         L10_STAR_MR.AlignWith( A10 );
         L10_STAR_MR = L10_STAR_VR;
         X21_MC_STAR.AlignWith( A20 );
-        LocalGemm( NORMAL, ADJOINT, F(1), A20, L10_STAR_MR, X21_MC_STAR );
+        LocalGemm( Orientation::NORMAL, Orientation::ADJOINT, F(1), A20, L10_STAR_MR, X21_MC_STAR );
         AxpyContract( F(-1), X21_MC_STAR, A21 );
 
         // A21 := A21 inv(L11)'
         A21_VC_STAR.AlignWith( A21 );
         A21_VC_STAR = A21;
         LocalTrsm
-        ( RIGHT, UpperOrLower::LOWER, ADJOINT, diag, F(1), L11_STAR_STAR, A21_VC_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::ADJOINT, diag, F(1), L11_STAR_STAR, A21_VC_STAR );
         A21 = A21_VC_STAR;
 
         // A10 := A10 - 1/2 Y10
@@ -189,7 +189,7 @@ void LVar3
         // A10 := inv(L11) A10
         A10_STAR_VR = A10;
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11_STAR_STAR, A10_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag, F(1), L11_STAR_STAR, A10_STAR_VR );
 
         // Y20 := Y20 + L21 A10
         A10_STAR_MR.AlignWith( A10 );
@@ -197,17 +197,17 @@ void LVar3
         A10 = A10_STAR_MR;
         L21_MC_STAR.AlignWith( Y21 );
         L21_MC_STAR = L21;
-        LocalGemm( NORMAL, NORMAL, F(1), L21_MC_STAR, A10_STAR_MR, F(1), Y20 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(1), L21_MC_STAR, A10_STAR_MR, F(1), Y20 );
 
         // Y21 := L21 A11
         MakeHermitian( UpperOrLower::LOWER, A11_STAR_STAR );
         A11_STAR_MR.AlignWith( Y21 );
         A11_STAR_MR = A11_STAR_STAR;
-        LocalGemm( NORMAL, NORMAL, F(1), L21_MC_STAR, A11_STAR_MR, F(0), Y21 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(1), L21_MC_STAR, A11_STAR_MR, F(0), Y21 );
 
         // Y21 := Y21 + L20 A10'
         Z21_MC_STAR.AlignWith( L20 );
-        LocalGemm( NORMAL, ADJOINT, F(1), L20, A10_STAR_MR, Z21_MC_STAR );
+        LocalGemm( Orientation::NORMAL, Orientation::ADJOINT, F(1), L20, A10_STAR_MR, Z21_MC_STAR );
         AxpyContract( F(1), Z21_MC_STAR, Y21 );
     }
 }

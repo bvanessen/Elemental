@@ -86,8 +86,8 @@ SVDInfo GolubReinsch
     // Backtransform U and V
     if( ctrl.time )
         timer.Start();
-    if( !avoidU ) bidiag::ApplyQ( LEFT, NORMAL, A, householderScalarsQ, U );
-    if( !avoidV ) bidiag::ApplyP( LEFT, NORMAL, A, householderScalarsP, V );
+    if( !avoidU ) bidiag::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalarsQ, U );
+    if( !avoidV ) bidiag::ApplyP( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalarsP, V );
     if( ctrl.time )
         Output("GolubReinsch backtransformation: ",timer.Stop()," seconds");
 
@@ -173,8 +173,8 @@ SVDInfo GolubReinsch
     // Backtransform U and V
     if( ctrl.time && g.Rank() == 0 )
         timer.Start();
-    if( !avoidU ) bidiag::ApplyQ( LEFT, NORMAL, A, householderScalarsQ, U );
-    if( !avoidV ) bidiag::ApplyP( LEFT, NORMAL, A, householderScalarsP, V );
+    if( !avoidU ) bidiag::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalarsQ, U );
+    if( !avoidV ) bidiag::ApplyP( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalarsP, V );
     if( ctrl.time && g.Rank() == 0 )
         Output("GolubReinsch backtransformation: ",timer.Stop()," seconds");
 

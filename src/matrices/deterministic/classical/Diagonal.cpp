@@ -12,7 +12,7 @@
 namespace El {
 
 template<typename S,typename T>
-void Diagonal( Matrix<S>& D, const vector<T>& d )
+void Diagonal( Matrix<S>& D, const std::vector<T>& d )
 {
     EL_DEBUG_CSE
     const Int n = d.size();
@@ -36,7 +36,7 @@ void Diagonal( Matrix<S>& D, const Matrix<T>& d )
 }
 
 template<typename S,typename T>
-void Diagonal( AbstractDistMatrix<S>& D, const vector<T>& d )
+void Diagonal( AbstractDistMatrix<S>& D, const std::vector<T>& d )
 {
     EL_DEBUG_CSE
     const Int n = d.size();
@@ -90,9 +90,9 @@ void Diagonal( AbstractDistMatrix<S>& D, const AbstractDistMatrix<T>& d )
 
 
 #define PROTO_TYPES(S,T) \
-  template void Diagonal( Matrix<S>& D, const vector<T>& d ); \
+  template void Diagonal( Matrix<S>& D, const std::vector<T>& d ); \
   template void Diagonal( Matrix<S>& D, const Matrix<T>& d ); \
-  template void Diagonal( AbstractDistMatrix<S>& D, const vector<T>& d ); \
+  template void Diagonal( AbstractDistMatrix<S>& D, const std::vector<T>& d ); \
   template void Diagonal( AbstractDistMatrix<S>& D, const Matrix<T>& d ); \
   template void Diagonal \
   ( AbstractDistMatrix<S>& D, const AbstractDistMatrix<T>& d );

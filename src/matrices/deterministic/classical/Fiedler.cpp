@@ -12,28 +12,28 @@
 namespace El {
 
 template<typename Field>
-void Fiedler( Matrix<Field>& A, const vector<Field>& c )
+void Fiedler( Matrix<Field>& A, const std::vector<Field>& c )
 {
     EL_DEBUG_CSE
     const Int n = c.size();
     A.Resize( n, n );
     auto fiedlerFill = [&]( Int i, Int j ) { return Abs(c[i]-c[j]); };
-    IndexDependentFill( A, function<Field(Int,Int)>(fiedlerFill) );
+    IndexDependentFill( A, std::function<Field(Int,Int)>(fiedlerFill) );
 }
 
 template<typename Field>
-void Fiedler( AbstractDistMatrix<Field>& A, const vector<Field>& c )
+void Fiedler( AbstractDistMatrix<Field>& A, const std::vector<Field>& c )
 {
     EL_DEBUG_CSE
     const Int n = c.size();
     A.Resize( n, n );
     auto fiedlerFill = [&]( Int i, Int j ) { return Abs(c[i]-c[j]); };
-    IndexDependentFill( A, function<Field(Int,Int)>(fiedlerFill) );
+    IndexDependentFill( A, std::function<Field(Int,Int)>(fiedlerFill) );
 }
 
 #define PROTO(Field) \
-  template void Fiedler( Matrix<Field>& A, const vector<Field>& c ); \
-  template void Fiedler( AbstractDistMatrix<Field>& A, const vector<Field>& c );
+  template void Fiedler( Matrix<Field>& A, const std::vector<Field>& c ); \
+  template void Fiedler( AbstractDistMatrix<Field>& A, const std::vector<Field>& c );
 
 #define EL_NO_INT_PROTO
 #define EL_ENABLE_DOUBLEDOUBLE

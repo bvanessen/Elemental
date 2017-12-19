@@ -31,7 +31,7 @@ void SolveAfter
 
     // TODO: Add scaling
     auto AT = A( IR(0,n), IR(0,n) );
-    if( orientation == NORMAL )
+    if( orientation == Orientation::NORMAL )
     {
         if( m != B.Height() )
             LogicError("A and B do not conform");
@@ -40,15 +40,15 @@ void SolveAfter
         X = B;
 
         // Apply Q' to X
-        qr::ApplyQ( LEFT, ADJOINT, A, householderScalars, signature, X );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, A, householderScalars, signature, X );
 
         // Shrink X to its new height
         X.Resize( n, X.Width() );
 
         // Solve against R (checking for singularities)
-        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), AT, X, true );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), AT, X, true );
     }
-    else // orientation in {TRANSPOSE,ADJOINT}
+    else // orientation in {Orientation::TRANSPOSE,Orientation::ADJOINT}
     {
         if( n != B.Height() )
             LogicError("A and B do not conform");
@@ -60,16 +60,16 @@ void SolveAfter
         XT = B;
         Zero( XB );
 
-        if( orientation == TRANSPOSE )
+        if( orientation == Orientation::TRANSPOSE )
             Conjugate( XT );
 
         // Solve against R' (checking for singularities)
-        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), AT, XT, true );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), AT, XT, true );
 
         // Apply Q to X
-        qr::ApplyQ( LEFT, NORMAL, A, householderScalars, signature, X );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalars, signature, X );
 
-        if( orientation == TRANSPOSE )
+        if( orientation == Orientation::TRANSPOSE )
             Conjugate( X );
     }
 }
@@ -98,7 +98,7 @@ void SolveAfter
     // TODO: Add scaling
 
     auto AT = A( IR(0,n), IR(0,n) );
-    if( orientation == NORMAL )
+    if( orientation == Orientation::NORMAL )
     {
         if( m != B.Height() )
             LogicError("A and B do not conform");
@@ -106,19 +106,19 @@ void SolveAfter
         // Copy B into X
         X = B;
 
-        if( orientation == TRANSPOSE )
+        if( orientation == Orientation::TRANSPOSE )
             Conjugate( X );
 
         // Apply Q' to X
-        qr::ApplyQ( LEFT, ADJOINT, A, householderScalars, signature, X );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, A, householderScalars, signature, X );
 
         // Shrink X to its new height
         X.Resize( n, X.Width() );
 
         // Solve against R (checking for singularities)
-        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), AT, X, true );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), AT, X, true );
 
-        if( orientation == TRANSPOSE )
+        if( orientation == Orientation::TRANSPOSE )
             Conjugate( X );
     }
     else
@@ -129,16 +129,16 @@ void SolveAfter
         XT = B;
         Zero( XB );
 
-        if( orientation == TRANSPOSE )
+        if( orientation == Orientation::TRANSPOSE )
             Conjugate( XT );
 
         // Solve against R' (checking for singularities)
-        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), AT, XT, true );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), AT, XT, true );
 
         // Apply Q to X
-        qr::ApplyQ( LEFT, NORMAL, A, householderScalars, signature, X );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalars, signature, X );
 
-        if( orientation == TRANSPOSE )
+        if( orientation == Orientation::TRANSPOSE )
             Conjugate( X );
     }
 }

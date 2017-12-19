@@ -22,11 +22,11 @@ void MultiplyAfter( const Matrix<F>& A, Matrix<F>& B, bool conjugated )
       if( A.Height() != B.Height() )
           LogicError("A and B must be the same height");
     )
-    const Orientation orientation = ( conjugated ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugated ? Orientation::ADJOINT : Orientation::TRANSPOSE );
     const auto d = GetDiagonal(A);
-    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
-    DiagonalScale( LEFT, NORMAL, d, B );
-    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), A, B );
+    DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, d, B );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A, B );
 }
 
 template<typename F>
@@ -41,16 +41,16 @@ void MultiplyAfter
       if( APre.Height() != B.Height() )
           LogicError("A and B must be the same height");
     )
-    const Orientation orientation = ( conjugated ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugated ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     auto& A = AProx.GetLocked();
 
     const auto d = GetDiagonal(A);
 
-    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
-    DiagonalScale( LEFT, NORMAL, d, B );
-    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), A, B );
+    DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, d, B );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A, B );
 }
 
 template<typename F>
@@ -69,13 +69,13 @@ void MultiplyAfter
           LogicError("A and B must be the same height");
       // TODO: Check for dSub
     )
-    const Orientation orientation = ( conjugated ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugated ? Orientation::ADJOINT : Orientation::TRANSPOSE );
     const auto d = GetDiagonal(A);
 
     P.PermuteRows( B );
-    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
-    QuasiDiagonalScale( LEFT, UpperOrLower::LOWER, d, dSub, B, conjugated );
-    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), A, B );
+    QuasiDiagonalScale( LeftOrRight::LEFT, UpperOrLower::LOWER, d, dSub, B, conjugated );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A, B );
     P.InversePermuteRows( B );
 }
 
@@ -96,7 +96,7 @@ void MultiplyAfter
           LogicError("A and B must be the same height");
       // TODO: Check for dSub
     )
-    const Orientation orientation = ( conjugated ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugated ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> BProx( BPre );
@@ -106,9 +106,9 @@ void MultiplyAfter
     const auto d = GetDiagonal(A);
 
     P.PermuteRows( B );
-    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
-    QuasiDiagonalScale( LEFT, UpperOrLower::LOWER, d, dSub, B, conjugated );
-    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), A, B );
+    QuasiDiagonalScale( LeftOrRight::LEFT, UpperOrLower::LOWER, d, dSub, B, conjugated );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A, B );
     P.InversePermuteRows( B );
 }
 

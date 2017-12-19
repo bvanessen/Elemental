@@ -112,12 +112,12 @@ void MakeSubdiagonalReal
     // TODO(poulson): Provide support for DiagonalScaleTrapezoid for BlockMatrix
     auto HLeft = H( IR(winBeg+1,winEnd), IR(winBeg,scaleEnd) );
     auto HRight = H( IR(scaleBeg,Min(scaleEnd,winEnd+1)), IR(winBeg+1,winEnd) );
-    DiagonalScale( LEFT, NORMAL, phase, HLeft );
-    DiagonalScale( RIGHT, ADJOINT, phase, HRight );
+    DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, phase, HLeft );
+    DiagonalScale( LeftOrRight::RIGHT, Orientation::ADJOINT, phase, HRight );
     if( ctrl.wantSchurVecs )
     {
         auto ZWin = Z( ALL, IR(winBeg+1,winEnd) );
-        DiagonalScale( RIGHT, ADJOINT, phase, ZWin );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::ADJOINT, phase, ZWin );
     }
 }
 

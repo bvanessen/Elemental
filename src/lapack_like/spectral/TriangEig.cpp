@@ -30,7 +30,7 @@ void TriangEig( Matrix<Field>& U, Matrix<Field>& X )
     GetDiagonal( U, shifts );
     // The following is a specialized alternative to
     //  SafeMultiShiftTrsm
-    //  ( LEFT, UpperOrLower::UPPER, NORMAL, Field(1), U, shifts, X, scales );
+    //  ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, Field(1), U, shifts, X, scales );
     triang_eig::MultiShiftSolve( U, shifts, X, scales );
     SetDiagonal( X, scales );
 
@@ -65,7 +65,7 @@ void TriangEig
     GetDiagonal( U, shifts );
     // The following is a specialized alternative to
     //  SafeMultiShiftTrsm
-    //  ( LEFT, UpperOrLower::UPPER, NORMAL, Field(1), U, shifts, X, scales );
+    //  ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, Field(1), U, shifts, X, scales );
     triang_eig::MultiShiftSolve( U, shifts, X, scales );
     SetDiagonal( X, scales );
 
@@ -73,7 +73,7 @@ void TriangEig
     // TODO(poulson): Exploit the upper-triangular structure
     DistMatrix<Base<Field>,Dist::MR,Dist::STAR> colNorms(g);
     ColumnTwoNorms( X, colNorms );
-    DiagonalSolve( RIGHT, NORMAL, colNorms, X );
+    DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, X );
 }
 
 #define PROTO(Field) \

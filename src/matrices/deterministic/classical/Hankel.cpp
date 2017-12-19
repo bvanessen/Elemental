@@ -12,7 +12,7 @@
 namespace El {
 
 template<typename T>
-void Hankel( Matrix<T>& A, Int m, Int n, const vector<T>& a )
+void Hankel( Matrix<T>& A, Int m, Int n, const std::vector<T>& a )
 {
     EL_DEBUG_CSE
     const Int length = m+n-1;
@@ -22,11 +22,11 @@ void Hankel( Matrix<T>& A, Int m, Int n, const vector<T>& a )
     // NOTE: gcc (Ubuntu 5.2.1-22ubuntu2) 5.2.1 20151010 segfaults here
     //       if the return type of the lambda is not manually specified.
     auto hankelFill = [&]( Int i, Int j ) -> T { return a[i+j]; };
-    IndexDependentFill( A, function<T(Int,Int)>(hankelFill) );
+    IndexDependentFill( A, std::function<T(Int,Int)>(hankelFill) );
 }
 
 template<typename T>
-void Hankel( AbstractDistMatrix<T>& A, Int m, Int n, const vector<T>& a )
+void Hankel( AbstractDistMatrix<T>& A, Int m, Int n, const std::vector<T>& a )
 {
     EL_DEBUG_CSE
     const Int length = m+n-1;
@@ -34,14 +34,14 @@ void Hankel( AbstractDistMatrix<T>& A, Int m, Int n, const vector<T>& a )
         LogicError("a was the wrong size");
     A.Resize( m, n );
     auto hankelFill = [&]( Int i, Int j ) -> T { return a[i+j]; };
-    IndexDependentFill( A, function<T(Int,Int)>(hankelFill) );
+    IndexDependentFill( A, std::function<T(Int,Int)>(hankelFill) );
 }
 
 #define PROTO(T) \
   template void Hankel \
-  ( Matrix<T>& A, Int m, Int n, const vector<T>& a ); \
+  ( Matrix<T>& A, Int m, Int n, const std::vector<T>& a ); \
   template void Hankel \
-  ( AbstractDistMatrix<T>& A, Int m, Int n, const vector<T>& a );
+  ( AbstractDistMatrix<T>& A, Int m, Int n, const std::vector<T>& a );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

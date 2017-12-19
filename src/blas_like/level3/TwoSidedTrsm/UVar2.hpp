@@ -50,28 +50,28 @@ void UVar2( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         // Y01 := A00 U01
         Y01.Resize( A01.Height(), A01.Width() );
         Zero( Y01 );
-        Hemm( LEFT, UpperOrLower::UPPER, F(1), A00, U01, F(0), Y01 );
+        Hemm( LeftOrRight::LEFT, UpperOrLower::UPPER, F(1), A00, U01, F(0), Y01 );
 
         // A01 := A01 - 1/2 Y01
         Axpy( F(-1)/F(2), Y01, A01 );
 
         // A11 := A11 - (U01' A01 + A01' U01)
-        Her2k( UpperOrLower::UPPER, ADJOINT, F(-1), U01, A01, F(1), A11 );
+        Her2k( UpperOrLower::UPPER, Orientation::ADJOINT, F(-1), U01, A01, F(1), A11 );
 
         // A11 := inv(U11)' A11 inv(U11)
         twotrsm::UUnb( diag, A11, U11 );
 
         // A12 := A12 - A02' U01
-        Gemm( ADJOINT, NORMAL, F(-1), A02, U01, F(1), A12 );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(-1), A02, U01, F(1), A12 );
 
         // A12 := inv(U11)' A12
-        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U11, A12 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, diag, F(1), U11, A12 );
 
         // A01 := A01 - 1/2 Y01
         Axpy( F(-1)/F(2), Y01, A01 );
 
         // A01 := A01 inv(U11)
-        Trsm( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11, A01 );
+        Trsm( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, diag, F(1), U11, A01 );
     }
 }
 
@@ -145,7 +145,7 @@ void UVar2
         Zero( Y01_MR_STAR );
         Zero( F01_MC_STAR );
         symm::LocalAccumulateLU
-        ( ADJOINT,
+        ( Orientation::ADJOINT,
           F(1), A00, U01_MC_STAR, U01Adj_STAR_MR, F01_MC_STAR, Y01_MR_STAR );
         Contract( Y01_MR_STAR, Y01_MR_MC );
         Y01.AlignWith( A01 );
@@ -154,7 +154,7 @@ void UVar2
 
         // X11 := U01' A01
         X11_STAR_MR.AlignWith( U01 );
-        LocalGemm( ADJOINT, NORMAL, F(1), U01_MC_STAR, A01, X11_STAR_MR );
+        LocalGemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), U01_MC_STAR, A01, X11_STAR_MR );
 
         // A01 := A01 - Y01
         A01 -= Y01;
@@ -162,7 +162,7 @@ void UVar2
         A01_MC_STAR = A01;
 
         // A11 := A11 - triu(X11 + A01' U01) = A11 - (U01 A01 + A01' U01)
-        LocalGemm( ADJOINT, NORMAL, F(1), A01_MC_STAR, U01, F(1), X11_STAR_MR );
+        LocalGemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), A01_MC_STAR, U01, F(1), X11_STAR_MR );
         X11.AlignWith( A11 );
         Contract( X11_STAR_MR, X11 );
         MakeTrapezoidal( UpperOrLower::UPPER, X11 );
@@ -172,7 +172,7 @@ void UVar2
         U11_STAR_STAR = U11;
         A01_VC_STAR = A01_MC_STAR;
         LocalTrsm
-        ( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11_STAR_STAR, A01_VC_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, diag, F(1), U11_STAR_STAR, A01_VC_STAR );
         A01 = A01_VC_STAR;
 
         // A11 := inv(U11)' A11 inv(U11)
@@ -182,7 +182,7 @@ void UVar2
 
         // A12 := A12 - A02' U01
         X12Adj_MR_STAR.AlignWith( A02 );
-        LocalGemm( ADJOINT, NORMAL, F(1), A02, U01_MC_STAR, X12Adj_MR_STAR );
+        LocalGemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), A02, U01_MC_STAR, X12Adj_MR_STAR );
         X12Adj_MR_MC.AlignWith( A12 );
         Contract( X12Adj_MR_STAR, X12Adj_MR_MC );
         Adjoint( X12Adj_MR_MC.LockedMatrix(), X12Local );
@@ -191,7 +191,7 @@ void UVar2
         // A12 := inv(U11)' A12
         A12_STAR_VR = A12;
         LocalTrsm
-        ( LEFT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U11_STAR_STAR, A12_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, diag, F(1), U11_STAR_STAR, A12_STAR_VR );
         A12 = A12_STAR_VR;
     }
 }

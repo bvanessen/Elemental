@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 template<typename Field>
 void DemonstrateConstructors( El::Int n, const El::Grid& grid, bool print )

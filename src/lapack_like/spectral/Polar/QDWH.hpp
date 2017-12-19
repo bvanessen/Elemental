@@ -9,7 +9,8 @@
 #ifndef EL_POLAR_QDWH_HPP
 #define EL_POLAR_QDWH_HPP
 
-namespace El {
+namespace El
+{
 
 // Based on Yuji Nakatsukasa's implementation of a QR-based dynamically
 // weighted Halley iteration for the polar decomposition. In particular, this
@@ -25,7 +26,7 @@ namespace El {
 namespace polar {
 
 template<typename F>
-QDWHInfo QDWHInner( Matrix<F>& A, Base<F> sMinUpper, const QDWHCtrl& ctrl )
+QDWHInfo QDWHInner(Matrix<F>& A, Base<F> sMinUpper, const QDWHCtrl& ctrl)
 {
     EL_DEBUG_CSE
     typedef Base<F> Real;
@@ -33,7 +34,7 @@ QDWHInfo QDWHInner( Matrix<F>& A, Base<F> sMinUpper, const QDWHCtrl& ctrl )
     const Int m = A.Height();
     const Int n = A.Width();
     const Real oneThird = Real(1)/Real(3);
-    if( m < n )
+    if(m < n)
         LogicError("Height cannot be less than width");
 
     QDWHInfo info;
@@ -48,16 +49,16 @@ QDWHInfo QDWHInner( Matrix<F>& A, Base<F> sMinUpper, const QDWHCtrl& ctrl )
 
     Real frobNormADiff;
     Matrix<F> ALast, ATemp, C;
-    Matrix<F> Q( m+n, n );
-    auto QT = Q( IR(0,m  ), ALL );
-    auto QB = Q( IR(m,END), ALL );
-    while( info.numIts < ctrl.maxIts )
+    Matrix<F> Q(m+n, n);
+    auto QT = Q(IR(0,m ), ALL);
+    auto QB = Q(IR(m,END), ALL);
+    while(info.numIts < ctrl.maxIts)
     {
         ALast = A;
 
         Real L2;
         Cpx dd, sqd;
-        if( Abs(1-L) < tol )
+        if(Abs(1-L) < tol)
         {
             L2 = 1;
             dd = 0;
@@ -66,8 +67,8 @@ QDWHInfo QDWHInner( Matrix<F>& A, Base<F> sMinUpper, const QDWHCtrl& ctrl )
         else
         {
             L2 = L*L;
-            dd = Pow( 4*(1-L2)/(L2*L2), oneThird );
-            sqd = Sqrt( Real(1)+dd );
+            dd = Pow(4*(1-L2)/(L2*L2), oneThird);
+            sqd = Sqrt(Real(1)+dd);
         }
         const Cpx arg = Real(8) - Real(4)*dd + Real(8)*(2-L2)/(L2*sqd);
         const Real a = (sqd + Sqrt(arg)/Real(2)).real();
@@ -78,16 +79,16 @@ QDWHInfo QDWHInner( Matrix<F>& A, Base<F> sMinUpper, const QDWHCtrl& ctrl )
 
         L = L*(a+b*L2)/(1+c*L2);
 
-        if( c > 100 )
+        if(c > 100)
         {
             //
             // The standard QR-based algorithm
             //
             QT = A;
             QT *= Sqrt(c);
-            MakeIdentity( QB );
-            qr::ExplicitUnitary( Q, true, qrCtrl );
-            Gemm( NORMAL, ADJOINT, F(alpha/Sqrt(c)), QT, QB, F(beta), A );
+            MakeIdentity(QB);
+            qr::ExplicitUnitary(Q, true, qrCtrl);
+            Gemm(Orientation::NORMAL, Orientation::ADJOINT, F(alpha/Sqrt(c)), QT, QB, F(beta), A);
             ++info.numQRIts;
         }
         else
@@ -95,32 +96,32 @@ QDWHInfo QDWHInner( Matrix<F>& A, Base<F> sMinUpper, const QDWHCtrl& ctrl )
             //
             // Use faster Cholesky-based algorithm since A is well-conditioned
             //
-            Identity( C, n, n );
-            Herk( UpperOrLower::LOWER, ADJOINT, c, A, Real(1), C );
-            Cholesky( UpperOrLower::LOWER, C );
+            Identity(C, n, n);
+            Herk(UpperOrLower::LOWER, Orientation::ADJOINT, c, A, Real(1), C);
+            Cholesky(UpperOrLower::LOWER, C);
             ATemp = A;
-            Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), C, ATemp );
-            Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), C, ATemp );
+            Trsm(LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), C, ATemp);
+            Trsm(LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), C, ATemp);
             A *= beta;
-            Axpy( alpha, ATemp, A );
+            Axpy(alpha, ATemp, A);
             ++info.numCholIts;
         }
 
         ++info.numIts;
         ALast -= A;
-        frobNormADiff = FrobeniusNorm( ALast );
-        if( frobNormADiff <= cubeRootTol && Abs(1-L) <= tol )
+        frobNormADiff = FrobeniusNorm(ALast);
+        if(frobNormADiff <= cubeRootTol && Abs(1-L) <= tol)
             break;
     }
     return info;
 }
 
 template<typename F>
-QDWHInfo QDWH( Matrix<F>& A, const QDWHCtrl& ctrl )
+QDWHInfo QDWH(Matrix<F>& A, const QDWHCtrl& ctrl)
 {
     EL_DEBUG_CSE
     typedef Base<F> Real;
-    const Real twoEst = TwoNormEstimate( A );
+    const Real twoEst = TwoNormEstimate(A);
     A *= 1/twoEst;
 
     // The one-norm of the inverse can be replaced with an estimate which is
@@ -128,48 +129,48 @@ QDWHInfo QDWH( Matrix<F>& A, const QDWHCtrl& ctrl )
     // from "A Block Algorithm for Matrix 1-Norm Estimation, with an Application
     // to 1-Norm Pseudospectra".
     Real sMinUpper;
-    Matrix<F> Y( A );
-    if( A.Height() > A.Width() )
+    Matrix<F> Y(A);
+    if(A.Height() > A.Width())
     {
-        qr::ExplicitTriang( Y );
+        qr::ExplicitTriang(Y);
         try
         {
-            TriangularInverse( UpperOrLower::UPPER, NON_UNIT, Y );
-            sMinUpper = Real(1) / OneNorm( Y );
-        } catch( SingularMatrixException& e ) { sMinUpper = 0; }
+            TriangularInverse(UpperOrLower::UPPER, UnitOrNonUnit::NON_UNIT, Y);
+            sMinUpper = Real(1) / OneNorm(Y);
+        } catch(SingularMatrixException& e) { sMinUpper = 0; }
     }
     else
     {
         try
         {
-            Inverse( Y );
-            sMinUpper = Real(1) / OneNorm( Y );
-        } catch( SingularMatrixException& e ) { sMinUpper = 0; }
+            Inverse(Y);
+            sMinUpper = Real(1) / OneNorm(Y);
+        } catch(SingularMatrixException& e) { sMinUpper = 0; }
     }
 
-    return QDWHInner( A, sMinUpper, ctrl );
+    return QDWHInner(A, sMinUpper, ctrl);
 }
 
 template<typename F>
-QDWHInfo QDWH( Matrix<F>& A, Matrix<F>& P, const QDWHCtrl& ctrl )
+QDWHInfo QDWH(Matrix<F>& A, Matrix<F>& P, const QDWHCtrl& ctrl)
 {
     EL_DEBUG_CSE
-    Matrix<F> ACopy( A );
-    auto info = QDWH( A, ctrl );
-    Zeros( P, A.Height(), A.Height() );
-    Trrk( UpperOrLower::LOWER, NORMAL, NORMAL, F(1), A, ACopy, F(0), P );
-    MakeHermitian( UpperOrLower::LOWER, P );
+    Matrix<F> ACopy(A);
+    auto info = QDWH(A, ctrl);
+    Zeros(P, A.Height(), A.Height());
+    Trrk(UpperOrLower::LOWER, Orientation::NORMAL, Orientation::NORMAL, F(1), A, ACopy, F(0), P);
+    MakeHermitian(UpperOrLower::LOWER, P);
     return info;
 }
 
 template<typename F>
 QDWHInfo
 QDWHInner
-( AbstractDistMatrix<F>& APre, Base<F> sMinUpper, const QDWHCtrl& ctrl )
+(AbstractDistMatrix<F>& APre, Base<F> sMinUpper, const QDWHCtrl& ctrl)
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx(APre);
     auto& A = AProx.Get();
 
     typedef Base<F> Real;
@@ -177,7 +178,7 @@ QDWHInner
     const Int m = A.Height();
     const Int n = A.Width();
     const Real oneThird = Real(1)/Real(3);
-    if( m < n )
+    if(m < n)
         LogicError("Height cannot be less than width");
 
     QDWHInfo info;
@@ -192,18 +193,18 @@ QDWHInner
 
     const Grid& g = A.Grid();
     DistMatrix<F> ALast(g), ATemp(g), C(g);
-    DistMatrix<F> Q( m+n, n, g );
-    auto QT = Q( IR(0,m  ), ALL );
-    auto QB = Q( IR(m,END), ALL );
+    DistMatrix<F> Q(m+n, n, g);
+    auto QT = Q(IR(0,m ), ALL);
+    auto QB = Q(IR(m,END), ALL);
 
     Real frobNormADiff;
-    while( info.numIts < ctrl.maxIts )
+    while(info.numIts < ctrl.maxIts)
     {
         ALast = A;
 
         Real L2;
         Cpx dd, sqd;
-        if( Abs(1-L) < tol )
+        if(Abs(1-L) < tol)
         {
             L2 = 1;
             dd = 0;
@@ -212,8 +213,8 @@ QDWHInner
         else
         {
             L2 = L*L;
-            dd = Pow( 4*(1-L2)/(L2*L2), oneThird );
-            sqd = Sqrt( Real(1)+dd );
+            dd = Pow(4*(1-L2)/(L2*L2), oneThird);
+            sqd = Sqrt(Real(1)+dd);
         }
         const Cpx arg = Real(8) - Real(4)*dd + Real(8)*(2-L2)/(L2*sqd);
         const Real a = (sqd + Sqrt(arg)/Real(2)).real();
@@ -224,16 +225,16 @@ QDWHInner
 
         L = L*(a+b*L2)/(1+c*L2);
 
-        if( c > 100 )
+        if(c > 100)
         {
             //
             // The standard QR-based algorithm
             //
             QT = A;
             QT *= Sqrt(c);
-            MakeIdentity( QB );
-            qr::ExplicitUnitary( Q, true, qrCtrl );
-            Gemm( NORMAL, ADJOINT, F(alpha/Sqrt(c)), QT, QB, F(beta), A );
+            MakeIdentity(QB);
+            qr::ExplicitUnitary(Q, true, qrCtrl);
+            Gemm(Orientation::NORMAL, Orientation::ADJOINT, F(alpha/Sqrt(c)), QT, QB, F(beta), A);
             ++info.numQRIts;
         }
         else
@@ -241,21 +242,21 @@ QDWHInner
             //
             // Use faster Cholesky-based algorithm since A is well-conditioned
             //
-            Identity( C, n, n );
-            Herk( UpperOrLower::LOWER, ADJOINT, c, A, Real(1), C );
-            Cholesky( UpperOrLower::LOWER, C );
+            Identity(C, n, n);
+            Herk(UpperOrLower::LOWER, Orientation::ADJOINT, c, A, Real(1), C);
+            Cholesky(UpperOrLower::LOWER, C);
             ATemp = A;
-            Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), C, ATemp );
-            Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), C, ATemp );
+            Trsm(LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), C, ATemp);
+            Trsm(LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), C, ATemp);
             A *= beta;
-            Axpy( alpha, ATemp, A );
+            Axpy(alpha, ATemp, A);
             ++info.numCholIts;
         }
 
         ++info.numIts;
         ALast -= A;
-        frobNormADiff = FrobeniusNorm( ALast );
-        if( frobNormADiff <= cubeRootTol && Abs(1-L) <= tol )
+        frobNormADiff = FrobeniusNorm(ALast);
+        if(frobNormADiff <= cubeRootTol && Abs(1-L) <= tol)
             break;
     }
     return info;
@@ -263,15 +264,15 @@ QDWHInner
 
 template<typename F>
 QDWHInfo
-QDWH( AbstractDistMatrix<F>& APre, const QDWHCtrl& ctrl )
+QDWH(AbstractDistMatrix<F>& APre, const QDWHCtrl& ctrl)
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx(APre);
     auto& A = AProx.Get();
 
     typedef Base<F> Real;
-    const Real twoEst = TwoNormEstimate( A );
+    const Real twoEst = TwoNormEstimate(A);
     A *= 1/twoEst;
 
     // The one-norm of the inverse can be replaced with an estimate which is
@@ -279,47 +280,47 @@ QDWH( AbstractDistMatrix<F>& APre, const QDWHCtrl& ctrl )
     // from "A Block Algorithm for Matrix 1-Norm Estimation, with an Application
     // to 1-Norm Pseudospectra".
     Real sMinUpper;
-    DistMatrix<F> Y( A );
-    if( A.Height() > A.Width() )
+    DistMatrix<F> Y(A);
+    if(A.Height() > A.Width())
     {
-        qr::ExplicitTriang( Y );
+        qr::ExplicitTriang(Y);
         try
         {
-            TriangularInverse( UpperOrLower::UPPER, NON_UNIT, Y );
-            sMinUpper = Real(1) / OneNorm( Y );
-        } catch( SingularMatrixException& e ) { sMinUpper = 0; }
+            TriangularInverse(UpperOrLower::UPPER, UnitOrNonUnit::NON_UNIT, Y);
+            sMinUpper = Real(1) / OneNorm(Y);
+        } catch(SingularMatrixException& e) { sMinUpper = 0; }
     }
     else
     {
         try
         {
-            Inverse( Y );
-            sMinUpper = Real(1) / OneNorm( Y );
-        } catch( SingularMatrixException& e ) { sMinUpper = 0; }
+            Inverse(Y);
+            sMinUpper = Real(1) / OneNorm(Y);
+        } catch(SingularMatrixException& e) { sMinUpper = 0; }
     }
 
-    return QDWHInner( A, sMinUpper, ctrl );
+    return QDWHInner(A, sMinUpper, ctrl);
 }
 
 template<typename F>
 QDWHInfo
 QDWH
-( AbstractDistMatrix<F>& APre,
+(AbstractDistMatrix<F>& APre,
   AbstractDistMatrix<F>& PPre,
-  const QDWHCtrl& ctrl )
+  const QDWHCtrl& ctrl)
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR> PProx( PPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx(APre);
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR> PProx(PPre);
     auto& A = AProx.Get();
     auto& P = PProx.Get();
 
-    DistMatrix<F> ACopy( A );
-    auto info = QDWH( A, ctrl );
-    Zeros( P, A.Height(), A.Height() );
-    Trrk( UpperOrLower::LOWER, NORMAL, NORMAL, F(1), A, ACopy, F(0), P );
-    MakeHermitian( UpperOrLower::LOWER, P );
+    DistMatrix<F> ACopy(A);
+    auto info = QDWH(A, ctrl);
+    Zeros(P, A.Height(), A.Height());
+    Trrk(UpperOrLower::LOWER, Orientation::NORMAL, Orientation::NORMAL, F(1), A, ACopy, F(0), P);
+    MakeHermitian(UpperOrLower::LOWER, P);
     return info;
 }
 
@@ -330,13 +331,13 @@ namespace herm_polar {
 template<typename F>
 QDWHInfo
 QDWHInner
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   Matrix<F>& A,
   Base<F> sMinUpper,
-  const QDWHCtrl& ctrl )
+  const QDWHCtrl& ctrl)
 {
     EL_DEBUG_CSE
-    if( A.Height() != A.Width() )
+    if(A.Height() != A.Width())
         LogicError("Height must be same as width");
 
     typedef Base<F> Real;
@@ -356,17 +357,17 @@ QDWHInner
 
     Real frobNormADiff;
     Matrix<F> ALast, ATemp, C;
-    Matrix<F> Q( 2*n, n );
-    auto QT = Q( IR(0,n  ), ALL );
-    auto QB = Q( IR(n,END), ALL );
+    Matrix<F> Q(2*n, n);
+    auto QT = Q(IR(0,n ), ALL);
+    auto QB = Q(IR(n,END), ALL);
 
-    while( info.numIts < ctrl.maxIts )
+    while(info.numIts < ctrl.maxIts)
     {
         ALast = A;
 
         Real L2;
         Cpx dd, sqd;
-        if( Abs(1-L) < tol )
+        if(Abs(1-L) < tol)
         {
             L2 = 1;
             dd = 0;
@@ -375,8 +376,8 @@ QDWHInner
         else
         {
             L2 = L*L;
-            dd = Pow( 4*(1-L2)/(L2*L2), oneThird );
-            sqd = Sqrt( Real(1)+dd );
+            dd = Pow(4*(1-L2)/(L2*L2), oneThird);
+            sqd = Sqrt(Real(1)+dd);
         }
         const Cpx arg = Real(8) - Real(4)*dd + Real(8)*(2-L2)/(L2*sqd);
         const Real a = (sqd + Sqrt(arg)/Real(2)).real();
@@ -387,17 +388,17 @@ QDWHInner
 
         L = L*(a+b*L2)/(1+c*L2);
 
-        if( c > 100 )
+        if(c > 100)
         {
             //
             // The standard QR-based algorithm
             //
-            MakeHermitian( uplo, A );
+            MakeHermitian(uplo, A);
             QT = A;
             QT *= Sqrt(c);
-            MakeIdentity( QB );
-            qr::ExplicitUnitary( Q, true, qrCtrl );
-            Trrk( uplo, NORMAL, ADJOINT, F(alpha/Sqrt(c)), QT, QB, F(beta), A );
+            MakeIdentity(QB);
+            qr::ExplicitUnitary(Q, true, qrCtrl);
+            Trrk(uplo, Orientation::NORMAL, Orientation::ADJOINT, F(alpha/Sqrt(c)), QT, QB, F(beta), A);
             ++info.numQRIts;
         }
         else
@@ -408,38 +409,38 @@ QDWHInner
             // TODO(poulson): Think of how to better exploit the symmetry of A,
             // e.g., by halving the work in the first Herk through
             // a custom routine for forming L^2, where L is strictly lower
-            MakeHermitian( uplo, A );
-            Identity( C, n, n );
-            Herk( UpperOrLower::LOWER, ADJOINT, c, A, Real(1), C );
-            Cholesky( UpperOrLower::LOWER, C );
+            MakeHermitian(uplo, A);
+            Identity(C, n, n);
+            Herk(UpperOrLower::LOWER, Orientation::ADJOINT, c, A, Real(1), C);
+            Cholesky(UpperOrLower::LOWER, C);
             ATemp = A;
-            Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), C, ATemp );
-            Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), C, ATemp );
+            Trsm(LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), C, ATemp);
+            Trsm(LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), C, ATemp);
             A *= beta;
-            Axpy( alpha, ATemp, A );
+            Axpy(alpha, ATemp, A);
             ++info.numCholIts;
         }
 
         ALast -= A;
-        frobNormADiff = HermitianFrobeniusNorm( uplo, ALast );
+        frobNormADiff = HermitianFrobeniusNorm(uplo, ALast);
 
         ++info.numIts;
-        if( frobNormADiff <= cubeRootTol && Abs(1-L) <= tol )
+        if(frobNormADiff <= cubeRootTol && Abs(1-L) <= tol)
             break;
     }
 
-    MakeHermitian( uplo, A );
+    MakeHermitian(uplo, A);
     return info;
 }
 
 template<typename F>
 QDWHInfo
-QDWH( UpperOrLower uplo, Matrix<F>& A, const QDWHCtrl& ctrl )
+QDWH(UpperOrLower uplo, Matrix<F>& A, const QDWHCtrl& ctrl)
 {
     EL_DEBUG_CSE
     typedef Base<F> Real;
-    MakeHermitian( uplo, A );
-    const Real twoEst = TwoNormEstimate( A );
+    MakeHermitian(uplo, A);
+    const Real twoEst = TwoNormEstimate(A);
     A *= 1/twoEst;
 
     // The one-norm of the inverse can be replaced with an estimate which is
@@ -447,47 +448,47 @@ QDWH( UpperOrLower uplo, Matrix<F>& A, const QDWHCtrl& ctrl )
     // from "A Block Algorithm for Matrix 1-Norm Estimation, with an Application
     // to 1-Norm Pseudospectra".
     Real sMinUpper;
-    Matrix<F> Y( A );
+    Matrix<F> Y(A);
     try
     {
-        Inverse( Y );
-        sMinUpper = Real(1) / OneNorm( Y );
-    } catch( SingularMatrixException& e ) { sMinUpper = 0; }
+        Inverse(Y);
+        sMinUpper = Real(1) / OneNorm(Y);
+    } catch(SingularMatrixException& e) { sMinUpper = 0; }
 
-    return QDWHInner( uplo, A, sMinUpper, ctrl );
+    return QDWHInner(uplo, A, sMinUpper, ctrl);
 }
 
 template<typename F>
 QDWHInfo
 QDWH
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   Matrix<F>& A,
   Matrix<F>& P,
-  const QDWHCtrl& ctrl )
+  const QDWHCtrl& ctrl)
 {
     EL_DEBUG_CSE
-    Matrix<F> ACopy( A );
+    Matrix<F> ACopy(A);
     // NOTE: This might be avoidable
-    MakeHermitian( uplo, ACopy );
-    auto info = QDWH( uplo, A, ctrl );
-    Zeros( P, A.Height(), A.Height() );
-    Trrk( uplo, NORMAL, NORMAL, F(1), A, ACopy, F(0), P );
+    MakeHermitian(uplo, ACopy);
+    auto info = QDWH(uplo, A, ctrl);
+    Zeros(P, A.Height(), A.Height());
+    Trrk(uplo, Orientation::NORMAL, Orientation::NORMAL, F(1), A, ACopy, F(0), P);
     return info;
 }
 
 template<typename F>
 QDWHInfo
 QDWHInner
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   AbstractDistMatrix<F>& APre,
   Base<F> sMinUpper,
-  const QDWHCtrl& ctrl )
+  const QDWHCtrl& ctrl)
 {
     EL_DEBUG_CSE
-    if( APre.Height() != APre.Width() )
+    if(APre.Height() != APre.Width())
         LogicError("Height must be same as width");
 
-    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx(APre);
     auto& A = AProx.Get();
 
     typedef Base<F> Real;
@@ -508,17 +509,17 @@ QDWHInner
 
     Real frobNormADiff;
     DistMatrix<F> ALast(g), ATemp(g), C(g);
-    DistMatrix<F> Q( 2*n, n, g );
-    auto QT = Q( IR(0,n  ), ALL );
-    auto QB = Q( IR(n,END), ALL );
+    DistMatrix<F> Q(2*n, n, g);
+    auto QT = Q(IR(0,n ), ALL);
+    auto QB = Q(IR(n,END), ALL);
 
-    while( info.numIts < ctrl.maxIts )
+    while(info.numIts < ctrl.maxIts)
     {
         ALast = A;
 
         Real L2;
         Cpx dd, sqd;
-        if( Abs(1-L) < tol )
+        if(Abs(1-L) < tol)
         {
             L2 = 1;
             dd = 0;
@@ -527,8 +528,8 @@ QDWHInner
         else
         {
             L2 = L*L;
-            dd = Pow( 4*(1-L2)/(L2*L2), oneThird );
-            sqd = Sqrt( Real(1)+dd );
+            dd = Pow(4*(1-L2)/(L2*L2), oneThird);
+            sqd = Sqrt(Real(1)+dd);
         }
         const Cpx arg = Real(8) - Real(4)*dd + Real(8)*(2-L2)/(L2*sqd);
         const Real a = (sqd + Sqrt(arg)/Real(2)).real();
@@ -539,17 +540,17 @@ QDWHInner
 
         L = L*(a+b*L2)/(1+c*L2);
 
-        if( c > 100 )
+        if(c > 100)
         {
             //
             // The standard QR-based algorithm
             //
-            MakeHermitian( uplo, A );
+            MakeHermitian(uplo, A);
             QT = A;
             QT *= Sqrt(c);
-            MakeIdentity( QB );
-            qr::ExplicitUnitary( Q, true, qrCtrl );
-            Trrk( uplo, NORMAL, ADJOINT, F(alpha/Sqrt(c)), QT, QB, F(beta), A );
+            MakeIdentity(QB);
+            qr::ExplicitUnitary(Q, true, qrCtrl);
+            Trrk(uplo, Orientation::NORMAL, Orientation::ADJOINT, F(alpha/Sqrt(c)), QT, QB, F(beta), A);
             ++info.numQRIts;
         }
         else
@@ -560,40 +561,41 @@ QDWHInner
             // TODO(poulson): Think of how to better exploit the symmetry of A,
             // e.g., by halving the work in the first Herk through
             // a custom routine for forming L^2, where L is strictly lower
-            MakeHermitian( uplo, A );
-            Identity( C, n, n );
-            Herk( UpperOrLower::LOWER, ADJOINT, c, A, Real(1), C );
-            Cholesky( UpperOrLower::LOWER, C );
+            MakeHermitian(uplo, A);
+            Identity(C, n, n);
+            Herk(UpperOrLower::LOWER, Orientation::ADJOINT, c, A, Real(1), C);
+            Cholesky(UpperOrLower::LOWER, C);
             ATemp = A;
-            Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), C, ATemp );
-            Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), C, ATemp );
+            Trsm(LeftOrRight::RIGHT, UpperOrLower::LOWER,
+                  Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), C, ATemp);
+            Trsm(LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), C, ATemp);
             A *= beta;
-            Axpy( alpha, ATemp, A );
+            Axpy(alpha, ATemp, A);
             ++info.numCholIts;
         }
 
         ++info.numIts;
         ALast -= A;
-        frobNormADiff = HermitianFrobeniusNorm( uplo, ALast );
-        if( frobNormADiff <= cubeRootTol && Abs(1-L) <= tol )
+        frobNormADiff = HermitianFrobeniusNorm(uplo, ALast);
+        if(frobNormADiff <= cubeRootTol && Abs(1-L) <= tol)
             break;
     }
-    MakeHermitian( uplo, A );
+    MakeHermitian(uplo, A);
     return info;
 }
 
 template<typename F>
 QDWHInfo
-QDWH( UpperOrLower uplo, AbstractDistMatrix<F>& APre, const QDWHCtrl& ctrl )
+QDWH(UpperOrLower uplo, AbstractDistMatrix<F>& APre, const QDWHCtrl& ctrl)
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx(APre);
     auto& A = AProx.Get();
 
     typedef Base<F> Real;
-    MakeHermitian( uplo, A );
-    const Real twoEst = TwoNormEstimate( A );
+    MakeHermitian(uplo, A);
+    const Real twoEst = TwoNormEstimate(A);
     A *= 1/twoEst;
 
     // The one-norm of the inverse can be replaced with an estimate which is
@@ -601,37 +603,38 @@ QDWH( UpperOrLower uplo, AbstractDistMatrix<F>& APre, const QDWHCtrl& ctrl )
     // from "A Block Algorithm for Matrix 1-Norm Estimation, with an Application
     // to 1-Norm Pseudospectra".
     Real sMinUpper;
-    DistMatrix<F> Y( A );
+    DistMatrix<F> Y(A);
     try
     {
-        Inverse( Y );
-        sMinUpper = Real(1) / OneNorm( Y );
-    } catch( SingularMatrixException& e ) { sMinUpper = 0; }
+        Inverse(Y);
+        sMinUpper = Real(1) / OneNorm(Y);
+    } catch(SingularMatrixException& e) { sMinUpper = 0; }
 
-    return QDWHInner( uplo, A, sMinUpper, ctrl );
+    return QDWHInner(uplo, A, sMinUpper, ctrl);
 }
 
 template<typename F>
 QDWHInfo
 QDWH
-( UpperOrLower uplo,
+(UpperOrLower uplo,
   AbstractDistMatrix<F>& APre,
   AbstractDistMatrix<F>& PPre,
-  const QDWHCtrl& ctrl )
+  const QDWHCtrl& ctrl)
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
-    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR> PProx( PPre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx(APre);
+    DistMatrixWriteProxy<F,F,Dist::MC,Dist::MR> PProx(PPre);
     auto& A = AProx.Get();
     auto& P = PProx.Get();
 
-    DistMatrix<F> ACopy( A );
+    DistMatrix<F> ACopy(A);
     // NOTE: This might be avoidable
-    MakeHermitian( uplo, ACopy );
-    auto info = QDWH( uplo, A, ctrl );
-    Zeros( P, A.Height(), A.Height() );
-    Trrk( uplo, NORMAL, NORMAL, F(1), A, ACopy, F(0), P );
+    MakeHermitian(uplo, ACopy);
+    auto info = QDWH(uplo, A, ctrl);
+    Zeros(P, A.Height(), A.Height());
+    Trrk(uplo, Orientation::NORMAL, Orientation::NORMAL,
+         F(1), A, ACopy, F(0), P);
     return info;
 }
 

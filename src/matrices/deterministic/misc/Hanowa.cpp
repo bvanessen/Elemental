@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level1.hpp>
@@ -19,7 +19,7 @@ void Hanowa( Matrix<T>& A, Int n, T mu )
         LogicError("n must be an even integer");
     A.Resize( n, n );
     const Int m = n/2;
-    vector<T> d(m);
+    std::vector<T> d(m);
 
     for( Int j=0; j<m; ++j )
         d[j] = mu;
@@ -47,7 +47,7 @@ void Hanowa( ElementalMatrix<T>& A, Int n, T mu )
         LogicError("n must be an even integer");
     A.Resize( n, n );
     const Int m = n/2;
-    vector<T> d(m);
+    std::vector<T> d(m);
 
     for( Int j=0; j<m; ++j )
         d[j] = mu;

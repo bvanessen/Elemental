@@ -23,7 +23,7 @@ void SUMMA_NTA
     const Int n = CPre.Width();
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
-    const bool conjugate = ( orientB == ADJOINT );
+    const bool conjugate = ( orientB == Orientation::ADJOINT );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
@@ -47,7 +47,7 @@ void SUMMA_NTA
 
         // C1[MC,*] := alpha A[MC,MR] (B1^[T/H])[MR,*]
         Transpose( B1, B1Trans_MR_STAR, conjugate );
-        LocalGemm( NORMAL, NORMAL, alpha, A, B1Trans_MR_STAR, D1_MC_STAR );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, alpha, A, B1Trans_MR_STAR, D1_MC_STAR );
 
         // C1[MC,MR] += scattered result of D1[MC,*] summed over grid rows
         AxpyContract( T(1), D1_MC_STAR, C1 );
@@ -92,7 +92,7 @@ void SUMMA_NTB
         // D1[*,MC] := alpha A1[*,MR] (B[MC,MR])^T
         //           = alpha (A1^T)[MR,*] (B^T)[MR,MC]
         Transpose( A1, A1Trans_MR_STAR );
-        LocalGemm( TRANSPOSE, orientB, alpha, A1Trans_MR_STAR, B, D1_STAR_MC );
+        LocalGemm( Orientation::TRANSPOSE, orientB, alpha, A1Trans_MR_STAR, B, D1_STAR_MC );
 
         // C1[MC,MR] += scattered & transposed D1[*,MC] summed over grid rows
         Contract( D1_STAR_MC, D1_MR_MC );
@@ -113,7 +113,7 @@ void SUMMA_NTC
     const Int sumDim = APre.Width();
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
-    const bool conjugate = ( orientB == ADJOINT );
+    const bool conjugate = ( orientB == Orientation::ADJOINT );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
@@ -143,7 +143,7 @@ void SUMMA_NTC
 
         // C[MC,MR] += alpha A1[MC,*] (B1[MR,*])^T
         LocalGemm
-        ( NORMAL, NORMAL, alpha, A1_MC_STAR, B1Trans_STAR_MR, T(1), C );
+        ( Orientation::NORMAL, Orientation::NORMAL, alpha, A1_MC_STAR, B1Trans_STAR_MR, T(1), C );
     }
 }
 
@@ -194,7 +194,7 @@ void SUMMA_NTDot
             auto B1  = B( indInner, ALL );
             auto C11 = C( indOuter, indInner );
 
-            LocalGemm( NORMAL, orientB, alpha, A1, B1, C11_STAR_STAR );
+            LocalGemm( Orientation::NORMAL, orientB, alpha, A1, B1, C11_STAR_STAR );
             AxpyContract( T(1), C11_STAR_STAR, C11 );
         }
     }
@@ -212,7 +212,7 @@ void SUMMA_NT
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( A, B, C );
-      if( orientB == NORMAL )
+      if( orientB == Orientation::NORMAL )
           LogicError("B must be (Conjugate)Transposed");
       if( A.Height() != C.Height() ||
           B.Height() != C.Width() ||

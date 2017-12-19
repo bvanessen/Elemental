@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 // NOTE: These algorithms are adaptations and/or extensions of Alg. 2 from
 //       Greg Henry's "The shifted Hessenberg system solve computation".
@@ -472,14 +471,14 @@ void MultiShiftHessSolve
     EL_DEBUG_CSE
     if( uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             mshs::LN( alpha, H, shifts, X );
         else
             LogicError("This option is not yet supported");
     }
     else
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             mshs::UN( alpha, H, shifts, X );
         else
             LogicError("This option is not yet supported");
@@ -498,14 +497,14 @@ void MultiShiftHessSolve
     EL_DEBUG_CSE
     if( uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             mshs::LN( alpha, H, shifts, X );
         else
             LogicError("This option is not yet supported");
     }
     else
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             mshs::UN( alpha, H, shifts, X );
         else
             LogicError("This option is not yet supported");

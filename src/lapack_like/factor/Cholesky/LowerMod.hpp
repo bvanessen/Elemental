@@ -51,7 +51,7 @@ void LowerUpdate( Matrix<F>& L, Matrix<F>& V )
         //             = -| l21 V2 | + tau (l21 + V2 u^T) | 1 conj(u) |
         lambda11 = -lambda11;
         z21 = l21;
-        Gemv( NORMAL, F(1), V2, v1, F(1), z21 );
+        Gemv( Orientation::NORMAL, F(1), V2, v1, F(1), z21 );
         l21 *= -1;
         Axpy( tau, z21, l21 );
         V2 *= -1;
@@ -109,7 +109,7 @@ void LowerUpdate
         z21_MC_STAR = l21;
         v1_STAR_MR = v1;
         Zeros( b21_MC_STAR, V2.Height(), 1 );
-        LocalGemv( NORMAL, F(1), V2, v1_STAR_MR, F(0), b21_MC_STAR );
+        LocalGemv( Orientation::NORMAL, F(1), V2, v1_STAR_MR, F(0), b21_MC_STAR );
         El::AllReduce( b21_MC_STAR, V2.RowComm() );
         z21_MC_STAR += b21_MC_STAR;
         l21 *= -1;
@@ -158,7 +158,7 @@ void LowerDowndate( Matrix<F>& L, Matrix<F>& V )
         //           = -|l21 V2| + 1/tau |l21 - V2 u^T| |1 conj(u)|
         lambda11 = -lambda11;
         z21 = l21;
-        Gemv( NORMAL, F(-1), V2, v1, F(1), z21 );
+        Gemv( Orientation::NORMAL, F(-1), V2, v1, F(1), z21 );
         l21 *= -1;
         V2 *= -1;
         Axpy( F(1)/tau, z21, l21 );
@@ -217,7 +217,7 @@ void LowerDowndate( AbstractDistMatrix<F>& LPre, AbstractDistMatrix<F>& VPre )
         z21_MC_STAR = l21;
         v1_STAR_MR = v1;
         Zeros( b21_MC_STAR, V2.Height(), 1 );
-        LocalGemv( NORMAL, F(-1), V2, v1_STAR_MR, F(0), b21_MC_STAR );
+        LocalGemv( Orientation::NORMAL, F(-1), V2, v1_STAR_MR, F(0), b21_MC_STAR );
         El::AllReduce( b21_MC_STAR, V2.RowComm() );
         z21_MC_STAR += b21_MC_STAR;
         l21 *= -1;

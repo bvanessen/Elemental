@@ -18,7 +18,7 @@ void UVar1( Matrix<T>& U, bool conjugate=false )
     EL_DEBUG_CSE
     const Int n = U.Height();
     const Int bsize = Blocksize();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     for( Int k=0; k<n; k+=bsize )
     {
@@ -31,8 +31,8 @@ void UVar1( Matrix<T>& U, bool conjugate=false )
         auto U01 = U( ind0, ind1 );
         auto U11 = U( ind1, ind1 );
 
-        Trrk( UpperOrLower::UPPER, NORMAL, orientation, T(1), U01, U01, T(1), U00 );
-        Trmm( RIGHT, UpperOrLower::UPPER, orientation, NON_UNIT, T(1), U11, U01 );
+        Trrk( UpperOrLower::UPPER, Orientation::NORMAL, orientation, T(1), U01, U01, T(1), U00 );
+        Trmm( LeftOrRight::RIGHT, UpperOrLower::UPPER, orientation, UnitOrNonUnit::NON_UNIT, T(1), U11, U01 );
         trtrmm::UUnblocked( U11, conjugate );
     }
 }
@@ -63,7 +63,7 @@ void UVar1( AbstractDistMatrix<T>& UPre, bool conjugate=false )
 
     const Int n = UPre.Height();
     const Int bsize = Blocksize();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
     for( Int k=0; k<n; k+=bsize )
     {
         const Int nb = Min(bsize,n-k);
@@ -83,7 +83,7 @@ void UVar1( AbstractDistMatrix<T>& UPre, bool conjugate=false )
 
         U11_STAR_STAR = U11;
         LocalTrmm
-        ( RIGHT, UpperOrLower::UPPER, orientation, NON_UNIT,
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, orientation, UnitOrNonUnit::NON_UNIT,
           T(1), U11_STAR_STAR, U01_VC_STAR );
         U01 = U01_VC_STAR;
 

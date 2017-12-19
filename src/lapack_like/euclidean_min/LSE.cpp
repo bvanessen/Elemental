@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 #include "El/core/FlamePart.hpp"
 
@@ -99,7 +98,7 @@ void Overwrite
     GRQ( B, tB, dB, A, tA, dA );
 
     // G := Z^H C
-    qr::ApplyQ( LEFT, ADJOINT, A, tA, dA, C );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, A, tA, dA, C );
 
     // Partition the relevant matrices
     Zeros( X, n, numRhs );
@@ -118,14 +117,14 @@ void Overwrite
 
     // Solve T12 Y2 = D
     Y2 = D;
-    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), T12, Y2, checkIfSingular );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), T12, Y2, checkIfSingular );
 
     // G1 := G1 - R12 Y2
-    Gemm( NORMAL, NORMAL, F(-1), R12, Y2, F(1), G1 );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), R12, Y2, F(1), G1 );
 
     // Solve R11 Y1 = G1
     Y1 = G1;
-    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), R11, Y1, checkIfSingular );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), R11, Y1, checkIfSingular );
 
     if( computeResidual )
     {
@@ -141,15 +140,15 @@ void Overwrite
             PartitionLeft( R22, R22L, R22R, n-m );
             Matrix<F> DT, DB;
             PartitionUp( D, DT, DB, n-m );
-            Gemm( NORMAL, NORMAL, F(-1), R22R, DB, F(1), G2 );
-            Trmm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), R22L, DT );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), R22R, DB, F(1), G2 );
+            Trmm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), R22L, DT );
             G2 -= DT;
         }
         else
         {
             Matrix<F> R22T, R22B;
             PartitionUp( R22, R22T, R22B, m-n );
-            Trmm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), R22T, D );
+            Trmm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), R22T, D );
             Matrix<F> G2T, G2B;
             PartitionUp( G2, G2T, G2B, m-n );
             G2T -= D;
@@ -158,7 +157,7 @@ void Overwrite
     }
 
     // X := Q^H Y
-    rq::ApplyQ( LEFT, ADJOINT, B, tB, dB, X );
+    rq::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, B, tB, dB, X );
 }
 
 template<typename F>
@@ -211,7 +210,7 @@ void Overwrite
     GRQ( B, tB, dB, A, tA, dA );
 
     // G := Z^H C
-    qr::ApplyQ( LEFT, ADJOINT, A, tA, dA, C );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, A, tA, dA, C );
 
     // Partition the relevant matrices
     Zeros( X, n, numRhs );
@@ -226,14 +225,14 @@ void Overwrite
 
     // Solve T12 Y2 = D
     Y2 = D;
-    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), T12, Y2, checkIfSingular );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), T12, Y2, checkIfSingular );
 
     // G1 := G1 - R12 Y2
-    Gemm( NORMAL, NORMAL, F(-1), R12, Y2, F(1), G1 );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), R12, Y2, F(1), G1 );
 
     // Solve R11 Y1 = G1
     Y1 = G1;
-    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), R11, Y1, checkIfSingular );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), R11, Y1, checkIfSingular );
 
     if( computeResidual )
     {
@@ -249,15 +248,15 @@ void Overwrite
             PartitionLeft( R22, R22L, R22R, n-m );
             DistMatrix<F> DT(g), DB(g);
             PartitionUp( D, DT, DB, n-m );
-            Gemm( NORMAL, NORMAL, F(-1), R22R, DB, F(1), G2 );
-            Trmm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), R22L, DT );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), R22R, DB, F(1), G2 );
+            Trmm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), R22L, DT );
             G2 -= DT;
         }
         else
         {
             DistMatrix<F> R22T(g), R22B(g);
             PartitionUp( R22, R22T, R22B, m-n );
-            Trmm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), R22T, D );
+            Trmm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), R22T, D );
             DistMatrix<F> G2T(g), G2B(g);
             PartitionUp( G2, G2T, G2B, m-n );
             G2T -= D;
@@ -266,7 +265,7 @@ void Overwrite
     }
 
     // X := Q^H Y
-    rq::ApplyQ( LEFT, ADJOINT, B, tB, dB, X );
+    rq::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, B, tB, dB, X );
 }
 
 } // namespace lse

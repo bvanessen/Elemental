@@ -293,7 +293,7 @@ void ApplyAccumulatedReflections
 
             auto HLocRight = HLoc( applyRowInd, applyColInd );
             tempMatrix = HLocRight;
-            Gemm( ADJOINT, NORMAL, Field(1), UBlock, tempMatrix, HLocRight );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), UBlock, tempMatrix, HLocRight );
 
             diagBlockRow += grid.Height();
         }
@@ -346,12 +346,12 @@ void ApplyAccumulatedReflections
 
             auto HLocAbove = HLoc( applyRowInd, applyColInd );
             tempMatrix = HLocAbove;
-            Gemm( NORMAL, NORMAL, Field(1), tempMatrix, UBlock, HLocAbove );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), tempMatrix, UBlock, HLocAbove );
             if( ctrl.wantSchurVecs )
             {
                 auto ZLocBlock = ZLoc( ALL, applyColInd );
                 tempMatrix = ZLocBlock;
-                Gemm( NORMAL, NORMAL, Field(1), tempMatrix, UBlock, ZLocBlock );
+                Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), tempMatrix, UBlock, ZLocBlock );
             }
 
             diagBlockCol += grid.Width();

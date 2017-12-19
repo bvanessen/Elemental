@@ -61,15 +61,15 @@ int InverseFreeSign( Matrix<F>& X, Int maxIts=100, Base<F> tau=0 )
         // Form the left half of Q
         Zero( Q12 );
         MakeIdentity( Q22 );
-        qr::ApplyQ( LEFT, NORMAL, XAlt, householderScalars, signature, Q );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, XAlt, householderScalars, signature, Q );
 
         // Save a copy of R
         R = BAlt;
         MakeTrapezoidal( UpperOrLower::UPPER, R );
 
         // Form the new iterate
-        Gemm( ADJOINT, NORMAL, F(1), Q12, A, F(0), AAlt );
-        Gemm( ADJOINT, NORMAL, F(1), Q22, B, F(0), BAlt );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), Q12, A, F(0), AAlt );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), Q22, B, F(0), BAlt );
         X = XAlt;
 
         // Use the difference in the iterates to test for convergence
@@ -136,15 +136,15 @@ int InverseFreeSign
         // Form the left half of Q
         Zero( Q12 );
         MakeIdentity( Q22 );
-        qr::ApplyQ( LEFT, NORMAL, XAlt, householderScalars, signature, Q );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, XAlt, householderScalars, signature, Q );
 
         // Save a copy of R
         R = BAlt;
         MakeTrapezoidal( UpperOrLower::UPPER, R );
 
         // Form the new iterate
-        Gemm( ADJOINT, NORMAL, F(1), Q12, A, F(0), AAlt );
-        Gemm( ADJOINT, NORMAL, F(1), Q22, B, F(0), BAlt );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), Q12, A, F(0), AAlt );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), Q22, B, F(0), BAlt );
         X = XAlt;
 
         // Use the difference in the iterates to test for convergence
@@ -192,13 +192,13 @@ Base<F> InverseFreeSignDivide( Matrix<F>& X )
     Matrix<Base<F>> signature;
     Permutation perm;
     QR( A, householderScalars, signature, perm );
-    qr::ApplyQ( LEFT, ADJOINT, A, householderScalars, signature, B );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, A, householderScalars, signature, B );
     RQ( B, householderScalars, signature );
 
     // A := Q^H A Q
     A = ACopy;
-    rq::ApplyQ( LEFT, ADJOINT, B, householderScalars, signature, A );
-    rq::ApplyQ( RIGHT, NORMAL, B, householderScalars, signature, A );
+    rq::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, B, householderScalars, signature, A );
+    rq::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, B, householderScalars, signature, A );
 
     // Return || E21 ||1 / || A ||1
     ValueInt<Real> part = ComputePartition( A );
@@ -238,13 +238,13 @@ ValueInt<Base<F>> InverseFreeSignDivide( AbstractDistMatrix<F>& XPre )
     DistMatrix<Base<F>,Dist::MD,Dist::STAR> signature(g);
     DistPermutation perm(g);
     QR( A, householderScalars, signature, perm );
-    qr::ApplyQ( LEFT, ADJOINT, A, householderScalars, signature, B );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, A, householderScalars, signature, B );
     RQ( B, householderScalars, signature );
 
     // A := Q^H A Q
     A = ACopy;
-    rq::ApplyQ( LEFT, ADJOINT, B, householderScalars, signature, A );
-    rq::ApplyQ( RIGHT, NORMAL, B, householderScalars, signature, A );
+    rq::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, B, householderScalars, signature, A );
+    rq::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, B, householderScalars, signature, A );
 
     // Return || E21 ||1 / || A ||1
     // Return || E21 ||1 / || A ||1

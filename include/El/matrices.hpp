@@ -9,7 +9,15 @@
 #ifndef EL_MATRICES_HPP
 #define EL_MATRICES_HPP
 
-namespace El {
+#include <functional>
+#include <vector>
+
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element.hpp"
+
+namespace El
+{
 
 // Deterministic
 // #############
@@ -21,45 +29,45 @@ namespace El {
 // ------
 template<typename F1,typename F2>
 void Cauchy
-( Matrix<F1>& A, const vector<F2>& x, const vector<F2>& y );
+( Matrix<F1>& A, const std::vector<F2>& x, const std::vector<F2>& y );
 template<typename F1,typename F2>
 void Cauchy
 ( AbstractDistMatrix<F1>& A,
-  const vector<F2>& x, const vector<F2>& y );
+  const std::vector<F2>& x, const std::vector<F2>& y );
 
 // Cauchy-like
 // -----------
 template<typename F1,typename F2>
 void CauchyLike
 ( Matrix<F1>& A,
-  const vector<F2>& r, const vector<F2>& s,
-  const vector<F2>& x, const vector<F2>& y );
+  const std::vector<F2>& r, const std::vector<F2>& s,
+  const std::vector<F2>& x, const std::vector<F2>& y );
 template<typename F1,typename F2>
 void CauchyLike
 ( AbstractDistMatrix<F1>& A,
-  const vector<F2>& r, const vector<F2>& s,
-  const vector<F2>& x, const vector<F2>& y );
+  const std::vector<F2>& r, const std::vector<F2>& s,
+  const std::vector<F2>& x, const std::vector<F2>& y );
 
 // Circulant
 // ---------
 template<typename T>
 void Circulant( Matrix<T>& A, const Matrix<T>& a );
 template<typename T>
-void Circulant( Matrix<T>& A, const vector<T>& a );
+void Circulant( Matrix<T>& A, const std::vector<T>& a );
 
 template<typename T>
 void Circulant( AbstractDistMatrix<T>& A, const Matrix<T>& a );
 template<typename T>
-void Circulant( AbstractDistMatrix<T>& A, const vector<T>& a );
+void Circulant( AbstractDistMatrix<T>& A, const std::vector<T>& a );
 
 // Diagonal
 // --------
 template<typename S,typename T>
-void Diagonal( Matrix<S>& D, const vector<T>& d );
+void Diagonal( Matrix<S>& D, const std::vector<T>& d );
 template<typename S,typename T>
 void Diagonal( Matrix<S>& D, const Matrix<T>& d );
 template<typename S,typename T>
-void Diagonal( AbstractDistMatrix<S>& D, const vector<T>& d );
+void Diagonal( AbstractDistMatrix<S>& D, const std::vector<T>& d );
 template<typename S,typename T>
 void Diagonal( AbstractDistMatrix<S>& D, const Matrix<T>& d );
 template<typename S,typename T>
@@ -69,18 +77,18 @@ void Diagonal( AbstractDistMatrix<S>& D, const AbstractDistMatrix<T>& d );
 // ------
 template<typename Real>
 void Egorov
-( Matrix<Complex<Real>>& A, function<Real(Int,Int)> phase, Int n );
+( Matrix<Complex<Real>>& A, std::function<Real(Int,Int)> phase, Int n );
 template<typename Real>
 void Egorov
 ( AbstractDistMatrix<Complex<Real>>& A,
-  function<Real(Int,Int)> phase, Int n );
+  std::function<Real(Int,Int)> phase, Int n );
 
 // Fiedler
 // -------
 template<typename Field>
-void Fiedler( Matrix<Field>& A, const vector<Field>& c );
+void Fiedler( Matrix<Field>& A, const std::vector<Field>& c );
 template<typename Field>
-void Fiedler( AbstractDistMatrix<Field>& A, const vector<Field>& c );
+void Fiedler( AbstractDistMatrix<Field>& A, const std::vector<Field>& c );
 
 // Fourier
 // -------
@@ -99,9 +107,9 @@ void GCDMatrix( AbstractDistMatrix<T>& G, Int m, Int n );
 // Hankel
 // ------
 template<typename T>
-void Hankel( Matrix<T>& A, Int m, Int n, const vector<T>& a );
+void Hankel( Matrix<T>& A, Int m, Int n, const std::vector<T>& a );
 template<typename T>
-void Hankel( AbstractDistMatrix<T>& A, Int m, Int n, const vector<T>& a );
+void Hankel( AbstractDistMatrix<T>& A, Int m, Int n, const std::vector<T>& a );
 
 // Hilbert
 // -------
@@ -140,10 +148,10 @@ void Ones( AbstractDistMatrix<T>& A, Int m, Int n );
 // --------
 template<typename S,typename T>
 void Toeplitz
-( Matrix<S>& A, Int m, Int n, const vector<T>& a );
+( Matrix<S>& A, Int m, Int n, const std::vector<T>& a );
 template<typename S,typename T>
 void Toeplitz
-( AbstractDistMatrix<S>& A, Int m, Int n, const vector<T>& a );
+( AbstractDistMatrix<S>& A, Int m, Int n, const std::vector<T>& a );
 
 // Walsh
 // -----

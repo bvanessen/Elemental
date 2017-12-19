@@ -48,14 +48,14 @@ void Trsv
     EL_DEBUG_CSE
     if( uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trsv::LN( diag, A, x );
         else
             trsv::LT( orientation, diag, A, x );
     }
     else
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trsv::UN( diag, A, x );
         else
             trsv::UT( orientation, diag, A, x );

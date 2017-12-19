@@ -59,7 +59,7 @@ void UN_C
         Transpose( B1_VR_STAR, B1Trans_STAR_MR, conjugate );
 
         LocalTrr2k
-        ( UpperOrLower::UPPER, NORMAL, NORMAL, NORMAL, NORMAL,
+        ( UpperOrLower::UPPER, Orientation::NORMAL, Orientation::NORMAL, Orientation::NORMAL, Orientation::NORMAL,
           alpha,    A1_MC_STAR, B1Trans_STAR_MR,
           alphaSec, B1_MC_STAR, A1Trans_STAR_MR, T(1), C );
     }
@@ -78,7 +78,7 @@ void UN_Dot
     const Int n = CPre.Height();
     const Grid& g = APre.Grid();
 
-    const Orientation orient = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orient = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadProxy<T,T,Dist::STAR,Dist::VC> AProx( APre );
     auto& A = AProx.GetLocked();
@@ -105,7 +105,7 @@ void UN_Dot
 
         Z.Resize( nbOuter, nbOuter );
         Syr2k
-        ( UpperOrLower::UPPER, NORMAL, alpha, A1.Matrix(), B1.Matrix(), Z.Matrix(),
+        ( UpperOrLower::UPPER, Orientation::NORMAL, alpha, A1.Matrix(), B1.Matrix(), Z.Matrix(),
           conjugate );
         AxpyContract( T(1), Z, C11 );
 
@@ -118,8 +118,8 @@ void UN_Dot
             auto B2 = B( indInner, ALL );
             auto C21 = C( indInner, indOuter );
 
-            LocalGemm( NORMAL, orient, alpha, A1, B2, Z );
-            LocalGemm( NORMAL, orient, Conj(alpha), B1, A2, Z );
+            LocalGemm( Orientation::NORMAL, orient, alpha, A1, B2, Z );
+            LocalGemm( Orientation::NORMAL, orient, Conj(alpha), B1, A2, Z );
             AxpyContract( T(1), Z, C21 );
         }
     }

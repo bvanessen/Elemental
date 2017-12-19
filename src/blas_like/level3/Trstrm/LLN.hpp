@@ -16,7 +16,7 @@ template<typename F>
 void LLNUnb( UnitOrNonUnit diag, F alpha, const Matrix<F>& L, Matrix<F>& X )
 {
     EL_DEBUG_CSE
-    const bool isUnit = ( diag==UNIT );
+    const bool isUnit = ( diag==UnitOrNonUnit::UNIT );
     const Int n = L.Height();
     const Int LLDim = L.LDim();
     const Int XLDim = X.LDim();
@@ -78,12 +78,12 @@ void LLN
         auto X20 = X( ind2, ind0 );
         auto X21 = X( ind2, ind1 );
 
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11, X10, checkIfSingular );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag, F(1), L11, X10, checkIfSingular );
         trstrm::LLNUnb( diag, F(1), L11, X11 );
-        Gemm( NORMAL, NORMAL, F(-1), L21, X10, F(1), X20 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), L21, X10, F(1), X20 );
         Z11 = X11;
         MakeTrapezoidal( UpperOrLower::LOWER, Z11 );
-        Gemm( NORMAL, NORMAL, F(-1), L21, Z11, F(1), X21 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), L21, Z11, F(1), X21 );
     }
 }
 
@@ -133,10 +133,10 @@ void LLN
         X10_STAR_VR = X10;
 
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11_STAR_STAR, X10_STAR_VR,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag, F(1), L11_STAR_STAR, X10_STAR_VR,
           checkIfSingular );
         Trstrm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11_STAR_STAR, X11_STAR_STAR,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag, F(1), L11_STAR_STAR, X11_STAR_STAR,
           checkIfSingular );
         X11 = X11_STAR_STAR;
         X11_STAR_MR.AlignWith( X21 );
@@ -150,9 +150,9 @@ void LLN
         L21_MC_STAR = L21;
 
         LocalGemm
-        ( NORMAL, NORMAL, F(-1), L21_MC_STAR, X10_STAR_MR, F(1), X20 );
+        ( Orientation::NORMAL, Orientation::NORMAL, F(-1), L21_MC_STAR, X10_STAR_MR, F(1), X20 );
         LocalGemm
-        ( NORMAL, NORMAL, F(-1), L21_MC_STAR, X11_STAR_MR, F(1), X21 );
+        ( Orientation::NORMAL, Orientation::NORMAL, F(-1), L21_MC_STAR, X11_STAR_MR, F(1), X21 );
     }
 }
 

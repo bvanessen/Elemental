@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 // NOTE: This definition is nearly identical to StandardProxy but is
 //       meant to demonstrate how to manually build and use a pivot proxy

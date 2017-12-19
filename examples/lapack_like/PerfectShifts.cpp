@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 // The following example performs a bulge sweep using a pair of eigenvalues
 // using both a given datatype and an equivalent substituting the base datatype

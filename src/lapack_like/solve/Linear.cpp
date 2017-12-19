@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 
@@ -67,11 +66,11 @@ void RowEchelon( Matrix<Field>& A, Matrix<Field>& B )
         PB.PermuteRows( AB2 );
         PB.PermuteRows( BB );
 
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, Field(1), A11, A12 );
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, Field(1), A11, B1 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, Field(1), A11, A12 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, Field(1), A11, B1 );
 
-        Gemm( NORMAL, NORMAL, Field(-1), A21, A12, Field(1), A22 );
-        Gemm( NORMAL, NORMAL, Field(-1), A21, B1,  Field(1), B2 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(-1), A21, A12, Field(1), A22 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(-1), A21, B1,  Field(1), B2 );
     }
 }
 
@@ -140,20 +139,20 @@ void RowEchelon( DistMatrix<Field>& A, DistMatrix<Field>& B )
         B1_STAR_VR.AlignWith( B1 );
         B1_STAR_VR = B1;
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, Field(1), A11_STAR_STAR, A12_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, Field(1), A11_STAR_STAR, A12_STAR_VR );
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, Field(1), A11_STAR_STAR, B1_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, Field(1), A11_STAR_STAR, B1_STAR_VR );
 
         A12_STAR_MR.AlignWith( A22 );
         A12_STAR_MR = A12_STAR_VR;
         B1_STAR_MR.AlignWith( B1 );
         B1_STAR_MR = B1_STAR_VR;
         LocalGemm
-        ( NORMAL, NORMAL, Field(-1), A21_MC_STAR, A12_STAR_MR, Field(1), A22 );
+        ( Orientation::NORMAL, Orientation::NORMAL, Field(-1), A21_MC_STAR, A12_STAR_MR, Field(1), A22 );
         if( BAligned )
         {
             LocalGemm
-            ( NORMAL, NORMAL,
+            ( Orientation::NORMAL, Orientation::NORMAL,
               Field(-1), A21_MC_STAR, B1_STAR_MR, Field(1), B2 );
         }
         else
@@ -161,7 +160,7 @@ void RowEchelon( DistMatrix<Field>& A, DistMatrix<Field>& B )
             A21_MC_STAR_B.AlignWith( B2 );
             A21_MC_STAR_B = A21_MC_STAR;
             LocalGemm
-            ( NORMAL, NORMAL,
+            ( Orientation::NORMAL, Orientation::NORMAL,
               Field(-1), A21_MC_STAR_B, B1_STAR_MR, Field(1), B2 );
         }
 
@@ -179,7 +178,7 @@ void Overwrite( Matrix<Field>& A, Matrix<Field>& B )
     EL_DEBUG_CSE
     // Perform Gaussian elimination
     RowEchelon( A, B );
-    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, Field(1), A, B );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, Field(1), A, B );
 }
 
 template<typename Field>
@@ -198,12 +197,12 @@ void Overwrite
     {
         DistPermutation P(A.Grid());
         LU( A, P );
-        lu::SolveAfter( NORMAL, A, P, B );
+        lu::SolveAfter( Orientation::NORMAL, A, P, B );
     }
     else
     {
         RowEchelon( A, B );
-        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, Field(1), A, B );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, Field(1), A, B );
     }
 }
 

@@ -16,7 +16,7 @@ enum class UpperOrLower
 char UpperOrLowerToChar(UpperOrLower uplo);
 UpperOrLower CharToUpperOrLower(char c);
 
-enum Orientation
+enum class Orientation
 {
     NORMAL,
     TRANSPOSE,
@@ -25,13 +25,27 @@ enum Orientation
 char OrientationToChar(Orientation orientation);
 Orientation CharToOrientation(char c);
 
-enum LeftOrRight
+enum class LeftOrRight
 {
     LEFT,
     RIGHT
 };
 char LeftOrRightToChar(LeftOrRight side);
 LeftOrRight CharToLeftOrRight(char c);
+
+enum class UnitOrNonUnit
+{
+    NON_UNIT,
+    UNIT
+};
+char UnitOrNonUnitToChar( UnitOrNonUnit diag );
+UnitOrNonUnit CharToUnitOrNonUnit( char c );
+
+enum class ForwardOrBackward
+{
+    FORWARD,
+    BACKWARD
+};
 
 }// namespace El
 #endif // EL_TYPES_ENUMS_HPP_

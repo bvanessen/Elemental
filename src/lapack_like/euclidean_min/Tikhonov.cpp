@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 
@@ -20,12 +19,12 @@ void Tikhonov
   TikhonovAlg alg )
 {
     EL_DEBUG_CSE
-    const bool normal = ( orientation==NORMAL );
+    const bool normal = ( orientation==Orientation::NORMAL );
     const Int m = ( normal ? A.Height() : A.Width()  );
     const Int n = ( normal ? A.Width()  : A.Height() );
     if( G.Width() != n )
         LogicError("Tikhonov matrix was the wrong width");
-    if( orientation == TRANSPOSE && IsComplex<F>::value )
+    if( orientation == Orientation::TRANSPOSE && IsComplex<F>::value )
         LogicError("Transpose version of complex Tikhonov not yet supported");
 
     if( m >= n )
@@ -33,11 +32,11 @@ void Tikhonov
         Matrix<F> Z;
         if( alg == TIKHONOV_CHOLESKY )
         {
-            if( orientation == NORMAL )
-                Herk( UpperOrLower::LOWER, ADJOINT, Base<F>(1), A, Z );
+            if( orientation == Orientation::NORMAL )
+                Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Base<F>(1), A, Z );
             else
-                Herk( UpperOrLower::LOWER, NORMAL, Base<F>(1), A, Z );
-            Herk( UpperOrLower::LOWER, ADJOINT, Base<F>(1), G, Base<F>(1), Z );
+                Herk( UpperOrLower::LOWER, Orientation::NORMAL, Base<F>(1), A, Z );
+            Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Base<F>(1), G, Base<F>(1), Z );
             Cholesky( UpperOrLower::LOWER, Z );
         }
         else
@@ -46,18 +45,18 @@ void Tikhonov
             Zeros( Z, m+mG, n );
             auto ZT = Z( IR(0,m),    IR(0,n) );
             auto ZB = Z( IR(m,m+mG), IR(0,n) );
-            if( orientation == NORMAL )
+            if( orientation == Orientation::NORMAL )
                 ZT = A;
             else
                 Adjoint( A, ZT );
             ZB = G;
             qr::ExplicitTriang( Z );
         }
-        if( orientation == NORMAL )
-            Gemm( ADJOINT, NORMAL, F(1), A, B, X );
+        if( orientation == Orientation::NORMAL )
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), A, B, X );
         else
-            Gemm( NORMAL, NORMAL, F(1), A, B, X );
-        cholesky::SolveAfter( UpperOrLower::LOWER, NORMAL, Z, X );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), A, B, X );
+        cholesky::SolveAfter( UpperOrLower::LOWER, Orientation::NORMAL, Z, X );
     }
     else
     {
@@ -85,12 +84,12 @@ void Tikhonov
     auto& B = BProx.GetLocked();
     auto& X = XProx.Get();
 
-    const bool normal = ( orientation==NORMAL );
+    const bool normal = ( orientation==Orientation::NORMAL );
     const Int m = ( normal ? A.Height() : A.Width()  );
     const Int n = ( normal ? A.Width()  : A.Height() );
     if( G.Width() != n )
         LogicError("Tikhonov matrix was the wrong width");
-    if( orientation == TRANSPOSE && IsComplex<F>::value )
+    if( orientation == Orientation::TRANSPOSE && IsComplex<F>::value )
         LogicError("Transpose version of complex Tikhonov not yet supported");
 
     if( m >= n )
@@ -98,11 +97,11 @@ void Tikhonov
         DistMatrix<F> Z(A.Grid());
         if( alg == TIKHONOV_CHOLESKY )
         {
-            if( orientation == NORMAL )
-                Herk( UpperOrLower::LOWER, ADJOINT, Base<F>(1), A, Z );
+            if( orientation == Orientation::NORMAL )
+                Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Base<F>(1), A, Z );
             else
-                Herk( UpperOrLower::LOWER, NORMAL, Base<F>(1), A, Z );
-            Herk( UpperOrLower::LOWER, ADJOINT, Base<F>(1), G, Base<F>(1), Z );
+                Herk( UpperOrLower::LOWER, Orientation::NORMAL, Base<F>(1), A, Z );
+            Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Base<F>(1), G, Base<F>(1), Z );
             Cholesky( UpperOrLower::LOWER, Z );
         }
         else
@@ -111,18 +110,18 @@ void Tikhonov
             Zeros( Z, m+mG, n );
             auto ZT = Z( IR(0,m),    IR(0,n) );
             auto ZB = Z( IR(m,m+mG), IR(0,n) );
-            if( orientation == NORMAL )
+            if( orientation == Orientation::NORMAL )
                 ZT = A;
             else
                 Adjoint( A, ZT );
             ZB = G;
             qr::ExplicitTriang( Z );
         }
-        if( orientation == NORMAL )
-            Gemm( ADJOINT, NORMAL, F(1), A, B, X );
+        if( orientation == Orientation::NORMAL )
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), A, B, X );
         else
-            Gemm( NORMAL, NORMAL, F(1), A, B, X );
-        cholesky::SolveAfter( UpperOrLower::LOWER, NORMAL, Z, X );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), A, B, X );
+        cholesky::SolveAfter( UpperOrLower::LOWER, Orientation::NORMAL, Z, X );
     }
     else
     {

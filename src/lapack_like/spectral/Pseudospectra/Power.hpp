@@ -268,20 +268,20 @@ Power
         if( psCtrl.schur )
         {
             MultiShiftTrsm
-            ( LEFT, UpperOrLower::UPPER, NORMAL, C(1), UCopy, activeShifts, activeX );
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1), UCopy, activeShifts, activeX );
             FixColumns( activeX );
             MultiShiftTrsm
-            ( LEFT, UpperOrLower::UPPER, ADJOINT, C(1), UCopy, activeShifts, activeX );
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, C(1), UCopy, activeShifts, activeX );
         }
         else
         {
             MultiShiftHessSolve
-            ( UpperOrLower::UPPER, NORMAL, C(1), U, activeShifts, activeX );
+            ( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, activeShifts, activeX );
             FixColumns( activeX );
             Matrix<C> activeShiftsConj;
             Conjugate( activeShifts, activeShiftsConj );
             MultiShiftHessSolve
-            ( UpperOrLower::LOWER, NORMAL, C(1), UAdj, activeShiftsConj, activeX );
+            ( UpperOrLower::LOWER, Orientation::NORMAL, C(1), UAdj, activeShiftsConj, activeX );
         }
 
         ColumnTwoNorms( activeX, activeEsts );
@@ -413,22 +413,22 @@ Power
         if( psCtrl.schur )
         {
             MultiShiftTrsm
-            ( LEFT, UpperOrLower::UPPER, NORMAL, C(1), U, activeShifts, activeX );
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, activeShifts, activeX );
             FixColumns( activeX );
             MultiShiftTrsm
-            ( LEFT, UpperOrLower::UPPER, ADJOINT, C(1), U, activeShifts, activeX );
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, C(1), U, activeShifts, activeX );
         }
         else
         {
             DistMatrix<C,Dist::STAR,Dist::VR> activeX_STAR_VR( activeX );
             MultiShiftHessSolve
-            ( UpperOrLower::UPPER, NORMAL, C(1), U_VC_STAR, activeShifts,
+            ( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U_VC_STAR, activeShifts,
               activeX_STAR_VR );
             FixColumns( activeX_STAR_VR );
             DistMatrix<C,Dist::VR,Dist::STAR> activeShiftsConj(g);
             Conjugate( activeShifts, activeShiftsConj );
             MultiShiftHessSolve
-            ( UpperOrLower::LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
+            ( UpperOrLower::LOWER, Orientation::NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
               activeX_STAR_VR );
             activeX = activeX_STAR_VR;
         }

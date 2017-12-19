@@ -68,14 +68,14 @@ void ExplicitUnitary
         A.Resize( A.Height(), householderScalars.Height() );
         ExpandPackedReflectors
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
-        DiagonalScale( RIGHT, NORMAL, signature, A );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, A );
     }
     else
     {
         auto ACopy = A;
         // TODO: Use an extension of ExpandPackedReflectors to make this faster
         Identity( A, A.Height(), A.Height() );
-        qr::ApplyQ( LEFT, NORMAL, ACopy, householderScalars, signature, A );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, ACopy, householderScalars, signature, A );
     }
 }
 
@@ -104,14 +104,14 @@ void ExplicitUnitary
         A.Resize( A.Height(), householderScalars.Height() );
         ExpandPackedReflectors
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
-        DiagonalScale( RIGHT, NORMAL, signature, A );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, A );
     }
     else
     {
         auto ACopy = A;
         // TODO: Use an extension of ExpandPackedReflectors to make this faster
         Identity( A, A.Height(), A.Height() );
-        qr::ApplyQ( LEFT, NORMAL, ACopy, householderScalars, signature, A );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, ACopy, householderScalars, signature, A );
     }
 }
 
@@ -146,14 +146,14 @@ void Explicit
         A.Resize( m, numIts );
         ExpandPackedReflectors
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
-        DiagonalScale( RIGHT, NORMAL, signature, A );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, A );
     }
     else
     {
         auto ACopy = A;
         // TODO: Use an extension of ExpandPackedReflectors to make this faster
         Identity( A, A.Height(), A.Height() );
-        qr::ApplyQ( LEFT, NORMAL, ACopy, householderScalars, signature, A );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, ACopy, householderScalars, signature, A );
     }
 }
 
@@ -193,14 +193,14 @@ void Explicit
         A.Resize( m, numIts );
         ExpandPackedReflectors
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
-        DiagonalScale( RIGHT, NORMAL, signature, A );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, A );
     }
     else
     {
         auto ACopy = A;
         // TODO: Use an extension of ExpandPackedReflectors to make this faster
         Identity( A, A.Height(), A.Height() );
-        qr::ApplyQ( LEFT, NORMAL, ACopy, householderScalars, signature, A );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, ACopy, householderScalars, signature, A );
     }
 }
 
@@ -231,14 +231,14 @@ void Explicit
         A.Resize( m, numIts );
         ExpandPackedReflectors
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
-        DiagonalScale( RIGHT, NORMAL, signature, A );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, A );
     }
     else
     {
         auto ACopy = A;
         // TODO: Use an extension of ExpandPackedReflectors to make this faster
         Identity( A, A.Height(), A.Height() );
-        qr::ApplyQ( LEFT, NORMAL, ACopy, householderScalars, signature, A );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, ACopy, householderScalars, signature, A );
     }
 
     Omega.ExplicitMatrix( OmegaFull );
@@ -276,14 +276,14 @@ void Explicit
         A.Resize( m, numIts );
         ExpandPackedReflectors
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
-        DiagonalScale( RIGHT, NORMAL, signature, A );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, A );
     }
     else
     {
         auto ACopy = A;
         // TODO: Use an extension of ExpandPackedReflectors to make this faster
         Identity( A, A.Height(), A.Height() );
-        qr::ApplyQ( LEFT, NORMAL, ACopy, householderScalars, signature, A );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, ACopy, householderScalars, signature, A );
     }
 
     Omega.ExplicitMatrix( OmegaFull );

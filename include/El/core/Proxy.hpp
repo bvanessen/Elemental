@@ -9,9 +9,13 @@
 #ifndef EL_CORE_PROXY_HPP
 #define EL_CORE_PROXY_HPP
 
+#include "El/core/DistMatrix/Block.hpp"
+#include "El/core/Matrix/decl.hpp"
+
 // TODO: Split into several files
 
-namespace El {
+namespace El
+{
 
 template<typename S,typename T,typename=EnableIf<CanCast<S,T>>>
 class MatrixReadProxy

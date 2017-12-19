@@ -36,7 +36,7 @@ void LUT
         auto X2 = X( ind2, ALL );
 
         LeftUnb( UpperOrLower::UPPER, orientation, U11, shifts, X1 );
-        Gemm( orientation, NORMAL, F(-1), U12, X1, F(1), X2 );
+        Gemm( orientation, Orientation::NORMAL, F(-1), U12, X1, F(1), X2 );
     }
 }
 
@@ -95,7 +95,7 @@ void LUT
         U12_STAR_MC.AlignWith( X2 );
         U12_STAR_MC = U12; // U12[* ,MC] <- U12[MC,MR]
         LocalGemm
-        ( orientation, NORMAL, F(-1), U12_STAR_MC, X1_STAR_MR, F(1), X2 );
+        ( orientation, Orientation::NORMAL, F(-1), U12_STAR_MC, X1_STAR_MR, F(1), X2 );
     }
 }
 

@@ -169,7 +169,7 @@ AEDInfo NibbleHelper
 
         Hessenberg( UpperOrLower::UPPER, TTL, householderScalarsT );
         hessenberg::ApplyQ
-        ( LEFT, UpperOrLower::UPPER, ADJOINT, TTL, householderScalarsT, TTR );
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, TTL, householderScalarsT, TTR );
     }
 
     spikeValue *= V(0,0);
@@ -180,7 +180,7 @@ AEDInfo NibbleHelper
     if( spikeSize > 1 && spikeValue != zero )
     {
         hessenberg::ApplyQ
-        ( RIGHT, UpperOrLower::UPPER, NORMAL, TTL, householderScalarsT, VL );
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, TTL, householderScalarsT, VL );
     }
 
     return info;
@@ -320,7 +320,7 @@ AEDInfo NibbleHelper
 
         Hessenberg( UpperOrLower::UPPER, TTL, householderScalarsT );
         hessenberg::ApplyQ
-        ( LEFT, UpperOrLower::UPPER, ADJOINT, TTL, householderScalarsT, TTR );
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, TTL, householderScalarsT, TTR );
     }
 
     spikeValue *= Conj(V(0,0));
@@ -331,7 +331,7 @@ AEDInfo NibbleHelper
     if( spikeSize > 1 && spikeValue != zero )
     {
         hessenberg::ApplyQ
-        ( RIGHT, UpperOrLower::UPPER, NORMAL, TTL, householderScalarsT, VL );
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, TTL, householderScalarsT, VL );
     }
 
     return info;

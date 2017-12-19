@@ -10,7 +10,7 @@
 namespace El {
 namespace trsm {
 
-// Left Lower NORMAL (Non)Unit Trsm
+// Left Lower Orientation::NORMAL (Non)Unit Trsm
 //   X := tril(L)^-1  X, or
 //   X := trilu(L)^-1 X
 
@@ -55,7 +55,7 @@ void LLNLarge
 
         // X1[* ,VR] := L11^-1[* ,* ] X1[* ,VR]
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11_STAR_STAR, X1_STAR_VR,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag, F(1), L11_STAR_STAR, X1_STAR_VR,
           checkIfSingular );
 
         X1_STAR_MR.AlignWith( X2 );
@@ -65,7 +65,7 @@ void LLNLarge
         L21_MC_STAR = L21;        // L21[MC,* ] <- L21[MC,MR]
 
         // X2[MC,MR] -= L21[MC,* ] X1[* ,MR]
-        LocalGemm( NORMAL, NORMAL, F(-1), L21_MC_STAR, X1_STAR_MR, F(1), X2 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), L21_MC_STAR, X1_STAR_MR, F(1), X2 );
     }
 }
 
@@ -111,7 +111,7 @@ void LLNMedium
         // X1^T[MR,* ] := X1^T[MR,* ] L11^-T[* ,* ]
         //              = (L11^-1[* ,* ] X1[* ,MR])^T
         LocalTrsm
-        ( RIGHT, UpperOrLower::LOWER, TRANSPOSE, diag,
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::TRANSPOSE, diag,
           F(1), L11_STAR_STAR, X1Trans_MR_STAR, checkIfSingular );
 
         Transpose( X1Trans_MR_STAR, X1 );
@@ -120,7 +120,7 @@ void LLNMedium
 
         // X2[MC,MR] -= L21[MC,* ] X1[* ,MR]
         LocalGemm
-        ( NORMAL, TRANSPOSE, F(-1), L21_MC_STAR, X1Trans_MR_STAR, F(1), X2 );
+        ( Orientation::NORMAL, Orientation::TRANSPOSE, F(-1), L21_MC_STAR, X1Trans_MR_STAR, F(1), X2 );
     }
 }
 
@@ -160,11 +160,11 @@ void LLNSmall
 
         // X1[* ,* ] := (L11[* ,* ])^-1 X1[* ,* ]
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, diag,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag,
           F(1), L11_STAR_STAR, X1_STAR_STAR, checkIfSingular );
 
         // X2[VC,* ] -= L21[VC,* ] X1[* ,* ]
-        LocalGemm( NORMAL, NORMAL, F(-1), L21, X1_STAR_STAR, F(1), X2 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), L21, X1_STAR_STAR, F(1), X2 );
     }
 }
 

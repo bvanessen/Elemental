@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level1.hpp>
@@ -31,7 +31,7 @@ namespace El {
 
 template<typename T>
 void Trr2k
-( UpperOrLower uplo, 
+( UpperOrLower uplo,
   Orientation orientA, Orientation orientB,
   Orientation orientC, Orientation orientD,
   T alpha, const AbstractDistMatrix<T>& A, const AbstractDistMatrix<T>& B,
@@ -39,15 +39,15 @@ void Trr2k
   T gamma,       AbstractDistMatrix<T>& E )
 {
     EL_DEBUG_CSE
-    const bool normalA = orientA == NORMAL;
-    const bool normalB = orientB == NORMAL;
-    const bool normalC = orientC == NORMAL;
-    const bool normalD = orientD == NORMAL;
+    const bool normalA = orientA == Orientation::NORMAL;
+    const bool normalB = orientB == Orientation::NORMAL;
+    const bool normalC = orientC == Orientation::NORMAL;
+    const bool normalD = orientD == Orientation::NORMAL;
     Int subcase = 8*normalA + 4*normalB + 2*normalC + normalD;
     ScaleTrapezoid( gamma, uplo, E );
     switch( subcase )
     {
-    case 0: 
+    case 0:
         trr2k::Trr2kNNNN( uplo, alpha, A, B, beta, C, D, E );
         break;
     case 1:
@@ -60,7 +60,7 @@ void Trr2k
         break;
     case 3:
         trr2k::Trr2kNNTT
-        ( uplo, orientC, orientD, 
+        ( uplo, orientC, orientD,
           alpha, A, B, beta, C, D, E );
         break;
     case 4:
@@ -69,17 +69,17 @@ void Trr2k
         break;
     case 5:
         trr2k::Trr2kNTNT
-        ( uplo, orientB, orientD, 
+        ( uplo, orientB, orientD,
           alpha, A, B, beta, C, D, E );
         break;
     case 6:
         trr2k::Trr2kNTTN
-        ( uplo, orientB, orientC, 
+        ( uplo, orientB, orientC,
           alpha, A, B, beta, C, D, E );
         break;
     case 7:
         trr2k::Trr2kNTTT
-        ( uplo, orientB, orientC, orientD, 
+        ( uplo, orientB, orientC, orientD,
           alpha, A, B, beta, C, D, E );
         break;
     case 8:
@@ -88,12 +88,12 @@ void Trr2k
         break;
     case 9:
         trr2k::Trr2kTNNT
-        ( uplo, orientA, orientD, 
+        ( uplo, orientA, orientD,
           alpha, A, B, beta, C, D, E );
         break;
     case 10:
         trr2k::Trr2kTNTN
-        ( uplo, orientA, orientC, 
+        ( uplo, orientA, orientC,
           alpha, A, B, beta, C, D, E );
         break;
     case 11:
@@ -103,7 +103,7 @@ void Trr2k
         break;
     case 12:
         trr2k::Trr2kTTNN
-        ( uplo, orientA, orientB, 
+        ( uplo, orientA, orientB,
           alpha, A, B, beta, C, D, E );
         break;
     case 13:

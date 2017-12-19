@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 #include "./MultiShiftTrsm/LUN.hpp"
 #include "./MultiShiftTrsm/LUT.hpp"
@@ -25,9 +24,9 @@ void MultiShiftTrsm
 {
     EL_DEBUG_CSE
     X *= alpha;
-    if( side == LEFT && uplo == UpperOrLower::UPPER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             mstrsm::LUN( U, shifts, X );
         else
             mstrsm::LUT( orientation, U, shifts, X );
@@ -48,9 +47,9 @@ void MultiShiftTrsm
 {
     EL_DEBUG_CSE
     X *= alpha;
-    if( side == LEFT && uplo == UpperOrLower::UPPER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             mstrsm::LUN( U, shifts, X );
         else
             mstrsm::LUT( orientation, U, shifts, X );

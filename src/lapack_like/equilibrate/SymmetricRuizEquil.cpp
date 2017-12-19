@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 
@@ -46,10 +45,10 @@ void SymmetricRuizEquil
         ColumnMaxNorms( A, scales );
         EntrywiseMap( scales, MakeFunction(DampScaling<Real>) );
         EntrywiseMap( scales, MakeFunction(SquareRootScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, scales, d );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, scales, d );
         // TODO(poulson): Replace with SymmetricDiagonalSolve
-        DiagonalSolve( RIGHT, NORMAL, scales, A );
-        DiagonalSolve( LEFT, NORMAL, scales, A );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, scales, A );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, scales, A );
     }
     SetIndent( indent );
 }
@@ -86,10 +85,10 @@ void SymmetricRuizEquil
         ColumnMaxNorms( A, scales );
         EntrywiseMap( scales, MakeFunction(DampScaling<Real>) );
         EntrywiseMap( scales, MakeFunction(SquareRootScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, scales, d );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, scales, d );
         // TODO(poulson): Replace with SymmetricDiagonalSolve
-        DiagonalSolve( RIGHT, NORMAL, scales, A );
-        DiagonalSolve( LEFT, NORMAL, scales, A );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, scales, A );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, scales, A );
     }
     SetIndent( indent );
 }

@@ -96,7 +96,7 @@ void LN_Dot
     const Int n = CPre.Height();
     const Grid& g = APre.Grid();
 
-    const Orientation orient = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orient = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadProxy<T,T,Dist::STAR,Dist::VC> AProx( APre );
     auto& A = AProx.GetLocked();
@@ -115,7 +115,7 @@ void LN_Dot
         auto C11 = C( indOuter, indOuter );
 
         Z.Resize( nbOuter, nbOuter );
-        Syrk( UpperOrLower::LOWER, NORMAL, alpha, A1.Matrix(), Z.Matrix(), conjugate );
+        Syrk( UpperOrLower::LOWER, Orientation::NORMAL, alpha, A1.Matrix(), Z.Matrix(), conjugate );
         AxpyContract( T(1), Z, C11 );
 
         for( Int kInner=kOuter+nbOuter; kInner<n; kInner+=blockSize )
@@ -126,7 +126,7 @@ void LN_Dot
             auto A2 = A( indInner, ALL );
             auto C21 = C( indInner, indOuter );
 
-            LocalGemm( NORMAL, orient, alpha, A1, A2, Z );
+            LocalGemm( Orientation::NORMAL, orient, alpha, A1, A2, Z );
             AxpyContract( T(1), Z, C21 );
         }
     }

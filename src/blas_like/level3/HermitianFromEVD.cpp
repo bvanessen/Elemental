@@ -38,8 +38,8 @@ void HermitianFromEVD
         auto w1 = w( IR(k,k+nb), ALL        );
 
         Y1 = Z1Copy = Z1;
-        DiagonalScale( RIGHT, NORMAL, w1, Y1 );
-        Trrk( uplo, NORMAL, ADJOINT, F(1), Z1Copy, Y1, F(1), A );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, w1, Y1 );
+        Trrk( uplo, Orientation::NORMAL, Orientation::ADJOINT, F(1), Z1Copy, Y1, F(1), A );
     }
 }
 
@@ -84,7 +84,7 @@ void HermitianFromEVD
         Z1_VR_STAR.AlignWith( A );
         Z1_VR_STAR = Z1_MC_STAR;
 
-        DiagonalScale( RIGHT, NORMAL, w1, Z1_VR_STAR );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, w1, Z1_VR_STAR );
 
         Z1Adj_STAR_MR.AlignWith( A );
         Adjoint( Z1_VR_STAR, Z1Adj_STAR_MR );

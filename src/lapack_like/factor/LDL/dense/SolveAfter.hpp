@@ -22,12 +22,12 @@ void SolveAfter( const Matrix<F>& A, Matrix<F>& B, bool conjugated )
       if( A.Height() != B.Height() )
           LogicError("A and B must be the same height");
     )
-    const Orientation orientation = ( conjugated ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugated ? Orientation::ADJOINT : Orientation::TRANSPOSE );
     const bool checkIfSingular = false;
     const auto d = GetDiagonal(A);
-    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
-    DiagonalSolve( LEFT, NORMAL, d, B, checkIfSingular );
-    Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A, B );
+    DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d, B, checkIfSingular );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), A, B );
 }
 
 template<typename F>
@@ -44,7 +44,7 @@ void SolveAfter
       if( APre.Height() != B.Height() )
           LogicError("A and B must be the same height");
     )
-    const Orientation orientation = ( conjugated ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugated ? Orientation::ADJOINT : Orientation::TRANSPOSE );
     const bool checkIfSingular = false;
 
     DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
@@ -52,9 +52,9 @@ void SolveAfter
 
     const auto d = GetDiagonal(A);
 
-    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
-    DiagonalSolve( LEFT, NORMAL, d, B, checkIfSingular );
-    Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A, B );
+    DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d, B, checkIfSingular );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), A, B );
 }
 
 template<typename F>
@@ -73,13 +73,13 @@ void SolveAfter
           LogicError("A and B must be the same height");
       // TODO: Check for dSub
     )
-    const Orientation orientation = ( conjugated ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugated ? Orientation::ADJOINT : Orientation::TRANSPOSE );
     const auto d = GetDiagonal(A);
 
     P.PermuteRows( B );
-    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
-    QuasiDiagonalSolve( LEFT, UpperOrLower::LOWER, d, dSub, B, conjugated );
-    Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A, B );
+    QuasiDiagonalSolve( LeftOrRight::LEFT, UpperOrLower::LOWER, d, dSub, B, conjugated );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), A, B );
     P.InversePermuteRows( B );
 }
 
@@ -100,7 +100,7 @@ void SolveAfter
           LogicError("A and B must be the same height");
       // TODO: Check for dSub
     )
-    const Orientation orientation = ( conjugated ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugated ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> BProx( BPre );
@@ -110,9 +110,9 @@ void SolveAfter
     const auto d = GetDiagonal(A);
 
     P.PermuteRows( B );
-    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), A, B );
-    QuasiDiagonalSolve( LEFT, UpperOrLower::LOWER, d, dSub, B, conjugated );
-    Trsm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), A, B );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A, B );
+    QuasiDiagonalSolve( LeftOrRight::LEFT, UpperOrLower::LOWER, d, dSub, B, conjugated );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), A, B );
     P.InversePermuteRows( B );
 }
 

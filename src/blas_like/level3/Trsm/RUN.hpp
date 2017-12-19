@@ -53,7 +53,7 @@ void RUN
         X1_VC_STAR = X1;
 
         LocalTrsm
-        ( RIGHT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11_STAR_STAR, X1_VC_STAR,
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, diag, F(1), U11_STAR_STAR, X1_VC_STAR,
           checkIfSingular );
 
         X1Trans_STAR_MC.AlignWith( X2 );
@@ -65,7 +65,7 @@ void RUN
         // X2[MC,MR] -= X1[MC,* ] U12[* ,MR]
         //            = X1^T[* ,MC] U12[* ,MR]
         LocalGemm
-        ( TRANSPOSE, NORMAL, F(-1), X1Trans_STAR_MC, U12_STAR_MR, F(1), X2 );
+        ( Orientation::TRANSPOSE, Orientation::NORMAL, F(-1), X1Trans_STAR_MC, U12_STAR_MR, F(1), X2 );
     }
 }
 

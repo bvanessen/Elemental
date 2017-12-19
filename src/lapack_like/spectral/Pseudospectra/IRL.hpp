@@ -219,7 +219,7 @@ IRL
             timer.Start();
         Matrix<Real> colNorms;
         ColumnTwoNorms( activeVList[0], colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, activeVList[0] );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVList[0] );
         for( Int j=0; j<basisSize; ++j )
         {
             lastActiveEsts = activeEsts;
@@ -229,10 +229,10 @@ IRL
                 if( progress )
                     subtimer.Start();
                 MultiShiftTrsm
-                ( LEFT, UpperOrLower::UPPER, NORMAL,
+                ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL,
                   C(1), UCopy, activeShifts, activeVList[j+1] );
                 MultiShiftTrsm
-                ( LEFT, UpperOrLower::UPPER, ADJOINT,
+                ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT,
                   C(1), UCopy, activeShifts, activeVList[j+1] );
                 if( progress )
                 {
@@ -249,12 +249,12 @@ IRL
                 if( progress )
                     subtimer.Start();
                 MultiShiftHessSolve
-                ( UpperOrLower::UPPER, NORMAL,
+                ( UpperOrLower::UPPER, Orientation::NORMAL,
                   C(1), U, activeShifts, activeVList[j+1] );
                 Matrix<C> activeShiftsConj;
                 Conjugate( activeShifts, activeShiftsConj );
                 MultiShiftHessSolve
-                ( UpperOrLower::LOWER, NORMAL,
+                ( UpperOrLower::LOWER, Orientation::NORMAL,
                   C(1), UAdj, activeShiftsConj, activeVList[j+1] );
                 if( progress )
                 {
@@ -297,7 +297,7 @@ IRL
             ColumnTwoNorms( activeVList[j+1], colNorms );
             PushBackList( HSubdiagList, colNorms );
             // TODO: Handle lucky breakdowns
-            DiagonalSolve( RIGHT, NORMAL, colNorms, activeVList[j+1] );
+            DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVList[j+1] );
 
             ComputeNewEstimates
             ( HDiagList, HSubdiagList, activeConverged, activeEsts );
@@ -469,7 +469,7 @@ IRL
         }
         DistMatrix<Real,Dist::MR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( activeVList[0], colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, activeVList[0] );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVList[0] );
         for( Int j=0; j<basisSize; ++j )
         {
             lastActiveEsts = activeEsts;
@@ -483,10 +483,10 @@ IRL
                         subtimer.Start();
                 }
                 MultiShiftTrsm
-                ( LEFT, UpperOrLower::UPPER, NORMAL,
+                ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL,
                   C(1), U, activeShifts, activeVList[j+1] );
                 MultiShiftTrsm
-                ( LEFT, UpperOrLower::UPPER, ADJOINT,
+                ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT,
                   C(1), U, activeShifts, activeVList[j+1] );
                 if( progress )
                 {
@@ -513,12 +513,12 @@ IRL
                 // NOTE: This redistribution sequence might not be necessary
                 DistMatrix<C,Dist::STAR,Dist::VR> activeV_STAR_VR( activeVList[j+1] );
                 MultiShiftHessSolve
-                ( UpperOrLower::UPPER, NORMAL, C(1), U_VC_STAR, activeShifts,
+                ( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U_VC_STAR, activeShifts,
                   activeV_STAR_VR );
                 DistMatrix<C,Dist::VR,Dist::STAR> activeShiftsConj(g);
                 Conjugate( activeShifts, activeShiftsConj );
                 MultiShiftHessSolve
-                ( UpperOrLower::LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
+                ( UpperOrLower::LOWER, Orientation::NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
                   activeV_STAR_VR );
                 activeVList[j+1] = activeV_STAR_VR;
                 if( progress )
@@ -566,7 +566,7 @@ IRL
             ColumnTwoNorms( activeVList[j+1], colNorms );
             PushBackList( HSubdiagList, colNorms.Matrix() );
             // TODO: Handle lucky breakdowns
-            DiagonalSolve( RIGHT, NORMAL, colNorms, activeVList[j+1] );
+            DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVList[j+1] );
 
             ComputeNewEstimates
             ( HDiagList, HSubdiagList, activeConverged, activeEsts );

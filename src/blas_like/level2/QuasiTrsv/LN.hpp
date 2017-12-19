@@ -137,7 +137,7 @@ void LN( const Matrix<F>& L, Matrix<F>& x, bool checkIfSingular=false )
         }
 
         quasitrsv::LNUnb( L11, x1, checkIfSingular );
-        Gemv( NORMAL, F(-1), L21, x1, F(1), x2 );
+        Gemv( Orientation::NORMAL, F(-1), L21, x1, F(1), x2 );
 
         k += nb;
     }
@@ -216,7 +216,7 @@ void LN
 
             x1_MR_STAR.AlignWith( L21 );
             x1_MR_STAR = x1_STAR_STAR;
-            LocalGemv( NORMAL, F(-1), L21, x1_MR_STAR, F(1), z2_MC_STAR );
+            LocalGemv( Orientation::NORMAL, F(-1), L21, x1_MR_STAR, F(1), z2_MC_STAR );
 
             k += nb;
         }
@@ -266,7 +266,7 @@ void LN
 
             x1_STAR_MR.AlignWith( L21 );
             x1_STAR_MR = x1_STAR_STAR;
-            LocalGemv( NORMAL, F(-1), L21, x1_STAR_MR, F(1), z2_STAR_MC );
+            LocalGemv( Orientation::NORMAL, F(-1), L21, x1_STAR_MR, F(1), z2_STAR_MC );
 
             k += nb;
         }

@@ -69,16 +69,16 @@ public:
         /*
         Matrix<Base<Field>> rowNorms;
         RowTwoNorms( G, rowNorms );
-        DiagonalSolve( LEFT, NORMAL, rowNorms, G );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, rowNorms, G );
         */
 
         // Form  G A (A^H A)^q
         Matrix<Field> Y, Z;
-        Gemm( NORMAL, NORMAL, Field(1), G, A, Y );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), G, A, Y );
         for( Int powerIter=0; powerIter<numPower_; ++powerIter )
         {
-            Gemm( NORMAL, ADJOINT, Field(1), Y, A, Z );
-            Gemm( NORMAL, NORMAL, Field(1), Z, A, Y );
+            Gemm( Orientation::NORMAL, Orientation::ADJOINT, Field(1), Y, A, Z );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), Z, A, Y );
         }
 
         QRCtrl<Base<Field>> ctrl;
@@ -109,16 +109,16 @@ public:
         /*
         DistMatrix<Base<Field>,MC,STAR> rowNorms(g);
         RowTwoNorms( G, rowNorms );
-        DiagonalSolve( LEFT, NORMAL, rowNorms, G );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, rowNorms, G );
         */
 
         // Form  G A (A^H A)^q
         DistMatrix<Field> Y(g), Z(g);
-        Gemm( NORMAL, NORMAL, Field(1), G, A, Y );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), G, A, Y );
         for( Int powerIter=0; powerIter<numPower_; ++powerIter )
         {
-            Gemm( NORMAL, ADJOINT, Field(1), Y, A, Z );
-            Gemm( NORMAL, NORMAL, Field(1), Z, A, Y );
+            Gemm( Orientation::NORMAL, Orientation::ADJOINT, Field(1), Y, A, Z );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), Z, A, Y );
         }
 
         QRCtrl<Base<Field>> ctrl;
@@ -194,7 +194,7 @@ ProxyHouseholder
         {
             QR( AB1, phase1, sig1 );
         }
-        ApplyQ( LEFT, ADJOINT, AB1, phase1, sig1, AB2 );
+        ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, AB1, phase1, sig1, AB2 );
     }
 }
 
@@ -272,7 +272,7 @@ ProxyHouseholder
         {
             QR( AB1, phase1, sig1 );
         }
-        ApplyQ( LEFT, ADJOINT, AB1, phase1, sig1, AB2 );
+        ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, AB1, phase1, sig1, AB2 );
     }
 }
 

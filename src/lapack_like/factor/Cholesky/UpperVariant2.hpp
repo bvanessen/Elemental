@@ -39,10 +39,10 @@ void UpperVariant2Blocked( Matrix<F>& A )
         auto A11 = A( ind1, ind1 );
         auto A12 = A( ind1, ind2 );
 
-        Herk( UpperOrLower::UPPER, ADJOINT, F(-1), A01, F(1), A11 );
+        Herk( UpperOrLower::UPPER, Orientation::ADJOINT, F(-1), A01, F(1), A11 );
         cholesky::UpperVariant3Unblocked( A11 );
-        Gemm( ADJOINT, NORMAL, F(-1), A02, A01, F(1), A12 );
-        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), A11, A12 );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(-1), A02, A01, F(1), A12 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A11, A12 );
     }
 }
 
@@ -86,7 +86,7 @@ void UpperVariant2Blocked( AbstractDistMatrix<F>& APre )
         A01_MC_STAR.AlignWith( A01 );
         A01_MC_STAR = A01;
         X11Adj_MR_STAR.AlignWith( A01 );
-        LocalGemm( ADJOINT, NORMAL, F(1), A01, A01_MC_STAR, X11Adj_MR_STAR );
+        LocalGemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), A01, A01_MC_STAR, X11Adj_MR_STAR );
         X11Adj_MR_MC.AlignWith( A11 );
         Contract( X11Adj_MR_STAR, X11Adj_MR_MC );
         X11.AlignWith( A11 );
@@ -98,7 +98,7 @@ void UpperVariant2Blocked( AbstractDistMatrix<F>& APre )
         A11 = A11_STAR_STAR;
 
         X12Adj_MR_STAR.AlignWith( A02 );
-        LocalGemm( ADJOINT, NORMAL, F(1), A02, A01_MC_STAR, X12Adj_MR_STAR );
+        LocalGemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), A02, A01_MC_STAR, X12Adj_MR_STAR );
         X12Adj_MR_MC.AlignWith( A12 );
         Contract( X12Adj_MR_STAR, X12Adj_MR_MC );
         X12.AlignWith( A12 );
@@ -107,7 +107,7 @@ void UpperVariant2Blocked( AbstractDistMatrix<F>& APre )
 
         A12_STAR_VR = A12;
         LocalTrsm
-        ( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), A11_STAR_STAR, A12_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A11_STAR_STAR, A12_STAR_VR );
         A12 = A12_STAR_VR;
     }
 }

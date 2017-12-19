@@ -73,13 +73,13 @@ void LN
             x1_STAR_STAR = x1;
             L11_STAR_STAR = L11;
             Trsv
-            ( UpperOrLower::LOWER, NORMAL, diag,
+            ( UpperOrLower::LOWER, Orientation::NORMAL, diag,
               L11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix() );
             x1 = x1_STAR_STAR;
 
             x1_MR_STAR.AlignWith( L21 );
             x1_MR_STAR = x1_STAR_STAR;
-            LocalGemv( NORMAL, F(-1), L21, x1_MR_STAR, F(1), z2_MC_STAR );
+            LocalGemv( Orientation::NORMAL, F(-1), L21, x1_MR_STAR, F(1), z2_MC_STAR );
         }
     }
     else
@@ -116,13 +116,13 @@ void LN
             x1_STAR_STAR = x1;
             L11_STAR_STAR = L11;
             Trsv
-            ( UpperOrLower::LOWER, NORMAL, diag,
+            ( UpperOrLower::LOWER, Orientation::NORMAL, diag,
               L11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix() );
             x1 = x1_STAR_STAR;
 
             x1_STAR_MR.AlignWith( L21 );
             x1_STAR_MR = x1_STAR_STAR;
-            LocalGemv( NORMAL, F(-1), L21, x1_STAR_MR, F(1), z2_STAR_MC );
+            LocalGemv( Orientation::NORMAL, F(-1), L21, x1_STAR_MR, F(1), z2_STAR_MC );
         }
     }
 }

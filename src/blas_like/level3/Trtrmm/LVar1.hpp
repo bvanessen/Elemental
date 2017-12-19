@@ -18,7 +18,7 @@ void LVar1( Matrix<T>& L, bool conjugate=false )
     EL_DEBUG_CSE
     const Int n = L.Height();
     const Int bsize = Blocksize();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     for( Int k=0; k<n; k+=bsize )
     {
@@ -31,8 +31,8 @@ void LVar1( Matrix<T>& L, bool conjugate=false )
         auto L10 = L( ind1, ind0 );
         auto L11 = L( ind1, ind1 );
 
-        Trrk( UpperOrLower::LOWER, orientation, NORMAL, T(1), L10, L10, T(1), L00 );
-        Trmm( LEFT, UpperOrLower::LOWER, orientation, NON_UNIT, T(1), L11, L10 );
+        Trrk( UpperOrLower::LOWER, orientation, Orientation::NORMAL, T(1), L10, L10, T(1), L00 );
+        Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::NON_UNIT, T(1), L11, L10 );
         trtrmm::LUnblocked( L11, conjugate );
     }
 }
@@ -48,7 +48,7 @@ void LVar1( AbstractDistMatrix<T>& LPre, bool conjugate=false )
     const Int n = LPre.Height();
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> LProx( LPre );
     auto& L = LProx.Get();
@@ -85,7 +85,7 @@ void LVar1( AbstractDistMatrix<T>& LPre, bool conjugate=false )
 
         L11_STAR_STAR = L11;
         LocalTrmm
-        ( LEFT, UpperOrLower::LOWER, orientation, NON_UNIT,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::NON_UNIT,
           T(1), L11_STAR_STAR, L10_STAR_VR );
         L10 = L10_STAR_VR;
 

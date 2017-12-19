@@ -203,7 +203,7 @@ endif()
 # Setup the tests
 if (${PROJECT_NAME}_ENABLE_TESTING)
   enable_testing()
-  add_subdirectory(tests)
+  #add_subdirectory(tests)
 endif ()
 
 # Setup the library install

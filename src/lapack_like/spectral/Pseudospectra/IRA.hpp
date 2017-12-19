@@ -293,7 +293,7 @@ Matrix<Int> IRA
         if( progress )
             timer.Start();
         ColumnTwoNorms( activeVList[0], colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, activeVList[0] );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVList[0] );
         for( Int j=0; j<basisSize; ++j )
         {
             lastActiveEsts = activeEsts;
@@ -304,10 +304,10 @@ Matrix<Int> IRA
                 if( progress )
                     subtimer.Start();
                 MultiShiftTrsm
-                ( LEFT, UpperOrLower::UPPER, NORMAL,
+                ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL,
                   C(1), UCopy, activeShifts, activeVList[j+1] );
                 MultiShiftTrsm
-                ( LEFT, UpperOrLower::UPPER, ADJOINT,
+                ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT,
                   C(1), UCopy, activeShifts, activeVList[j+1] );
                 if( progress )
                 {
@@ -324,12 +324,12 @@ Matrix<Int> IRA
                 if( progress )
                     subtimer.Start();
                 MultiShiftHessSolve
-                ( UpperOrLower::UPPER, NORMAL,
+                ( UpperOrLower::UPPER, Orientation::NORMAL,
                   C(1), U, activeShifts, activeVList[j+1] );
                 Matrix<C> activeShiftsConj;
                 Conjugate( activeShifts, activeShiftsConj );
                 MultiShiftHessSolve
-                ( UpperOrLower::LOWER, NORMAL,
+                ( UpperOrLower::LOWER, Orientation::NORMAL,
                   C(1), UAdj, activeShiftsConj, activeVList[j+1] );
                 if( progress )
                 {
@@ -381,7 +381,7 @@ Matrix<Int> IRA
             ColumnTwoNorms( activeVList[j+1], colNorms );
             PlaceList( HList, colNorms, j+1, j );
             // TODO: Handle lucky breakdowns
-            DiagonalSolve( RIGHT, NORMAL, colNorms, activeVList[j+1] );
+            DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVList[j+1] );
 
             ComputeNewEstimates( HList, activeConverged, activeEsts, j+1 );
             // We will have the same estimate two iterations in a row when
@@ -523,8 +523,8 @@ IRA
         if( progress )
             timer.Start();
         ColumnTwoNorms( activeVRealList[0], activeVImagList[0], colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, activeVRealList[0] );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, activeVImagList[0] );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVRealList[0] );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVImagList[0] );
         for( Int j=0; j<basisSize; ++j )
         {
             lastActiveEsts = activeEsts;
@@ -533,10 +533,10 @@ IRA
             if( progress )
                 subtimer.Start();
             MultiShiftQuasiTrsm
-            ( LEFT, UpperOrLower::UPPER, NORMAL, C(1), U, activeShifts,
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, activeShifts,
               activeVRealList[j+1], activeVImagList[j+1] );
             MultiShiftQuasiTrsm
-            ( LEFT, UpperOrLower::UPPER, ADJOINT, C(1), U, activeShifts,
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, C(1), U, activeShifts,
               activeVRealList[j+1], activeVImagList[j+1] );
             if( progress )
             {
@@ -594,8 +594,8 @@ IRA
             ( activeVRealList[j+1], activeVImagList[j+1], colNorms );
             PlaceList( HList, colNorms, j+1, j );
             // TODO: Handle lucky breakdowns
-            DiagonalSolve( RIGHT, NORMAL, colNorms, activeVRealList[j+1] );
-            DiagonalSolve( RIGHT, NORMAL, colNorms, activeVImagList[j+1] );
+            DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVRealList[j+1] );
+            DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVImagList[j+1] );
 
             ComputeNewEstimates( HList, activeConverged, activeEsts, j+1 );
             // We will have the same estimate two iterations in a row when
@@ -757,7 +757,7 @@ IRA
                 timer.Start();
         }
         ColumnTwoNorms( activeVList[0], colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, activeVList[0] );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVList[0] );
         for( Int j=0; j<basisSize; ++j )
         {
             lastActiveEsts = activeEsts;
@@ -771,10 +771,10 @@ IRA
                         subtimer.Start();
                 }
                 MultiShiftTrsm
-                ( LEFT, UpperOrLower::UPPER, NORMAL,
+                ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL,
                   C(1), U, activeShifts, activeVList[j+1] );
                 MultiShiftTrsm
-                ( LEFT, UpperOrLower::UPPER, ADJOINT,
+                ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT,
                   C(1), U, activeShifts, activeVList[j+1] );
                 if( progress )
                 {
@@ -801,12 +801,12 @@ IRA
                 // NOTE: This redistribution sequence might not be necessary
                 DistMatrix<C,Dist::STAR,Dist::VR> activeV_STAR_VR( activeVList[j+1] );
                 MultiShiftHessSolve
-                ( UpperOrLower::UPPER, NORMAL, C(1), U_VC_STAR, activeShifts,
+                ( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U_VC_STAR, activeShifts,
                   activeV_STAR_VR );
                 DistMatrix<C,Dist::VR,Dist::STAR> activeShiftsConj(g);
                 Conjugate( activeShifts, activeShiftsConj );
                 MultiShiftHessSolve
-                ( UpperOrLower::LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
+                ( UpperOrLower::LOWER, Orientation::NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
                   activeV_STAR_VR );
                 activeVList[j+1] = activeV_STAR_VR;
                 if( progress )
@@ -862,7 +862,7 @@ IRA
             ColumnTwoNorms( activeVList[j+1], colNorms );
             PlaceList( HList, colNorms.Matrix(), j+1, j );
             // TODO: Handle lucky breakdowns
-            DiagonalSolve( RIGHT, NORMAL, colNorms, activeVList[j+1] );
+            DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVList[j+1] );
 
             ComputeNewEstimates( HList, activeConverged, activeEsts, j+1 );
             // We will have the same estimate two iterations in a row when
@@ -1037,8 +1037,8 @@ IRA
                 timer.Start();
         }
         ColumnTwoNorms( activeVRealList[0], activeVImagList[0], colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, activeVRealList[0] );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, activeVImagList[0] );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVRealList[0] );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVImagList[0] );
         for( Int j=0; j<basisSize; ++j )
         {
             lastActiveEsts = activeEsts;
@@ -1051,10 +1051,10 @@ IRA
                     subtimer.Start();
             }
             MultiShiftQuasiTrsm
-            ( LEFT, UpperOrLower::UPPER, NORMAL, C(1), U, activeShifts,
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, activeShifts,
               activeVRealList[j+1], activeVImagList[j+1] );
             MultiShiftQuasiTrsm
-            ( LEFT, UpperOrLower::UPPER, ADJOINT, C(1), U, activeShifts,
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, C(1), U, activeShifts,
               activeVRealList[j+1], activeVImagList[j+1] );
             if( progress )
             {
@@ -1117,8 +1117,8 @@ IRA
             ( activeVRealList[j+1], activeVImagList[j+1], colNorms );
             PlaceList( HList, colNorms.Matrix(), j+1, j );
             // TODO: Handle lucky breakdowns
-            DiagonalSolve( RIGHT, NORMAL, colNorms, activeVRealList[j+1] );
-            DiagonalSolve( RIGHT, NORMAL, colNorms, activeVImagList[j+1] );
+            DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVRealList[j+1] );
+            DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, activeVImagList[j+1] );
 
             ComputeNewEstimates( HList, activeConverged, activeEsts, j+1 );
             // We will have the same estimate two iterations in a row when

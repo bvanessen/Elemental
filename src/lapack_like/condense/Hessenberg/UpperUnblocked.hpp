@@ -52,7 +52,7 @@ void UpperUnblocked( Matrix<F>& A, Matrix<F>& householderScalars )
         // -----------------------------------
         // x1 := A2 a21
         Zeros( x1, n, 1 );
-        Gemv( NORMAL, F(1), A2, a21, F(0), x1 );
+        Gemv( Orientation::NORMAL, F(1), A2, a21, F(0), x1 );
         // A2 := A2 - conj(tau) x1 a21^H
         Ger( -Conj(tau), x1, a21, A2 );
 
@@ -62,7 +62,7 @@ void UpperUnblocked( Matrix<F>& A, Matrix<F>& householderScalars )
         // ----------------------------------
         // x12^H := (a21^H A22)^H = A22^H a21
         Zeros( x12Adj, A22.Width(), 1 );
-        Gemv( ADJOINT, F(1), A22, a21, F(0), x12Adj );
+        Gemv( Orientation::ADJOINT, F(1), A22, a21, F(0), x12Adj );
         // A22 := A22 - tau a21 x12
         Ger( -tau, a21, x12Adj, A22 );
 
@@ -129,7 +129,7 @@ void UpperUnblocked
         a21_MR = a21;
         x1_MC.AlignWith( A2 );
         Zeros( x1_MC, n, 1 );
-        LocalGemv( NORMAL, F(1), A2, a21_MR, F(0), x1_MC );
+        LocalGemv( Orientation::NORMAL, F(1), A2, a21_MR, F(0), x1_MC );
         El::AllReduce( x1_MC, A2.RowComm() );
         // A2 := A2 - conj(tau) x1 a21^H
         LocalGer( -Conj(tau), x1_MC, a21_MR, A2 );
@@ -143,7 +143,7 @@ void UpperUnblocked
         a21_MC = a21;
         x12Adj_MR.AlignWith( A22 );
         Zeros( x12Adj_MR, A22.Width(), 1 );
-        LocalGemv( ADJOINT, F(1), A22, a21_MC, F(0), x12Adj_MR );
+        LocalGemv( Orientation::ADJOINT, F(1), A22, a21_MC, F(0), x12Adj_MR );
         El::AllReduce( x12Adj_MR, A22.ColComm() );
         // A22 := A22 - tau a21 x12
         LocalGer( -tau, a21_MC, x12Adj_MR, A22 );

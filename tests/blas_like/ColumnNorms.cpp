@@ -7,7 +7,6 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-#include <El.hpp>
 using namespace El;
 
 template <typename T, DistWrap W>

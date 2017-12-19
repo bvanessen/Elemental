@@ -62,7 +62,7 @@ void RankOneMod
     // w := inv(L) P u
     auto w( u );
     P.PermuteRows( w );
-    Trsv( UpperOrLower::LOWER, NORMAL, UNIT, A, w );
+    Trsv( UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, A, w );
 
     // Maintain an external vector for the temporary subdiagonal of U
     Matrix<F> uSub;
@@ -116,7 +116,7 @@ void RankOneMod
             A(i+1,i) = 0;
 
             auto lBiCopy = lBi;
-            Swap( NORMAL, lBi, lBip1 );
+            Swap( Orientation::NORMAL, lBi, lBip1 );
             Axpy( gamma, lBiCopy, lBi );
 
             auto uip1RCopy = uip1R;
@@ -231,7 +231,7 @@ void RankOneMod
             A(i,  i) = gamma;
 
             auto lBiCopy = lBi;
-            Swap( NORMAL, lBi, lBip1 );
+            Swap( Orientation::NORMAL, lBi, lBip1 );
             Axpy( gamma, lBiCopy, lBi );
 
             auto uip1RCopy = uip1R;
@@ -318,7 +318,7 @@ void RankOneMod
     //       broadcasting at every iteration.
     DistMatrix<F> w( u );
     P.PermuteRows( w );
-    Trsv( UpperOrLower::LOWER, NORMAL, UNIT, A, w );
+    Trsv( UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, A, w );
 
     // Maintain an external vector for the temporary subdiagonal of U
     DistMatrix<F,Dist::MD,Dist::STAR> uSub(g);
@@ -374,7 +374,7 @@ void RankOneMod
             A.Set( i+1, i, 0     );
 
             auto lBiCopy = lBi;
-            Swap( NORMAL, lBi, lBip1 );
+            Swap( Orientation::NORMAL, lBi, lBip1 );
             Axpy( gamma, lBiCopy, lBi );
 
             auto uip1RCopy = uip1R;
@@ -490,7 +490,7 @@ void RankOneMod
             A.Set( i, i, gamma );
 
             auto lBiCopy = lBi;
-            Swap( NORMAL, lBi, lBip1 );
+            Swap( Orientation::NORMAL, lBi, lBip1 );
             Axpy( gamma, lBiCopy, lBi );
 
             auto uip1RCopy = uip1R;

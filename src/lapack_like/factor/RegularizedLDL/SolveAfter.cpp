@@ -2,23 +2,22 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 namespace reg_ldl {
 
 template<typename Field>
 Int RegularizedSolveAfterNoPromote
-( const SparseMatrix<Field>& A, 
+( const SparseMatrix<Field>& A,
   const Matrix<Base<Field>>& reg,
   const SparseLDLFactorization<Field>& sparseLDLFact,
         Matrix<Field>& B,
         Base<Field> relTol,
-        Int maxRefineIts, 
+        Int maxRefineIts,
         bool progress,
         bool time )
 {
@@ -27,8 +26,8 @@ Int RegularizedSolveAfterNoPromote
       [&]( const Matrix<Field>& X, Matrix<Field>& Y )
       {
         Y = X;
-        DiagonalScale( LEFT, NORMAL, reg, Y ); 
-        Multiply( NORMAL, Field(1), A, X, Field(1), Y );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, reg, Y );
+        Multiply( Orientation::NORMAL, Field(1), A, X, Field(1), Y );
       };
     auto applyAInv =
       [&]( Matrix<Field>& Y )
@@ -36,7 +35,7 @@ Int RegularizedSolveAfterNoPromote
         sparseLDLFact.Solve( Y );
       };
     return
-      RefinedSolve 
+      RefinedSolve
       ( applyA, applyAInv, B, relTol, maxRefineIts, progress );
 }
 
@@ -44,11 +43,11 @@ template<typename Field>
 Int RegularizedSolveAfterNoPromote
 ( const SparseMatrix<Field>& A,
   const Matrix<Base<Field>>& reg,
-  const Matrix<Base<Field>>& d, 
+  const Matrix<Base<Field>>& d,
   const SparseLDLFactorization<Field>& sparseLDLFact,
         Matrix<Field>& B,
   Base<Field> relTol,
-  Int maxRefineIts, 
+  Int maxRefineIts,
   bool progress,
   bool time )
 {
@@ -59,15 +58,15 @@ Int RegularizedSolveAfterNoPromote
       [&]( const Matrix<Field>& X, Matrix<Field>& Y )
       {
         Y = X;
-        DiagonalScale( LEFT, NORMAL, reg, Y ); 
-        Multiply( NORMAL, Field(1), A, X, Field(1), Y );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, reg, Y );
+        Multiply( Orientation::NORMAL, Field(1), A, X, Field(1), Y );
       };
-    auto applyAInv = 
+    auto applyAInv =
       [&]( Matrix<Field>& Y )
       {
-        DiagonalSolve( LEFT, NORMAL, d, Y );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d, Y );
         sparseLDLFact.Solve( Y );
-        DiagonalSolve( LEFT, NORMAL, d, Y );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d, Y );
       };
     return RefinedSolve( applyA, applyAInv, B, relTol, maxRefineIts, progress );
 }
@@ -75,18 +74,18 @@ Int RegularizedSolveAfterNoPromote
 template<typename Field>
 DisableIf<IsSame<Field,Promote<Field>>,Int>
 RegularizedSolveAfterPromote
-( const SparseMatrix<Field>& A, 
+( const SparseMatrix<Field>& A,
   const Matrix<Base<Field>>& reg,
   const SparseLDLFactorization<Field>& sparseLDLFact,
         Matrix<Field>& B,
   Base<Field> relTol,
-  Int maxRefineIts, 
+  Int maxRefineIts,
   bool progress,
   bool time )
 {
     EL_DEBUG_CSE
-    
-    typedef Base<Field> Real; 
+
+    typedef Base<Field> Real;
     typedef Promote<Real> PReal;
     typedef Promote<Field> PField;
 
@@ -100,11 +99,11 @@ RegularizedSolveAfterPromote
     auto applyA =
       [&]( const Matrix<PField>& XProm, Matrix<PField>& YProm )
       {
-        YProm = XProm; 
-        DiagonalScale( LEFT, NORMAL, regProm, YProm ); 
-        Multiply( NORMAL, PField(1), AProm, XProm, PField(1), YProm );
-      }; 
-    auto applyAInv =  
+        YProm = XProm;
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, regProm, YProm );
+        Multiply( Orientation::NORMAL, PField(1), AProm, XProm, PField(1), YProm );
+      };
+    auto applyAInv =
       [&]( Matrix<Field>& Y )
       {
         sparseLDLFact.Solve( Y );
@@ -117,12 +116,12 @@ RegularizedSolveAfterPromote
 template<typename Field>
 EnableIf<IsSame<Field,Promote<Field>>,Int>
 RegularizedSolveAfterPromote
-( const SparseMatrix<Field>& A, 
+( const SparseMatrix<Field>& A,
   const Matrix<Base<Field>>& reg,
   const SparseLDLFactorization<Field>& sparseLDLFact,
         Matrix<Field>& B,
   Base<Field> relTol,
-  Int maxRefineIts, 
+  Int maxRefineIts,
   bool progress,
   bool time )
 {
@@ -134,13 +133,13 @@ RegularizedSolveAfterPromote
 template<typename Field>
 DisableIf<IsSame<Field,Promote<Field>>,Int>
 RegularizedSolveAfterPromote
-( const SparseMatrix<Field>& A, 
+( const SparseMatrix<Field>& A,
   const Matrix<Base<Field>>& reg,
-  const Matrix<Base<Field>>& d, 
+  const Matrix<Base<Field>>& d,
   const SparseLDLFactorization<Field>& sparseLDLFact,
         Matrix<Field>& B,
   Base<Field> relTol,
-  Int maxRefineIts, 
+  Int maxRefineIts,
   bool progress,
   bool time )
 {
@@ -159,16 +158,16 @@ RegularizedSolveAfterPromote
     auto applyA =
       [&]( const Matrix<PField>& XProm, Matrix<PField>& YProm )
       {
-        YProm = XProm; 
-        DiagonalScale( LEFT, NORMAL, regProm, YProm ); 
-        Multiply( NORMAL, PField(1), AProm, XProm, PField(1), YProm );
-      }; 
-    auto applyAInv =  
+        YProm = XProm;
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, regProm, YProm );
+        Multiply( Orientation::NORMAL, PField(1), AProm, XProm, PField(1), YProm );
+      };
+    auto applyAInv =
       [&]( Matrix<Field>& Y )
       {
-        DiagonalSolve( LEFT, NORMAL, d, Y );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d, Y );
         sparseLDLFact.Solve( Y );
-        DiagonalSolve( LEFT, NORMAL, d, Y );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d, Y );
       };
 
     return PromotedRefinedSolve
@@ -178,13 +177,13 @@ RegularizedSolveAfterPromote
 template<typename Field>
 EnableIf<IsSame<Field,Promote<Field>>,Int>
 RegularizedSolveAfterPromote
-( const SparseMatrix<Field>& A, 
+( const SparseMatrix<Field>& A,
   const Matrix<Base<Field>>& reg,
-  const Matrix<Base<Field>>& d, 
+  const Matrix<Base<Field>>& d,
   const SparseLDLFactorization<Field>& sparseLDLFact,
         Matrix<Field>& B,
   Base<Field> relTol,
-  Int maxRefineIts, 
+  Int maxRefineIts,
   bool progress,
   bool time )
 {
@@ -195,12 +194,12 @@ RegularizedSolveAfterPromote
 
 template<typename Field>
 Int RegularizedSolveAfter
-( const SparseMatrix<Field>& A, 
+( const SparseMatrix<Field>& A,
   const Matrix<Base<Field>>& reg,
   const SparseLDLFactorization<Field>& sparseLDLFact,
         Matrix<Field>& B,
   Base<Field> relTol,
-  Int maxRefineIts, 
+  Int maxRefineIts,
   bool progress,
   bool time )
 {
@@ -211,9 +210,9 @@ Int RegularizedSolveAfter
 
 template<typename Field>
 Int RegularizedSolveAfter
-( const SparseMatrix<Field>& A, 
+( const SparseMatrix<Field>& A,
   const Matrix<Base<Field>>& reg,
-  const Matrix<Base<Field>>& d, 
+  const Matrix<Base<Field>>& d,
   const SparseLDLFactorization<Field>& sparseLDLFact,
         Matrix<Field>& B,
   Base<Field> relTol,
@@ -229,7 +228,7 @@ Int RegularizedSolveAfter
 
 template<typename Field>
 Int RegularizedSolveAfterNoPromote
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
         DistMultiVec<Field>& B,
@@ -243,8 +242,8 @@ Int RegularizedSolveAfterNoPromote
       [&]( const DistMultiVec<Field>& X, DistMultiVec<Field>& Y )
       {
         Y = X;
-        DiagonalScale( LEFT, NORMAL, reg, Y ); 
-        Multiply( NORMAL, Field(1), A, X, Field(1), Y );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, reg, Y );
+        Multiply( Orientation::NORMAL, Field(1), A, X, Field(1), Y );
       };
     auto applyAInv =
       [&]( DistMultiVec<Field>& Y )
@@ -257,7 +256,7 @@ Int RegularizedSolveAfterNoPromote
 
 template<typename Field>
 Int RegularizedSolveAfterNoPromote
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
   const DistMultiVec<Base<Field>>& d,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
@@ -272,15 +271,15 @@ Int RegularizedSolveAfterNoPromote
       [&]( const DistMultiVec<Field>& X, DistMultiVec<Field>& Y )
       {
         Y = X;
-        DiagonalScale( LEFT, NORMAL, reg, Y ); 
-        Multiply( NORMAL, Field(1), A, X, Field(1), Y );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, reg, Y );
+        Multiply( Orientation::NORMAL, Field(1), A, X, Field(1), Y );
       };
-    auto applyAInv = 
+    auto applyAInv =
       [&]( DistMultiVec<Field>& Y )
       {
-        DiagonalSolve( LEFT, NORMAL, d, Y );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d, Y );
         sparseLDLFact.Solve( Y );
-        DiagonalSolve( LEFT, NORMAL, d, Y );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d, Y );
       };
     return RefinedSolve( applyA, applyAInv, B, relTol, maxRefineIts, progress );
 }
@@ -288,7 +287,7 @@ Int RegularizedSolveAfterNoPromote
 template<typename Field>
 DisableIf<IsSame<Field,Promote<Field>>,Int>
 RegularizedSolveAfterPromote
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
         DistMultiVec<Field>& B,
@@ -314,8 +313,8 @@ RegularizedSolveAfterPromote
       [&]( const DistMultiVec<PField>& XProm, DistMultiVec<PField>& YProm )
       {
         YProm = XProm;
-        DiagonalScale( LEFT, NORMAL, regProm, YProm ); 
-        Multiply( NORMAL, PField(1), AProm, XProm, PField(1), YProm );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, regProm, YProm );
+        Multiply( Orientation::NORMAL, PField(1), AProm, XProm, PField(1), YProm );
       };
     auto applyAInv =
       [&]( DistMultiVec<Field>& Y )
@@ -329,7 +328,7 @@ RegularizedSolveAfterPromote
 template<typename Field>
 EnableIf<IsSame<Field,Promote<Field>>,Int>
 RegularizedSolveAfterPromote
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
         DistMultiVec<Field>& B,
@@ -346,7 +345,7 @@ RegularizedSolveAfterPromote
 template<typename Field>
 DisableIf<IsSame<Field,Promote<Field>>,Int>
 RegularizedSolveAfterPromote
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
   const DistMultiVec<Base<Field>>& d,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
@@ -373,15 +372,15 @@ RegularizedSolveAfterPromote
       [&]( const DistMultiVec<PField>& XProm, DistMultiVec<PField>& YProm )
       {
         YProm = XProm;
-        DiagonalScale( LEFT, NORMAL, regProm, YProm ); 
-        Multiply( NORMAL, PField(1), AProm, XProm, PField(1), YProm );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, regProm, YProm );
+        Multiply( Orientation::NORMAL, PField(1), AProm, XProm, PField(1), YProm );
       };
-    auto applyAInv = 
+    auto applyAInv =
       [&]( DistMultiVec<Field>& Y )
       {
-        DiagonalSolve( LEFT, NORMAL, d, Y );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d, Y );
         sparseLDLFact.Solve( Y );
-        DiagonalSolve( LEFT, NORMAL, d, Y );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d, Y );
       };
 
     return PromotedRefinedSolve
@@ -391,7 +390,7 @@ RegularizedSolveAfterPromote
 template<typename Field>
 EnableIf<IsSame<Field,Promote<Field>>,Int>
 RegularizedSolveAfterPromote
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
   const DistMultiVec<Base<Field>>& d,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
@@ -408,7 +407,7 @@ RegularizedSolveAfterPromote
 
 template<typename Field>
 Int RegularizedSolveAfter
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
         DistMultiVec<Field>& B,
@@ -424,9 +423,9 @@ Int RegularizedSolveAfter
 
 template<typename Field>
 Int RegularizedSolveAfter
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
-  const DistMultiVec<Base<Field>>& d, 
+  const DistMultiVec<Base<Field>>& d,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
         DistMultiVec<Field>& B,
   Base<Field> relTol,
@@ -441,7 +440,7 @@ Int RegularizedSolveAfter
 
 template<typename Field>
 Int LGMRESSolveAfter
-( const SparseMatrix<Field>& A, 
+( const SparseMatrix<Field>& A,
   const Matrix<Base<Field>>& reg,
   const SparseLDLFactorization<Field>& sparseLDLFact,
         Matrix<Field>& B,
@@ -457,7 +456,7 @@ Int LGMRESSolveAfter
     auto applyA =
       [&]( Field alpha, const Matrix<Field>& X, Field beta, Matrix<Field>& Y )
       {
-          Multiply( NORMAL, alpha, A, X, beta, Y );
+          Multiply( Orientation::NORMAL, alpha, A, X, beta, Y );
       };
     auto precond =
       [&]( Matrix<Field>& W )
@@ -488,7 +487,7 @@ Int LGMRESSolveAfter
     auto applyA =
       [&]( Field alpha, const Matrix<Field>& X, Field beta, Matrix<Field>& Y )
       {
-          Multiply( NORMAL, alpha, A, X, beta, Y );
+          Multiply( Orientation::NORMAL, alpha, A, X, beta, Y );
       };
     auto precond =
       [&]( Matrix<Field>& W )
@@ -519,7 +518,7 @@ Int LGMRESSolveAfter
       [&]( Field alpha, const DistMultiVec<Field>& X,
            Field beta, DistMultiVec<Field>& Y )
       {
-          Multiply( NORMAL, alpha, A, X, beta, Y );
+          Multiply( Orientation::NORMAL, alpha, A, X, beta, Y );
       };
     auto precond =
       [&]( DistMultiVec<Field>& W )
@@ -533,7 +532,7 @@ Int LGMRESSolveAfter
 
 template<typename Field>
 Int LGMRESSolveAfter
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
   const DistMultiVec<Base<Field>>& d,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
@@ -550,7 +549,7 @@ Int LGMRESSolveAfter
       [&]( Field alpha, const DistMultiVec<Field>& X,
            Field beta, DistMultiVec<Field>& Y )
       {
-          Multiply( NORMAL, alpha, A, X, beta, Y );
+          Multiply( Orientation::NORMAL, alpha, A, X, beta, Y );
       };
     auto precond =
       [&]( DistMultiVec<Field>& W )
@@ -564,7 +563,7 @@ Int LGMRESSolveAfter
 
 template<typename Field>
 Int FGMRESSolveAfter
-( const SparseMatrix<Field>& A, 
+( const SparseMatrix<Field>& A,
   const Matrix<Base<Field>>& reg,
   const SparseLDLFactorization<Field>& sparseLDLFact,
         Matrix<Field>& B,
@@ -572,7 +571,7 @@ Int FGMRESSolveAfter
         Int restart,
         Int maxIts,
         Base<Field> relTolRefine,
-        Int maxRefineIts, 
+        Int maxRefineIts,
         bool progress,
         bool time )
 {
@@ -580,7 +579,7 @@ Int FGMRESSolveAfter
     auto applyA =
       [&]( Field alpha, const Matrix<Field>& X, Field beta, Matrix<Field>& Y )
       {
-          Multiply( NORMAL, alpha, A, X, beta, Y );
+          Multiply( Orientation::NORMAL, alpha, A, X, beta, Y );
       };
     auto precond =
       [&]( Matrix<Field>& W )
@@ -594,7 +593,7 @@ Int FGMRESSolveAfter
 
 template<typename Field>
 Int FGMRESSolveAfter
-( const SparseMatrix<Field>& A, 
+( const SparseMatrix<Field>& A,
   const Matrix<Base<Field>>& reg,
   const Matrix<Base<Field>>& d,
   const SparseLDLFactorization<Field>& sparseLDLFact,
@@ -603,7 +602,7 @@ Int FGMRESSolveAfter
         Int restart,
         Int maxIts,
         Base<Field> relTolRefine,
-        Int maxRefineIts, 
+        Int maxRefineIts,
         bool progress,
         bool time )
 {
@@ -612,7 +611,7 @@ Int FGMRESSolveAfter
     auto applyA =
       [&]( Field alpha, const Matrix<Field>& X, Field beta, Matrix<Field>& Y )
       {
-          Multiply( NORMAL, alpha, A, X, beta, Y );
+          Multiply( Orientation::NORMAL, alpha, A, X, beta, Y );
       };
     auto precond =
       [&]( Matrix<Field>& W )
@@ -626,7 +625,7 @@ Int FGMRESSolveAfter
 
 template<typename Field>
 Int FGMRESSolveAfter
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
         DistMultiVec<Field>& B,
@@ -634,7 +633,7 @@ Int FGMRESSolveAfter
         Int restart,
         Int maxIts,
         Base<Field> relTolRefine,
-        Int maxRefineIts, 
+        Int maxRefineIts,
         bool progress,
         bool time )
 {
@@ -644,7 +643,7 @@ Int FGMRESSolveAfter
       [&]( Field alpha, const DistMultiVec<Field>& X,
            Field beta, DistMultiVec<Field>& Y )
       {
-          Multiply( NORMAL, alpha, A, X, beta, Y );
+          Multiply( Orientation::NORMAL, alpha, A, X, beta, Y );
       };
     auto precond =
       [&]( DistMultiVec<Field>& W )
@@ -658,7 +657,7 @@ Int FGMRESSolveAfter
 
 template<typename Field>
 Int FGMRESSolveAfter
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
   const DistMultiVec<Base<Field>>& d,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
@@ -667,7 +666,7 @@ Int FGMRESSolveAfter
         Int restart,
         Int maxIts,
         Base<Field> relTolRefine,
-        Int maxRefineIts, 
+        Int maxRefineIts,
         bool progress,
         bool time )
 {
@@ -677,7 +676,7 @@ Int FGMRESSolveAfter
       [&]( Field alpha, const DistMultiVec<Field>& X,
            Field beta, DistMultiVec<Field>& Y )
       {
-          Multiply( NORMAL, alpha, A, X, beta, Y );
+          Multiply( Orientation::NORMAL, alpha, A, X, beta, Y );
       };
     auto precond =
       [&]( DistMultiVec<Field>& W )
@@ -704,22 +703,22 @@ Int SolveAfter
     {
     case REG_SOLVE_FGMRES:
         return FGMRESSolveAfter
-        ( A, reg, sparseLDLFact, B, 
+        ( A, reg, sparseLDLFact, B,
           ctrl.relTol,
           ctrl.restart,
           ctrl.maxIts,
           ctrl.relTolRefine,
-          ctrl.maxRefineIts, 
+          ctrl.maxRefineIts,
           ctrl.progress,
           ctrl.time );
     case REG_SOLVE_LGMRES:
         return LGMRESSolveAfter
-        ( A, reg, sparseLDLFact, B, 
+        ( A, reg, sparseLDLFact, B,
           ctrl.relTol,
           ctrl.restart,
           ctrl.maxIts,
           ctrl.relTolRefine,
-          ctrl.maxRefineIts, 
+          ctrl.maxRefineIts,
           ctrl.progress );
     default:
         LogicError("Invalid refinement algorithm");
@@ -729,7 +728,7 @@ Int SolveAfter
 
 template<typename Field>
 Int SolveAfter
-( const SparseMatrix<Field>& A, 
+( const SparseMatrix<Field>& A,
   const Matrix<Base<Field>>& reg,
   const Matrix<Base<Field>>& d,
   const SparseLDLFactorization<Field>& sparseLDLFact,
@@ -741,22 +740,22 @@ Int SolveAfter
     {
     case REG_SOLVE_FGMRES:
         return FGMRESSolveAfter
-        ( A, reg, d, sparseLDLFact, B, 
+        ( A, reg, d, sparseLDLFact, B,
           ctrl.relTol,
           ctrl.restart,
           ctrl.maxIts,
           ctrl.relTolRefine,
-          ctrl.maxRefineIts, 
+          ctrl.maxRefineIts,
           ctrl.progress,
           ctrl.time );
     case REG_SOLVE_LGMRES:
         return LGMRESSolveAfter
-        ( A, reg, d, sparseLDLFact, B, 
+        ( A, reg, d, sparseLDLFact, B,
           ctrl.relTol,
           ctrl.restart,
           ctrl.maxIts,
           ctrl.relTolRefine,
-          ctrl.maxRefineIts, 
+          ctrl.maxRefineIts,
           ctrl.progress );
     default:
         LogicError("Invalid refinement algorithm");
@@ -766,7 +765,7 @@ Int SolveAfter
 
 template<typename Field>
 Int SolveAfter
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
         DistMultiVec<Field>& B,
@@ -782,7 +781,7 @@ Int SolveAfter
           ctrl.restart,
           ctrl.maxIts,
           ctrl.relTolRefine,
-          ctrl.maxRefineIts, 
+          ctrl.maxRefineIts,
           ctrl.progress,
           ctrl.time );
     case REG_SOLVE_LGMRES:
@@ -792,7 +791,7 @@ Int SolveAfter
           ctrl.restart,
           ctrl.maxIts,
           ctrl.relTolRefine,
-          ctrl.maxRefineIts, 
+          ctrl.maxRefineIts,
           ctrl.progress );
     default:
         LogicError("Invalid refinement algorithm");
@@ -802,7 +801,7 @@ Int SolveAfter
 
 template<typename Field>
 Int SolveAfter
-( const DistSparseMatrix<Field>& A, 
+( const DistSparseMatrix<Field>& A,
   const DistMultiVec<Base<Field>>& reg,
   const DistMultiVec<Base<Field>>& d,
   const DistSparseLDLFactorization<Field>& sparseLDLFact,
@@ -819,7 +818,7 @@ Int SolveAfter
           ctrl.restart,
           ctrl.maxIts,
           ctrl.relTolRefine,
-          ctrl.maxRefineIts, 
+          ctrl.maxRefineIts,
           ctrl.progress,
           ctrl.time );
     case REG_SOLVE_LGMRES:
@@ -829,7 +828,7 @@ Int SolveAfter
           ctrl.restart,
           ctrl.maxIts,
           ctrl.relTolRefine,
-          ctrl.maxRefineIts, 
+          ctrl.maxRefineIts,
           ctrl.progress );
     default:
         LogicError("Invalid refinement algorithm");

@@ -59,10 +59,10 @@ void LocalAccumulateLLN
         D11.AlignWith( L11 );
         D11 = L11;
         MakeTrapezoidal( UpperOrLower::LOWER, D11 );
-        if( diag == UNIT )
+        if( diag == UnitOrNonUnit::UNIT )
             FillDiagonal( D11, T(1) );
-        LocalGemm( NORMAL, orientation, alpha, D11, X1Trans, T(1), Z1 );
-        LocalGemm( NORMAL, orientation, alpha, L21, X1Trans, T(1), Z2 );
+        LocalGemm( Orientation::NORMAL, orientation, alpha, D11, X1Trans, T(1), Z1 );
+        LocalGemm( Orientation::NORMAL, orientation, alpha, L21, X1Trans, T(1), Z2 );
     }
 }
 
@@ -108,7 +108,7 @@ void LLNA
         Z1_MC_STAR.Resize( m, nb );
         Zero( Z1_MC_STAR );
         LocalAccumulateLLN
-        ( TRANSPOSE, diag, T(1), L, X1Trans_STAR_MR, Z1_MC_STAR );
+        ( Orientation::TRANSPOSE, diag, T(1), L, X1Trans_STAR_MR, Z1_MC_STAR );
         Contract( Z1_MC_STAR, X1 );
     }
 }
@@ -156,14 +156,14 @@ void LLNCOld
 
         L11_STAR_STAR = L11;
         X1_STAR_VR = X1;
-        LocalTrmm( LEFT, UpperOrLower::LOWER, NORMAL, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
+        LocalTrmm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
         X1 = X1_STAR_VR;
 
         L10_STAR_MC.AlignWith( X0 );
         L10_STAR_MC = L10;
         D1Trans_MR_STAR.AlignWith( X1 );
         LocalGemm
-        ( TRANSPOSE, TRANSPOSE, T(1), X0, L10_STAR_MC, D1Trans_MR_STAR );
+        ( Orientation::TRANSPOSE, Orientation::TRANSPOSE, T(1), X0, L10_STAR_MC, D1Trans_MR_STAR );
         D1Trans_MR_MC.AlignWith( X1 );
         Contract( D1Trans_MR_STAR, D1Trans_MR_MC );
         D1.AlignWith( X1 );
@@ -217,12 +217,12 @@ void LLNC
         X1Trans_MR_STAR.AlignWith( X2 );
         Transpose( X1, X1Trans_MR_STAR );
         LocalGemm
-        ( NORMAL, TRANSPOSE, T(1), L21_MC_STAR, X1Trans_MR_STAR, T(1), X2 );
+        ( Orientation::NORMAL, Orientation::TRANSPOSE, T(1), L21_MC_STAR, X1Trans_MR_STAR, T(1), X2 );
 
         L11_STAR_STAR = L11;
         X1_STAR_VR.AlignWith( X1 );
         Transpose( X1Trans_MR_STAR, X1_STAR_VR );
-        LocalTrmm( LEFT, UpperOrLower::LOWER, NORMAL, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
+        LocalTrmm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
         X1 = X1_STAR_VR;
     }
 }

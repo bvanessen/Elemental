@@ -80,14 +80,14 @@ void LocalAccumulateRU
         FillDiagonal( D11, T(0) );
 
         LocalGemm
-        ( NORMAL, NORMAL, alpha, D11, B1Trans_MR_STAR, T(1), Z1Trans_MC_STAR );
+        ( Orientation::NORMAL, Orientation::NORMAL, alpha, D11, B1Trans_MR_STAR, T(1), Z1Trans_MC_STAR );
 
         LocalGemm
         ( orientation, orientation,
           alpha, A12, B1_STAR_MC, T(1), Z2Trans_MR_STAR );
 
         LocalGemm
-        ( NORMAL, NORMAL, alpha, A12, B2Trans_MR_STAR, T(1), Z1Trans_MC_STAR );
+        ( Orientation::NORMAL, Orientation::NORMAL, alpha, A12, B2Trans_MR_STAR, T(1), Z1Trans_MC_STAR );
     }
 }
 
@@ -105,7 +105,7 @@ void RUA
     const Int n = CPre.Width();
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre ), BProx( BPre );
     DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
@@ -168,7 +168,7 @@ void RUC
     const Int n = CPre.Width();
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre ), BProx( BPre );
     DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
@@ -211,10 +211,10 @@ void RUC
 
         B1_MC_STAR = B1;
         LocalGemm
-        ( NORMAL, orientation, alpha, B1_MC_STAR, A1RTrans_MR_STAR, T(1), CR );
+        ( Orientation::NORMAL, orientation, alpha, B1_MC_STAR, A1RTrans_MR_STAR, T(1), CR );
 
         LocalGemm
-        ( NORMAL, NORMAL, alpha, B1_MC_STAR, AT1Trans_STAR_MR, T(1), CL );
+        ( Orientation::NORMAL, Orientation::NORMAL, alpha, B1_MC_STAR, AT1Trans_STAR_MR, T(1), CL );
     }
 }
 

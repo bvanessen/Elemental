@@ -20,7 +20,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 namespace ldl {
@@ -113,7 +112,7 @@ void ChangeFrontType( DistFront<F>& front, LDLFrontType type, bool recurse )
             {
                 const Int snSize = front.L1D.Width();
                 auto LT = front.L1D( IR(0,snSize), IR(0,snSize) );
-                TriangularInverse( UpperOrLower::LOWER, UNIT, LT );
+                TriangularInverse( UpperOrLower::LOWER, UnitOrNonUnit::UNIT, LT );
                 FillDiagonal( LT, F(1) );
                 MakeTrapezoidal( UpperOrLower::LOWER, LT );
             }
@@ -121,7 +120,7 @@ void ChangeFrontType( DistFront<F>& front, LDLFrontType type, bool recurse )
             {
                 const Int snSize = front.L2D.Width();
                 auto LT = front.L2D( IR(0,snSize), IR(0,snSize) );
-                TriangularInverse( UpperOrLower::LOWER, UNIT, LT );
+                TriangularInverse( UpperOrLower::LOWER, UnitOrNonUnit::UNIT, LT );
                 FillDiagonal( LT, F(1) );
                 MakeTrapezoidal( UpperOrLower::LOWER, LT );
             }

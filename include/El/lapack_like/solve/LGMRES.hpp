@@ -189,7 +189,7 @@ Int Single
             auto tT = t( IR(0,j+1), ALL );
             auto HTL = H( IR(0,j+1), IR(0,j+1) );
             auto y = tT;
-            Trsv( UPPER, NORMAL, NON_UNIT, HTL, y );
+            Trsv( UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, HTL, y );
             // x := x0 + Vj y
             // ^^^^^^^^^^^^^^
             x = x0;

@@ -73,7 +73,7 @@ void Trr2kNNNN
         Transpose( B1, B1Trans_MR_STAR );
         Transpose( D1, D1Trans_MR_STAR );
         LocalTrr2k
-        ( uplo, NORMAL, TRANSPOSE, NORMAL, TRANSPOSE,
+        ( uplo, Orientation::NORMAL, Orientation::TRANSPOSE, Orientation::NORMAL, Orientation::TRANSPOSE,
           alpha, A1_MC_STAR, B1Trans_MR_STAR,
           beta,  C1_MC_STAR, D1Trans_MR_STAR, T(1), E );
     }

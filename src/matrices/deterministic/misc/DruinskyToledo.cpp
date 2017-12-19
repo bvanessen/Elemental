@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level1.hpp>
@@ -12,7 +12,7 @@
 
 namespace El {
 
-// An example of Bunch-Kaufman A producing large element growth in 
+// An example of Bunch-Kaufman A producing large element growth in
 // floating-point arithmetic. Please see Theorem 5 from:
 //     http://www.alexdruinsky.com/pdfs/bkbound-revised.pdf
 //
@@ -20,7 +20,7 @@ namespace El {
 //   A = | G I |, where G is the matrix described in Section 4.
 //       | I I |
 
-template<typename F> 
+template<typename F>
 void DruinskyToledo( Matrix<F>& A, Int k )
 {
     EL_DEBUG_CSE
@@ -36,7 +36,7 @@ void DruinskyToledo( Matrix<F>& A, Int k )
     typedef Base<F> Real;
     const Real phi = Real(1) + 4*limits::Epsilon<Real>();
     const Real alphaPhi = LDLPivotConstant<Real>(BUNCH_KAUFMAN_A)*phi;
-    vector<Real> d( k-2 );
+    std::vector<Real> d( k-2 );
     Real sigma(1);
     for( Int i=0; i<k-2; ++i )
     {
@@ -63,7 +63,7 @@ void DruinskyToledo( Matrix<F>& A, Int k )
     Identity( ATR, k, k );
 }
 
-template<typename F> 
+template<typename F>
 void DruinskyToledo( ElementalMatrix<F>& A, Int k )
 {
     EL_DEBUG_CSE
@@ -79,7 +79,7 @@ void DruinskyToledo( ElementalMatrix<F>& A, Int k )
     typedef Base<F> Real;
     const Real phi = Real(1) + 4*limits::Epsilon<Real>();
     const Real alphaPhi = LDLPivotConstant<Real>(BUNCH_KAUFMAN_A)*phi;
-    vector<Real> d( k-2 );
+    std::vector<Real> d( k-2 );
     Real sigma(1);
     for( Int i=0; i<k-2; ++i )
     {

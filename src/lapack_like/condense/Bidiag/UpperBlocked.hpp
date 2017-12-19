@@ -65,9 +65,9 @@ void UpperBlocked
             const F epsilon = A12(nb-1,0);
             A12(nb-1,0) = F(1);
 
-            Gemm( NORMAL, NORMAL, F(-1), A21, Y12, F(1), A22 );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), A21, Y12, F(1), A22 );
             Conjugate( A12 );
-            Gemm( NORMAL, NORMAL, F(-1), X21, A12, F(1), A22 );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), X21, A12, F(1), A22 );
             Conjugate( A12 );
 
             // Put back bottom-left entry of A12
@@ -159,10 +159,10 @@ UpperBlocked
             auto A12Trans_MR_STAR = A1RTrans_MR_STAR( IR(nb,END), ALL );
 
             LocalGemm
-            ( NORMAL, ADJOINT,
+            ( Orientation::NORMAL, Orientation::ADJOINT,
               F(-1), A21_MC_STAR, Y12Adj_MR_STAR, F(1), A22 );
             LocalGemm
-            ( NORMAL, ADJOINT,
+            ( Orientation::NORMAL, Orientation::ADJOINT,
               F(-1), X21_MC_STAR, A12Trans_MR_STAR, F(1), A22 );
         }
         else

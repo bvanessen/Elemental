@@ -58,7 +58,7 @@ Blocked
         auto A22 = A( ind2, ind2 );
         auto X21 = XB1( ind2Pan, ind1Pan );
         auto Y21 = YB1( ind2Pan, ind1Pan );
-        Trrk( UpperOrLower::LOWER, NORMAL, TRANSPOSE, F(-1), X21, Y21, F(1), A22 );
+        Trrk( UpperOrLower::LOWER, Orientation::NORMAL, Orientation::TRANSPOSE, F(-1), X21, Y21, F(1), A22 );
 
         k += nb;
     }
@@ -119,7 +119,7 @@ Blocked
         auto A22 = A( ind2, ind2 );
         auto X21 = XB1( ind2Pan, ind1Pan );
         auto Y21 = YB1( ind2Pan, ind1Pan );
-        LocalTrrk( UpperOrLower::LOWER, TRANSPOSE, F(-1), X21, Y21, F(1), A22 );
+        LocalTrrk( UpperOrLower::LOWER, Orientation::TRANSPOSE, F(-1), X21, Y21, F(1), A22 );
 
         k += nb;
     }

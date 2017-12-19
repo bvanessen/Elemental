@@ -57,10 +57,10 @@ void LocalAccumulateLLT
         D11.AlignWith( L11 );
         D11 = L11;
         MakeTrapezoidal( UpperOrLower::LOWER, D11 );
-        if( diag == UNIT )
+        if( diag == UnitOrNonUnit::UNIT )
             FillDiagonal( D11, T(1) );
-        LocalGemm( orientation, NORMAL, alpha, D11, X1, T(1), Z1 );
-        LocalGemm( orientation, NORMAL, alpha, L21, X2, T(1), Z1 );
+        LocalGemm( orientation, Orientation::NORMAL, alpha, D11, X1, T(1), Z1 );
+        LocalGemm( orientation, Orientation::NORMAL, alpha, L21, X2, T(1), Z1 );
     }
 }
 
@@ -74,7 +74,7 @@ void LLTA
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( LPre, XPre );
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
       if( LPre.Height() != LPre.Width() || LPre.Height() != XPre.Height() )
           LogicError
@@ -124,7 +124,7 @@ void LLTCOld
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( LPre, XPre );
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
       if( LPre.Height() != LPre.Width() || LPre.Height() != XPre.Height() )
           LogicError
@@ -134,7 +134,7 @@ void LLTCOld
     const Int n = XPre.Width();
     const Int bsize = Blocksize();
     const Grid& g = LPre.Grid();
-    const bool conjugate = ( orientation == ADJOINT );
+    const bool conjugate = ( orientation == Orientation::ADJOINT );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> LProx( LPre );
     DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
@@ -161,14 +161,14 @@ void LLTCOld
         X1_STAR_VR = X1;
         L11_STAR_STAR = L11;
         LocalTrmm
-        ( LEFT, UpperOrLower::LOWER, orientation, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
         X1 = X1_STAR_VR;
 
         L21_MC_STAR.AlignWith( X2 );
         L21_MC_STAR = L21;
         D1Trans_MR_STAR.AlignWith( X1 );
         LocalGemm
-        ( orientation, NORMAL, T(1), X2, L21_MC_STAR, D1Trans_MR_STAR );
+        ( orientation, Orientation::NORMAL, T(1), X2, L21_MC_STAR, D1Trans_MR_STAR );
         D1Trans_MR_MC.AlignWith( X1 );
         Contract( D1Trans_MR_STAR, D1Trans_MR_MC );
         D1.AlignWith( X1 );
@@ -189,7 +189,7 @@ void LLTC
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( LPre, XPre );
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
       if( LPre.Height() != LPre.Width() || LPre.Height() != XPre.Height() )
           LogicError
@@ -224,14 +224,14 @@ void LLTC
         X1Trans_MR_STAR.AlignWith( X0 );
         Transpose( X1, X1Trans_MR_STAR );
         LocalGemm
-        ( orientation, TRANSPOSE,
+        ( orientation, Orientation::TRANSPOSE,
           T(1), L10_STAR_MC, X1Trans_MR_STAR, T(1), X0 );
 
         L11_STAR_STAR = L11;
         X1_STAR_VR.AlignWith( X1 );
         Transpose( X1Trans_MR_STAR, X1_STAR_VR );
         LocalTrmm
-        ( LEFT, UpperOrLower::LOWER, orientation, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, diag, T(1), L11_STAR_STAR, X1_STAR_VR );
         X1 = X1_STAR_VR;
     }
 }

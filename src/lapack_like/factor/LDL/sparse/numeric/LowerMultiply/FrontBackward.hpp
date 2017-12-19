@@ -17,8 +17,8 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#ifndef EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTBACKWARD_HPP
-#define EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTBACKWARD_HPP
+#ifndef EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTForwardOrBackward::BACKWARD_HPP
+#define EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTForwardOrBackward::BACKWARD_HPP
 
 namespace El {
 namespace ldl {
@@ -38,9 +38,9 @@ void FrontVanillaLowerBackwardMultiply
     LockedPartitionDown( L, LT, LB, L.Width() );
     PartitionDown( X, XT, XB, L.Width() );
 
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
-    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), LT, XT );
-    Gemm( orientation, NORMAL, F(1), LB, XB, F(1), XT );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), LT, XT );
+    Gemm( orientation, Orientation::NORMAL, F(1), LB, XB, F(1), XT );
 }
 
 template<typename F>
@@ -95,14 +95,14 @@ void FrontVanillaLowerBackwardMultiply
     LockedPartitionDown( L, LT, LB, L.Width() );
     PartitionDown( X, XT, XB, L.Width() );
 
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
-    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), LT, XT );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), LT, XT );
 
     if( XB.Height() != 0 )
     {
         // Subtract off the parent updates
         DistMatrix<F,Dist::STAR,Dist::STAR> Z(g);
-        LocalGemm( orientation, NORMAL, F(1), LB, XB, Z );
+        LocalGemm( orientation, Orientation::NORMAL, F(1), LB, XB, Z );
         AxpyContract( F(1), Z, XT );
     }
 }
@@ -134,9 +134,9 @@ void FrontVanillaLowerBackwardMultiply
     LockedPartitionDown( L, LT, LB, L.Width() );
     PartitionDown( X, XT, XB, L.Width() );
 
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
-    Trmm( LEFT, UpperOrLower::LOWER, orientation, UNIT, F(1), LT, XT );
-    Gemm( orientation, NORMAL, F(1), LB, XB, F(1), XT );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), LT, XT );
+    Gemm( orientation, Orientation::NORMAL, F(1), LB, XB, F(1), XT );
 }
 
 template<typename F>
@@ -170,4 +170,4 @@ void FrontLowerBackwardMultiply
 } // namespace ldl
 } // namespace El
 
-#endif // ifndef EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTBACKWARD_HPP
+#endif // ifndef EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTForwardOrBackward::BACKWARD_HPP

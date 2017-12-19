@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 // TODO: Add detailed references to Tygert et al.'s ID package and the papers
 //       "Randomized algorithms for the low-rank approximation of matrices",
@@ -58,7 +57,7 @@ BusingerGolub
     auto RL = A( IR(0,numSteps), IR(0,numSteps) );
     auto RR = A( IR(0,numSteps), IR(numSteps,n) );
     Z = RR;
-    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), RL, Z );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), RL, Z );
 }
 
 template<typename F>
@@ -100,7 +99,7 @@ BusingerGolub
     auto RL = A( IR(0,numSteps), IR(0,numSteps) );
     auto RR = A( IR(0,numSteps), IR(numSteps,n) );
     Copy( RR, Z );
-    Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), RL, Z );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), RL, Z );
 }
 
 } // namespace id

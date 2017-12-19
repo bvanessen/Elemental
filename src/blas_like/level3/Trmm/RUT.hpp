@@ -59,10 +59,10 @@ void LocalAccumulateRUT
         D11.AlignWith( U11 );
         D11 = U11;
         MakeTrapezoidal( UpperOrLower::UPPER, D11 );
-        if( diag == UNIT )
+        if( diag == UnitOrNonUnit::UNIT )
             FillDiagonal( D11, T(1) );
-        LocalGemm( NORMAL, NORMAL, alpha, D11, X1Trans, T(1), Z1Trans );
-        LocalGemm( NORMAL, NORMAL, alpha, U01, X1Trans, T(1), Z0Trans );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, alpha, D11, X1Trans, T(1), Z1Trans );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, alpha, U01, X1Trans, T(1), Z0Trans );
     }
 }
 
@@ -81,7 +81,7 @@ void RUTA
     const Int m = XPre.Height();
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
-    const bool conjugate = ( orientation == ADJOINT );
+    const bool conjugate = ( orientation == Orientation::ADJOINT );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
     DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
@@ -125,7 +125,7 @@ void RUTC
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( UPre, XPre );
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected Adjoint/Transpose option");
       if( UPre.Height() != UPre.Width() || XPre.Width() != UPre.Height() )
           LogicError
@@ -134,7 +134,7 @@ void RUTC
     const Int n = XPre.Width();
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
-    const bool conjugate = ( orientation == ADJOINT );
+    const bool conjugate = ( orientation == Orientation::ADJOINT );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> UProx( UPre );
     DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> XProx( XPre );
@@ -159,13 +159,13 @@ void RUTC
         X1_VC_STAR = X1;
         U11_STAR_STAR = U11;
         LocalTrmm
-        ( RIGHT, UpperOrLower::UPPER, orientation, diag, T(1), U11_STAR_STAR, X1_VC_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, orientation, diag, T(1), U11_STAR_STAR, X1_VC_STAR );
         X1 = X1_VC_STAR;
 
         U12Trans_MR_STAR.AlignWith( X2 );
         Transpose( U12, U12Trans_MR_STAR, conjugate );
         D1_MC_STAR.AlignWith( X1 );
-        LocalGemm( NORMAL, NORMAL, T(1), X2, U12Trans_MR_STAR, D1_MC_STAR );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, T(1), X2, U12Trans_MR_STAR, D1_MC_STAR );
         AxpyContract( T(1), D1_MC_STAR, X1 );
     }
 }

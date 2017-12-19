@@ -17,7 +17,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 namespace ldl {
@@ -34,10 +33,10 @@ void DiagonalScale
 
     if( PivotedFactorization(front.type) )
         QuasiDiagonalScale
-        ( LEFT, UpperOrLower::LOWER, front.diag, front.subdiag,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, front.diag, front.subdiag,
           X.matrix, front.isHermitian );
     else
-        DiagonalScale( LEFT, NORMAL, front.diag, X.matrix );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, front.diag, X.matrix );
 }
 
 template<typename F>
@@ -55,9 +54,9 @@ void DiagonalScale
 
     if( PivotedFactorization(front.type) )
         QuasiDiagonalScale
-        ( LEFT, UpperOrLower::LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
     else
-        DiagonalScale( LEFT, NORMAL, front.diag, X.matrix );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, front.diag, X.matrix );
 }
 
 template<typename F>
@@ -75,9 +74,9 @@ void DiagonalScale
 
     if( PivotedFactorization(front.type) )
         QuasiDiagonalScale
-        ( LEFT, UpperOrLower::LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
     else
-        DiagonalScale( LEFT, NORMAL, front.diag, X.matrix );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, front.diag, X.matrix );
 }
 
 #define PROTO(F) \

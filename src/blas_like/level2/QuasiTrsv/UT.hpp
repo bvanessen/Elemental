@@ -24,11 +24,11 @@ void UTUnb
       const Int xLength = ( x.Width() == 1 ? x.Height() : x.Width() );
       if( U.Width() != xLength )
           LogicError("Nonconformal");
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Invalid orientation");
     )
     typedef Base<F> Real;
-    const bool conjugate = ( orientation==ADJOINT );
+    const bool conjugate = ( orientation==Orientation::ADJOINT );
     if( conjugate )
         Conjugate( x );
 
@@ -121,11 +121,11 @@ void UT
       const Int xLength = ( x.Width() == 1 ? x.Height() : x.Width() );
       if( U.Width() != xLength )
           LogicError("Nonconformal");
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Invalid orientation");
     )
     const bool vert = ( x.Width()==1 );
-    const bool conjugate = ( orientation==ADJOINT );
+    const bool conjugate = ( orientation==Orientation::ADJOINT );
     if( conjugate )
         Conjugate( x );
 
@@ -154,8 +154,8 @@ void UT
             View( x2, x, ALL, ind2 );
         }
 
-        quasitrsv::UTUnb( TRANSPOSE, U11, x1, checkIfSingular );
-        Gemv( TRANSPOSE, F(-1), U12, x1, F(1), x2 );
+        quasitrsv::UTUnb( Orientation::TRANSPOSE, U11, x1, checkIfSingular );
+        Gemv( Orientation::TRANSPOSE, F(-1), U12, x1, F(1), x2 );
 
         k += nb;
     }
@@ -181,13 +181,13 @@ void UT
           ( xPre.Width() == 1 ? xPre.Height() : xPre.Width() );
       if( UPre.Width() != xLength )
           LogicError("Nonconformal");
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Invalid orientation");
     )
     const Int m = UPre.Height();
     const Int bsize = Blocksize();
     const Grid& g = UPre.Grid();
-    const bool conjugate = ( orientation==ADJOINT );
+    const bool conjugate = ( orientation==Orientation::ADJOINT );
     if( conjugate )
         Conjugate( xPre );
 
@@ -237,13 +237,13 @@ void UT
             x1_STAR_STAR = x1;
             U11_STAR_STAR = U11;
             quasitrsv::UT
-            ( TRANSPOSE, U11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix(),
+            ( Orientation::TRANSPOSE, U11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix(),
               checkIfSingular );
             x1 = x1_STAR_STAR;
 
             x1_MR_STAR.AlignWith( U12 );
             x1_MR_STAR = x1_STAR_STAR;
-            LocalGemv( TRANSPOSE, F(-1), U12, x1_MR_STAR, F(1), z2_MC_STAR );
+            LocalGemv( Orientation::TRANSPOSE, F(-1), U12, x1_MR_STAR, F(1), z2_MC_STAR );
 
             k += nb;
         }
@@ -287,13 +287,13 @@ void UT
             x1_STAR_STAR = x1;
             U11_STAR_STAR = U11;
             quasitrsv::UT
-            ( TRANSPOSE, U11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix(),
+            ( Orientation::TRANSPOSE, U11_STAR_STAR.LockedMatrix(), x1_STAR_STAR.Matrix(),
               checkIfSingular );
             x1 = x1_STAR_STAR;
 
             x1_STAR_MR.AlignWith( U12 );
             x1_STAR_MR = x1_STAR_STAR;
-            LocalGemv( TRANSPOSE, F(-1), U12, x1_STAR_MR, F(1), z2_STAR_MC );
+            LocalGemv( Orientation::TRANSPOSE, F(-1), U12, x1_STAR_MR, F(1), z2_STAR_MC );
 
             k += nb;
         }

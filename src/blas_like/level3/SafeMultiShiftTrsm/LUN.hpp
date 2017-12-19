@@ -342,7 +342,7 @@ void LUN
             }
 
             // Update RHS with GEMM
-            Gemm( NORMAL, NORMAL, F(-1), U01, X1, F(1), X0 );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), U01, X1, F(1), X0 );
         }
     }
 }
@@ -438,7 +438,7 @@ void LUN
                 blas::Scal( X2.LocalHeight(), sigma, X2.Buffer(0,jLoc), 1 );
             }
         }
-        DiagonalScale( LEFT,  NORMAL, scalesUpdate_VR_STAR, scales );
+        DiagonalScale( LeftOrRight::LEFT,  Orientation::NORMAL, scalesUpdate_VR_STAR, scales );
 
         if( k > 0 )
         {
@@ -447,7 +447,7 @@ void LUN
             U01_MC_STAR.AlignWith( X0 );
             U01_MC_STAR = U01; // U01[MC,* ] <- U01[MC,MR]
             LocalGemm
-            ( NORMAL, NORMAL, F(-1), U01_MC_STAR, X1_STAR_MR, F(1), X0 );
+            ( Orientation::NORMAL, Orientation::NORMAL, F(-1), U01_MC_STAR, X1_STAR_MR, F(1), X0 );
         }
     }
 }

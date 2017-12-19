@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 
@@ -31,9 +30,9 @@ HermitianGenDefEig
 
     Cholesky( uplo, B );
     if( pencil == AXBX )
-        TwoSidedTrsm( uplo, NON_UNIT, A, B );
+        TwoSidedTrsm( uplo, UnitOrNonUnit::NON_UNIT, A, B );
     else
-        TwoSidedTrmm( uplo, NON_UNIT, A, B );
+        TwoSidedTrmm( uplo, UnitOrNonUnit::NON_UNIT, A, B );
     return HermitianEig( uplo, A, w, ctrl );
 }
 
@@ -60,9 +59,9 @@ HermitianGenDefEig
 
     Cholesky( uplo, B );
     if( pencil == AXBX )
-        TwoSidedTrsm( uplo, NON_UNIT, A, B );
+        TwoSidedTrsm( uplo, UnitOrNonUnit::NON_UNIT, A, B );
     else
-        TwoSidedTrmm( uplo, NON_UNIT, A, B );
+        TwoSidedTrmm( uplo, UnitOrNonUnit::NON_UNIT, A, B );
     return HermitianEig( uplo, A, w, ctrl );
 }
 
@@ -88,19 +87,19 @@ HermitianGenDefEig
 
     Cholesky( uplo, B );
     if( pencil == AXBX )
-        TwoSidedTrsm( uplo, NON_UNIT, A, B );
+        TwoSidedTrsm( uplo, UnitOrNonUnit::NON_UNIT, A, B );
     else
-        TwoSidedTrmm( uplo, NON_UNIT, A, B );
+        TwoSidedTrmm( uplo, UnitOrNonUnit::NON_UNIT, A, B );
     auto info = HermitianEig( uplo, A, w, X, ctrl );
     if( pencil == AXBX || pencil == ABX )
     {
-        const Orientation orientation = ( uplo==UpperOrLower::LOWER ? ADJOINT : NORMAL );
-        Trsm( LEFT, uplo, orientation, NON_UNIT, Field(1), B, X );
+        const Orientation orientation = ( uplo==UpperOrLower::LOWER ? Orientation::ADJOINT : Orientation::NORMAL );
+        Trsm( LeftOrRight::LEFT, uplo, orientation, UnitOrNonUnit::NON_UNIT, Field(1), B, X );
     }
     else /* pencil == BAX */
     {
-        const Orientation orientation = ( uplo==UpperOrLower::LOWER ? NORMAL : ADJOINT );
-        Trmm( LEFT, uplo, orientation, NON_UNIT, Field(1), B, X );
+        const Orientation orientation = ( uplo==UpperOrLower::LOWER ? Orientation::NORMAL : Orientation::ADJOINT );
+        Trmm( LeftOrRight::LEFT, uplo, orientation, UnitOrNonUnit::NON_UNIT, Field(1), B, X );
     }
     return info;
 }
@@ -131,19 +130,19 @@ HermitianGenDefEig
 
     Cholesky( uplo, B );
     if( pencil == AXBX )
-        TwoSidedTrsm( uplo, NON_UNIT, A, B );
+        TwoSidedTrsm( uplo, UnitOrNonUnit::NON_UNIT, A, B );
     else
-        TwoSidedTrmm( uplo, NON_UNIT, A, B );
+        TwoSidedTrmm( uplo, UnitOrNonUnit::NON_UNIT, A, B );
     auto info = HermitianEig( uplo, A, w, X, ctrl );
     if( pencil == AXBX || pencil == ABX )
     {
-        const Orientation orientation = ( uplo==UpperOrLower::LOWER ? ADJOINT : NORMAL );
-        Trsm( LEFT, uplo, orientation, NON_UNIT, Field(1), B, X );
+        const Orientation orientation = ( uplo==UpperOrLower::LOWER ? Orientation::ADJOINT : Orientation::NORMAL );
+        Trsm( LeftOrRight::LEFT, uplo, orientation, UnitOrNonUnit::NON_UNIT, Field(1), B, X );
     }
     else /* pencil == BAX */
     {
-        const Orientation orientation = ( uplo==UpperOrLower::LOWER ? NORMAL : ADJOINT );
-        Trmm( LEFT, uplo, orientation, NON_UNIT, Field(1), B, X );
+        const Orientation orientation = ( uplo==UpperOrLower::LOWER ? Orientation::NORMAL : Orientation::ADJOINT );
+        Trmm( LeftOrRight::LEFT, uplo, orientation, UnitOrNonUnit::NON_UNIT, Field(1), B, X );
     }
     return info;
 }

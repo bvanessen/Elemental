@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level3.hpp>
@@ -19,25 +19,25 @@ template<typename T>
 void Gemm
 ( Orientation orientA, Orientation orientB,
   T alpha, const Matrix<T>& A,
-           const Matrix<T>& B, 
+           const Matrix<T>& B,
   T beta,        Matrix<T>& C )
 {
     EL_DEBUG_CSE
-    if( orientA == NORMAL && orientB == NORMAL )
+    if( orientA == Orientation::NORMAL && orientB == Orientation::NORMAL )
     {
         if( A.Height() != C.Height() ||
             B.Width()  != C.Width()  ||
             A.Width()  != B.Height() )
             LogicError("Nonconformal GemmNN");
     }
-    else if( orientA == NORMAL )
+    else if( orientA == Orientation::NORMAL )
     {
         if( A.Height() != C.Height() ||
             B.Height() != C.Width()  ||
             A.Width()  != B.Width() )
             LogicError("Nonconformal GemmN(T/C)");
     }
-    else if( orientB == NORMAL )
+    else if( orientB == Orientation::NORMAL )
     {
         if( A.Width()  != C.Height() ||
             B.Width()  != C.Width()  ||
@@ -55,7 +55,7 @@ void Gemm
     const char transB = OrientationToChar( orientB );
     const Int m = C.Height();
     const Int n = C.Width();
-    const Int k = ( orientA == NORMAL ? A.Width() : A.Height() );
+    const Int k = ( orientA == Orientation::NORMAL ? A.Width() : A.Height() );
     if( k != 0 )
     {
         blas::Gemm
@@ -74,12 +74,12 @@ template<typename T>
 void Gemm
 ( Orientation orientA, Orientation orientB,
   T alpha, const Matrix<T>& A,
-           const Matrix<T>& B, 
+           const Matrix<T>& B,
                  Matrix<T>& C )
 {
     EL_DEBUG_CSE
-    const Int m = ( orientA==NORMAL ? A.Height() : A.Width() );
-    const Int n = ( orientB==NORMAL ? B.Width() : B.Height() );
+    const Int m = ( orientA==Orientation::NORMAL ? A.Height() : A.Width() );
+    const Int n = ( orientB==Orientation::NORMAL ? B.Width() : B.Height() );
     C.Resize( m, n );
     Zero( C );
     Gemm( orientA, orientB, alpha, A, B, T(0), C );
@@ -90,23 +90,23 @@ void Gemm
 ( Orientation orientA, Orientation orientB,
   T alpha, const AbstractDistMatrix<T>& A,
            const AbstractDistMatrix<T>& B,
-  T beta,        AbstractDistMatrix<T>& C, 
+  T beta,        AbstractDistMatrix<T>& C,
   GemmAlgorithm alg )
 {
     EL_DEBUG_CSE
     C *= beta;
-    if( orientA == NORMAL && orientB == NORMAL )
+    if( orientA == Orientation::NORMAL && orientB == Orientation::NORMAL )
     {
         if( alg == GEMM_CANNON )
             gemm::Cannon_NN( alpha, A, B, C );
-        else 
+        else
             gemm::SUMMA_NN( alpha, A, B, C, alg );
     }
-    else if( orientA == NORMAL )
+    else if( orientA == Orientation::NORMAL )
     {
         gemm::SUMMA_NT( orientB, alpha, A, B, C, alg );
     }
-    else if( orientB == NORMAL )
+    else if( orientB == Orientation::NORMAL )
     {
         gemm::SUMMA_TN( orientA, alpha, A, B, C, alg );
     }
@@ -124,8 +124,8 @@ void Gemm
                  AbstractDistMatrix<T>& C, GemmAlgorithm alg )
 {
     EL_DEBUG_CSE
-    const Int m = ( orientA==NORMAL ? A.Height() : A.Width() );
-    const Int n = ( orientB==NORMAL ? B.Width() : B.Height() );
+    const Int m = ( orientA==Orientation::NORMAL ? A.Height() : A.Width() );
+    const Int n = ( orientB==Orientation::NORMAL ? B.Width() : B.Height() );
     C.Resize( m, n );
     Zero( C );
     Gemm( orientA, orientB, alpha, A, B, T(0), C, alg );
@@ -140,7 +140,7 @@ void LocalGemm
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientA == NORMAL && orientB == NORMAL )
+      if( orientA == Orientation::NORMAL && orientB == Orientation::NORMAL )
       {
           if( A.ColDist() != C.ColDist() ||
               A.RowDist() != B.ColDist() ||
@@ -164,7 +164,7 @@ void LocalGemm
                DimsString(B,"B"),"\n",
                DimsString(C,"C"));
       }
-      else if( orientA == NORMAL )
+      else if( orientA == Orientation::NORMAL )
       {
           if( A.ColDist() != C.ColDist() ||
               A.RowDist() != B.RowDist() ||
@@ -188,7 +188,7 @@ void LocalGemm
                DimsString(B,"B"),"\n",
                DimsString(C,"C"));
       }
-      else if( orientB == NORMAL )
+      else if( orientB == Orientation::NORMAL )
       {
           if( A.RowDist() != C.ColDist() ||
               A.ColDist() != B.ColDist() ||
@@ -250,8 +250,8 @@ void LocalGemm
                  AbstractDistMatrix<T>& C )
 {
     EL_DEBUG_CSE
-    const Int m = ( orientA==NORMAL ? A.Height() : A.Width() );
-    const Int n = ( orientB==NORMAL ? B.Width() : B.Height() );
+    const Int m = ( orientA==Orientation::NORMAL ? A.Height() : A.Width() );
+    const Int n = ( orientB==Orientation::NORMAL ? B.Width() : B.Height() );
     C.Resize( m, n );
     Zero( C );
     LocalGemm( orientA, orientB, alpha, A, B, T(0), C );

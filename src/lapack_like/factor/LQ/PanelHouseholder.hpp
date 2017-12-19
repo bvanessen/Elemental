@@ -52,7 +52,7 @@ PanelHouseholder
         //      = A2R (I - tau a1R^T conj(a1R))
         //      = A2R - tau (A2R a1R^T) conj(a1R)
         Zeros( z21, A2R.Height(), 1 );
-        Gemv( NORMAL, Field(1), A2R, a1R, Field(0), z21 );
+        Gemv( Orientation::NORMAL, Field(1), A2R, a1R, Field(0), z21 );
         Ger( -tau, z21, a1R, A2R );
 
         // Reset alpha11's value
@@ -64,7 +64,7 @@ PanelHouseholder
     auto sgn = []( const Real& delta )
                { return delta >= Real(0) ? Real(1) : Real(-1); };
     EntrywiseMap( signature, MakeFunction(sgn) );
-    DiagonalScaleTrapezoid( RIGHT, UpperOrLower::LOWER, NORMAL, signature, L );
+    DiagonalScaleTrapezoid( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, signature, L );
 }
 
 template<typename Field>
@@ -116,7 +116,7 @@ PanelHouseholder
         a1R_STAR_MR = a1R;
         z21_MC_STAR.AlignWith( A2R );
         Zeros( z21_MC_STAR, A2R.Height(), 1 );
-        LocalGemv( NORMAL, Field(1), A2R, a1R_STAR_MR, Field(0), z21_MC_STAR );
+        LocalGemv( Orientation::NORMAL, Field(1), A2R, a1R_STAR_MR, Field(0), z21_MC_STAR );
         El::AllReduce( z21_MC_STAR, A2R.RowComm() );
         Ger
         ( -tau, z21_MC_STAR.LockedMatrix(),
@@ -133,7 +133,7 @@ PanelHouseholder
     auto sgn = []( const Real& delta )
                { return delta >= Real(0) ? Real(1) : Real(-1); };
     EntrywiseMap( signature, MakeFunction(sgn) );
-    DiagonalScaleTrapezoid( RIGHT, UpperOrLower::LOWER, NORMAL, signature, L );
+    DiagonalScaleTrapezoid( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, signature, L );
 }
 
 } // namespace lq

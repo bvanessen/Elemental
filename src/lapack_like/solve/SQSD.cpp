@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 
@@ -22,7 +21,7 @@ void SQSDSolve
 ( Int n0, UpperOrLower uplo, const Matrix<Field>& A, Matrix<Field>& B )
 {
     EL_DEBUG_CSE
-    const Orientation orient = NORMAL;
+    const Orientation orient = Orientation::NORMAL;
     const bool conjugate = true;
     // TODO(poulson): LDLPivotCtrl control structure
     return SymmetricSolve( uplo, orient, A, B, conjugate );
@@ -36,7 +35,7 @@ void SQSDSolve
         AbstractDistMatrix<Field>& B )
 {
     EL_DEBUG_CSE
-    const Orientation orient = NORMAL;
+    const Orientation orient = Orientation::NORMAL;
     const bool conjugate = true;
     // TODO(poulson): LDLPivotCtrl control structure
     return SymmetricSolve( uplo, orient, A, B, conjugate );

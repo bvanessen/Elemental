@@ -208,13 +208,13 @@ void LUT
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("QuasiTrsmLUT expects a (Conjugate)Transpose option");
     )
     const Int m = X.Height();
     const Int bsize = Blocksize();
 
-    const bool conjugate = ( orientation==ADJOINT );
+    const bool conjugate = ( orientation==Orientation::ADJOINT );
     if( conjugate )
         Conjugate( X );
 
@@ -234,7 +234,7 @@ void LUT
         auto X2 = X( ind2, ALL );
 
         LUTUnb( false, U11, shifts, X1 );
-        Gemm( TRANSPOSE, NORMAL, F(-1), U12, X1, F(1), X2 );
+        Gemm( Orientation::TRANSPOSE, Orientation::NORMAL, F(-1), U12, X1, F(1), X2 );
     }
 
     if( conjugate )
@@ -250,13 +250,13 @@ void LUT
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("QuasiTrsmLUT expects a (Conjugate)Transpose option");
     )
     const Int m = XReal.Height();
     const Int bsize = Blocksize();
 
-    const bool conjugate = ( orientation==ADJOINT );
+    const bool conjugate = ( orientation==Orientation::ADJOINT );
     if( conjugate )
         XImag *= -1;
 
@@ -279,8 +279,8 @@ void LUT
         auto X2Imag = XImag( ind2, ALL );
 
         LUTUnb( false, U11, shifts, X1Real, X1Imag );
-        Gemm( TRANSPOSE, NORMAL, Real(-1), U12, X1Real, Real(1), X2Real );
-        Gemm( TRANSPOSE, NORMAL, Real(-1), U12, X1Imag, Real(1), X2Imag );
+        Gemm( Orientation::TRANSPOSE, Orientation::NORMAL, Real(-1), U12, X1Real, Real(1), X2Real );
+        Gemm( Orientation::TRANSPOSE, Orientation::NORMAL, Real(-1), U12, X1Imag, Real(1), X2Imag );
     }
     if( conjugate )
         XImag *= -1;
@@ -296,7 +296,7 @@ void LUTLarge
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("TrsmLUT expects a (Conjugate)Transpose option");
     )
     const Int m = XPre.Height();
@@ -336,7 +336,7 @@ void LUTLarge
 
         // X1[* ,VR] := U11^-[T/H][*,*] X1[* ,VR]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UpperOrLower::UPPER, orientation, F(1), U11_STAR_STAR, shifts, X1_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, orientation, F(1), U11_STAR_STAR, shifts, X1_STAR_VR );
 
         X1_STAR_MR.AlignWith( X2 );
         X1_STAR_MR  = X1_STAR_VR; // X1[* ,MR]  <- X1[* ,VR]
@@ -347,7 +347,7 @@ void LUTLarge
         // X2[MC,MR] -= (U12[* ,MC])^(T/H) X1[* ,MR]
         //            = U12^(T/H)[MC,*] X1[* ,MR]
         LocalGemm
-        ( orientation, NORMAL, F(-1), U12_STAR_MC, X1_STAR_MR, F(1), X2 );
+        ( orientation, Orientation::NORMAL, F(-1), U12_STAR_MC, X1_STAR_MR, F(1), X2 );
     }
 }
 
@@ -361,7 +361,7 @@ void LUTLarge
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("TrsmLUT expects a (Conjugate)Transpose option");
     )
     typedef Complex<Real> C;
@@ -410,7 +410,7 @@ void LUTLarge
 
         // X1[* ,VR] := U11^-[T/H][*,*] X1[* ,VR]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UpperOrLower::UPPER, orientation,
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, orientation,
           C(1), U11_STAR_STAR, shifts, X1Real_STAR_VR, X1Imag_STAR_VR );
 
         X1Real_STAR_MR.AlignWith( X2Real );
@@ -425,10 +425,10 @@ void LUTLarge
         // X2[MC,MR] -= (U12[* ,MC])^(T/H) X1[* ,MR]
         //            = U12^(T/H)[MC,*] X1[* ,MR]
         LocalGemm
-        ( orientation, NORMAL,
+        ( orientation, Orientation::NORMAL,
           Real(-1), U12_STAR_MC, X1Real_STAR_MR, Real(1), X2Real );
         LocalGemm
-        ( orientation, NORMAL,
+        ( orientation, Orientation::NORMAL,
           Real(-1), U12_STAR_MC, X1Imag_STAR_MR, Real(1), X2Imag );
     }
 }
@@ -443,7 +443,7 @@ void LUTMedium
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("TrsmLUT expects a (Conjugate)Transpose option");
     )
     const Int m = XPre.Height();
@@ -482,17 +482,17 @@ void LUTMedium
         U11_STAR_STAR = U11; // U11[* ,* ] <- U11[MC,MR]
         // X1[* ,VR] <- X1[MC,MR]
         X1Trans_MR_STAR.AlignWith( X2 );
-        Transpose( X1, X1Trans_MR_STAR, (orientation==ADJOINT) );
+        Transpose( X1, X1Trans_MR_STAR, (orientation==Orientation::ADJOINT) );
 
         // X1[* ,MR] := U11^-[T/H][*,*] X1[* ,MR]
         // X1^[T/H][MR,* ] := X1^[T/H][MR,* ] U11^-1[* ,* ]
         shifts_MR_STAR_Align.AlignWith( X1Trans_MR_STAR );
         shifts_MR_STAR_Align = shifts_MR_STAR;
         LocalMultiShiftQuasiTrsm
-        ( RIGHT, UpperOrLower::UPPER, NORMAL,
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL,
           F(1), U11_STAR_STAR, shifts_MR_STAR_Align, X1Trans_MR_STAR );
 
-        Transpose( X1Trans_MR_STAR, X1, (orientation==ADJOINT) );
+        Transpose( X1Trans_MR_STAR, X1, (orientation==Orientation::ADJOINT) );
         U12_STAR_MC.AlignWith( X2 );
         U12_STAR_MC = U12; // U12[* ,MC] <- U12[MC,MR]
 
@@ -514,7 +514,7 @@ void LUTMedium
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("TrsmLUT expects a (Conjugate)Transpose option");
     )
     typedef Complex<Real> C;
@@ -560,20 +560,20 @@ void LUTMedium
         U11_STAR_STAR = U11;
         X1RealTrans_MR_STAR.AlignWith( X2Real );
         X1ImagTrans_MR_STAR.AlignWith( X2Imag );
-        Transpose( X1Real, X1RealTrans_MR_STAR, (orientation==ADJOINT) );
-        Transpose( X1Imag, X1ImagTrans_MR_STAR, (orientation==ADJOINT) );
+        Transpose( X1Real, X1RealTrans_MR_STAR, (orientation==Orientation::ADJOINT) );
+        Transpose( X1Imag, X1ImagTrans_MR_STAR, (orientation==Orientation::ADJOINT) );
 
         // X1[* ,MR] := U11^-[T/H][*,*] X1[* ,MR]
         // X1^[T/H][MR,* ] := X1^[T/H][MR,* ] U11^-1[* ,* ]
         shifts_MR_STAR_Align.AlignWith( X1RealTrans_MR_STAR );
         shifts_MR_STAR_Align = shifts_MR_STAR;
         LocalMultiShiftQuasiTrsm
-        ( RIGHT, UpperOrLower::UPPER, NORMAL,
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL,
           C(1), U11_STAR_STAR, shifts_MR_STAR_Align,
                 X1RealTrans_MR_STAR, X1ImagTrans_MR_STAR );
 
-        Transpose( X1RealTrans_MR_STAR, X1Real, (orientation==ADJOINT) );
-        Transpose( X1ImagTrans_MR_STAR, X1Imag, (orientation==ADJOINT) );
+        Transpose( X1RealTrans_MR_STAR, X1Real, (orientation==Orientation::ADJOINT) );
+        Transpose( X1ImagTrans_MR_STAR, X1Imag, (orientation==Orientation::ADJOINT) );
         U12_STAR_MC.AlignWith( X2Real );
         U12_STAR_MC = U12;
 
@@ -599,7 +599,7 @@ void LUTSmall
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( U, shifts, X );
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("TrsmLUT expects a (Conjugate)Transpose option");
       if( U.Height() != U.Width() || U.Height() != X.Height() )
           LogicError
@@ -636,13 +636,13 @@ void LUTSmall
 
         // X1[* ,* ] := U11^-[T/H][* ,* ] X1[* ,* ]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UpperOrLower::UPPER, orientation,
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, orientation,
           F(1), U11_STAR_STAR, shifts_STAR_STAR, X1_STAR_STAR );
 
         X1 = X1_STAR_STAR;
 
         // X2[VR,* ] -= U12[* ,VR]^[T/H] X1[* ,* ]
-        LocalGemm( orientation, NORMAL, F(-1), U12, X1_STAR_STAR, F(1), X2 );
+        LocalGemm( orientation, Orientation::NORMAL, F(-1), U12, X1_STAR_STAR, F(1), X2 );
     }
 }
 
@@ -657,7 +657,7 @@ void LUTSmall
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( U, shifts, XReal, XImag );
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("TrsmLUT expects a (Conjugate)Transpose option");
       if( U.Height() != U.Width() || U.Height() != XReal.Height() )
           LogicError
@@ -701,7 +701,7 @@ void LUTSmall
 
         // X1[* ,* ] := U11^-[T/H][* ,* ] X1[* ,* ]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UpperOrLower::UPPER, orientation,
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, orientation,
           C(1), U11_STAR_STAR, shifts_STAR_STAR,
                 X1Real_STAR_STAR, X1Imag_STAR_STAR );
 
@@ -710,10 +710,10 @@ void LUTSmall
 
         // X2[VR,* ] -= U12[* ,VR]^[T/H] X1[* ,* ]
         LocalGemm
-        ( orientation, NORMAL,
+        ( orientation, Orientation::NORMAL,
           Real(-1), U12, X1Real_STAR_STAR, Real(1), X2Real );
         LocalGemm
-        ( orientation, NORMAL,
+        ( orientation, Orientation::NORMAL,
           Real(-1), U12, X1Imag_STAR_STAR, Real(1), X2Imag );
     }
 }

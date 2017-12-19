@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level2.hpp>
@@ -289,17 +289,17 @@ void ApplyGivensSequence
     typedef Base<F> Real;
     const Real one(1);
     const F zeroF(0);
-    const Int m = A.Height();    
+    const Int m = A.Height();
     const Int n = A.Width();
     if( m == 0 || n == 0 )
         return;
 
     F tmp;
-    if( side == LEFT )
+    if( side == LeftOrRight::LEFT )
     {
         if( seqType == VARIABLE_GIVENS_SEQUENCE )
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 for( Int i=0; i<m-1; ++i )
                 {
@@ -318,7 +318,7 @@ void ApplyGivensSequence
         }
         else if( seqType == TOP_GIVENS_SEQUENCE )
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 for( Int i=1; i<m; ++i )
                 {
@@ -337,7 +337,7 @@ void ApplyGivensSequence
         }
         else
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 for( Int i=0; i<m-1; ++i )
                 {
@@ -359,7 +359,7 @@ void ApplyGivensSequence
     {
         if( seqType == VARIABLE_GIVENS_SEQUENCE )
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 for( Int j=0; j<n-1; ++j )
                 {
@@ -378,7 +378,7 @@ void ApplyGivensSequence
         }
         else if( seqType == TOP_GIVENS_SEQUENCE )
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 for( Int j=1; j<n; ++j )
                 {
@@ -397,7 +397,7 @@ void ApplyGivensSequence
         }
         else
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 for( Int j=0; j<n-1; ++j )
                 {
@@ -428,17 +428,17 @@ void ApplyGivensSequence
     // TODO(poulson): Assert the correct lengths of cList and sList
     typedef Base<F> Real;
     const Real one(1), zero(0);
-    const Int m = A.Height();    
+    const Int m = A.Height();
     const Int n = A.Width();
     if( m == 0 || n == 0 )
         return;
 
     F tmp;
-    if( side == LEFT )
+    if( side == LeftOrRight::LEFT )
     {
         if( seqType == VARIABLE_GIVENS_SEQUENCE )
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 for( Int i=0; i<m-1; ++i )
                 {
@@ -457,7 +457,7 @@ void ApplyGivensSequence
         }
         else if( seqType == TOP_GIVENS_SEQUENCE )
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 for( Int i=1; i<m; ++i )
                 {
@@ -476,7 +476,7 @@ void ApplyGivensSequence
         }
         else
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 for( Int i=0; i<m-1; ++i )
                 {
@@ -498,7 +498,7 @@ void ApplyGivensSequence
     {
         if( seqType == VARIABLE_GIVENS_SEQUENCE )
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 for( Int j=0; j<n-1; ++j )
                 {
@@ -517,7 +517,7 @@ void ApplyGivensSequence
         }
         else if( seqType == TOP_GIVENS_SEQUENCE )
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 for( Int j=1; j<n; ++j )
                 {
@@ -536,7 +536,7 @@ void ApplyGivensSequence
         }
         else
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 for( Int j=0; j<n-1; ++j )
                 {

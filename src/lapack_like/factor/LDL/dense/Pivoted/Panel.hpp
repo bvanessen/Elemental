@@ -129,7 +129,7 @@ Panel
             auto XB0 = X( indB, ind0 );
             auto y10 = Y( ind1, ind0 );
             auto aB1 = A( indB, ind1 );
-            Gemv( NORMAL, F(-1), XB0, y10, F(1), aB1 );
+            Gemv( Orientation::NORMAL, F(-1), XB0, y10, F(1), aB1 );
             if( conjugate )
                 aB1.MakeReal(0,0);
 
@@ -153,7 +153,7 @@ Panel
             auto Y10 = Y( ind1, ind0 );
             auto AB1 = A( indB, ind1 );
             const F psi = AB1(0,1);
-            Gemm( NORMAL, TRANSPOSE, F(-1), XB0, Y10, F(1), AB1 );
+            Gemm( Orientation::NORMAL, Orientation::TRANSPOSE, F(-1), XB0, Y10, F(1), AB1 );
             AB1.Set(0,1,psi);
             if( conjugate )
             {
@@ -268,7 +268,7 @@ Panel
             {
                 auto XB0 = X( indB, ind0 );
                 auto y10 = Y( ind1, ind0 );
-                LocalGemv( NORMAL, F(-1), XB0, y10, F(1), aB1 );
+                LocalGemv( Orientation::NORMAL, F(-1), XB0, y10, F(1), aB1 );
             }
             if( conjugate )
                 aB1.MakeReal(0,0);
@@ -294,7 +294,7 @@ Panel
             auto AB1 = A( indB, ind1 );
             // TODO: Make Get and Set local
             const F psi = AB1.Get(0,1);
-            LocalGemm( NORMAL, TRANSPOSE, F(-1), XB0, Y10, F(1), AB1 );
+            LocalGemm( Orientation::NORMAL, Orientation::TRANSPOSE, F(-1), XB0, Y10, F(1), AB1 );
             AB1.Set(0,1,psi);
             if( conjugate )
             {

@@ -55,7 +55,7 @@ void RLN
         L11_STAR_STAR = L11;
         X1_VC_STAR = X1;
         LocalTrsm
-        ( RIGHT, UpperOrLower::LOWER, NORMAL, diag, F(1), L11_STAR_STAR, X1_VC_STAR,
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, diag, F(1), L11_STAR_STAR, X1_VC_STAR,
           checkIfSingular );
 
         // X0[MC,MR] -= X1[MC,* ]   L10[*,MR]
@@ -66,7 +66,7 @@ void RLN
         L10Trans_MR_STAR.AlignWith( X0 );
         Transpose( L10, L10Trans_MR_STAR );
         LocalGemm
-        ( TRANSPOSE, TRANSPOSE,
+        ( Orientation::TRANSPOSE, Orientation::TRANSPOSE,
           F(-1), X1Trans_STAR_MC, L10Trans_MR_STAR, F(1), X0 );
     }
 }

@@ -2,17 +2,17 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level1.hpp>
 #include <El/matrices.hpp>
 
-// This is an implementation of the compressed hypercube/Ehrenfest matrix. 
-// The details are taken from Trefethen and Chapman's 
-// "Wave packet pseudomodes of twisted Toeplitz matrices" and 
-// Trefethen and Embree's "Spectra and Pseudospectra: The Behavior of 
+// This is an implementation of the compressed hypercube/Ehrenfest matrix.
+// The details are taken from Trefethen and Chapman's
+// "Wave packet pseudomodes of twisted Toeplitz matrices" and
+// Trefethen and Embree's "Spectra and Pseudospectra: The Behavior of
 // Nonnormal Matrices and Operators"
 
 namespace El {
@@ -61,7 +61,7 @@ void EhrenfestStationary( Matrix<F>& PInf, Int n )
 
     PInf.Resize( n, n );
     auto ehrenfestFill = [&]( Int i, Int j ) { return Exp(logBinom[j]-gamma); };
-    IndexDependentFill( PInf, function<F(Int,Int)>(ehrenfestFill) );
+    IndexDependentFill( PInf, std::function<F(Int,Int)>(ehrenfestFill) );
 }
 
 template<typename F>
@@ -75,7 +75,7 @@ void EhrenfestStationary( AbstractDistMatrix<F>& PInf, Int n )
 
     PInf.Resize( n, n );
     auto ehrenfestFill = [&]( Int i, Int j ) { return Exp(logBinom[j]-gamma); };
-    IndexDependentFill( PInf, function<F(Int,Int)>(ehrenfestFill) );
+    IndexDependentFill( PInf, std::function<F(Int,Int)>(ehrenfestFill) );
 }
 
 template<typename F>

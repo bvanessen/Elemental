@@ -137,7 +137,7 @@ void QLSweep
     if( wantEigVecs )
     {
         ApplyGivensSequence
-        ( RIGHT, VARIABLE_GIVENS_SEQUENCE, BACKWARD, cList, sList, Q );
+        ( LeftOrRight::RIGHT, VARIABLE_GIVENS_SEQUENCE, ForwardOrBackward::BACKWARD, cList, sList, Q );
     }
 }
 
@@ -187,7 +187,7 @@ void QRSweep
     if( wantEigVecs )
     {
         ApplyGivensSequence
-        ( RIGHT, VARIABLE_GIVENS_SEQUENCE, FORWARD, cList, sList, Q );
+        ( LeftOrRight::RIGHT, VARIABLE_GIVENS_SEQUENCE, ForwardOrBackward::FORWARD, cList, sList, Q );
     }
 }
 

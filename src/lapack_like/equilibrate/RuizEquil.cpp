@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 
@@ -46,15 +45,15 @@ void RuizEquil
         // -------------------
         ColumnMaxNorms( A, colScale );
         EntrywiseMap( colScale, MakeFunction(DampScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, colScale, dCol );
-        DiagonalSolve( RIGHT, NORMAL, colScale, A );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, colScale, dCol );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colScale, A );
 
         // Rescale the rows
         // ----------------
         RowMaxNorms( A, rowScale );
         EntrywiseMap( rowScale, MakeFunction(DampScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, rowScale, dRow );
-        DiagonalSolve( LEFT, NORMAL, rowScale, A );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, dRow );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, A );
     }
     SetIndent( indent );
 }
@@ -100,15 +99,15 @@ void RuizEquil
         // -------------------
         ColumnMaxNorms( A, colScale );
         EntrywiseMap( colScale, MakeFunction(DampScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, colScale, dCol );
-        DiagonalSolve( RIGHT, NORMAL, colScale, A );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, colScale, dCol );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colScale, A );
 
         // Rescale the rows
         // ----------------
         RowMaxNorms( A, rowScale );
         EntrywiseMap( rowScale, MakeFunction(DampScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, rowScale, dRow );
-        DiagonalSolve( LEFT, NORMAL, rowScale, A );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, dRow );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, A );
     }
     SetIndent( indent );
 }
@@ -146,21 +145,21 @@ void StackedRuizEquil
         for( Int j=0; j<n; ++j )
             colScale(j) = Max(colScale(j),colScaleB(j));
         EntrywiseMap( colScale, MakeFunction(DampScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, colScale, dCol );
-        DiagonalSolve( RIGHT, NORMAL, colScale, A );
-        DiagonalSolve( RIGHT, NORMAL, colScale, B );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, colScale, dCol );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colScale, A );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colScale, B );
 
         // Rescale the rows
         // ----------------
         RowMaxNorms( A, rowScale );
         EntrywiseMap( rowScale, MakeFunction(DampScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, rowScale, dRowA );
-        DiagonalSolve( LEFT, NORMAL, rowScale, A );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, dRowA );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, A );
 
         RowMaxNorms( B, rowScale );
         EntrywiseMap( rowScale, MakeFunction(DampScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, rowScale, dRowB );
-        DiagonalSolve( LEFT, NORMAL, rowScale, B );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, dRowB );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, B );
     }
     SetIndent( indent );
 }
@@ -221,21 +220,21 @@ void StackedRuizEquil
             colScaleLoc(jLoc) =
               Max(colScaleLoc(jLoc),colScaleBLoc(jLoc));
         EntrywiseMap( colScale, MakeFunction(DampScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, colScale, dCol );
-        DiagonalSolve( RIGHT, NORMAL, colScale, A );
-        DiagonalSolve( RIGHT, NORMAL, colScale, B );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, colScale, dCol );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colScale, A );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colScale, B );
 
         // Rescale the rows
         // ----------------
         RowMaxNorms( A, rowScale );
         EntrywiseMap( rowScale, MakeFunction(DampScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, rowScale, dRowA );
-        DiagonalSolve( LEFT, NORMAL, rowScale, A );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, dRowA );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, A );
 
         RowMaxNorms( B, rowScale );
         EntrywiseMap( rowScale, MakeFunction(DampScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, rowScale, dRowB );
-        DiagonalSolve( LEFT, NORMAL, rowScale, B );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, dRowB );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, B );
     }
     SetIndent( indent );
 }

@@ -20,9 +20,9 @@ void ApplyQ
         Matrix<F>& B )
 {
     EL_DEBUG_CSE
-    const bool normal = (orientation==NORMAL);
-    const bool onLeft = (side==LEFT);
-    const ForwardOrBackward direction = ( normal==onLeft ? BACKWARD : FORWARD );
+    const bool normal = (orientation==Orientation::NORMAL);
+    const bool onLeft = (side==LeftOrRight::LEFT);
+    const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
     const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
     const Int offset = ( A.Height()>=A.Width() ? 0 : -1 );
     ApplyPackedReflectors
@@ -38,9 +38,9 @@ void ApplyP
         Matrix<F>& B )
 {
     EL_DEBUG_CSE
-    const bool normal = (orientation==NORMAL);
-    const bool onLeft = (side==LEFT);
-    const ForwardOrBackward direction = ( normal==onLeft ? BACKWARD : FORWARD );
+    const bool normal = (orientation==Orientation::NORMAL);
+    const bool onLeft = (side==LeftOrRight::LEFT);
+    const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
     const Conjugation conjugation = ( normal ? UNCONJUGATED : CONJUGATED );
     const Int offset = ( A.Height()>=A.Width() ? 1 : 0 );
     ApplyPackedReflectors
@@ -56,9 +56,9 @@ void ApplyQ
         AbstractDistMatrix<F>& B )
 {
     EL_DEBUG_CSE
-    const bool normal = (orientation==NORMAL);
-    const bool onLeft = (side==LEFT);
-    const ForwardOrBackward direction = ( normal==onLeft ? BACKWARD : FORWARD );
+    const bool normal = (orientation==Orientation::NORMAL);
+    const bool onLeft = (side==LeftOrRight::LEFT);
+    const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
     const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
     const Int offset = ( A.Height()>=A.Width() ? 0 : -1 );
     ApplyPackedReflectors
@@ -74,9 +74,9 @@ void ApplyP
         AbstractDistMatrix<F>& B )
 {
     EL_DEBUG_CSE
-    const bool normal = (orientation==NORMAL);
-    const bool onLeft = (side==LEFT);
-    const ForwardOrBackward direction = ( normal==onLeft ? BACKWARD : FORWARD );
+    const bool normal = (orientation==Orientation::NORMAL);
+    const bool onLeft = (side==LeftOrRight::LEFT);
+    const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
     const Conjugation conjugation = ( normal ? UNCONJUGATED : CONJUGATED );
     const Int offset = ( A.Height()>=A.Width() ? 1 : 0 );
     ApplyPackedReflectors

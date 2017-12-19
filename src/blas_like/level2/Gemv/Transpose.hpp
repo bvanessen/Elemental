@@ -7,153 +7,157 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
-namespace gemv {
+#include "El/core/Proxy.hpp"
+
+namespace El
+{
+namespace gemv
+{
 
 template<typename T>
 void Transpose
-( Orientation orientation,
+(Orientation orientation,
   T alpha,
   const AbstractDistMatrix<T>& APre,
   const AbstractDistMatrix<T>& x,
   T beta,
-        AbstractDistMatrix<T>& yPre )
+        AbstractDistMatrix<T>& yPre)
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      AssertSameGrids( APre, x, yPre );
-      if( ( x.Width() != 1 && x.Height() != 1 ) ||
-          ( yPre.Width() != 1 && yPre.Height() != 1 )   )
+      AssertSameGrids(APre, x, yPre);
+      if((x.Width() != 1 && x.Height() != 1) ||
+          (yPre.Width() != 1 && yPre.Height() != 1)  )
           LogicError("Expected x and y to be vectors");
-      const Int xLength = ( x.Width()==1 ? x.Height() : x.Width() );
-      const Int yLength = ( yPre.Width()==1 ? yPre.Height() : yPre.Width() );
-      if( APre.Height() != xLength || APre.Width() != yLength )
+      const Int xLength = (x.Width()==1 ? x.Height() : x.Width());
+      const Int yLength = (yPre.Width()==1 ? yPre.Height() : yPre.Width());
+      if(APre.Height() != xLength || APre.Width() != yLength)
           LogicError
           ("Nonconformal: \n",DimsString(APre,"A"),"\n",
            DimsString(x,"x"),"\n",DimsString(yPre,"y"));
-    )
+   )
     const Grid& g = APre.Grid();
 
-    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
-    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> yProx( yPre );
+    DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx(APre);
+    DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> yProx(yPre);
     auto& A = AProx.GetLocked();
     auto& y = yProx.Get();
 
-    Scale( beta, y );
-    if( x.Width() == 1 && y.Width() == 1 )
+    Scale(beta, y);
+    if(x.Width() == 1 && y.Width() == 1)
     {
         DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
-        x_MC_STAR.AlignWith( A );
+        x_MC_STAR.AlignWith(A);
         x_MC_STAR = x;
 
         DistMatrix<T,Dist::MR,Dist::STAR> z_MR_STAR(g);
-        z_MR_STAR.AlignWith( A );
-        z_MR_STAR.Resize( A.Width(), 1 );
-        Zero( z_MR_STAR );
-        LocalGemv( orientation, alpha, A, x_MC_STAR, T(0), z_MR_STAR );
+        z_MR_STAR.AlignWith(A);
+        z_MR_STAR.Resize(A.Width(), 1);
+        Zero(z_MR_STAR);
+        LocalGemv(orientation, alpha, A, x_MC_STAR, T(0), z_MR_STAR);
 
         DistMatrix<T,Dist::MR,Dist::MC> z_MR_MC(g);
-        z_MR_MC.AlignWith( y );
-        Contract( z_MR_STAR, z_MR_MC );
-        Axpy( T(1), z_MR_MC, y );
+        z_MR_MC.AlignWith(y);
+        Contract(z_MR_STAR, z_MR_MC);
+        Axpy(T(1), z_MR_MC, y);
     }
-    else if( x.Width() == 1 )
+    else if(x.Width() == 1)
     {
         DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
-        x_MC_STAR.AlignWith( A );
+        x_MC_STAR.AlignWith(A);
         x_MC_STAR = x;
 
         DistMatrix<T,Dist::MR,Dist::STAR> z_MR_STAR(g);
-        z_MR_STAR.AlignWith( A );
-        z_MR_STAR.Resize( A.Width(), 1 );
-        Zero( z_MR_STAR );
-        LocalGemv( orientation, alpha, A, x_MC_STAR, T(0), z_MR_STAR );
+        z_MR_STAR.AlignWith(A);
+        z_MR_STAR.Resize(A.Width(), 1);
+        Zero(z_MR_STAR);
+        LocalGemv(orientation, alpha, A, x_MC_STAR, T(0), z_MR_STAR);
 
         DistMatrix<T,Dist::MR,Dist::MC> z_MR_MC(g);
-        z_MR_MC.AlignWith( y );
-        Contract( z_MR_STAR, z_MR_MC );
+        z_MR_MC.AlignWith(y);
+        Contract(z_MR_STAR, z_MR_MC);
 
         DistMatrix<T> zTrans(g);
-        zTrans.AlignWith( y );
-        Transpose( z_MR_MC, zTrans );
-        Axpy( T(1), zTrans, y );
+        zTrans.AlignWith(y);
+        Transpose(z_MR_MC, zTrans);
+        Axpy(T(1), zTrans, y);
     }
-    else if( y.Width() == 1 )
+    else if(y.Width() == 1)
     {
         DistMatrix<T,Dist::STAR,Dist::MC> x_STAR_MC(g);
-        x_STAR_MC.AlignWith( A );
+        x_STAR_MC.AlignWith(A);
         x_STAR_MC = x;
 
         DistMatrix<T,Dist::MR,Dist::STAR> z_MR_STAR(g);
-        z_MR_STAR.AlignWith( A );
-        z_MR_STAR.Resize( A.Width(), 1 );
-        Zero( z_MR_STAR );
-        LocalGemv( orientation, alpha, A, x_STAR_MC, T(0), z_MR_STAR );
+        z_MR_STAR.AlignWith(A);
+        z_MR_STAR.Resize(A.Width(), 1);
+        Zero(z_MR_STAR);
+        LocalGemv(orientation, alpha, A, x_STAR_MC, T(0), z_MR_STAR);
 
         DistMatrix<T,Dist::MR,Dist::MC> z_MR_MC(g);
-        z_MR_MC.AlignWith( y );
-        Contract( z_MR_STAR, z_MR_MC );
-        Axpy( T(1), z_MR_MC, y );
+        z_MR_MC.AlignWith(y);
+        Contract(z_MR_STAR, z_MR_MC);
+        Axpy(T(1), z_MR_MC, y);
     }
     else
     {
         DistMatrix<T,Dist::STAR,Dist::MC> x_STAR_MC(g);
-        x_STAR_MC.AlignWith( A );
+        x_STAR_MC.AlignWith(A);
         x_STAR_MC = x;
 
         DistMatrix<T,Dist::MR,Dist::STAR> z_MR_STAR(g);
-        z_MR_STAR.AlignWith( A );
-        z_MR_STAR.Resize( A.Width(), 1 );
-        Zero( z_MR_STAR );
-        LocalGemv( orientation, alpha, A, x_STAR_MC, T(0), z_MR_STAR );
+        z_MR_STAR.AlignWith(A);
+        z_MR_STAR.Resize(A.Width(), 1);
+        Zero(z_MR_STAR);
+        LocalGemv(orientation, alpha, A, x_STAR_MC, T(0), z_MR_STAR);
 
         DistMatrix<T,Dist::MR,Dist::MC> z_MR_MC(g);
-        z_MR_MC.AlignWith( y );
-        Contract( z_MR_STAR, z_MR_MC );
+        z_MR_MC.AlignWith(y);
+        Contract(z_MR_STAR, z_MR_MC);
 
         DistMatrix<T> zTrans(g);
-        zTrans.AlignWith( y );
-        Transpose( z_MR_MC, zTrans );
-        Axpy( T(1), zTrans, y );
+        zTrans.AlignWith(y);
+        Transpose(z_MR_MC, zTrans);
+        Axpy(T(1), zTrans, y);
     }
 }
 
 template<typename T>
 void Transpose
-( Orientation orientation,
+(Orientation orientation,
   T alpha,
   const DistMatrix<T>& A,
   const AbstractDistMatrix<T>& x,
   T beta,
-        DistMatrix<T,Dist::VC,Dist::STAR>& y )
+        DistMatrix<T,Dist::VC,Dist::STAR>& y)
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      AssertSameGrids( A, x, y );
-      if( x.Width() != 1 || y.Width() != 1 )
+      AssertSameGrids(A, x, y);
+      if(x.Width() != 1 || y.Width() != 1)
           LogicError("Expected x and y to be column vectors");
-      if( A.Height() != x.Height() || A.Width() != y.Height() )
+      if(A.Height() != x.Height() || A.Width() != y.Height())
           LogicError
           ("Nonconformal: \n",DimsString(A,"A"),"\n",
            DimsString(x,"x"),"\n",DimsString(y,"y"));
-    )
+   )
     const Grid& g = A.Grid();
-    Scale( beta, y );
+    Scale(beta, y);
 
     DistMatrix<T,Dist::MC,Dist::STAR> x_MC_STAR(g);
-    x_MC_STAR.AlignWith( A );
+    x_MC_STAR.AlignWith(A);
     x_MC_STAR = x;
 
     DistMatrix<T,Dist::MR,Dist::STAR> z_MR_STAR(g);
-    z_MR_STAR.AlignWith( A );
-    z_MR_STAR.Resize( A.Width(), 1 );
-    Zero( z_MR_STAR );
-    LocalGemv( orientation, alpha, A, x_MC_STAR, T(0), z_MR_STAR );
+    z_MR_STAR.AlignWith(A);
+    z_MR_STAR.Resize(A.Width(), 1);
+    Zero(z_MR_STAR);
+    LocalGemv(orientation, alpha, A, x_MC_STAR, T(0), z_MR_STAR);
 
     DistMatrix<T,Dist::VR,Dist::STAR> z_VR_STAR(g);
-    z_VR_STAR.AlignWith( A );
-    Contract( z_MR_STAR, z_VR_STAR );
-    Axpy( T(1), z_VR_STAR, y );
+    z_VR_STAR.AlignWith(A);
+    Contract(z_MR_STAR, z_VR_STAR);
+    Axpy(T(1), z_VR_STAR, y);
 }
 
 } // namespace gemv

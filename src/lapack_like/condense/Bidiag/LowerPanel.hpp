@@ -84,8 +84,8 @@ LowerPanel
         // Apply all previous reflectors to a1R:
         //   a1R := a1R - a10 Y0R         - x10 conj(A0R)
         //        = a1R - (Y0R^T a10^T)^T - (A0R^H x10^T)^T
-        Gemv( TRANSPOSE, F(-1), Y0R, a10, F(1), a1R );
-        Gemv( ADJOINT,   F(-1), A0R, x10, F(1), a1R );
+        Gemv( Orientation::TRANSPOSE, F(-1), Y0R, a10, F(1), a1R );
+        Gemv( Orientation::ADJOINT,   F(-1), A0R, x10, F(1), a1R );
 
         // Find tauP and v such that
         //  |alpha11 a12| /I - tauP |1  | |1 conj(v)|\ = |delta 0|
@@ -103,26 +103,26 @@ LowerPanel
         // -----------------------------------------------------------------
         // x21 := A2R a1R^T
         Zeros( x21, A2R.Height(), 1 );
-        Gemv( NORMAL, F(1), A2R, a1R, F(0), x21 );
+        Gemv( Orientation::NORMAL, F(1), A2R, a1R, F(0), x21 );
         // x21 := x21 - A20 (Y0R a1R^T)
-        Gemv( NORMAL, F(1),  Y0R, a1R, z01 );
-        Gemv( NORMAL, F(-1), A20, z01, F(1), x21 );
+        Gemv( Orientation::NORMAL, F(1),  Y0R, a1R, z01 );
+        Gemv( Orientation::NORMAL, F(-1), A20, z01, F(1), x21 );
         // x21 := x21 - X20 (conj(A0R) a1R^T)
         //      = x21 - X20 conj(A0R a1R^H)
         Conjugate( a1R );
-        Gemv( NORMAL, F(1),  A0R, a1R, z01 );
+        Gemv( Orientation::NORMAL, F(1),  A0R, a1R, z01 );
         Conjugate( a1R );
         Conjugate( z01 );
-        Gemv( NORMAL, F(-1), X20, z01, F(1), x21 );
+        Gemv( Orientation::NORMAL, F(-1), X20, z01, F(1), x21 );
         // x21 := tauP x21
         x21 *= tauP;
 
         // Apply all previous reflectors to a21:
         //   a21 := a21 - A20 y01 - X2L conj(aT1)
         //        = a21 - A20 y01 - (X20 conj(a01) + x21*1)
-        Gemv( NORMAL, F(-1), A20, y01, F(1), a21 );
+        Gemv( Orientation::NORMAL, F(-1), A20, y01, F(1), a21 );
         Conjugate( a01 );
-        Gemv( NORMAL, F(-1), X20, a01, F(1), a21 );
+        Gemv( Orientation::NORMAL, F(-1), X20, a01, F(1), a21 );
         Conjugate( a01 );
         a12 -= x21;
 
@@ -143,13 +143,13 @@ LowerPanel
         //      = tauQ ( A22^H a21 - Y02^H (A20^H a21) - AT2^T (X2L^H a21) )^H
         // -------------------------------------------------------------------
         // z21 := A22^H a21
-        Gemv( ADJOINT, F(1), A22, a21, z21 );
+        Gemv( Orientation::ADJOINT, F(1), A22, a21, z21 );
         // z21 := z21 - Y02^H (A20^H a21)
-        Gemv( ADJOINT, F(1),  A20, a21, z01 );
-        Gemv( ADJOINT, F(-1), Y02, z01, F(1), z21 );
+        Gemv( Orientation::ADJOINT, F(1),  A20, a21, z01 );
+        Gemv( Orientation::ADJOINT, F(-1), Y02, z01, F(1), z21 );
         // z21 := z21 - AT2^T (X2L^H a21)
-        Gemv( ADJOINT, F(1),  X2L, a21, zT1 );
-        Gemv( TRANSPOSE, F(-1), AT2, zT1, F(1), z21 );
+        Gemv( Orientation::ADJOINT, F(1),  X2L, a21, zT1 );
+        Gemv( Orientation::TRANSPOSE, F(-1), AT2, zT1, F(1), z21 );
         // y12 := tauQ z21^H
         Adjoint( z21, y12 );
         y12 *= tauQ;
@@ -277,8 +277,8 @@ LowerPanel
             Zeros( z1R_STAR_MR, 1, a1R.Width() );
             // z1R[* ,MR] := (Y0R^T[MR,MC] a10^T[MC,* ])^T +
             //               (A0R^H[MR,MC] x10^T[MC,* ])^T
-            LocalGemv( TRANSPOSE, F(1), Y0R, a10_STAR_MC, F(0), z1R_STAR_MR );
-            LocalGemv( ADJOINT,   F(1), A0R, x10_STAR_MC, F(1), z1R_STAR_MR );
+            LocalGemv( Orientation::TRANSPOSE, F(1), Y0R, a10_STAR_MC, F(0), z1R_STAR_MR );
+            LocalGemv( Orientation::ADJOINT,   F(1), A0R, x10_STAR_MC, F(1), z1R_STAR_MR );
             // Sum the partial contributions and subtract from a1R
             AxpyContract( F(-1), z1R_STAR_MR, a1R );
         }
@@ -305,31 +305,31 @@ LowerPanel
         // z21[MC,* ] := A2R[MC,MR] a1R^T[MR,* ]
         z21_MC_STAR.AlignWith( A2R );
         Zeros( z21_MC_STAR, A2R.Height(), 1 );
-        LocalGemv( NORMAL, F(1), A2R, a1R_STAR_MR, F(0), z21_MC_STAR );
+        LocalGemv( Orientation::NORMAL, F(1), A2R, a1R_STAR_MR, F(0), z21_MC_STAR );
 
         // z01[MR,* ] := (Y01 a1R^T)[MR,* ]
         z01_MC_STAR.AlignWith( Y0R );
         Zeros( z01_MC_STAR, Y0R.Height(), 1 );
-        LocalGemv( NORMAL, F(1), Y0R, a1R_STAR_MR, F(0), z01_MC_STAR );
+        LocalGemv( Orientation::NORMAL, F(1), Y0R, a1R_STAR_MR, F(0), z01_MC_STAR );
         El::AllReduce( z01_MC_STAR, Y0R.RowComm() );
         z01_MR_STAR.AlignWith( A20 );
         z01_MR_STAR = z01_MC_STAR;
         // z21[MC,* ] -= A20[MC,MR] z01[MR,* ]
-        LocalGemv( NORMAL, F(-1), A20, z01_MR_STAR, F(1), z21_MC_STAR );
+        LocalGemv( Orientation::NORMAL, F(-1), A20, z01_MR_STAR, F(1), z21_MC_STAR );
 
         // z01[MR,* ] := conj(A0R a1R^H)[MR,* ]
         //             = (conj(A0R) a1R^T)[MR,* ]
         z01_MC_STAR.AlignWith( A0R );
         Zeros( z01_MC_STAR, A0R.Height(), 1 );
         Conjugate( a1R_STAR_MR );
-        LocalGemv( NORMAL, F(1), A0R, a1R_STAR_MR, F(0), z01_MC_STAR );
+        LocalGemv( Orientation::NORMAL, F(1), A0R, a1R_STAR_MR, F(0), z01_MC_STAR );
         El::AllReduce( z01_MC_STAR, A0R.RowComm() );
         Conjugate( a1R_STAR_MR );
         Conjugate( z01_MC_STAR );
         z01_MR_STAR.AlignWith( X20 );
         z01_MR_STAR = z01_MC_STAR;
         // z21[MC,* ] -= X20[MC,MR] z01[MR,* ]
-        LocalGemv( NORMAL, F(-1), X20, z01_MR_STAR, F(1), z21_MC_STAR );
+        LocalGemv( Orientation::NORMAL, F(-1), X20, z01_MR_STAR, F(1), z21_MC_STAR );
 
         // Finally perform the row summation and then scale by tauP
         Contract( z21_MC_STAR, x21 );
@@ -346,7 +346,7 @@ LowerPanel
         // z21[MC,* ] := A20[MC,MR] y01[MR,* ]
         z21_MC_STAR.AlignWith( A20 );
         Zeros( z21_MC_STAR, A20.Height(), 1 );
-        LocalGemv( NORMAL, F(1), A20, y01_MR_STAR, F(0), z21_MC_STAR );
+        LocalGemv( Orientation::NORMAL, F(1), A20, y01_MR_STAR, F(0), z21_MC_STAR );
 
         // a21 := a21 - X20 conj(a01) (and incorporate last update into sum)
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -354,7 +354,7 @@ LowerPanel
         a01_MR_STAR = a01;
         // z21[MC,* ] += X20[MC,MR] conj(a01)[MR,* ]
         Conjugate( a01_MR_STAR );
-        LocalGemv( NORMAL, F(1), X20, a01_MR_STAR, F(1), z21_MC_STAR );
+        LocalGemv( Orientation::NORMAL, F(1), X20, a01_MR_STAR, F(1), z21_MC_STAR );
         Conjugate( a01_MR_STAR );
         // Sum the partial contributions from the past two updates
         AxpyContract( F(-1), z21_MC_STAR, a21 );
@@ -387,27 +387,27 @@ LowerPanel
         // z21[MR,* ] := A22^H[MR,MC] a21[MC,* ]
         z21_MR_STAR.AlignWith( A22 );
         Zeros( z21_MR_STAR, A22.Width(), 1 );
-        LocalGemv( ADJOINT, F(1), A22, a21_MC_STAR, F(0), z21_MR_STAR );
+        LocalGemv( Orientation::ADJOINT, F(1), A22, a21_MC_STAR, F(0), z21_MR_STAR );
 
         // z01[MC,* ] := (A20^H a21)[MC,* ]
         z01_MR_STAR.AlignWith( A20 );
         Zeros( z01_MR_STAR, A20.Width(), 1 );
-        LocalGemv( ADJOINT, F(1), A20, a21_MC_STAR, F(0), z01_MR_STAR );
+        LocalGemv( Orientation::ADJOINT, F(1), A20, a21_MC_STAR, F(0), z01_MR_STAR );
         El::AllReduce( z01_MR_STAR, A20.ColComm() );
         z01_MC_STAR.AlignWith( Y02 );
         z01_MC_STAR = z01_MR_STAR;
         // z21[MR,* ] -= Y02^H[MR,MC] z01[MC,* ]
-        LocalGemv( ADJOINT, F(-1), Y02, z01_MC_STAR, F(1), z21_MR_STAR );
+        LocalGemv( Orientation::ADJOINT, F(-1), Y02, z01_MC_STAR, F(1), z21_MR_STAR );
 
         // z01[MR,* ] := X2L^H[MR,MC] a21[MC,* ]
         zT1_MR_STAR.AlignWith( X2L );
         Zeros( zT1_MR_STAR, X2L.Width(), 1 );
-        LocalGemv( ADJOINT, F(1), X2L, a21_MC_STAR, F(0), zT1_MR_STAR );
+        LocalGemv( Orientation::ADJOINT, F(1), X2L, a21_MC_STAR, F(0), zT1_MR_STAR );
         El::AllReduce( zT1_MR_STAR, X2L.ColComm() );
         zT1_MC_STAR.AlignWith( AT2 );
         zT1_MC_STAR = zT1_MR_STAR;
         // z21[MR,* ] -= AT2^T[MR,MC] (X2L^H a21)[MC,* ]
-        LocalGemv( TRANSPOSE, F(-1), AT2, zT1_MC_STAR, F(1), z21_MR_STAR );
+        LocalGemv( Orientation::TRANSPOSE, F(-1), AT2, zT1_MC_STAR, F(1), z21_MR_STAR );
 
         // Finally perform the column summation and then scale by tauQ
         AdjointContract( z21_MR_STAR, y12 );

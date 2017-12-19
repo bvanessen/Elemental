@@ -6,9 +6,11 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
-namespace El {
+#include "El/core/Matrix/decl.hpp"
+
+namespace El
+{
 
 template<typename T>
 T Trace( const Matrix<T>& A )

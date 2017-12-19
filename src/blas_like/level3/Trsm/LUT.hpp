@@ -27,7 +27,7 @@ void LUTLarge
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
     )
     const Int m = XPre.Height();
@@ -62,7 +62,7 @@ void LUTLarge
 
         // X1[* ,VR] := U11^-[T/H][*,*] X1[* ,VR]
         LocalTrsm
-        ( LEFT, UpperOrLower::UPPER, orientation, diag, F(1), U11_STAR_STAR, X1_STAR_VR,
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, orientation, diag, F(1), U11_STAR_STAR, X1_STAR_VR,
           checkIfSingular );
 
         X1_STAR_MR.AlignWith( X2 );
@@ -74,7 +74,7 @@ void LUTLarge
         // X2[MC,MR] -= (U12[* ,MC])^(T/H) X1[* ,MR]
         //            = U12^(T/H)[MC,*] X1[* ,MR]
         LocalGemm
-        ( orientation, NORMAL, F(-1), U12_STAR_MC, X1_STAR_MR, F(1), X2 );
+        ( orientation, Orientation::NORMAL, F(-1), U12_STAR_MC, X1_STAR_MR, F(1), X2 );
     }
 }
 
@@ -89,7 +89,7 @@ void LUTMedium
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
     )
     const Int m = XPre.Height();
@@ -121,15 +121,15 @@ void LUTMedium
         U11_STAR_STAR = U11; // U11[* ,* ] <- U11[MC,MR]
         // X1[* ,VR] <- X1[MC,MR]
         X1Trans_MR_STAR.AlignWith( X2 );
-        Transpose( X1, X1Trans_MR_STAR, (orientation==ADJOINT) );
+        Transpose( X1, X1Trans_MR_STAR, (orientation==Orientation::ADJOINT) );
 
         // X1[* ,MR] := U11^-[T/H][*,*] X1[* ,MR]
         // X1^[T/H][MR,* ] := X1^[T/H][MR,* ] U11^-1[* ,* ]
         LocalTrsm
-        ( RIGHT, UpperOrLower::UPPER, NORMAL, diag,
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, diag,
           F(1), U11_STAR_STAR, X1Trans_MR_STAR, checkIfSingular );
 
-        Transpose( X1Trans_MR_STAR, X1, (orientation==ADJOINT) );
+        Transpose( X1Trans_MR_STAR, X1, (orientation==Orientation::ADJOINT) );
         U12_STAR_MC.AlignWith( X2 );
         U12_STAR_MC = U12; // U12[* ,MC] <- U12[MC,MR]
 
@@ -153,7 +153,7 @@ void LUTSmall
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( U, X );
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
       if( U.Height() != U.Width() || U.Height() != X.Height() )
           LogicError
@@ -185,13 +185,13 @@ void LUTSmall
 
         // X1[* ,* ] := U11^-[T/H][* ,* ] X1[* ,* ]
         LocalTrsm
-        ( LEFT, UpperOrLower::UPPER, orientation, diag,
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, orientation, diag,
           F(1), U11_STAR_STAR, X1_STAR_STAR, checkIfSingular );
 
         X1 = X1_STAR_STAR;
 
         // X2[VR,* ] -= U12[* ,VR]^[T/H] X1[* ,* ]
-        LocalGemm( orientation, NORMAL, F(-1), U12, X1_STAR_STAR, F(1), X2 );
+        LocalGemm( orientation, Orientation::NORMAL, F(-1), U12, X1_STAR_STAR, F(1), X2 );
     }
 }
 

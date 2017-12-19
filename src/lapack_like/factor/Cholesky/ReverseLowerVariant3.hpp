@@ -64,8 +64,8 @@ void ReverseLowerVariant3Blocked( Matrix<F>& A )
         auto A11 = A( ind1, ind1 );
 
         cholesky::ReverseLowerVariant3Unblocked( A11 );
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), A11, A10 );
-        Herk( UpperOrLower::LOWER, ADJOINT, Base<F>(-1), A10, Base<F>(1), A00 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A11, A10 );
+        Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Base<F>(-1), A10, Base<F>(1), A00 );
     }
 }
 
@@ -108,7 +108,7 @@ void ReverseLowerVariant3Blocked( AbstractDistMatrix<F>& APre )
         A10_STAR_VR.AlignWith( A00 );
         A10_STAR_VR = A10;
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), A11_STAR_STAR, A10_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A11_STAR_STAR, A10_STAR_VR );
 
         A10_STAR_MC.AlignWith( A00 );
         A10_STAR_MC = A10_STAR_VR;
@@ -117,7 +117,7 @@ void ReverseLowerVariant3Blocked( AbstractDistMatrix<F>& APre )
 
         // (A10[* ,MC])^H A10[* ,MR] = (A10^H A10)[MC,MR]
         LocalTrrk
-        ( UpperOrLower::LOWER, ADJOINT, F(-1), A10_STAR_MC, A10_STAR_MR, F(1), A00 );
+        ( UpperOrLower::LOWER, Orientation::ADJOINT, F(-1), A10_STAR_MC, A10_STAR_MR, F(1), A00 );
 
         A10 = A10_STAR_MR;
     }

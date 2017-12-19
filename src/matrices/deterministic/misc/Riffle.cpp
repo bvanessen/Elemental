@@ -2,16 +2,19 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
+#include <functional>
+#include <vector>
+
 #include <El/blas_like/level1.hpp>
 #include <El/matrices.hpp>
 
-// This is an implementation of the riffle-shuffle matrix made famous by 
+// This is an implementation of the riffle-shuffle matrix made famous by
 // Diaconis et al. and analyzed by Trefethen et al. The binomial and Eulerian
-// routines are loosely based upon the script provided in 
+// routines are loosely based upon the script provided in
 // "Spectra and Pseudospectra: The Behavior of Nonnormal Matrices and Operators"
 
 namespace El {
@@ -29,15 +32,15 @@ void Riffle( Matrix<F>& P, Int n )
     const Real gamma = n*Log(Real(2));
 
     P.Resize( n, n );
-    auto riffleFill = 
+    auto riffleFill =
       [&]( Int i, Int j ) -> F
       { const Int k = 2*i - j + 1;
         if( k >= 0 && k <= n+1 )
             return Exp(logBinom[k]-gamma+logEuler[j]-logEuler[i]);
         else
-            return Base<F>(0); 
+            return Base<F>(0);
       };
-    IndexDependentFill( P, function<F(Int,Int)>(riffleFill) );
+    IndexDependentFill( P, std::function<F(Int,Int)>(riffleFill) );
 }
 
 template<typename F>
@@ -52,15 +55,15 @@ void Riffle( AbstractDistMatrix<F>& P, Int n )
     const Real gamma = n*Log(Real(2));
 
     P.Resize( n, n );
-    auto riffleFill = 
+    auto riffleFill =
       [&]( Int i, Int j ) -> F
       { const Int k = 2*i - j + 1;
         if( k >= 0 && k <= n+1 )
             return Exp(logBinom[k]-gamma+logEuler[j]-logEuler[i]);
         else
-            return Base<F>(0); 
+            return Base<F>(0);
       };
-    IndexDependentFill( P, function<F(Int,Int)>(riffleFill) );
+    IndexDependentFill( P, std::function<F(Int,Int)>(riffleFill) );
 }
 
 template<typename F>
@@ -69,7 +72,7 @@ void RiffleStationary( Matrix<F>& PInf, Int n )
     EL_DEBUG_CSE
     typedef Base<F> Real;
     // NOTE: This currently requires quadratic time
-    vector<Real> sigma(n,0), sigmaTmp(n,0);
+    std::vector<Real> sigma(n,0), sigmaTmp(n,0);
     sigma[0] = sigmaTmp[0] = 1;
     for( Int j=1; j<n; ++j )
     {
@@ -80,10 +83,10 @@ void RiffleStationary( Matrix<F>& PInf, Int n )
             sigma[k] = sigmaTmp[k]/(j+1);
     }
     SwapClear( sigmaTmp );
-    
+
     PInf.Resize( n, n );
     auto riffleStatFill = [&]( Int i, Int j ) { return sigma[j]; };
-    IndexDependentFill( PInf, function<F(Int,Int)>(riffleStatFill) );
+    IndexDependentFill( PInf, std::function<F(Int,Int)>(riffleStatFill) );
 }
 
 template<typename F>
@@ -92,7 +95,7 @@ void RiffleStationary( AbstractDistMatrix<F>& PInf, Int n )
     EL_DEBUG_CSE
     typedef Base<F> Real;
     // NOTE: This currently requires quadratic time
-    vector<Real> sigma(n,0), sigmaTmp(n,0);
+    std::vector<Real> sigma(n,0), sigmaTmp(n,0);
     sigma[0] = sigmaTmp[0] = 1;
     for( Int j=1; j<n; ++j )
     {
@@ -106,7 +109,7 @@ void RiffleStationary( AbstractDistMatrix<F>& PInf, Int n )
 
     PInf.Resize( n, n );
     auto riffleStatFill = [&]( Int i, Int j ) { return sigma[j]; };
-    IndexDependentFill( PInf, function<F(Int,Int)>(riffleStatFill) );
+    IndexDependentFill( PInf, std::function<F(Int,Int)>(riffleStatFill) );
 }
 
 template<typename F>

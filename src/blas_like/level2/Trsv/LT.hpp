@@ -19,7 +19,7 @@ void LT
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected a (conjugate-)transpose option");
       AssertSameGrids( LPre, xPre );
       if( LPre.Height() != LPre.Width() )

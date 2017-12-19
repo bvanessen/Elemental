@@ -24,7 +24,7 @@ void NormalUniformSpectrum
     A.Resize( n, n );
 
     // Form d and D
-    vector<C> d( n );
+    std::vector<C> d( n );
     for( Int j=0; j<n; ++j )
         d[j] = SampleBall<C>( center, radius );
     Diagonal( A, d );
@@ -33,8 +33,8 @@ void NormalUniformSpectrum
     Matrix<C> Q, t;
     Matrix<Real> s;
     ImplicitHaar( Q, t, s, n );
-    qr::ApplyQ( LEFT, NORMAL, Q, t, s, A );
-    qr::ApplyQ( RIGHT, ADJOINT, Q, t, s, A );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, Q, t, s, A );
+    qr::ApplyQ( LeftOrRight::RIGHT, Orientation::ADJOINT, Q, t, s, A );
 }
 
 template<typename Real>
@@ -52,7 +52,7 @@ void NormalUniformSpectrum
     A.Resize( n, n );
 
     // Form d and D
-    vector<C> d( n );
+    std::vector<C> d( n );
     if( grid.Rank() == 0 )
         for( Int j=0; j<n; ++j )
             d[j] = SampleBall<C>( center, radius );
@@ -66,8 +66,8 @@ void NormalUniformSpectrum
     ImplicitHaar( Q, t, s, n );
 
     // Copy the result into the correct distribution
-    qr::ApplyQ( LEFT, NORMAL, Q, t, s, A );
-    qr::ApplyQ( RIGHT, ADJOINT, Q, t, s, A );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, Q, t, s, A );
+    qr::ApplyQ( LeftOrRight::RIGHT, Orientation::ADJOINT, Q, t, s, A );
 }
 
 #define PROTO(Real) \

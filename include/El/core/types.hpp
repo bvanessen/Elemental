@@ -273,8 +273,8 @@ using namespace GridOrderNS;
 namespace LeftOrRightNS {
 enum LeftOrRight
 {
-    LEFT,
-    RIGHT
+    LeftOrRight::LEFT,
+    LeftOrRight::RIGHT
 };
 char LeftOrRightToChar( LeftOrRight side );
 LeftOrRight CharToLeftOrRight( char c );
@@ -308,9 +308,9 @@ using namespace NormTypeNS;
 namespace OrientationNS {
 enum Orientation
 {
-    NORMAL,
-    TRANSPOSE,
-    ADJOINT
+    Orientation::NORMAL,
+    Orientation::TRANSPOSE,
+    :ADJOINT
 };
 char OrientationToChar( Orientation orientation );
 Orientation CharToOrientation( char c );

@@ -17,8 +17,8 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#ifndef EL_FACTOR_LDL_NUMERIC_LOWERSOLVE_FRONTFORWARD_HPP
-#define EL_FACTOR_LDL_NUMERIC_LOWERSOLVE_FRONTFORWARD_HPP
+#ifndef EL_FACTOR_LDL_NUMERIC_LOWERSOLVE_FRONTForwardOrBackward::FORWARD_HPP
+#define EL_FACTOR_LDL_NUMERIC_LOWERSOLVE_FRONTForwardOrBackward::FORWARD_HPP
 
 #include "./FrontUtil.hpp"
 
@@ -43,8 +43,8 @@ void FrontVanillaLowerForwardSolve
     auto XT = X( IR(0,n),   ALL );
     auto XB = X( IR(n,END), ALL );
 
-    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), LT, XT );
-    Gemm( NORMAL, NORMAL, F(-1), LB, XT, F(1), XB );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), LT, XT );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), LB, XT, F(1), XB );
 }
 
 template<typename F>
@@ -80,10 +80,10 @@ void FrontBlockLowerForwardSolve
 
     // XT := inv(ATL) XT
     Matrix<F> YT( XT );
-    Gemm( NORMAL, NORMAL, F(1), LT, YT, F(0), XT );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), LT, YT, F(0), XT );
 
     // XB := XB - LB XT
-    Gemm( NORMAL, NORMAL, F(-1), LB, XT, F(1), XB );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), LB, XT, F(1), XB );
 }
 
 template<typename F>
@@ -111,7 +111,7 @@ void FrontLowerForwardSolve( const Front<F>& front, Matrix<F>& W )
         ( onLeft, WT.Height(), WT.Width(), WT.Buffer(), WT.LDim(),
           LOffsetBuf, LColBuf, LValBuf );
 
-        Gemm( NORMAL, NORMAL, F(-1), front.LDense, WT, F(1), WB );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), front.LDense, WT, F(1), WB );
     }
     else
     {
@@ -160,11 +160,11 @@ void ForwardMany
 
         // X1[* ,* ] := (L11[* ,* ])^-1 X1[* ,* ]
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), L11_STAR_STAR, X1_STAR_STAR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), L11_STAR_STAR, X1_STAR_STAR );
         X1 = X1_STAR_STAR;
 
         // X2[VC,* ] -= L21[VC,* ] X1[* ,* ]
-        LocalGemm( NORMAL, NORMAL, F(-1), L21, X1_STAR_STAR, F(1), X2 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), L21, X1_STAR_STAR, F(1), X2 );
     }
 }
 
@@ -202,12 +202,12 @@ void ForwardSingle
 
         // X1[* ,* ] := (L11[* ,* ])^-1 X1[* ,* ]
         LocalTrsm
-        ( LEFT, UpperOrLower::UPPER, TRANSPOSE, UNIT,
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::TRANSPOSE, UnitOrNonUnit::UNIT,
           F(1), L11Trans_STAR_STAR, X1_STAR_STAR );
         X1 = X1_STAR_STAR;
 
         // X2[VC,* ] -= L21[VC,* ] X1[* ,* ]
-        LocalGemm( NORMAL, NORMAL, F(-1), L21, X1_STAR_STAR, F(1), X2 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), L21, X1_STAR_STAR, F(1), X2 );
     }
 }
 
@@ -282,10 +282,10 @@ void FrontVanillaLowerForwardSolve
 
     // XT := inv(LT) XT
     // TODO: Replace with TrsmLLNMedium?
-    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), LT, XT );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), LT, XT );
 
     // XB := XB - LB XT
-    Gemm( NORMAL, NORMAL, F(-1), LB, XT, F(1), XB );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), LB, XT, F(1), XB );
 }
 
 template<typename F>
@@ -320,10 +320,10 @@ void FrontVanillaLowerForwardSolve
 
     // XT := inv(LT) XT
     // TODO: Replace with TrsmLLNMedium?
-    Trsm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), LT, XT );
+    Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), LT, XT );
 
     // XB := XB - LB XT
-    Gemm( NORMAL, NORMAL, F(-1), LB, XT, F(1), XB );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), LB, XT, F(1), XB );
 
     XPre = X;
 }
@@ -375,13 +375,13 @@ void FrontFastLowerForwardSolve
 
     // XT := LT XT
     DistMatrix<F,Dist::STAR,Dist::STAR> XT_STAR_STAR( XT );
-    LocalGemm( NORMAL, NORMAL, F(1), LT, XT_STAR_STAR, F(0), XT );
+    LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(1), LT, XT_STAR_STAR, F(0), XT );
 
     // XB := XB - LB XT
     if( LB.Height() != 0 )
     {
         XT_STAR_STAR = XT;
-        LocalGemm( NORMAL, NORMAL, F(-1), LB, XT_STAR_STAR, F(1), XB );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), LB, XT_STAR_STAR, F(1), XB );
     }
 }
 
@@ -437,7 +437,7 @@ void FrontFastLowerForwardSolve
         DistMatrix<F,Dist::MC,Dist::STAR> ZT_MC_STAR(g);
         ZT_MC_STAR.AlignWith( LT );
         XT_MR_STAR = XT;
-        LocalGemm( NORMAL, NORMAL, F(1), LT, XT_MR_STAR, ZT_MC_STAR );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(1), LT, XT_MR_STAR, ZT_MC_STAR );
 
         Contract( ZT_MC_STAR, XT );
     }
@@ -450,7 +450,7 @@ void FrontFastLowerForwardSolve
         // ZB[MC,* ] := LB[MC,MR] XT[MR,* ]
         DistMatrix<F,Dist::MC,Dist::STAR> ZB_MC_STAR(g);
         ZB_MC_STAR.AlignWith( LB );
-        LocalGemm( NORMAL, NORMAL, F(-1), LB, XT_MR_STAR, ZB_MC_STAR );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), LB, XT_MR_STAR, ZB_MC_STAR );
 
         // XB[VC,* ] += ZB[MC,* ]
         AxpyContract( F(1), ZB_MC_STAR, XB );
@@ -502,10 +502,10 @@ void FrontFastLowerForwardSolve
 
     // XT := LT XT
     DistMatrix<F> YT( XT );
-    Gemm( NORMAL, NORMAL, F(1), LT, YT, F(0), XT );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), LT, YT, F(0), XT );
 
     // XB := XB - LB XT
-    Gemm( NORMAL, NORMAL, F(-1), LB, XT, F(1), XB );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), LB, XT, F(1), XB );
 }
 
 template<typename F>
@@ -555,13 +555,13 @@ void FrontBlockLowerForwardSolve
 
     // XT := inv(ATL) XT
     DistMatrix<F,Dist::STAR,Dist::STAR> XT_STAR_STAR( XT );
-    LocalGemm( NORMAL, NORMAL, F(1), LT, XT_STAR_STAR, F(0), XT );
+    LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(1), LT, XT_STAR_STAR, F(0), XT );
 
     // XB := XB - LB XT
     if( LB.Height() != 0 )
     {
         XT_STAR_STAR = XT;
-        LocalGemm( NORMAL, NORMAL, F(-1), LB, XT_STAR_STAR, F(1), XB );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), LB, XT_STAR_STAR, F(1), XB );
     }
 }
 
@@ -602,7 +602,7 @@ void FrontBlockLowerForwardSolve
         XT_MR_STAR = XT;
         DistMatrix<F,Dist::MC,Dist::STAR> ZT_MC_STAR(g);
         ZT_MC_STAR.AlignWith( LT );
-        LocalGemm( NORMAL, NORMAL, F(1), LT, XT_MR_STAR, ZT_MC_STAR );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(1), LT, XT_MR_STAR, ZT_MC_STAR );
 
         Contract( ZT_MC_STAR, XT );
     }
@@ -613,7 +613,7 @@ void FrontBlockLowerForwardSolve
         XT_MR_STAR = XT;
         DistMatrix<F,Dist::MC,Dist::STAR> ZB_MC_STAR(g);
         ZB_MC_STAR.AlignWith( LB );
-        LocalGemm( NORMAL, NORMAL, F(1), LB, XT_MR_STAR, ZB_MC_STAR );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(1), LB, XT_MR_STAR, ZB_MC_STAR );
 
         // XB[VC,* ] -= ZB[MC,* ] = LB[MC,MR] XT[MR,* ]
         AxpyContract( F(-1), ZB_MC_STAR, XB );
@@ -650,10 +650,10 @@ void FrontBlockLowerForwardSolve
 
     // XT := inv(ATL) XT
     DistMatrix<F> Z( XT );
-    Gemm( NORMAL, NORMAL, F(1), LT, Z, XT );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), LT, Z, XT );
 
     // XB := XB - LB XT
-    Gemm( NORMAL, NORMAL, F(-1), LB, XT, F(1), XB );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), LB, XT, F(1), XB );
 }
 
 template<typename F>
@@ -710,4 +710,4 @@ FrontLowerForwardSolve( const DistFront<F>& front, DistMatrix<F>& W )
 } // namespace ldl
 } // namespace El
 
-#endif // ifndef EL_FACTOR_LDL_NUMERIC_LOWERSOLVE_FRONTFORWARD_HPP
+#endif // ifndef EL_FACTOR_LDL_NUMERIC_LOWERSOLVE_FRONTForwardOrBackward::FORWARD_HPP

@@ -339,8 +339,8 @@ void UpperPanel
         y21_MR.AlignWith( A02T );
         Zeros( x21_MR, A02.Width(), 1 );
         Zeros( y21_MR, A02.Width(), 1 );
-        LocalGemv( ADJOINT, F(1), W02T, a01T_MC, F(0), x21_MR );
-        LocalGemv( ADJOINT, F(1), A02T, a01T_MC, F(0), y21_MR );
+        LocalGemv( Orientation::ADJOINT, F(1), W02T, a01T_MC, F(0), x21_MR );
+        LocalGemv( Orientation::ADJOINT, F(1), A02T, a01T_MC, F(0), y21_MR );
 
         // Combine the AllReduce column summations of x21[MR], y21[MR],
         // and q01[MR]
@@ -374,8 +374,8 @@ void UpperPanel
               &colSumRecvBuf[x21LocalHeight+y21LocalHeight], q01LocalHeight );
         }
 
-        LocalGemv( NORMAL, F(-1), A02T, x21_MR, F(1), p01T_MC );
-        LocalGemv( NORMAL, F(-1), W02T, y21_MR, F(1), p01T_MC );
+        LocalGemv( Orientation::NORMAL, F(-1), A02T, x21_MR, F(1), p01T_MC );
+        LocalGemv( Orientation::NORMAL, F(-1), W02T, y21_MR, F(1), p01T_MC );
 
         if( k > 0 )
         {

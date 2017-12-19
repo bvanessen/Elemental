@@ -110,7 +110,7 @@ void LLN( const Matrix<F>& L, const Matrix<F>& shifts, Matrix<F>& X )
         auto X2 = X( ind2, ALL );
 
         LLNUnb( L11, shifts, X1 );
-        Gemm( NORMAL, NORMAL, F(-1), L21, X1, F(1), X2 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), L21, X1, F(1), X2 );
     }
 }
 
@@ -159,7 +159,7 @@ void LLNLarge
 
         // X1[* ,VR] := L11^-1[* ,* ] X1[* ,VR]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, F(1), L11_STAR_STAR, shifts, X1_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, F(1), L11_STAR_STAR, shifts, X1_STAR_VR );
 
         X1_STAR_MR.AlignWith( X2 );
         X1_STAR_MR  = X1_STAR_VR; // X1[* ,MR]  <- X1[* ,VR]
@@ -168,7 +168,7 @@ void LLNLarge
         L21_MC_STAR = L21;        // L21[MC,* ] <- L21[MC,MR]
 
         // X2[MC,MR] -= L21[MC,* ] X1[* ,MR]
-        LocalGemm( NORMAL, NORMAL, F(-1), L21_MC_STAR, X1_STAR_MR, F(1), X2 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), L21_MC_STAR, X1_STAR_MR, F(1), X2 );
     }
 }
 
@@ -222,7 +222,7 @@ void LLNMedium
         shifts_MR_STAR_Align.AlignWith( X1Trans_MR_STAR );
         shifts_MR_STAR_Align = shifts_MR_STAR;
         LocalMultiShiftQuasiTrsm
-        ( RIGHT, UpperOrLower::LOWER, TRANSPOSE,
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::TRANSPOSE,
           F(1), L11_STAR_STAR, shifts_MR_STAR_Align, X1Trans_MR_STAR );
 
         Transpose( X1Trans_MR_STAR, X1 );
@@ -231,7 +231,7 @@ void LLNMedium
 
         // X2[MC,MR] -= L21[MC,* ] X1[* ,MR]
         LocalGemm
-        ( NORMAL, TRANSPOSE, F(-1), L21_MC_STAR, X1Trans_MR_STAR, F(1), X2 );
+        ( Orientation::NORMAL, Orientation::TRANSPOSE, F(-1), L21_MC_STAR, X1Trans_MR_STAR, F(1), X2 );
     }
 }
 
@@ -274,11 +274,11 @@ void LLNSmall
 
         // X1[* ,* ] := (L11[* ,* ])^-1 X1[* ,* ]
         LocalMultiShiftQuasiTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL,
           F(1), L11_STAR_STAR, shifts_STAR_STAR, X1_STAR_STAR );
 
         // X2[VC,* ] -= L21[VC,* ] X1[* ,* ]
-        LocalGemm( NORMAL, NORMAL, F(-1), L21, X1_STAR_STAR, F(1), X2 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), L21, X1_STAR_STAR, F(1), X2 );
     }
 }
 

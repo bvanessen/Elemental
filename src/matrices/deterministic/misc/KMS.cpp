@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level1.hpp>
@@ -11,16 +11,16 @@
 
 namespace El {
 
-template<typename T> 
+template<typename T>
 void KMS( Matrix<T>& K, Int n, T rho )
 {
     EL_DEBUG_CSE
     K.Resize( n, n );
-    auto kmsFill = 
+    auto kmsFill =
       [=]( Int i, Int j ) -> T
-      { if( i < j ) { return Pow(rho,T(j-i));       } 
+      { if( i < j ) { return Pow(rho,T(j-i));       }
         else        { return Conj(Pow(rho,T(i-j))); } };
-    IndexDependentFill( K, function<T(Int,Int)>(kmsFill) );
+    IndexDependentFill( K, std::function<T(Int,Int)>(kmsFill) );
 }
 
 template<typename T>
@@ -28,11 +28,11 @@ void KMS( AbstractDistMatrix<T>& K, Int n, T rho )
 {
     EL_DEBUG_CSE
     K.Resize( n, n );
-    auto kmsFill = 
+    auto kmsFill =
       [=]( Int i, Int j ) -> T
-      { if( i < j ) { return Pow(rho,T(j-i));       } 
+      { if( i < j ) { return Pow(rho,T(j-i));       }
         else        { return Conj(Pow(rho,T(i-j))); } };
-    IndexDependentFill( K, function<T(Int,Int)>(kmsFill) );
+    IndexDependentFill( K, std::function<T(Int,Int)>(kmsFill) );
 }
 
 #define PROTO(T) \

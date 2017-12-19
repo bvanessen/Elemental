@@ -25,7 +25,7 @@ void RLT
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
     )
     const Int n = XPre.Width();
@@ -61,7 +61,7 @@ void RLT
         X1_VC_STAR = X1;
 
         LocalTrsm
-        ( RIGHT, UpperOrLower::LOWER, orientation, diag,
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, orientation, diag,
           F(1), L11_STAR_STAR, X1_VC_STAR, checkIfSingular );
 
         X1Trans_STAR_MC.AlignWith( X2 );
@@ -70,12 +70,12 @@ void RLT
         L21_VR_STAR.AlignWith( X2 );
         L21_VR_STAR = L21;
         L21Trans_STAR_MR.AlignWith( X2 );
-        Transpose( L21_VR_STAR, L21Trans_STAR_MR, (orientation==ADJOINT) );
+        Transpose( L21_VR_STAR, L21Trans_STAR_MR, (orientation==Orientation::ADJOINT) );
 
         // X2[MC,MR] -= X1[MC,*] (L21[MR,*])^(T/H)
         //            = X1^T[* ,MC] (L21^(T/H))[*,MR]
         LocalGemm
-        ( TRANSPOSE, NORMAL,
+        ( Orientation::TRANSPOSE, Orientation::NORMAL,
           F(-1), X1Trans_STAR_MC, L21Trans_STAR_MR, F(1), X2 );
     }
 }

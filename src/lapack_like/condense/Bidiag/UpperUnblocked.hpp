@@ -58,7 +58,7 @@ void UpperUnblocked
         // -----------------------------------
         // x12^H := (aB1^H AB2)^H = AB2^H aB1
         Zeros( x12Adj, a12.Width(), 1 );
-        Gemv( ADJOINT, F(1), AB2, aB1, F(0), x12Adj );
+        Gemv( Orientation::ADJOINT, F(1), AB2, aB1, F(0), x12Adj );
         // AB2 := AB2 - tauQ aB1 x12
         //      = (I - tauQ aB1 aB1^H) AB2
         Ger( -tauQ, aB1, x12Adj, AB2 );
@@ -90,7 +90,7 @@ void UpperUnblocked
             // w21 := A22 a12^T = A22 | 1   |
             //                        | v^T |
             Zeros( w21, a21.Height(), 1 );
-            Gemv( NORMAL, F(1), A22, a12, F(0), w21 );
+            Gemv( Orientation::NORMAL, F(1), A22, a12, F(0), w21 );
             // A22 := A22 - tauP w21 conj(a12)
             Ger( -tauP, w21, a12, A22 );
 
@@ -167,7 +167,7 @@ void UpperUnblocked
         aB1_MC_STAR = aB1;
         x12Adj_MR_STAR.AlignWith( AB2 );
         Zeros( x12Adj_MR_STAR, a12.Width(), 1 );
-        LocalGemv( ADJOINT, F(1), AB2, aB1_MC_STAR, F(0), x12Adj_MR_STAR );
+        LocalGemv( Orientation::ADJOINT, F(1), AB2, aB1_MC_STAR, F(0), x12Adj_MR_STAR );
         El::AllReduce( x12Adj_MR_STAR, AB2.ColComm() );
         // AB2 := AB2 - tauQ aB1 x12
         LocalGer( -tauQ, aB1_MC_STAR, x12Adj_MR_STAR, AB2 );
@@ -205,7 +205,7 @@ void UpperUnblocked
             a12_STAR_MR = a12;
             w21_MC_STAR.AlignWith( A22 );
             Zeros( w21_MC_STAR, a21.Height(), 1 );
-            LocalGemv( NORMAL, F(1), A22, a12_STAR_MR, F(0), w21_MC_STAR );
+            LocalGemv( Orientation::NORMAL, F(1), A22, a12_STAR_MR, F(0), w21_MC_STAR );
             El::AllReduce( w21_MC_STAR, A22.RowComm() );
             // A22 := A22 - tauP w21 conj(a12)
             LocalGer( -tauP, w21_MC_STAR, a12_STAR_MR, A22 );

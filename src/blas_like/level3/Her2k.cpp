@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level3.hpp>
@@ -13,7 +13,7 @@ namespace El {
 template<typename T>
 void Her2k
 ( UpperOrLower uplo, Orientation orientation,
-  T alpha,      const Matrix<T>& A, const Matrix<T>& B, 
+  T alpha,      const Matrix<T>& A, const Matrix<T>& B,
   Base<T> beta,       Matrix<T>& C )
 {
     EL_DEBUG_CSE
@@ -26,7 +26,7 @@ void Her2k
   T alpha, const Matrix<T>& A, const Matrix<T>& B, Matrix<T>& C )
 {
     EL_DEBUG_CSE
-    const Int n = ( orientation==NORMAL ? A.Height() : A.Width() );
+    const Int n = ( orientation==Orientation::NORMAL ? A.Height() : A.Width() );
     C.Resize( n, n );
     Zero( C );
     Syr2k( uplo, orientation, alpha, A, B, T(0), C, true );
@@ -49,7 +49,7 @@ void Her2k
                  AbstractDistMatrix<T>& C )
 {
     EL_DEBUG_CSE
-    const Int n = ( orientation==NORMAL ? A.Height() : A.Width() );
+    const Int n = ( orientation==Orientation::NORMAL ? A.Height() : A.Width() );
     C.Resize( n, n );
     Zero( C );
     Syr2k( uplo, orientation, alpha, A, B, T(0), C, true );

@@ -262,21 +262,21 @@ HagerHigham
             // Solve against (U - zI)
             activeY = activeX;
             MultiShiftTrsm
-            ( LEFT, UpperOrLower::UPPER, NORMAL, C(1), UCopy, activeShifts, activeY );
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1), UCopy, activeShifts, activeY );
 
             activeZ = activeY;
             EntrywiseMap( activeZ, MakeFunction(unitMap) );
 
             // Solve against (U - zI)^H
             MultiShiftTrsm
-            ( LEFT, UpperOrLower::UPPER, ADJOINT, C(1), UCopy, activeShifts, activeZ );
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, C(1), UCopy, activeShifts, activeZ );
         }
         else
         {
             // Solve against (H - zI)
             activeY = activeX;
             MultiShiftHessSolve
-            ( UpperOrLower::UPPER, NORMAL, C(1), U, activeShifts, activeY );
+            ( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, activeShifts, activeY );
 
             activeZ = activeY;
             EntrywiseMap( activeZ, MakeFunction(unitMap) );
@@ -285,7 +285,7 @@ HagerHigham
             Matrix<C> activeShiftsConj;
             Conjugate( activeShifts, activeShiftsConj );
             MultiShiftHessSolve
-            ( UpperOrLower::LOWER, NORMAL, C(1), UAdj, activeShiftsConj, activeZ );
+            ( UpperOrLower::LOWER, Orientation::NORMAL, C(1), UAdj, activeShiftsConj, activeZ );
         }
 
         auto activeConverged =
@@ -332,9 +332,9 @@ HagerHigham
               (i%2==0 ?  Real(i+n-1)/Real(n-1)
                       : -Real(i+n-1)/Real(n-1) );
     if( psCtrl.schur )
-        MultiShiftTrsm( LEFT, UpperOrLower::UPPER, NORMAL, C(1), UCopy, shifts, X );
+        MultiShiftTrsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1), UCopy, shifts, X );
     else
-        MultiShiftHessSolve( UpperOrLower::UPPER, NORMAL, C(1), U, shifts, X );
+        MultiShiftHessSolve( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, shifts, X );
     for( Int j=0; j<numShifts; ++j )
     {
         const Real oneNorm = blas::Nrm1( n, X.LockedBuffer(0,j), 1 );
@@ -418,38 +418,38 @@ HagerHigham
         if( psCtrl.schur )
         {
             // Solve against Q (U - zI) Q^H
-            Gemm( ADJOINT, NORMAL, C(1), Q, activeX, activeV );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, C(1), Q, activeX, activeV );
             MultiShiftTrsm
-            ( LEFT, UpperOrLower::UPPER, NORMAL, C(1), UCopy, activeShifts, activeV );
-            Gemm( NORMAL, NORMAL, C(1), Q, activeV, activeY );
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1), UCopy, activeShifts, activeV );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Q, activeV, activeY );
 
             activeZ = activeY;
             EntrywiseMap( activeZ, MakeFunction(unitMap) );
 
             // Solve against Q (U - zI)^H Q^H
-            Gemm( ADJOINT, NORMAL, C(1), Q, activeZ, activeV );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, C(1), Q, activeZ, activeV );
             MultiShiftTrsm
-            ( LEFT, UpperOrLower::UPPER, ADJOINT, C(1), UCopy, activeShifts, activeV );
-            Gemm( NORMAL, NORMAL, C(1), Q, activeV, activeZ );
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, C(1), UCopy, activeShifts, activeV );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Q, activeV, activeZ );
         }
         else
         {
             // Solve against Q (H - zI) Q^H
-            Gemm( ADJOINT, NORMAL, C(1), Q, activeX, activeV );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, C(1), Q, activeX, activeV );
             MultiShiftHessSolve
-            ( UpperOrLower::UPPER, NORMAL, C(1), U, activeShifts, activeV );
-            Gemm( NORMAL, NORMAL, C(1), Q, activeV, activeY );
+            ( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, activeShifts, activeV );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Q, activeV, activeY );
 
             activeZ = activeY;
             EntrywiseMap( activeZ, MakeFunction(unitMap) );
 
             // Solve against Q (H - zI)^H Q^H
-            Gemm( ADJOINT, NORMAL, C(1), Q, activeZ, activeV );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, C(1), Q, activeZ, activeV );
             Matrix<C> activeShiftsConj;
             Conjugate( activeShifts, activeShiftsConj );
             MultiShiftHessSolve
-            ( UpperOrLower::LOWER, NORMAL, C(1), UAdj, activeShiftsConj, activeV );
-            Gemm( NORMAL, NORMAL, C(1), Q, activeV, activeZ );
+            ( UpperOrLower::LOWER, Orientation::NORMAL, C(1), UAdj, activeShiftsConj, activeV );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Q, activeV, activeZ );
         }
 
         auto activeConverged =
@@ -497,7 +497,7 @@ HagerHigham
         x(i) = (i%2==0 ?  Real(i+n-1)/Real(n-1)
                        : -Real(i+n-1)/Real(n-1) );
     Matrix<C> yRep;
-    Gemv( ADJOINT, C(1), Q, x, yRep );
+    Gemv( Orientation::ADJOINT, C(1), Q, x, yRep );
     Matrix<C> Y( n, numShifts );
     for( Int j=0; j<numShifts; ++j )
     {
@@ -505,10 +505,10 @@ HagerHigham
         y = yRep;
     }
     if( psCtrl.schur )
-        MultiShiftTrsm( LEFT, UpperOrLower::UPPER, NORMAL, C(1), UCopy, shifts, Y );
+        MultiShiftTrsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1), UCopy, shifts, Y );
     else
-        MultiShiftHessSolve( UpperOrLower::UPPER, NORMAL, C(1), U, shifts, Y );
-    Gemm( NORMAL, NORMAL, C(1), Q, Y, X );
+        MultiShiftHessSolve( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, shifts, Y );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Q, Y, X );
     for( Int j=0; j<numShifts; ++j )
     {
         const Real oneNorm = blas::Nrm1( n, X.LockedBuffer(0,j), 1 );
@@ -612,21 +612,21 @@ HagerHigham
             // Solve against (U - zI)
             activeY = activeX;
             MultiShiftTrsm
-            ( LEFT, UpperOrLower::UPPER, NORMAL, C(1), U, activeShifts, activeY );
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, activeShifts, activeY );
 
             activeZ = activeY;
             EntrywiseMap( activeZ, MakeFunction(unitMap) );
 
             // Solve against (U - zI)^H
             MultiShiftTrsm
-            ( LEFT, UpperOrLower::UPPER, ADJOINT, C(1), U, activeShifts, activeZ );
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, C(1), U, activeShifts, activeZ );
         }
         else
         {
             // Solve against (H - zI)
             DistMatrix<C,Dist::STAR,Dist::VR>  activeV_STAR_VR( activeX );
             MultiShiftHessSolve
-            ( UpperOrLower::UPPER, NORMAL, C(1), U_VC_STAR, activeShifts, activeV_STAR_VR );
+            ( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U_VC_STAR, activeShifts, activeV_STAR_VR );
             activeY = activeV_STAR_VR;
 
             activeZ = activeY;
@@ -637,7 +637,7 @@ HagerHigham
             DistMatrix<C,Dist::VR,Dist::STAR> activeShiftsConj(g);
             Conjugate( activeShifts, activeShiftsConj );
             MultiShiftHessSolve
-            ( UpperOrLower::LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
+            ( UpperOrLower::LOWER, Orientation::NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
               activeV_STAR_VR );
             activeZ = activeV_STAR_VR;
         }
@@ -692,11 +692,11 @@ HagerHigham
         }
     }
     if( psCtrl.schur )
-        MultiShiftTrsm( LEFT, UpperOrLower::UPPER, NORMAL, C(1), U, shifts, X );
+        MultiShiftTrsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, shifts, X );
     else
     {
         DistMatrix<C,Dist::STAR,Dist::VR> X_STAR_VR(X);
-        MultiShiftHessSolve( UpperOrLower::UPPER, NORMAL, C(1), U, shifts, X_STAR_VR );
+        MultiShiftHessSolve( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, shifts, X_STAR_VR );
         X = X_STAR_VR;
     }
     vector<Real> oneNorms(numLocShifts);
@@ -811,43 +811,43 @@ HagerHigham
         if( psCtrl.schur )
         {
             // Solve against Q (U - zI) Q^H
-            Gemm( ADJOINT, NORMAL, C(1), Q, activeX, activeV );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, C(1), Q, activeX, activeV );
             MultiShiftTrsm
-            ( LEFT, UpperOrLower::UPPER, NORMAL, C(1), U, activeShifts, activeV );
-            Gemm( NORMAL, NORMAL, C(1), Q, activeV, activeY );
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, activeShifts, activeV );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Q, activeV, activeY );
 
             activeZ = activeY;
             EntrywiseMap( activeZ, MakeFunction(unitMap) );
 
             // Solve against Q (U - zI)^H Q^H
-            Gemm( ADJOINT, NORMAL, C(1), Q, activeZ, activeV );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, C(1), Q, activeZ, activeV );
             MultiShiftTrsm
-            ( LEFT, UpperOrLower::UPPER, ADJOINT, C(1), U, activeShifts, activeV );
-            Gemm( NORMAL, NORMAL, C(1), Q, activeV, activeZ );
+            ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, C(1), U, activeShifts, activeV );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Q, activeV, activeZ );
         }
         else
         {
             // Solve against Q (H - zI) Q^H
-            Gemm( ADJOINT, NORMAL, C(1), Q, activeX, activeV );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, C(1), Q, activeX, activeV );
             DistMatrix<C,Dist::STAR,Dist::VR> activeV_STAR_VR( activeV );
             MultiShiftHessSolve
-            ( UpperOrLower::UPPER, NORMAL, C(1), U_VC_STAR, activeShifts, activeV_STAR_VR );
+            ( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U_VC_STAR, activeShifts, activeV_STAR_VR );
             activeV = activeV_STAR_VR;
-            Gemm( NORMAL, NORMAL, C(1), Q, activeV, activeY );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Q, activeV, activeY );
 
             activeZ = activeY;
             EntrywiseMap( activeZ, MakeFunction(unitMap) );
 
             // Solve against Q (H - zI)^H Q^H
-            Gemm( ADJOINT, NORMAL, C(1), Q, activeZ, activeV );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, C(1), Q, activeZ, activeV );
             activeV_STAR_VR = activeV;
             DistMatrix<C,Dist::VR,Dist::STAR> activeShiftsConj(g);
             Conjugate( activeShifts, activeShiftsConj );
             MultiShiftHessSolve
-            ( UpperOrLower::LOWER, NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
+            ( UpperOrLower::LOWER, Orientation::NORMAL, C(1), UAdj_VC_STAR, activeShiftsConj,
               activeV_STAR_VR );
             activeV = activeV_STAR_VR;
-            Gemm( NORMAL, NORMAL, C(1), Q, activeV, activeY );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Q, activeV, activeY );
         }
 
         auto activeConverged =
@@ -901,7 +901,7 @@ HagerHigham
         }
     }
     DistMatrix<C> yRep(g);
-    Gemv( ADJOINT, C(1), Q, x, yRep );
+    Gemv( Orientation::ADJOINT, C(1), Q, x, yRep );
     DistMatrix<C> Y(n,numShifts,g);
     Y.AlignWith( X );
     DistMatrix<C,Dist::MC,Dist::STAR> yRep_MC_STAR(g);
@@ -915,15 +915,15 @@ HagerHigham
     }
     if( psCtrl.schur )
     {
-        MultiShiftTrsm( LEFT, UpperOrLower::UPPER, NORMAL, C(1), U, shifts, Y );
+        MultiShiftTrsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, shifts, Y );
     }
     else
     {
         DistMatrix<C,Dist::STAR,Dist::VR> Y_STAR_VR( Y );
-        MultiShiftHessSolve( UpperOrLower::UPPER, NORMAL, C(1), U, shifts, Y_STAR_VR );
+        MultiShiftHessSolve( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, shifts, Y_STAR_VR );
         Y = Y_STAR_VR;
     }
-    Gemm( NORMAL, NORMAL, C(1), Q, Y, X );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Q, Y, X );
     vector<Real> oneNorms(numLocShifts);
     for( Int jLoc=0; jLoc<numLocShifts; ++jLoc )
         oneNorms[jLoc] = blas::Nrm1( nLoc, X.LockedBuffer(0,jLoc), 1 );

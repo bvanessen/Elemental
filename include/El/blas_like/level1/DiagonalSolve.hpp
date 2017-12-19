@@ -22,7 +22,7 @@ void DiagonalSolve
     EL_DEBUG_CSE
     const Int m = A.Height();
     const Int n = A.Width();
-    const bool conj = ( orientation == ADJOINT );
+    const bool conj = ( orientation == Orientation::ADJOINT );
     if( side == LeftOrRight::LEFT )
     {
         EL_DEBUG_ONLY(

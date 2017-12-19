@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include <El/blas_like/level1.hpp>
@@ -11,41 +11,11 @@
 
 namespace El {
 
-template<typename F1,typename F2> 
-void CauchyLike
-( Matrix<F1>& A,
-  const vector<F2>& r, const vector<F2>& s,
-  const vector<F2>& x, const vector<F2>& y )
-{
-    EL_DEBUG_CSE
-    const Int m = r.size();
-    const Int n = s.size();
-    if( x.size() != (Unsigned)m )
-        LogicError("x vector was the wrong length");
-    if( y.size() != (Unsigned)n )
-        LogicError("y vector was the wrong length");
-    A.Resize( m, n );
-
-    auto cauchyFill = 
-      [&]( Int i, Int j ) -> F1
-      {
-        EL_DEBUG_ONLY(
-          // TODO: Use tolerance instead?
-          if( x[i] == y[j] )
-              LogicError
-              ( "x[", i, "] = y[", j, "] (", x[i],
-                ") is not allowed for Cauchy matrices" );
-        )
-        return F1(r[i]*s[j]/x[i]-y[j]);
-      };
-    IndexDependentFill( A, function<F1(Int,Int)>(cauchyFill) );
-}
-
 template<typename F1,typename F2>
 void CauchyLike
-( AbstractDistMatrix<F1>& A,
-  const vector<F2>& r, const vector<F2>& s, 
-  const vector<F2>& x, const vector<F2>& y )
+( Matrix<F1>& A,
+  const std::vector<F2>& r, const std::vector<F2>& s,
+  const std::vector<F2>& x, const std::vector<F2>& y )
 {
     EL_DEBUG_CSE
     const Int m = r.size();
@@ -68,18 +38,48 @@ void CauchyLike
         )
         return F1(r[i]*s[j]/x[i]-y[j]);
       };
-    IndexDependentFill( A, function<F1(Int,Int)>(cauchyFill) );
+    IndexDependentFill( A, std::function<F1(Int,Int)>(cauchyFill) );
+}
+
+template<typename F1,typename F2>
+void CauchyLike
+( AbstractDistMatrix<F1>& A,
+  const std::vector<F2>& r, const std::vector<F2>& s,
+  const std::vector<F2>& x, const std::vector<F2>& y )
+{
+    EL_DEBUG_CSE
+    const Int m = r.size();
+    const Int n = s.size();
+    if( x.size() != (Unsigned)m )
+        LogicError("x vector was the wrong length");
+    if( y.size() != (Unsigned)n )
+        LogicError("y vector was the wrong length");
+    A.Resize( m, n );
+
+    auto cauchyFill =
+      [&]( Int i, Int j ) -> F1
+      {
+        EL_DEBUG_ONLY(
+          // TODO: Use tolerance instead?
+          if( x[i] == y[j] )
+              LogicError
+              ( "x[", i, "] = y[", j, "] (", x[i],
+                ") is not allowed for Cauchy matrices" );
+        )
+        return F1(r[i]*s[j]/x[i]-y[j]);
+      };
+    IndexDependentFill( A, std::function<F1(Int,Int)>(cauchyFill) );
 }
 
 #define PROTO_TYPES(F1,F2) \
   template void CauchyLike \
   ( Matrix<F1>& A, \
-    const vector<F2>& r, const vector<F2>& s, \
-    const vector<F2>& x, const vector<F2>& y ); \
+    const std::vector<F2>& r, const std::vector<F2>& s, \
+    const std::vector<F2>& x, const std::vector<F2>& y ); \
   template void CauchyLike \
   ( AbstractDistMatrix<F1>& A, \
-    const vector<F2>& r, const vector<F2>& s, \
-    const vector<F2>& x, const vector<F2>& y );
+    const std::vector<F2>& r, const std::vector<F2>& s, \
+    const std::vector<F2>& x, const std::vector<F2>& y );
 
 #define PROTO_REAL(F) \
   PROTO_TYPES(F,Int) \

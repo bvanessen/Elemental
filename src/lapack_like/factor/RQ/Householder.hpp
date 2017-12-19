@@ -52,7 +52,7 @@ Householder
         auto sig1 = signature( ind1, ALL );
 
         PanelHouseholder( A1L, householderScalars1, sig1 );
-        ApplyQ( RIGHT, ADJOINT, A1L, householderScalars1, sig1, A0L );
+        ApplyQ( LeftOrRight::RIGHT, Orientation::ADJOINT, A1L, householderScalars1, sig1, A0L );
     }
 }
 
@@ -101,7 +101,7 @@ Householder
         auto sig1 = signature( ind1, ALL );
 
         PanelHouseholder( A1L, householderScalars1, sig1 );
-        ApplyQ( RIGHT, ADJOINT, A1L, householderScalars1, sig1, A0L );
+        ApplyQ( LeftOrRight::RIGHT, Orientation::ADJOINT, A1L, householderScalars1, sig1, A0L );
     }
 }
 

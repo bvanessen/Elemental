@@ -61,7 +61,7 @@ void LocalAccumulateRLN
         D11.AlignWith( L11 );
         D11 = L11;
         MakeTrapezoidal( UpperOrLower::LOWER, D11 );
-        if( diag == UNIT )
+        if( diag == UnitOrNonUnit::UNIT )
             FillDiagonal( D11, T(1) );
         LocalGemm( orientation, orientation, alpha, D11, X1, T(1), Z1Trans );
         LocalGemm( orientation, orientation, alpha, L21, X2, T(1), Z1Trans );
@@ -110,7 +110,7 @@ void RLNA
         Z1Trans_MR_STAR.Resize( n, nb );
         Zero( Z1Trans_MR_STAR );
         LocalAccumulateRLN
-        ( TRANSPOSE, diag, T(1), L, X1_STAR_MC, Z1Trans_MR_STAR );
+        ( Orientation::TRANSPOSE, diag, T(1), L, X1_STAR_MC, Z1Trans_MR_STAR );
 
         Z1Trans_MR_MC.AlignWith( X1 );
         Contract( Z1Trans_MR_STAR, Z1Trans_MR_MC );
@@ -158,13 +158,13 @@ void RLNCOld
         X1_VC_STAR = X1;
         L11_STAR_STAR = L11;
         LocalTrmm
-        ( RIGHT, UpperOrLower::LOWER, NORMAL, diag, T(1), L11_STAR_STAR, X1_VC_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, diag, T(1), L11_STAR_STAR, X1_VC_STAR );
         X1 = X1_VC_STAR;
 
         L21_MR_STAR.AlignWith( X2 );
         L21_MR_STAR = L21;
         D1_MC_STAR.AlignWith( X1 );
-        LocalGemm( NORMAL, NORMAL, T(1), X2, L21_MR_STAR, D1_MC_STAR );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, T(1), X2, L21_MR_STAR, D1_MC_STAR );
         AxpyContract( T(1), D1_MC_STAR, X1 );
     }
 }
@@ -211,13 +211,13 @@ void RLNC
         L10Trans_MR_STAR.AlignWith( X0 );
         Transpose( L10, L10Trans_MR_STAR );
         LocalGemm
-        ( NORMAL, TRANSPOSE, T(1), X1_MC_STAR, L10Trans_MR_STAR, T(1), X0 );
+        ( Orientation::NORMAL, Orientation::TRANSPOSE, T(1), X1_MC_STAR, L10Trans_MR_STAR, T(1), X0 );
 
         L11_STAR_STAR = L11;
         X1_VC_STAR.AlignWith( X1 );
         X1_VC_STAR = X1_MC_STAR;
         LocalTrmm
-        ( RIGHT, UpperOrLower::LOWER, NORMAL, diag, T(1), L11_STAR_STAR, X1_VC_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, diag, T(1), L11_STAR_STAR, X1_VC_STAR );
         X1 = X1_VC_STAR;
     }
 }

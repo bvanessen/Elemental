@@ -224,13 +224,13 @@ Int Single
             auto tT = t( IR(0,j+1), ALL );
             auto HTL = H( IR(0,j+1), IR(0,j+1) );
             auto y = tT;
-            Trsv( UPPER, NORMAL, NON_UNIT, HTL, y );
+            Trsv( UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, HTL, y );
             // x := x0 + Zj y
             // ^^^^^^^^^^^^^^
             x = x0;
             auto Zj = Z( ALL, IR(0,j+1) );
             auto yj = y( IR(0,j+1), ALL );
-            Gemv( NORMAL, Field(1), Zj, yj, Field(1), x );
+            Gemv( Orientation::NORMAL, Field(1), Zj, yj, Field(1), x );
 
             // w := b - A x
             // ------------
@@ -241,7 +241,7 @@ Int Single
                 // ^^^^^^^^^^^^^^^^^^^^^^^^^
                 q = Ax0;
                 auto AZj = AZ( ALL, IR(0,j+1) );
-                Gemv( NORMAL, Field(1), AZj, yj, Field(1), q );
+                Gemv( Orientation::NORMAL, Field(1), AZj, yj, Field(1), q );
 
                 // w := b - A x
                 // ^^^^^^^^^^^^

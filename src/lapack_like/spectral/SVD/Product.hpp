@@ -54,7 +54,7 @@ SVDInfo TallAbsoluteProduct
 
     // C := A^H A
     Matrix<Field> C;
-    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Real(1), A, C );
 
     // [V,Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -79,13 +79,13 @@ SVDInfo TallAbsoluteProduct
     {
         // Y := A V
         Matrix<Field> Y;
-        Gemm( NORMAL, NORMAL, Field(1), A, V, Y );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), A, V, Y );
 
         // Set each column of U to be the corresponding normalized column of Y
         U = Y;
         Matrix<Base<Field>> colNorms;
         ColumnTwoNorms( U, colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, U );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, U );
     }
 
     return info;
@@ -120,7 +120,7 @@ SVDInfo TallRelativeProduct
 
     // C := A^H A
     Matrix<Field> C;
-    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Real(1), A, C );
 
     // [V,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
@@ -147,13 +147,13 @@ SVDInfo TallRelativeProduct
     {
         // Y := A V
         Matrix<Field> Y;
-        Gemm( NORMAL, NORMAL, Field(1), A, V, Y );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), A, V, Y );
 
         // Set each column of U to be the corresponding normalized column of Y
         U = Y;
         Matrix<Base<Field>> colNorms;
         ColumnTwoNorms( U, colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, U );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, U );
     }
 
     return info;
@@ -215,7 +215,7 @@ SVDInfo TallAbsoluteProduct
     // C := A^H A
     const Grid& g = A.Grid();
     DistMatrix<Field> C(g);
-    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Real(1), A, C );
 
     // [V,Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -241,13 +241,13 @@ SVDInfo TallAbsoluteProduct
     {
         // Y := A V
         DistMatrix<Field> Y(g);
-        Gemm( NORMAL, NORMAL, Field(1), A, V, Y );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), A, V, Y );
 
         // Set each column of U to be the corresponding normalized column of Y
         U = Y;
         DistMatrix<Real,Dist::MR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( U, colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, U );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, U );
     }
 
     return info;
@@ -303,7 +303,7 @@ SVDInfo TallRelativeProduct
 
     // C := A^H A
     DistMatrix<Field> C(g);
-    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Real(1), A, C );
 
     // [V,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
@@ -333,13 +333,13 @@ SVDInfo TallRelativeProduct
     {
         // Y := A V
         DistMatrix<Field> Y(g);
-        Gemm( NORMAL, NORMAL, Field(1), A, V, Y );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), A, V, Y );
 
         // Set each column of U to be the corresponding normalized column of Y
         U = Y;
         DistMatrix<Real,Dist::MR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( U, colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, U );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, U );
     }
 
     return info;
@@ -421,7 +421,7 @@ SVDInfo TallAbsoluteProduct
     const Grid& g = A.Grid();
     DistMatrix<Field,Dist::STAR,Dist::STAR> C(g);
     Zeros( C, n, n );
-    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
+    Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
     El::AllReduce( C, A.ColComm() );
 
     // [V,Sigma^2] := eig(C), where each sigma > tol
@@ -450,13 +450,13 @@ SVDInfo TallAbsoluteProduct
         DistMatrix<Field,Dist::VC,Dist::STAR> Y(g);
         Y.AlignWith( A );
         Zeros( Y, m, k );
-        LocalGemm( NORMAL, NORMAL, Field(1), A, V, Field(0), Y );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), A, V, Field(0), Y );
 
         // Set each column of U to be the corresponding normalized column of Y
         U = Y;
         DistMatrix<Real,Dist::STAR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( U, colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, U );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, U );
     }
 
     return info;
@@ -513,7 +513,7 @@ SVDInfo TallRelativeProduct
     // C := A^H A
     DistMatrix<Field,Dist::STAR,Dist::STAR> C(g);
     Zeros( C, n, n );
-    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
+    Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
     El::AllReduce( C, A.ColComm() );
 
     // [V,Sigma^2] := eig(C)
@@ -545,13 +545,13 @@ SVDInfo TallRelativeProduct
         DistMatrix<Field,Dist::VC,Dist::STAR> Y(g);
         Y.AlignWith( A );
         Zeros( Y, m, k );
-        LocalGemm( NORMAL, NORMAL, Field(1), A, V, Field(0), Y );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), A, V, Field(0), Y );
 
         // Set each column of U to be the corresponding normalized column of Y
         U = Y;
         DistMatrix<Real,Dist::STAR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( U, colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, U );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, U );
     }
 
     return info;
@@ -630,7 +630,7 @@ SVDInfo WideAbsoluteProduct
 
     // C := A A^H
     Matrix<Field> C;
-    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::NORMAL, Real(1), A, C );
 
     // [U,Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -654,12 +654,12 @@ SVDInfo WideAbsoluteProduct
     if( !avoidV )
     {
         // (Sigma V) := A^H U
-        Gemm( ADJOINT, NORMAL, Field(1), A, U, V );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), A, U, V );
 
         // Normalize each column of Sigma V
         Matrix<Base<Field>> colNorms;
         ColumnTwoNorms( V, colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, V );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, V );
     }
 
     return info;
@@ -694,7 +694,7 @@ SVDInfo WideRelativeProduct
 
     // C := A A^H
     Matrix<Field> C;
-    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::NORMAL, Real(1), A, C );
 
     // [U,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
@@ -720,12 +720,12 @@ SVDInfo WideRelativeProduct
     if( !avoidV )
     {
         // (Sigma V) := A^H U
-        Gemm( ADJOINT, NORMAL, Field(1), A, U, V );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), A, U, V );
 
         // Normalize each column of Sigma V
         Matrix<Base<Field>> colNorms;
         ColumnTwoNorms( V, colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, V );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, V );
     }
 
     return info;
@@ -786,7 +786,7 @@ SVDInfo WideAbsoluteProduct
     // C := A A^H
     const Grid& g = A.Grid();
     DistMatrix<Field> C( g );
-    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::NORMAL, Real(1), A, C );
 
     // [U,Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -810,12 +810,12 @@ SVDInfo WideAbsoluteProduct
     if( !avoidV )
     {
         // (Sigma V) := A^H U
-        Gemm( ADJOINT, NORMAL, Field(1), A, U, V );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), A, U, V );
 
         // Normalize each column of Sigma V
         DistMatrix<Real,Dist::MR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( V, colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, V );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, V );
     }
 
     return info;
@@ -871,7 +871,7 @@ SVDInfo WideRelativeProduct
 
     // C := A A^H
     DistMatrix<Field> C( g );
-    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::NORMAL, Real(1), A, C );
 
     // [U,Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
@@ -899,12 +899,12 @@ SVDInfo WideRelativeProduct
     if( !avoidV )
     {
         // (Sigma V) := A^H U
-        Gemm( ADJOINT, NORMAL, Field(1), A, U, V );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), A, U, V );
 
         // Normalize each column of Sigma V
         DistMatrix<Real,Dist::MR,Dist::STAR> colNorms(g);
         ColumnTwoNorms( V, colNorms );
-        DiagonalSolve( RIGHT, NORMAL, colNorms, V );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colNorms, V );
     }
 
     return info;
@@ -1023,7 +1023,7 @@ SVDInfo TallAbsoluteProduct
 
     // C := A^H A
     Matrix<Field> C;
-    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Real(1), A, C );
 
     // [Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -1065,7 +1065,7 @@ SVDInfo TallRelativeProduct
 
     // C := A^H A
     Matrix<Field> C;
-    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Real(1), A, C );
 
     // [Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
@@ -1136,7 +1136,7 @@ SVDInfo TallAbsoluteProduct
 
     // C := A^H A
     DistMatrix<Field> C(g);
-    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Real(1), A, C );
 
     // [Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -1193,7 +1193,7 @@ SVDInfo TallRelativeProduct
 
     // C := A^H A
     DistMatrix<Field> C(g);
-    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Real(1), A, C );
 
     // [Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
@@ -1281,7 +1281,7 @@ SVDInfo TallAbsoluteProduct
     const Grid& g = A.Grid();
     DistMatrix<Field,Dist::STAR,Dist::STAR> C(g);
     Zeros( C, n, n );
-    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
+    Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
     El::AllReduce( C, A.ColComm() );
 
     // [Sigma^2] := eig(C), where each sigma > tol
@@ -1341,7 +1341,7 @@ SVDInfo TallRelativeProduct
     // C := A^H A
     DistMatrix<Field,Dist::STAR,Dist::STAR> C(g);
     Zeros( C, n, n );
-    Herk( UpperOrLower::LOWER, ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
+    Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Real(1), A.LockedMatrix(), Real(0), C.Matrix() );
     El::AllReduce( C, A.ColComm() );
 
     // [V,Sigma^2] := eig(C)
@@ -1425,7 +1425,7 @@ SVDInfo WideAbsoluteProduct
 
     // C := A A^H
     Matrix<Field> C;
-    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::NORMAL, Real(1), A, C );
 
     // [Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -1467,7 +1467,7 @@ SVDInfo WideRelativeProduct
 
     // C := A A^H
     Matrix<Field> C;
-    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::NORMAL, Real(1), A, C );
 
     // [Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;
@@ -1537,7 +1537,7 @@ SVDInfo WideAbsoluteProduct
     // C := A A^H
     const Grid& g = A.Grid();
     DistMatrix<Field> C( g );
-    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::NORMAL, Real(1), A, C );
 
     // [Sigma^2] := eig(C), where each sigma > tol
     HermitianEigSubset<Real> subset;
@@ -1594,7 +1594,7 @@ SVDInfo WideRelativeProduct
 
     // C := A A^H
     DistMatrix<Field> C( g );
-    Herk( UpperOrLower::LOWER, NORMAL, Real(1), A, C );
+    Herk( UpperOrLower::LOWER, Orientation::NORMAL, Real(1), A, C );
 
     // [Sigma^2] := eig(C)
     HermitianEigCtrl<Field> ctrl;

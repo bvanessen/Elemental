@@ -44,12 +44,12 @@ void RealToComplex( const Matrix<Real>& UQuasi, Matrix<Complex<Real>>& U )
             // Apply V11 from the right to U01
             auto U01 = U( IR(0,j), IR(j,j+2) );
             U01Copy = U01;
-            Gemm( NORMAL, NORMAL, C(1), U01Copy, V11, C(0), U01 );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), U01Copy, V11, C(0), U01 );
 
             // Apply V11^H from the left
             auto U12 = U( IR(j,j+2), IR(j+2,n) );
             U12Copy = U12;
-            Gemm( ADJOINT, NORMAL, C(1), V11, U12Copy, C(0), U12 );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, C(1), V11, U12Copy, C(0), U12 );
         }
     }
 }
@@ -89,17 +89,17 @@ void RealToComplex
             // Apply V11 from the right to Q1
             auto Q1 = Q( ALL, IR(j,j+2) );
             Q1Copy = Q1;
-            Gemm( NORMAL, NORMAL, C(1), Q1Copy, V11, C(0), Q1 );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Q1Copy, V11, C(0), Q1 );
 
             // Apply V11 from the right to U01
             auto U01 = U( IR(0,j), IR(j,j+2) );
             U01Copy = U01;
-            Gemm( NORMAL, NORMAL, C(1), U01Copy, V11, C(0), U01 );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), U01Copy, V11, C(0), U01 );
 
             // Apply V11^H from the left to U12
             auto U12 = U( IR(j,j+2), IR(j+2,n) );
             U12Copy = U12;
-            Gemm( ADJOINT, NORMAL, C(1), V11, U12Copy, C(0), U12 );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, C(1), V11, U12Copy, C(0), U12 );
         }
     }
 }
@@ -150,7 +150,7 @@ void RealToComplex
             U01Copy_VC_STAR = U01_VC_STAR;
 
             LocalGemm
-            ( NORMAL, NORMAL, C(1), U01Copy_VC_STAR, V11, C(0), U01_VC_STAR );
+            ( Orientation::NORMAL, Orientation::NORMAL, C(1), U01Copy_VC_STAR, V11, C(0), U01_VC_STAR );
             U01 = U01_VC_STAR;
 
             // Apply V11^H from the left to U12
@@ -158,7 +158,7 @@ void RealToComplex
             U12_STAR_VR = U12;
             U12Copy_STAR_VR = U12_STAR_VR;
             LocalGemm
-            ( ADJOINT, NORMAL, C(1), V11, U12Copy_STAR_VR, C(0), U12_STAR_VR );
+            ( Orientation::ADJOINT, Orientation::NORMAL, C(1), V11, U12Copy_STAR_VR, C(0), U12_STAR_VR );
             U12 = U12_STAR_VR;
         }
     }
@@ -214,7 +214,7 @@ void RealToComplex
             Q1_VC_STAR = Q1;
             Q1Copy_VC_STAR = Q1_VC_STAR;
             LocalGemm
-            ( NORMAL, NORMAL, C(1), Q1Copy_VC_STAR, V11, C(0), Q1_VC_STAR );
+            ( Orientation::NORMAL, Orientation::NORMAL, C(1), Q1Copy_VC_STAR, V11, C(0), Q1_VC_STAR );
             Q1 = Q1_VC_STAR;
 
             // Apply V11 from the right to U01
@@ -222,7 +222,7 @@ void RealToComplex
             U01_VC_STAR = U01;
             U01Copy_VC_STAR = U01_VC_STAR;
             LocalGemm
-            ( NORMAL, NORMAL, C(1), U01Copy_VC_STAR, V11, C(0), U01_VC_STAR );
+            ( Orientation::NORMAL, Orientation::NORMAL, C(1), U01Copy_VC_STAR, V11, C(0), U01_VC_STAR );
             U01 = U01_VC_STAR;
 
             // Apply V11^H from the left to U12
@@ -230,7 +230,7 @@ void RealToComplex
             U12_STAR_VR = U12;
             U12Copy_STAR_VR = U12_STAR_VR;
             LocalGemm
-            ( ADJOINT, NORMAL, C(1), V11, U12Copy_STAR_VR, C(0), U12_STAR_VR );
+            ( Orientation::ADJOINT, Orientation::NORMAL, C(1), V11, U12Copy_STAR_VR, C(0), U12_STAR_VR );
             U12 = U12_STAR_VR;
         }
     }

@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 
@@ -24,7 +23,7 @@ void SymmetricInverse
         Permutation P;
         Matrix<Field> dSub;
         LDL( A, dSub, P, conjugate, ctrl );
-        TriangularInverse( UpperOrLower::LOWER, UNIT, A );
+        TriangularInverse( UpperOrLower::LOWER, UnitOrNonUnit::UNIT, A );
         Trdtrmm( UpperOrLower::LOWER, A, dSub, conjugate );
 
         // NOTE: Fill in both triangles of the inverse
@@ -54,7 +53,7 @@ void SymmetricInverse
         DistMatrix<Field,Dist::MD,Dist::STAR> dSub( A.Grid() );
 
         LDL( A, dSub, P, conjugate, ctrl );
-        TriangularInverse( UpperOrLower::LOWER, UNIT, A );
+        TriangularInverse( UpperOrLower::LOWER, UnitOrNonUnit::UNIT, A );
         Trdtrmm( UpperOrLower::LOWER, A, dSub, conjugate );
 
         // NOTE: Fill in both triangles of the inverse

@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 #include "./Util.hpp"
 
 // The following routines are adaptations of the approach uses by
@@ -83,7 +82,7 @@ void SymmetricGeomEquil
         }
         EntrywiseMap( scales, MakeFunction(DampScaling<Real>) );
         EntrywiseMap( scales, MakeFunction(SquareRootScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, scales, d );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, scales, d );
         SymmetricDiagonalSolve( scales, A );
 
         auto newMaxAbs = MaxAbsLoc( A );
@@ -108,7 +107,7 @@ void SymmetricGeomEquil
                 maxAbs = Max( Abs(A(i,j)), maxAbs );
             scales(j) = Sqrt(maxAbs);
         }
-        DiagonalScale( LEFT, NORMAL, scales, d );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, scales, d );
         SymmetricDiagonalSolve( scales, A );
     }
     auto newMaxAbs = MaxAbsLoc( A );
@@ -174,10 +173,10 @@ void SymmetricGeomEquil
         GeometricColumnScaling( A, scales );
         EntrywiseMap( scales, MakeFunction(DampScaling<Real>) );
         EntrywiseMap( scales, MakeFunction(SquareRootScaling<Real>) );
-        DiagonalScale( LEFT, NORMAL, scales, d );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, scales, d );
         // TODO(poulson): SymmetricDiagonalSolve
-        DiagonalSolve( RIGHT, NORMAL, scales, A );
-        DiagonalSolve( LEFT, NORMAL, scales, A );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, scales, A );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, scales, A );
 
         auto newMaxAbs = MaxAbsLoc( A );
         const Real newMaxAbsVal = newMaxAbs.value;
@@ -207,10 +206,10 @@ void SymmetricGeomEquil
             scalesLoc(jLoc) = scale;
         }
         mpi::AllReduce( scales.Buffer(), nLocal, mpi::MAX, A.ColComm() );
-        DiagonalScale( LEFT, NORMAL, scales, d );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, scales, d );
         // TODO(poulson): SymmetricDiagonalSolve
-        DiagonalSolve( RIGHT, NORMAL, scales, A );
-        DiagonalSolve( LEFT, NORMAL, scales, A );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, scales, A );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, scales, A );
     }
     auto newMaxAbs = MaxAbsLoc( A );
     const Real newMaxAbsVal = newMaxAbs.value;

@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 #include "./Pseudospectra/Util.hpp"
 #include "./Pseudospectra/Power.hpp"
@@ -713,7 +712,7 @@ Matrix<Int> Helper
             Matrix<C> t;
             Hessenberg( UpperOrLower::UPPER, U, t );
             Identity( Q, A.Height(), A.Height() );
-            hessenberg::ApplyQ( LEFT, UpperOrLower::UPPER, NORMAL, U, t, Q );
+            hessenberg::ApplyQ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, U, t, Q );
             return HessenbergSpectralCloud( U, Q, shifts, invNorms, psCtrl );
         }
     }
@@ -764,7 +763,7 @@ DistMatrix<Int,Dist::VR,Dist::STAR> Helper
             DistMatrix<C,Dist::STAR,Dist::STAR> t(g);
             Hessenberg( UpperOrLower::UPPER, U, t );
             Identity( Q, U.Height(), U.Height() );
-            hessenberg::ApplyQ( LEFT, UpperOrLower::UPPER, NORMAL, U, t, Q );
+            hessenberg::ApplyQ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, U, t, Q );
             return HessenbergSpectralCloud( U, Q, shifts, invNorms, psCtrl );
         }
     }
@@ -2081,7 +2080,7 @@ Matrix<Int> Helper
             Matrix<C> t;
             Hessenberg( UpperOrLower::UPPER, B, t );
             Identity( Q, B.Height(), B.Height() );
-            hessenberg::ApplyQ( LEFT, UpperOrLower::UPPER, NORMAL, B, t, Q );
+            hessenberg::ApplyQ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, B, t, Q );
             return HessenbergSpectralPortrait
                    ( B, Q, invNormMap, realSize, imagSize, box, psCtrl );
         }
@@ -2137,7 +2136,7 @@ DistMatrix<Int> Helper
             DistMatrix<C,Dist::STAR,Dist::STAR> t(g);
             Hessenberg( UpperOrLower::UPPER, B, t );
             Identity( Q, B.Height(), B.Height() );
-            hessenberg::ApplyQ( LEFT, UpperOrLower::UPPER, NORMAL, B, t, Q );
+            hessenberg::ApplyQ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, B, t, Q );
             return HessenbergSpectralPortrait
                    ( B, Q, invNormMap, realSize, imagSize, box, psCtrl );
         }

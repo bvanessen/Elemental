@@ -24,7 +24,7 @@ void TransformRows
     EL_DEBUG_CSE
     // TODO(poulson): Consider forming chunk-by-chunk to save memory
     Matrix<Field> ACopy( A );
-    Gemm( ADJOINT, NORMAL, Field(1), V, ACopy, A );
+    Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), V, ACopy, A );
 }
 
 template<typename Field>
@@ -74,7 +74,7 @@ void TransformRows
             El::SendRecv( ATop, ABottom, A.ColComm(), secondRow, secondRow );
 
             // Form our portion of the result
-            Gemm( ADJOINT, NORMAL, Field(1), VLeft, ACombine, A.Matrix() );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), VLeft, ACombine, A.Matrix() );
         }
         else if( grid.Row() == secondRow )
         {
@@ -101,7 +101,7 @@ void TransformRows
             El::SendRecv( ABottom, ATop, A.ColComm(), firstRow, firstRow );
 
             // Form our portion of the result
-            Gemm( ADJOINT, NORMAL, Field(1), VRight, ACombine, A.Matrix() );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), VRight, ACombine, A.Matrix() );
         }
     }
     else
@@ -110,7 +110,7 @@ void TransformRows
         // TODO(poulson): Only form the subset of the result that we need.
         DistMatrix<Field,Dist::STAR,Dist::MR,DistWrap::BLOCK> A_STAR_MR( A );
         Matrix<Field> ALocCopy( A_STAR_MR.Matrix() );
-        Gemm( ADJOINT, NORMAL, Field(1), V, ALocCopy, A_STAR_MR.Matrix() );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), V, ALocCopy, A_STAR_MR.Matrix() );
         A = A_STAR_MR;
     }
 }
@@ -123,7 +123,7 @@ void TransformColumns
     EL_DEBUG_CSE
     // TODO(poulson): Consider forming chunk-by-chunk to save memory
     Matrix<Field> ACopy( A );
-    Gemm( NORMAL, NORMAL, Field(1), ACopy, V, A );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), ACopy, V, A );
 }
 
 // Apply (with replacement) V from the right
@@ -174,7 +174,7 @@ void TransformColumns
 
             // Form our portion of the result
             auto VLeft = V( ALL, IR(0,firstBlockWidth) );
-            Gemm( NORMAL, NORMAL, Field(1), ACombine, VLeft, A.Matrix() );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), ACombine, VLeft, A.Matrix() );
         }
         else if( grid.Col() == secondCol )
         {
@@ -200,7 +200,7 @@ void TransformColumns
 
             // Form our portion of the result
             auto VRight = V( ALL, IR(firstBlockWidth,END) );
-            Gemm( NORMAL, NORMAL, Field(1), ACombine, VRight, A.Matrix() );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), ACombine, VRight, A.Matrix() );
         }
     }
     else
@@ -209,7 +209,7 @@ void TransformColumns
         // TODO(poulson): Only form the subset of the result that we need.
         DistMatrix<Field,Dist::MC,Dist::STAR,DistWrap::BLOCK> A_MC_STAR( A );
         Matrix<Field> ALocCopy( A_MC_STAR.Matrix() );
-        Gemm( NORMAL, NORMAL, Field(1), ALocCopy, V, A_MC_STAR.Matrix() );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), ALocCopy, V, A_MC_STAR.Matrix() );
         A = A_MC_STAR;
     }
 }

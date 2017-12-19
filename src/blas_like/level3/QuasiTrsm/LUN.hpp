@@ -122,7 +122,7 @@ void LUN( const Matrix<F>& U, Matrix<F>& X, bool checkIfSingular )
         auto X1 = X( ind1, ALL );
 
         LUNUnb( U11, X1, checkIfSingular );
-        Gemm( NORMAL, NORMAL, F(-1), U01, X1, F(1), X0 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), U01, X1, F(1), X0 );
 
         if( k == 0 )
             break;
@@ -175,7 +175,7 @@ void LUNLarge
 
         // X1[* ,VR] := U11^-1[* ,* ] X1[* ,VR]
         LocalQuasiTrsm
-        ( LEFT, UpperOrLower::UPPER, NORMAL, F(1), U11_STAR_STAR, X1_STAR_VR,
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, F(1), U11_STAR_STAR, X1_STAR_VR,
           checkIfSingular );
 
         X1_STAR_MR.AlignWith( X0 );
@@ -185,7 +185,7 @@ void LUNLarge
         U01_MC_STAR = U01;        // U01[MC,* ] <- U01[MC,MR]
 
         // X0[MC,MR] -= U01[MC,* ] X1[* ,MR]
-        LocalGemm( NORMAL, NORMAL, F(-1), U01_MC_STAR, X1_STAR_MR, F(1), X0 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), U01_MC_STAR, X1_STAR_MR, F(1), X0 );
 
         if( k == 0 )
             break;
@@ -238,7 +238,7 @@ void LUNMedium
         // X1^T[MR,* ] := X1^T[MR,* ] U11^-T[* ,* ]
         //              = (U11^-1[* ,* ] X1[* ,MR])^T
         LocalQuasiTrsm
-        ( RIGHT, UpperOrLower::UPPER, TRANSPOSE,
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::TRANSPOSE,
           F(1), U11_STAR_STAR, X1Trans_MR_STAR, checkIfSingular );
         Transpose( X1Trans_MR_STAR, X1 );
 
@@ -247,7 +247,7 @@ void LUNMedium
 
         // X0[MC,MR] -= U01[MC,* ] X1[* ,MR]
         LocalGemm
-        ( NORMAL, TRANSPOSE, F(-1), U01_MC_STAR, X1Trans_MR_STAR, F(1), X0 );
+        ( Orientation::NORMAL, Orientation::TRANSPOSE, F(-1), U01_MC_STAR, X1Trans_MR_STAR, F(1), X0 );
 
         if( k == 0 )
             break;
@@ -300,12 +300,12 @@ void LUNSmall
 
         // X1[* ,* ] := U11^-1[* ,* ] X1[* ,* ]
         LocalQuasiTrsm
-        ( LEFT, UpperOrLower::UPPER, NORMAL,
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL,
           F(1), U11_STAR_STAR, X1_STAR_STAR, checkIfSingular );
         X1 = X1_STAR_STAR;
 
         // X0[VC,* ] -= U01[VC,* ] X1[* ,* ]
-        LocalGemm( NORMAL, NORMAL, F(-1), U01, X1_STAR_STAR, F(1), X0 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), U01, X1_STAR_STAR, F(1), X0 );
 
         if( k == 0 )
             break;

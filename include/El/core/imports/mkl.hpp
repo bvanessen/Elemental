@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_IMPORTS_MKL_HPP
@@ -16,25 +16,25 @@ namespace mkl {
 void csrmv
 ( Orientation orientation, BlasInt m, BlasInt k,
   float alpha, const char* matDescrA,
-  const float* val, const BlasInt* indx, 
+  const float* val, const BlasInt* indx,
   const BlasInt* pntrb, const BlasInt* pntre,
   const float* x, float beta, float* y );
 void csrmv
 ( Orientation orientation, BlasInt m, BlasInt k,
   double alpha, const char* matDescrA,
-  const double* val, const BlasInt* indx, 
+  const double* val, const BlasInt* indx,
   const BlasInt* pntrb, const BlasInt* pntre,
   const double* x, double beta, double* y );
 void csrmv
 ( Orientation orientation, BlasInt m, BlasInt k,
   Complex<float> alpha, const char* matDescrA,
-  const Complex<float>* val, const BlasInt* indx, 
+  const Complex<float>* val, const BlasInt* indx,
   const BlasInt* pntrb, const BlasInt* pntre,
   const Complex<float>* x, Complex<float> beta, Complex<float>* y );
 void csrmv
 ( Orientation orientation, BlasInt m, BlasInt k,
   Complex<double> alpha, const char* matDescrA,
-  const Complex<double>* val, const BlasInt* indx, 
+  const Complex<double>* val, const BlasInt* indx,
   const BlasInt* pntrb, const BlasInt* pntre,
   const Complex<double>* x, Complex<double> beta, Complex<double>* y );
 
@@ -59,13 +59,13 @@ void omatcopy
   const T* A, BlasInt ALDim,
         T* B, BlasInt BLDim )
 {
-    if( orientation == NORMAL )
+    if( orientation == Orientation::NORMAL )
     {
         for( BlasInt j=0; j<n; ++j )
             for( BlasInt i=0; i<m; ++i )
                 B[i+j*BLDim] = A[i+j*ALDim];
     }
-    else if( orientation == TRANSPOSE )
+    else if( orientation == Orientation::TRANSPOSE )
     {
         for( BlasInt i=0; i<m; ++i )
             for( BlasInt j=0; j<n; ++j )
@@ -104,13 +104,13 @@ void omatcopy
   const T* A, BlasInt ALDim, BlasInt stridea,
         T* B, BlasInt BLDim, BlasInt strideb )
 {
-    if( orientation == NORMAL )
+    if( orientation == Orientation::NORMAL )
     {
         for( BlasInt j=0; j<n; ++j )
             for( BlasInt i=0; i<m; ++i )
                 B[i*strideb+j*BLDim] = A[i*stridea+j*ALDim];
     }
-    else if( orientation == TRANSPOSE )
+    else if( orientation == Orientation::TRANSPOSE )
     {
         for( BlasInt i=0; i<m; ++i )
             for( BlasInt j=0; j<n; ++j )

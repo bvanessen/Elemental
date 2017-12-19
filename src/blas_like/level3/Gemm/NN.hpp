@@ -77,7 +77,7 @@ void Cannon_NN
     const Int rightCol = Mod(col+1,pSqrt);
     for( Int q=0; q<pSqrt; ++q )
     {
-        Gemm( NORMAL, NORMAL, alpha, pkgA, pkgB, T(1), C.Matrix() );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, alpha, pkgA, pkgB, T(1), C.Matrix() );
         if( q != pSqrt-1 )
         {
             mpi::SendRecv
@@ -126,7 +126,7 @@ void SUMMA_NNA
         // D1[MC,*] := alpha A[MC,MR] B1[MR,*]
         B1_VR_STAR = B1;
         Transpose( B1_VR_STAR, B1Trans_STAR_MR );
-        LocalGemm( NORMAL, TRANSPOSE, alpha, A, B1Trans_STAR_MR, D1_MC_STAR );
+        LocalGemm( Orientation::NORMAL, Orientation::TRANSPOSE, alpha, A, B1Trans_STAR_MR, D1_MC_STAR );
 
         // C1[MC,MR] += scattered result of D1[MC,*] summed over grid rows
         AxpyContract( T(1), D1_MC_STAR, C1 );
@@ -169,7 +169,7 @@ void SUMMA_NNB
         // D1^T[MR,* ] := alpha B^T[MR,MC] A1^T[MC,* ]
         A1_STAR_MC = A1;
         LocalGemm
-        ( TRANSPOSE, TRANSPOSE, alpha, B, A1_STAR_MC, D1Trans_MR_STAR );
+        ( Orientation::TRANSPOSE, Orientation::TRANSPOSE, alpha, B, A1_STAR_MC, D1Trans_MR_STAR );
 
         TransposeAxpyContract( T(1), D1Trans_MR_STAR, C1 );
     }
@@ -213,7 +213,7 @@ void SUMMA_NNC
         A1_MC_STAR = A1;
         Transpose( B1, B1Trans_MR_STAR );
         LocalGemm
-        ( NORMAL, TRANSPOSE, alpha, A1_MC_STAR, B1Trans_MR_STAR, T(1), C );
+        ( Orientation::NORMAL, Orientation::TRANSPOSE, alpha, A1_MC_STAR, B1Trans_MR_STAR, T(1), C );
     }
 }
 
@@ -263,7 +263,7 @@ void SUMMA_NNDot
             auto B1  = B( ALL,      indInner );
             auto C11 = C( indOuter, indInner );
 
-            LocalGemm( NORMAL, NORMAL, alpha, A1, B1, C11_STAR_STAR );
+            LocalGemm( Orientation::NORMAL, Orientation::NORMAL, alpha, A1, B1, C11_STAR_STAR );
             AxpyContract( T(1), C11_STAR_STAR, C11 );
         }
     }

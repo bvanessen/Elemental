@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 // TODO: Use column-pivoted LQ decompositions to avoid unnecessary explicit
 //       adjoints
@@ -42,7 +41,7 @@ void Skeleton
     B.Resize( B.Height(), numSteps );
     // Form K' := (A pinv(AR))' = pinv(AR') A'
     Matrix<F> KAdj;
-    qr::SolveAfter( NORMAL, B, householderScalars, signature, AAdj, KAdj );
+    qr::SolveAfter( Orientation::NORMAL, B, householderScalars, signature, AAdj, KAdj );
     // Form K := (K')'
     Matrix<F> K;
     Adjoint( KAdj, K );
@@ -56,7 +55,7 @@ void Skeleton
     QR( B, householderScalars, signature, PC, secondCtrl );
     // Form Z := pinv(AC) K = pinv(AC) (A pinv(AR))
     B.Resize( B.Height(), numSteps );
-    qr::SolveAfter( NORMAL, B, householderScalars, signature, K, Z );
+    qr::SolveAfter( Orientation::NORMAL, B, householderScalars, signature, K, Z );
 }
 
 template<typename F>
@@ -84,7 +83,7 @@ void Skeleton
     B.Resize( B.Height(), numSteps );
     // Form K' := (A pinv(AR))' = pinv(AR') A'
     DistMatrix<F> KAdj(g);
-    qr::SolveAfter( NORMAL, B, householderScalars, signature, AAdj, KAdj );
+    qr::SolveAfter( Orientation::NORMAL, B, householderScalars, signature, AAdj, KAdj );
     // Form K := (K')'
     DistMatrix<F> K(g);
     Adjoint( KAdj, K );
@@ -98,7 +97,7 @@ void Skeleton
     QR( B, householderScalars, signature, PC, secondCtrl );
     // Form Z := pinv(AC) K = pinv(AC) (A pinv(AR))
     B.Resize( B.Height(), numSteps );
-    qr::SolveAfter( NORMAL, B, householderScalars, signature, K, Z );
+    qr::SolveAfter( Orientation::NORMAL, B, householderScalars, signature, K, Z );
 }
 
 #define PROTO(F) \

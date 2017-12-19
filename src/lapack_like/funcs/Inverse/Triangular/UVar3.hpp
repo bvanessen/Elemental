@@ -26,14 +26,14 @@ UVar3Unb( UnitOrNonUnit diag, Matrix<Field>& U )
     Field* UBuffer = U.Buffer();
     for( Int j=n-1; j>=0; --j )
     {
-        const Field upsilon = ( diag==NON_UNIT ? UBuffer[j+j*ldu] : Field(1) );
+        const Field upsilon = ( diag==UnitOrNonUnit::NON_UNIT ? UBuffer[j+j*ldu] : Field(1) );
         for( Int k=0; k<j; ++k )
             UBuffer[k+j*ldu] /= -upsilon;
         blas::Geru
         ( j, n-(j+1), Field(1),
           &UBuffer[j*ldu], 1, &UBuffer[j+(j+1)*ldu], ldu,
           &UBuffer[(j+1)*ldu], ldu );
-        if( diag == NON_UNIT )
+        if( diag == UnitOrNonUnit::NON_UNIT )
         {
             for( Int k=j+1; k<n; ++k )
                 UBuffer[j+k*ldu] /= upsilon;
@@ -68,9 +68,9 @@ UVar3( UnitOrNonUnit diag, Matrix<Field>& U )
         auto U12 = U( ind1, ind2 );
         auto U22 = U( ind2, ind2 );
 
-        Trsm( RIGHT, UpperOrLower::UPPER, NORMAL, diag, Field(-1), U11, U01 );
-        Gemm( NORMAL, NORMAL, Field(1), U01, U12, Field(1), U02 );
-        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, diag, Field(1), U11, U12 );
+        Trsm( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, diag, Field(-1), U11, U01 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), U01, U12, Field(1), U02 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, diag, Field(1), U11, U12 );
         UVar3Unb( diag, U11 );
     }
 }
@@ -115,7 +115,7 @@ UVar3( UnitOrNonUnit diag, AbstractDistMatrix<Field>& UPre )
         U01_VC_STAR = U01;
         U11_STAR_STAR = U11;
         LocalTrsm
-        ( RIGHT, UpperOrLower::UPPER, NORMAL, diag, Field(-1), U11_STAR_STAR, U01_VC_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, diag, Field(-1), U11_STAR_STAR, U01_VC_STAR );
 
         // We transpose before the communication to avoid cache-thrashing
         // in the unpacking stage.
@@ -125,13 +125,13 @@ UVar3( UnitOrNonUnit diag, AbstractDistMatrix<Field>& UPre )
         Transpose( U01_VC_STAR, U01Trans_STAR_MC );
 
         LocalGemm
-        ( TRANSPOSE, TRANSPOSE,
+        ( Orientation::TRANSPOSE, Orientation::TRANSPOSE,
           Field(1), U01Trans_STAR_MC, U12Trans_MR_STAR, Field(1), U02 );
         Transpose( U01Trans_STAR_MC, U01 );
 
         Transpose( U12Trans_MR_STAR, U12_STAR_VR );
         LocalTrsm
-        ( LEFT, UpperOrLower::UPPER, NORMAL, diag, Field(1), U11_STAR_STAR, U12_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, diag, Field(1), U11_STAR_STAR, U12_STAR_VR );
         LocalTriangularInverse( UpperOrLower::UPPER, diag, U11_STAR_STAR );
         U11 = U11_STAR_STAR;
         U12 = U12_STAR_VR;

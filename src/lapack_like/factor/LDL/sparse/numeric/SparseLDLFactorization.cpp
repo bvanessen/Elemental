@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 #include "./Process.hpp"
 #include "./LowerSolve/Forward.hpp"
@@ -110,14 +109,14 @@ void SparseLDLFactorization<Field>::Factor( LDLFrontType frontType )
     // is sometimes useful to directly manipulate the fronts.
     if( !Unfactored(front_->type) )
         LogicError("Fronts are already marked as factored");
-    
+
     // Convert from 1D to 2D if necessary
     ChangeFrontType( SYMM_2D );
-    
+
     // Perform the initial factorization
     ldl::Process( *info_, *front_, InitialFactorType(frontType) );
     factored_ = true;
-    
+
     // Convert the fronts from the initial factorization to the requested form
     ChangeFrontType( frontType );
 }
@@ -160,20 +159,20 @@ void SparseLDLFactorization<Field>::Solve( ldl::MatrixNode<Field>& B ) const
     EL_DEBUG_CSE
     if( !factored_ )
         LogicError("Must call Factor() before Solve()");
-    const Orientation orientation = front_->isHermitian ? ADJOINT : TRANSPOSE;
+    const Orientation orientation = front_->isHermitian ? Orientation::ADJOINT : Orientation::TRANSPOSE;
     if( BlockFactorization(front_->type) )
-    {   
+    {
         // Solve against block diagonal factor, L D
-        SolveAgainstL( NORMAL, B );
+        SolveAgainstL( Orientation::NORMAL, B );
         // Solve against the (conjugate-)transpose of the block unit diagonal L
         SolveAgainstL( orientation, B );
     }
     else
-    {   
-        // Solve against unit diagonal L 
-        SolveAgainstL( NORMAL, B );
+    {
+        // Solve against unit diagonal L
+        SolveAgainstL( Orientation::NORMAL, B );
         // Solve against diagonal
-        SolveAgainstD( NORMAL, B );
+        SolveAgainstD( Orientation::NORMAL, B );
         // Solve against the (conjugate-)transpose of the unit diagonal L
         SolveAgainstL( orientation, B );
     }
@@ -203,7 +202,7 @@ void SparseLDLFactorization<Field>::SolveWithIterativeRefinement
     if( maxRefineIts > 0 )
     {
         Matrix<Field> dX, XCand;
-        Multiply( NORMAL, Field(-1), A, X, Field(1), B );
+        Multiply( Orientation::NORMAL, Field(-1), A, X, Field(1), B );
         Base<Field> errorNorm = FrobeniusNorm( B );
         for( ; refineIt<maxRefineIts; ++refineIt )
         {
@@ -217,7 +216,7 @@ void SparseLDLFactorization<Field>::SolveWithIterativeRefinement
             // If the proposed update lowers the residual, accept it
             // -----------------------------------------------------
             B = BOrig;
-            Multiply( NORMAL, Field(-1), A, XCand, Field(1), B );
+            Multiply( Orientation::NORMAL, Field(-1), A, XCand, Field(1), B );
             Base<Field> newErrorNorm = FrobeniusNorm( B );
             if( minReductionFactor*newErrorNorm < errorNorm )
             {
@@ -258,10 +257,10 @@ void SparseLDLFactorization<Field>::SolveAgainstL
     EL_DEBUG_CSE
     if( !factored_ )
         LogicError("Must call Factor() before SolveAgainstL()");
-    if( orientation == NORMAL )
+    if( orientation == Orientation::NORMAL )
         ldl::LowerForwardSolve( *info_, *front_, B );
     else
-        ldl::LowerBackwardSolve( *info_, *front_, B, orientation==ADJOINT );
+        ldl::LowerBackwardSolve( *info_, *front_, B, orientation==Orientation::ADJOINT );
 }
 
 template<typename Field>
@@ -283,10 +282,10 @@ void SparseLDLFactorization<Field>::MultiplyWithL
     EL_DEBUG_CSE
     if( !factored_ )
         LogicError("Must call Factor() before MultiplyWithL()");
-    if( orientation == NORMAL )
+    if( orientation == Orientation::NORMAL )
         ldl::LowerForwardMultiply( *info_, *front_, B );
     else
-        ldl::LowerBackwardMultiply( *info_, *front_, B, orientation==ADJOINT );
+        ldl::LowerBackwardMultiply( *info_, *front_, B, orientation==Orientation::ADJOINT );
 }
 
 template<typename Field>
@@ -308,7 +307,7 @@ void SparseLDLFactorization<Field>::SolveAgainstD
     EL_DEBUG_CSE
     if( !factored_ )
         LogicError("Must call Factor() before SolveAgainstD()");
-    if( orientation == NORMAL )
+    if( orientation == Orientation::NORMAL )
     {
         ldl::DiagonalSolve( *info_, *front_, B );
     }
@@ -337,7 +336,7 @@ void SparseLDLFactorization<Field>::MultiplyWithD
     EL_DEBUG_CSE
     if( !factored_ )
         LogicError("Must call Factor() before MultiplyWithD()");
-    if( orientation == NORMAL )
+    if( orientation == Orientation::NORMAL )
     {
         ldl::DiagonalScale( *info_, *front_, B );
     }

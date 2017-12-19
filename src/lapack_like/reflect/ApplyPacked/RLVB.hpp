@@ -72,7 +72,7 @@ RLVBUnblocked
         hPanCopy(0) = F(1);
 
         // z := ARight hPan
-        Gemv( NORMAL, F(1), ARight, hPanCopy, z );
+        Gemv( Orientation::NORMAL, F(1), ARight, hPanCopy, z );
         // ARight := ARight (I - gamma hPan hPan')
         Ger( -gamma, z, hPanCopy, ARight );
     }
@@ -122,15 +122,15 @@ RLVBBlocked
         FillDiagonal( HPanCopy, F(1) );
 
         // Form the small triangular matrix needed for the UT transform
-        Herk( UpperOrLower::LOWER, ADJOINT, Base<F>(1), HPanCopy, SInv );
+        Herk( UpperOrLower::LOWER, Orientation::ADJOINT, Base<F>(1), HPanCopy, SInv );
         FixDiagonal( conjugation, householderScalars1, SInv );
 
         // Z := ARight HPan
-        Gemm( NORMAL, NORMAL, F(1), ARight, HPanCopy, Z );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), ARight, HPanCopy, Z );
         // Z := ARight HPan inv(SInv)
-        Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), SInv, Z );
+        Trsm( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), SInv, Z );
         // ARight := ARight (I - HPan inv(SInv) HPan')
-        Gemm( NORMAL, ADJOINT, F(-1), Z, HPanCopy, F(1), ARight );
+        Gemm( Orientation::NORMAL, Orientation::ADJOINT, F(-1), Z, HPanCopy, F(1), ARight );
     }
 }
 
@@ -210,7 +210,7 @@ RLVBUnblocked
         // z := ARight hPan
         z_MC_STAR.AlignWith( ARight );
         Zeros( z_MC_STAR, ARight.Height(), 1 );
-        LocalGemv( NORMAL, F(1), ARight, hPan_MR_STAR, F(0), z_MC_STAR );
+        LocalGemv( Orientation::NORMAL, F(1), ARight, hPan_MR_STAR, F(0), z_MC_STAR );
         El::AllReduce( z_MC_STAR, ARight.RowComm() );
 
         // ARight := ARight (I - hPan inv(SInv) hPan')
@@ -278,7 +278,7 @@ RLVBBlocked
         HPan_VC_STAR = HPanCopy;
         Zeros( SInv_STAR_STAR, nb, nb );
         Herk
-        ( UpperOrLower::LOWER, ADJOINT,
+        ( UpperOrLower::LOWER, Orientation::ADJOINT,
           Base<F>(1), HPan_VC_STAR.LockedMatrix(),
           Base<F>(0), SInv_STAR_STAR.Matrix() );
         El::AllReduce( SInv_STAR_STAR, HPan_VC_STAR.ColComm() );
@@ -290,18 +290,18 @@ RLVBBlocked
         HPan_MR_STAR.AlignWith( ARight );
         HPan_MR_STAR = HPan_VC_STAR;
         ZAdj_STAR_MC.AlignWith( ARight );
-        LocalGemm( ADJOINT, ADJOINT, F(1), HPan_MR_STAR, ARight, ZAdj_STAR_MC );
+        LocalGemm( Orientation::ADJOINT, Orientation::ADJOINT, F(1), HPan_MR_STAR, ARight, ZAdj_STAR_MC );
         ZAdj_STAR_VC.AlignWith( ARight );
         Contract( ZAdj_STAR_MC, ZAdj_STAR_VC );
 
         // Z := ARight HPan inv(SInv)
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), SInv_STAR_STAR, ZAdj_STAR_VC );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), SInv_STAR_STAR, ZAdj_STAR_VC );
 
         // ARight := ARight (I - HPan inv(SInv) HPan')
         ZAdj_STAR_MC = ZAdj_STAR_VC;
         LocalGemm
-        ( ADJOINT, ADJOINT, F(-1), ZAdj_STAR_MC, HPan_MR_STAR, F(1), ARight );
+        ( Orientation::ADJOINT, Orientation::ADJOINT, F(-1), ZAdj_STAR_MC, HPan_MR_STAR, F(1), ARight );
     }
 }
 

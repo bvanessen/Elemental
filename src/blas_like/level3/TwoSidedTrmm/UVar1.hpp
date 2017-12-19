@@ -50,10 +50,10 @@ void UVar1( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         // Y12 := U12 A22
         Y12.Resize( nb, A12.Width() );
         Zero( Y12 );
-        Hemm( RIGHT, UpperOrLower::UPPER, F(1), A22, U12, F(0), Y12 );
+        Hemm( LeftOrRight::RIGHT, UpperOrLower::UPPER, F(1), A22, U12, F(0), Y12 );
 
         // A12 := U11 A12
-        Trmm( LEFT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11, A12 );
+        Trmm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, diag, F(1), U11, A12 );
 
         // A12 := A12 + 1/2 Y12
         Axpy( F(1)/F(2), Y12, A12 );
@@ -62,13 +62,13 @@ void UVar1( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         twotrmm::UUnb( diag, A11, U11 );
 
         // A11 := A11 + (U12 A12' + A12 U12')
-        Her2k( UpperOrLower::UPPER, NORMAL, Base<F>(1), U12, A12, Base<F>(1), A11 );
+        Her2k( UpperOrLower::UPPER, Orientation::NORMAL, Base<F>(1), U12, A12, Base<F>(1), A11 );
 
         // A12 := A12 + 1/2 Y12
         Axpy( F(1)/F(2), Y12, A12 );
 
         // A12 := A12 U22'
-        Trmm( RIGHT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U22, A12 );
+        Trmm( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::ADJOINT, diag, F(1), U22, A12 );
     }
 }
 
@@ -136,7 +136,7 @@ void UVar1
         Zero( Z12Adj_MC_STAR );
         Zero( Z12Adj_MR_STAR );
         symm::LocalAccumulateRU
-        ( ADJOINT,
+        ( Orientation::ADJOINT,
           F(1), A22, U12_STAR_MC, U12Adj_MR_STAR,
           Z12Adj_MC_STAR, Z12Adj_MR_STAR );
         Z12Adj.AlignWith( A12 );
@@ -153,7 +153,7 @@ void UVar1
         A12_STAR_VR = A12;
         U11_STAR_STAR = U11;
         LocalTrmm
-        ( LEFT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11_STAR_STAR, A12_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, diag, F(1), U11_STAR_STAR, A12_STAR_VR );
         A12 = A12_STAR_VR;
 
         // A12 := A12 + 1/2 Y12
@@ -171,7 +171,7 @@ void UVar1
         X11_STAR_STAR.Resize( nb, nb );
         Zero( X11_STAR_STAR );
         Her2k
-        ( UpperOrLower::UPPER, NORMAL,
+        ( UpperOrLower::UPPER, Orientation::NORMAL,
           F(1), A12_STAR_VR.Matrix(), U12_STAR_VR.Matrix(),
           F(0), X11_STAR_STAR.Matrix() );
         AxpyContract( F(1), X11_STAR_STAR, A11 );
@@ -180,7 +180,7 @@ void UVar1
         Axpy( F(1)/F(2), Y12, A12 );
 
         // A12 := A12 U22'
-        Trmm( RIGHT, UpperOrLower::UPPER, ADJOINT, diag, F(1), U22, A12 );
+        Trmm( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::ADJOINT, diag, F(1), U22, A12 );
     }
 }
 

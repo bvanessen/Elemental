@@ -21,7 +21,7 @@ void LT_C
     const Int r = APre.Height();
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     DistMatrixReadWriteProxy<T,T,Dist::MC,Dist::MR> CProx( CPre );
@@ -46,7 +46,7 @@ void LT_C
         A1_STAR_MC = A1_STAR_VR;
 
         LocalTrrk
-        ( UpperOrLower::LOWER, orientation, TRANSPOSE,
+        ( UpperOrLower::LOWER, orientation, Orientation::TRANSPOSE,
           alpha, A1_STAR_MC, A1Trans_MR_STAR, T(1), C );
     }
 }
@@ -63,7 +63,7 @@ void LT_Dot
     const Int n = CPre.Height();
     const Grid& g = APre.Grid();
 
-    const Orientation orient = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orient = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrixReadProxy<T,T,Dist::VC,Dist::STAR> AProx( APre );
     auto& A = AProx.GetLocked();
@@ -82,7 +82,7 @@ void LT_Dot
         auto C11 = C( indOuter, indOuter );
 
         Z.Resize( nbOuter, nbOuter );
-        Syrk( UpperOrLower::LOWER, TRANSPOSE, alpha, A1.Matrix(), Z.Matrix(), conjugate );
+        Syrk( UpperOrLower::LOWER, Orientation::TRANSPOSE, alpha, A1.Matrix(), Z.Matrix(), conjugate );
         AxpyContract( T(1), Z, C11 );
 
         for( Int kInner=kOuter+nbOuter; kInner<n; kInner+=blockSize )
@@ -93,7 +93,7 @@ void LT_Dot
             auto A2 = A( ALL, indInner );
             auto C21 = C( indInner, indOuter );
 
-            LocalGemm( orient, NORMAL, alpha, A1, A2, Z );
+            LocalGemm( orient, Orientation::NORMAL, alpha, A1, A2, Z );
             AxpyContract( T(1), Z, C21 );
         }
     }

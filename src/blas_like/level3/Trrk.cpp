@@ -26,11 +26,11 @@ void TrrkInternal
 {
     EL_DEBUG_CSE
     ScaleTrapezoid( beta, uplo, C );
-    if( orientA==NORMAL && orientB==NORMAL )
+    if( orientA==Orientation::NORMAL && orientB==Orientation::NORMAL )
         trrk::TrrkNN( uplo, alpha, A, B, C );
-    else if( orientA==NORMAL )
+    else if( orientA==Orientation::NORMAL )
         trrk::TrrkNT( uplo, orientB, alpha, A, B, C );
-    else if( orientB==NORMAL )
+    else if( orientB==Orientation::NORMAL )
         trrk::TrrkTN( uplo, orientA, alpha, A, B, C );
     else
         trrk::TrrkTT( uplo, orientA, orientB, alpha, A, B, C );
@@ -49,7 +49,7 @@ void TrrkMKL
     const char orientAChar = OrientationToChar( orientA );
     const char orientBChar = OrientationToChar( orientB );
     const auto n = C.Height();
-    const auto k = orientA == NORMAL ? A.Width() : A.Height();
+    const auto k = orientA == Orientation::NORMAL ? A.Width() : A.Height();
     mkl::Trrk
     ( uploChar, orientAChar, orientBChar,
       n, k,
@@ -104,11 +104,11 @@ void Trrk
 {
     EL_DEBUG_CSE
     ScaleTrapezoid( beta, uplo, C );
-    if( orientA==NORMAL && orientB==NORMAL )
+    if( orientA==Orientation::NORMAL && orientB==Orientation::NORMAL )
         trrk::TrrkNN( uplo, alpha, A, B, C );
-    else if( orientA==NORMAL )
+    else if( orientA==Orientation::NORMAL )
         trrk::TrrkNT( uplo, orientB, alpha, A, B, C );
-    else if( orientB==NORMAL )
+    else if( orientB==Orientation::NORMAL )
         trrk::TrrkTN( uplo, orientA, alpha, A, B, C );
     else
         trrk::TrrkTT( uplo, orientA, orientB, alpha, A, B, C );

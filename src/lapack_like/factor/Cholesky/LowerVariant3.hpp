@@ -62,8 +62,8 @@ void LowerVariant3Blocked( Matrix<F>& A )
         auto A22 = A( ind2, ind2 );
 
         cholesky::LowerVariant3Unblocked( A11 );
-        Trsm( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), A11, A21 );
-        Herk( UpperOrLower::LOWER, NORMAL, Base<F>(-1), A21, Base<F>(1), A22 );
+        Trsm( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A11, A21 );
+        Herk( UpperOrLower::LOWER, Orientation::NORMAL, Base<F>(-1), A21, Base<F>(1), A22 );
     }
 }
 
@@ -106,7 +106,7 @@ void LowerVariant3Blocked( AbstractDistMatrix<F>& APre )
         A21_VC_STAR.AlignWith( A22 );
         A21_VC_STAR = A21;
         LocalTrsm
-        ( RIGHT, UpperOrLower::LOWER, ADJOINT, NON_UNIT, F(1), A11_STAR_STAR, A21_VC_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A11_STAR_STAR, A21_VC_STAR );
 
         A21_VR_STAR.AlignWith( A22 );
         A21_VR_STAR = A21_VC_STAR;
@@ -118,7 +118,7 @@ void LowerVariant3Blocked( AbstractDistMatrix<F>& APre )
         // (A21^T[* ,MC])^T A21^H[* ,MR] = A21[MC,* ] A21^H[* ,MR]
         //                               = (A21 A21^H)[MC,MR]
         LocalTrrk
-        ( UpperOrLower::LOWER, TRANSPOSE,
+        ( UpperOrLower::LOWER, Orientation::TRANSPOSE,
           F(-1), A21Trans_STAR_MC, A21Adj_STAR_MR, F(1), A22 );
 
         Transpose( A21Trans_STAR_MC, A21 );

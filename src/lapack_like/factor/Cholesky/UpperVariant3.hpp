@@ -67,8 +67,8 @@ void UpperVariant3Blocked( Matrix<F>& A )
         auto A22 = A( ind2, ind2 );
 
         cholesky::UpperVariant3Unblocked( A11 );
-        Trsm( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), A11, A12 );
-        Herk( UpperOrLower::UPPER, ADJOINT, Base<F>(-1), A12, Base<F>(1), A22 );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A11, A12 );
+        Herk( UpperOrLower::UPPER, Orientation::ADJOINT, Base<F>(-1), A12, Base<F>(1), A22 );
     }
 }
 
@@ -110,14 +110,14 @@ void UpperVariant3Blocked( AbstractDistMatrix<F>& APre )
         A12_STAR_VR.AlignWith( A22 );
         A12_STAR_VR = A12;
         LocalTrsm
-        ( LEFT, UpperOrLower::UPPER, ADJOINT, NON_UNIT, F(1), A11_STAR_STAR, A12_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, F(1), A11_STAR_STAR, A12_STAR_VR );
 
         A12_STAR_MC.AlignWith( A22 );
         A12_STAR_MC = A12_STAR_VR;
         A12_STAR_MR.AlignWith( A22 );
         A12_STAR_MR = A12_STAR_VR;
         LocalTrrk
-        ( UpperOrLower::UPPER, ADJOINT, F(-1), A12_STAR_MC, A12_STAR_MR, F(1), A22 );
+        ( UpperOrLower::UPPER, Orientation::ADJOINT, F(-1), A12_STAR_MC, A12_STAR_MR, F(1), A22 );
         A12 = A12_STAR_MR;
     }
 }

@@ -564,7 +564,7 @@ void MultiShiftSolve
             }
 
             // Update RHS with GEMM
-            Gemm( NORMAL, NORMAL, Field(-1), U01, X1, Field(1), X0 );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(-1), U01, X1, Field(1), X0 );
         }
     }
 }
@@ -673,7 +673,7 @@ void MultiShiftSolve
             }
         }
         auto scalesActive = scales(IR(k,END),ALL);
-        DiagonalScale( LEFT,  NORMAL, scalesUpdate_MR_STAR, scalesActive );
+        DiagonalScale( LeftOrRight::LEFT,  Orientation::NORMAL, scalesUpdate_MR_STAR, scalesActive );
 
         if( k > 0 )
         {
@@ -685,7 +685,7 @@ void MultiShiftSolve
             U01_MC_STAR.AlignWith( X0 );
             U01_MC_STAR = U01; // U01[MC,* ] <- U01[MC,MR]
             LocalGemm
-            ( NORMAL, NORMAL,
+            ( Orientation::NORMAL, Orientation::NORMAL,
               Field(-1), U01_MC_STAR, X1_STAR_MR, Field(1), X0 );
         }
     }

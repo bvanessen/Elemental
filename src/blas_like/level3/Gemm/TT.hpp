@@ -72,7 +72,7 @@ void SUMMA_TTB
     const Int m = CPre.Height();
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
-    const bool conjugateA = ( orientA == ADJOINT );
+    const bool conjugateA = ( orientA == Orientation::ADJOINT );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
@@ -101,7 +101,7 @@ void SUMMA_TTB
         //           = alpha (A1^[T/H])[*,MR] (B^[T/H])[MR,MC]
         A1_VR_STAR = A1;
         Transpose( A1_VR_STAR, A1Trans_STAR_MR, conjugateA );
-        LocalGemm( NORMAL, orientB, alpha, A1Trans_STAR_MR, B, D1_STAR_MC );
+        LocalGemm( Orientation::NORMAL, orientB, alpha, A1Trans_STAR_MR, B, D1_STAR_MC );
 
         // C1[MC,MR] += scattered & transposed D1[*,MC] summed over grid rows
         Contract( D1_STAR_MC, D1_MR_MC );
@@ -123,7 +123,7 @@ void SUMMA_TTC
     const Int sumDim = APre.Height();
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
-    const bool conjugateB = ( orientB == ADJOINT );
+    const bool conjugateB = ( orientB == Orientation::ADJOINT );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
@@ -154,7 +154,7 @@ void SUMMA_TTC
         // C[MC,MR] += alpha (A1[*,MC])^[T/H] (B1[MR,*])^[T/H]
         //           = alpha (A1^[T/H])[MC,*] (B1^[T/H])[*,MR]
         LocalGemm
-        ( orientA, NORMAL, alpha, A1_STAR_MC, B1Trans_STAR_MR, T(1), C );
+        ( orientA, Orientation::NORMAL, alpha, A1_STAR_MC, B1Trans_STAR_MR, T(1), C );
     }
 }
 
@@ -225,7 +225,7 @@ void SUMMA_TT
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( A, B, C );
-      if( orientA == NORMAL || orientB == NORMAL )
+      if( orientA == Orientation::NORMAL || orientB == Orientation::NORMAL )
           LogicError("A and B must be (Conjugate)Transposed");
       if( A.Width() != C.Height() ||
           B.Height() != C.Width() ||

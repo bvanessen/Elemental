@@ -230,7 +230,7 @@ void Scatter( AbstractDistMatrix<F>& A, const TreeData<F>& treeData )
 
                 // TODO: Exploit sparsity?
                 ApplyQ
-                ( LEFT, NORMAL,
+                ( LeftOrRight::LEFT, Orientation::NORMAL,
                   treeData.QRList[stage],
                   treeData.householderScalarsList[stage],
                   treeData.signatureList[stage],
@@ -255,7 +255,7 @@ void Scatter( AbstractDistMatrix<F>& A, const TreeData<F>& treeData )
 
     // TODO: Exploit sparsity
     ApplyQ
-    ( LEFT, NORMAL,
+    ( LeftOrRight::LEFT, Orientation::NORMAL,
       treeData.QR0, treeData.householderScalars0, treeData.signature0,
       A.Matrix() );
 }
@@ -297,7 +297,7 @@ FormQ( AbstractDistMatrix<F>& A, TreeData<F>& treeData )
         ExpandPackedReflectors
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0,
           A.Matrix(), RootHouseholderScalars(A,treeData) );
-        DiagonalScale( RIGHT, NORMAL, RootSignature(A,treeData), A.Matrix() );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, RootSignature(A,treeData), A.Matrix() );
     }
     else
     {
@@ -307,7 +307,7 @@ FormQ( AbstractDistMatrix<F>& A, TreeData<F>& treeData )
             ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0,
               RootQR(A,treeData), RootHouseholderScalars(A,treeData) );
             DiagonalScale
-            ( RIGHT, NORMAL, RootSignature(A,treeData), RootQR(A,treeData) );
+            ( LeftOrRight::RIGHT, Orientation::NORMAL, RootSignature(A,treeData), RootQR(A,treeData) );
         }
         Scatter( A, treeData );
     }

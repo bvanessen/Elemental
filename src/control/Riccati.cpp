@@ -42,7 +42,7 @@ void Riccati
     Matrix<F> ML, MR;
     PartitionRight( W, ML, Dist::MR, n );
     MR *= -1;
-    ls::Overwrite( NORMAL, ML, Dist::MR, X );
+    ls::Overwrite( Orientation::NORMAL, ML, Dist::MR, X );
 }
 
 template<typename F>
@@ -72,7 +72,7 @@ void Riccati
     DistMatrix<F> ML(g), MR(g);
     PartitionRight( W, ML, Dist::MR, n );
     MR *= -1;
-    ls::Overwrite( NORMAL, ML, Dist::MR, X );
+    ls::Overwrite( Orientation::NORMAL, ML, Dist::MR, X );
 }
 
 template<typename F>

@@ -94,7 +94,7 @@ SVDInfo ChanUpper
                 info = svd::GolubReinsch( R, UTL, s, V, ctrl );
                 if( ctrl.time )
                     timer.Start();
-                qr::ApplyQ( LEFT, NORMAL, A, householderScalars, signature, U );
+                qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalars, signature, U );
                 if( ctrl.time )
                     Output("Chan backtransformation: ",timer.Stop()," seconds");
             }
@@ -108,7 +108,7 @@ SVDInfo ChanUpper
                 // (U,s,V) holds an SVD of the R from the QR fact. of original A
                 if( ctrl.time )
                     timer.Start();
-                qr::ApplyQ( LEFT, NORMAL, A, householderScalars, signature, U );
+                qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalars, signature, U );
                 if( ctrl.time )
                     Output("Chan backtransformation: ",timer.Stop()," seconds");
             }
@@ -212,7 +212,7 @@ SVDInfo ChanUpper
                 info = svd::GolubReinsch( R, UTL, s, V, ctrl );
                 if( ctrl.time && g.Rank() == 0 )
                     timer.Start();
-                qr::ApplyQ( LEFT, NORMAL, A, householderScalars, signature, U );
+                qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalars, signature, U );
                 if( ctrl.time && g.Rank() == 0 )
                     Output("Chan backtransformation: ",timer.Stop()," seconds");
             }
@@ -226,7 +226,7 @@ SVDInfo ChanUpper
                 // (U,s,V) holds an SVD of the R from the QR fact. of original A
                 if( ctrl.time && g.Rank() == 0 )
                     timer.Start();
-                qr::ApplyQ( LEFT, NORMAL, A, householderScalars, signature, U );
+                qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalars, signature, U );
                 if( ctrl.time && g.Rank() == 0 )
                     Output("Chan backtransformation: ",timer.Stop()," seconds");
             }

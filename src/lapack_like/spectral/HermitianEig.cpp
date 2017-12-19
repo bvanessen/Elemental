@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 #include "./HermitianEig/SDC.hpp"
 
@@ -558,7 +557,7 @@ BlackBox
     info.tridiagEigInfo =
       HermitianTridiagEig( d, dSub, w, Q, ctrl.tridiagEigCtrl );
 
-    herm_tridiag::ApplyQ( LEFT, uplo, NORMAL, A, householderScalars, Q );
+    herm_tridiag::ApplyQ( LeftOrRight::LEFT, uplo, Orientation::NORMAL, A, householderScalars, Q );
 
     return info;
 }
@@ -593,7 +592,7 @@ BlackBox
 
         info.tridiagEigInfo =
           HermitianTridiagEig( d, dSub, w, Q, ctrl.tridiagEigCtrl );
-        herm_tridiag::ApplyQ( LEFT, uplo, NORMAL, A, householderScalars, Q );
+        herm_tridiag::ApplyQ( LeftOrRight::LEFT, uplo, Orientation::NORMAL, A, householderScalars, Q );
     }
     else
     {
@@ -602,7 +601,7 @@ BlackBox
 
         info.tridiagEigInfo =
           HermitianTridiagEig( d, dSub, w, Q, ctrl.tridiagEigCtrl );
-        herm_tridiag::ApplyQ( LEFT, uplo, NORMAL, A, householderScalars, Q );
+        herm_tridiag::ApplyQ( LeftOrRight::LEFT, uplo, Orientation::NORMAL, A, householderScalars, Q );
     }
 
     return info;
@@ -986,7 +985,7 @@ MRRR
             timer.Start();
         }
     }
-    herm_tridiag::ApplyQ( LEFT, uplo, NORMAL, A, householderScalars, Q );
+    herm_tridiag::ApplyQ( LeftOrRight::LEFT, uplo, Orientation::NORMAL, A, householderScalars, Q );
     if( ctrl.timeStages )
     {
         mpi::Barrier( A.DistComm() );

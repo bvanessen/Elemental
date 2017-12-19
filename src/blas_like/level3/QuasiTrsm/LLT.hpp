@@ -110,13 +110,13 @@ void LLT
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
     )
     const Int m = X.Height();
     const Int bsize = Blocksize();
 
-    const bool conjugate = ( orientation==ADJOINT );
+    const bool conjugate = ( orientation==Orientation::ADJOINT );
 
     const Int kLast = LastOffset( m, bsize );
     Int k=kLast, kOld=m;
@@ -137,7 +137,7 @@ void LLT
         auto X1 = X( ind1, ALL );
 
         LLTUnb( conjugate, L11, X1, checkIfSingular );
-        Gemm( orientation, NORMAL, F(-1), L10, X1, F(1), X0 );
+        Gemm( orientation, Orientation::NORMAL, F(-1), L10, X1, F(1), X0 );
 
         if( k == 0 )
             break;
@@ -156,7 +156,7 @@ void LLTLarge
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
     )
     const Int m = XPre.Height();
@@ -195,7 +195,7 @@ void LLTLarge
         L11_STAR_STAR = L11;
         X1_STAR_VR    = X1;
         LocalQuasiTrsm
-        ( LEFT, UpperOrLower::LOWER, orientation, F(1), L11_STAR_STAR, X1_STAR_VR,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, F(1), L11_STAR_STAR, X1_STAR_VR,
           checkIfSingular );
 
         X1_STAR_MR.AlignWith( X0 );
@@ -207,7 +207,7 @@ void LLTLarge
         // X0[MC,MR] -= (L10[* ,MC])^(T/H) X1[* ,MR]
         //            = L10^[T/H][MC,* ] X1[* ,MR]
         LocalGemm
-        ( orientation, NORMAL, F(-1), L10_STAR_MC, X1_STAR_MR, F(1), X0 );
+        ( orientation, Orientation::NORMAL, F(-1), L10_STAR_MC, X1_STAR_MR, F(1), X0 );
 
         if( k == 0 )
             break;
@@ -226,7 +226,7 @@ void LLTMedium
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
     )
     const Int m = XPre.Height();
@@ -263,15 +263,15 @@ void LLTMedium
         L11_STAR_STAR = L11; // L11[* ,* ] <- L11[MC,MR]
         // X1[* ,MR] <- X1[MC,MR]
         X1Trans_MR_STAR.AlignWith( X0 );
-        Transpose( X1, X1Trans_MR_STAR, (orientation==ADJOINT) );
+        Transpose( X1, X1Trans_MR_STAR, (orientation==Orientation::ADJOINT) );
 
         // X1[* ,MR] := L11^-[T/H][* ,* ] X1[* ,MR]
         // X1^[T/H][MR,* ] := X1^[T/H][MR,* ] L11^-1[* ,* ]
         LocalQuasiTrsm
-        ( RIGHT, UpperOrLower::LOWER, NORMAL,
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL,
           F(1), L11_STAR_STAR, X1Trans_MR_STAR, checkIfSingular );
 
-        Transpose( X1Trans_MR_STAR, X1, (orientation==ADJOINT) );
+        Transpose( X1Trans_MR_STAR, X1, (orientation==Orientation::ADJOINT) );
         L10_STAR_MC.AlignWith( X0 );
         L10_STAR_MC = L10; // L10[* ,MC] <- L10[MC,MR]
 
@@ -299,7 +299,7 @@ void LLTSmall
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( L, X );
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
       if( L.Height() != L.Width() || L.Height() != X.Height() )
           LogicError
@@ -333,14 +333,14 @@ void LLTSmall
         auto X2 = X( ind2, ALL );
 
         // X1 -= L21' X2
-        LocalGemm( orientation, NORMAL, F(-1), L21, X2, Z1_STAR_STAR );
+        LocalGemm( orientation, Orientation::NORMAL, F(-1), L21, X2, Z1_STAR_STAR );
         axpy::util::UpdateWithLocalData( F(1), X1, Z1_STAR_STAR );
         El::AllReduce( Z1_STAR_STAR, X1.DistComm() );
 
         // X1 := L11^-1 X1
         L11_STAR_STAR = L11;
         LocalQuasiTrsm
-        ( LEFT, UpperOrLower::LOWER, orientation, F(1), L11_STAR_STAR, Z1_STAR_STAR,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation, F(1), L11_STAR_STAR, Z1_STAR_STAR,
           checkIfSingular );
         X1 = Z1_STAR_STAR;
 
@@ -361,7 +361,7 @@ void LLTSmall
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( L, X );
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
           LogicError("Expected (Conjugate)Transpose option");
       if( L.Height() != L.Width() || L.Height() != X.Height() )
           LogicError
@@ -398,13 +398,13 @@ void LLTSmall
 
         // X1[* ,* ] := L11^-[T/H][* ,* ] X1[* ,* ]
         LocalQuasiTrsm
-        ( LEFT, UpperOrLower::LOWER, orientation,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, orientation,
           F(1), L11_STAR_STAR, X1_STAR_STAR, checkIfSingular );
 
         X1 = X1_STAR_STAR;
 
         // X0[VR,* ] -= L10[* ,VR]^(T/H) X1[* ,* ]
-        LocalGemm( orientation, NORMAL, F(-1), L10, X1_STAR_STAR, F(1), X0 );
+        LocalGemm( orientation, Orientation::NORMAL, F(-1), L10, X1_STAR_STAR, F(1), X0 );
 
         if( k == 0 )
             break;

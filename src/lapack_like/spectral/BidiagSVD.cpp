@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 #include "./BidiagSVD/QR.hpp"
 #include "./BidiagSVD/DivideAndConquer.hpp"
@@ -137,7 +136,7 @@ void PrepareBidiagonal
             if( ctrl.wantV && ctrl.accumulateV )
             {
                 ApplyGivensSequence
-                ( RIGHT, VARIABLE_GIVENS_SEQUENCE, FORWARD,
+                ( LeftOrRight::RIGHT, VARIABLE_GIVENS_SEQUENCE, ForwardOrBackward::FORWARD,
                   cDeflateList, sDeflateList, V );
             }
 
@@ -192,7 +191,7 @@ void PrepareBidiagonal
         if( ctrl.wantU && ctrl.accumulateU )
         {
             ApplyGivensSequence
-            ( RIGHT, VARIABLE_GIVENS_SEQUENCE, FORWARD,
+            ( LeftOrRight::RIGHT, VARIABLE_GIVENS_SEQUENCE, ForwardOrBackward::FORWARD,
               cFlipList, sFlipList, U );
         }
     }
@@ -812,7 +811,7 @@ Helper
             // Undo the flip from lower to upper bidiagonal.
             sFlipList *= Real(-1);
             ApplyGivensSequence
-            ( LEFT, VARIABLE_GIVENS_SEQUENCE, BACKWARD,
+            ( LeftOrRight::LEFT, VARIABLE_GIVENS_SEQUENCE, ForwardOrBackward::BACKWARD,
               cFlipList, sFlipList, U );
         }
         if( uplo == UpperOrLower::LOWER && !square )
@@ -827,7 +826,7 @@ Helper
         {
             sDeflateList *= Real(-1);
             ApplyGivensSequence
-            ( LEFT, VARIABLE_GIVENS_SEQUENCE, BACKWARD,
+            ( LeftOrRight::LEFT, VARIABLE_GIVENS_SEQUENCE, ForwardOrBackward::BACKWARD,
               cDeflateList, sDeflateList, V );
         }
     }
@@ -841,14 +840,14 @@ Helper
         {
             // U := UCopy U
             Matrix<Real> temp;
-            Gemm( NORMAL, NORMAL, Real(1), UCopy, U, temp );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), UCopy, U, temp );
             U = temp;
         }
         if( ctrlMod.wantV && ctrlMod.accumulateV )
         {
             // V := VCopy V
             Matrix<Real> temp;
-            Gemm( NORMAL, NORMAL, Real(1), VCopy, V, temp );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), VCopy, V, temp );
             V = temp;
         }
     }
@@ -1168,7 +1167,7 @@ Helper
             sFlipList *= Real(-1);
             DistMatrix<Real,Dist::STAR,Dist::VR> U_STAR_VR( U );
             ApplyGivensSequence
-            ( LEFT, VARIABLE_GIVENS_SEQUENCE, BACKWARD,
+            ( LeftOrRight::LEFT, VARIABLE_GIVENS_SEQUENCE, ForwardOrBackward::BACKWARD,
               cFlipList, sFlipList, U_STAR_VR.Matrix() );
             U = U_STAR_VR;
         }
@@ -1185,7 +1184,7 @@ Helper
             sDeflateList *= Real(-1);
             DistMatrix<Real,Dist::STAR,Dist::VR> V_STAR_VR( V );
             ApplyGivensSequence
-            ( LEFT, VARIABLE_GIVENS_SEQUENCE, BACKWARD,
+            ( LeftOrRight::LEFT, VARIABLE_GIVENS_SEQUENCE, ForwardOrBackward::BACKWARD,
               cDeflateList, sDeflateList, V_STAR_VR.Matrix() );
             V = V_STAR_VR;
         }
@@ -1200,14 +1199,14 @@ Helper
         {
             // U := UCopy U
             DistMatrix<Real> temp(g);
-            Gemm( NORMAL, NORMAL, Real(1), UCopy, U, temp );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), UCopy, U, temp );
             U = temp;
         }
         if( ctrlMod.wantV && ctrlMod.accumulateV )
         {
             // V := VCopy V
             DistMatrix<Real> temp(g);
-            Gemm( NORMAL, NORMAL, Real(1), VCopy, V, temp );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), VCopy, V, temp );
             V = temp;
         }
     }
@@ -1286,7 +1285,7 @@ Helper
             Matrix<Field> UCpx;
             Copy( UReal, UCpx );
             auto UCopy( U );
-            Gemm( NORMAL, NORMAL, Field(1), UCopy, UCpx, U );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), UCopy, UCpx, U );
         }
         else
         {
@@ -1303,7 +1302,7 @@ Helper
             Matrix<Field> VCpx;
             Copy( VReal, VCpx );
             auto VCopy( V );
-            Gemm( NORMAL, NORMAL, Field(1), VCopy, VCpx, V );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), VCopy, VCpx, V );
         }
         else
         {
@@ -1345,7 +1344,7 @@ Helper
             DistMatrix<Field> UCpx(g);
             Copy( UReal, UCpx );
             auto UCopy( U );
-            Gemm( NORMAL, NORMAL, Field(1), UCopy, UCpx, U );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), UCopy, UCpx, U );
         }
         else
         {
@@ -1362,7 +1361,7 @@ Helper
             DistMatrix<Field> VCpx(g);
             Copy( VReal, VCpx );
             auto VCopy( V );
-            Gemm( NORMAL, NORMAL, Field(1), VCopy, VCpx, V );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), VCopy, VCpx, V );
         }
         else
         {
@@ -1482,9 +1481,9 @@ Helper
 
     // Apply the phases as necessary
     if( ctrl.wantU )
-        DiagonalScale( LEFT, NORMAL, UPhase, U );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, UPhase, U );
     if( ctrl.wantV )
-        DiagonalScale( LEFT, NORMAL, VPhase, V );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, VPhase, V );
 
     return info;
 }
@@ -1574,9 +1573,9 @@ Helper
 
     // Apply the phases as necessary
     if( ctrl.wantU )
-        DiagonalScale( LEFT, NORMAL, UPhase, U );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, UPhase, U );
     if( ctrl.wantV )
-        DiagonalScale( LEFT, NORMAL, VPhase, V );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, VPhase, V );
 
     return info;
 }

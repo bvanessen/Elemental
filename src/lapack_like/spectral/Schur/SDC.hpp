@@ -156,15 +156,15 @@ ValueInt<Base<F>> SignDivide
     {
         ExpandPackedReflectors
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
-        DiagonalScale( RIGHT, NORMAL, signature, G );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, G );
         Matrix<F> B;
-        Gemm( ADJOINT, NORMAL, F(1), G, A, B );
-        Gemm( NORMAL, NORMAL, F(1), B, G, A );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), B, G, A );
     }
     else
     {
-        qr::ApplyQ( LEFT, ADJOINT, G, householderScalars, signature, A );
-        qr::ApplyQ( RIGHT, NORMAL, G, householderScalars, signature, A );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, G, householderScalars, signature, A );
+        qr::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, G, householderScalars, signature, A );
     }
 
     // Return || E21 ||1 / || A ||1 and the chosen rank
@@ -201,15 +201,15 @@ ValueInt<Base<F>> SignDivide
     {
         ExpandPackedReflectors
         ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
-        DiagonalScale( RIGHT, NORMAL, signature, G );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, G );
         DistMatrix<F> B(g);
-        Gemm( ADJOINT, NORMAL, F(1), G, A, B );
-        Gemm( NORMAL, NORMAL, F(1), B, G, A );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), B, G, A );
     }
     else
     {
-        qr::ApplyQ( LEFT, ADJOINT, G, householderScalars, signature, A );
-        qr::ApplyQ( RIGHT, NORMAL, G, householderScalars, signature, A );
+        qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, G, householderScalars, signature, A );
+        qr::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, G, householderScalars, signature, A );
     }
 
     // Return || E21 ||1 / || A ||1 and the chosen rank
@@ -250,7 +250,7 @@ ValueInt<Base<F>> RandomizedSignDivide
 
         // Compute the RURV of the spectral projector
         ImplicitHaar( V, householderScalars, signature, n );
-        qr::ApplyQ( RIGHT, NORMAL, V, householderScalars, signature, G );
+        qr::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, V, householderScalars, signature, G );
         El::QR( G, householderScalars, signature );
 
         // A := Q^H A Q [and reuse space for V for keeping original A]
@@ -259,14 +259,14 @@ ValueInt<Base<F>> RandomizedSignDivide
         {
             ExpandPackedReflectors
             ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
-            DiagonalScale( RIGHT, NORMAL, signature, G );
-            Gemm( ADJOINT, NORMAL, F(1), G, A, B );
-            Gemm( NORMAL, NORMAL, F(1), B, G, A );
+            DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, G );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), B, G, A );
         }
         else
         {
-            qr::ApplyQ( LEFT, ADJOINT, G, householderScalars, signature, A );
-            qr::ApplyQ( RIGHT, NORMAL, G, householderScalars, signature, A );
+            qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, G, householderScalars, signature, A );
+            qr::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, G, householderScalars, signature, A );
         }
 
         // || E21 ||1 / || A ||1 and the chosen rank
@@ -316,7 +316,7 @@ ValueInt<Base<F>> RandomizedSignDivide
 
         // Compute the RURV of the spectral projector
         ImplicitHaar( V, householderScalars, signature, n );
-        qr::ApplyQ( RIGHT, NORMAL, V, householderScalars, signature, G );
+        qr::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, V, householderScalars, signature, G );
         El::QR( G, householderScalars, signature );
 
         // A := Q^H A Q [and reuse space for V for keeping original A]
@@ -325,14 +325,14 @@ ValueInt<Base<F>> RandomizedSignDivide
         {
             ExpandPackedReflectors
             ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
-            DiagonalScale( RIGHT, NORMAL, signature, G );
-            Gemm( ADJOINT, NORMAL, F(1), G, A, B );
-            Gemm( NORMAL, NORMAL, F(1), B, G, A );
+            DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, G );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), B, G, A );
         }
         else
         {
-            qr::ApplyQ( LEFT, ADJOINT, G, householderScalars, signature, A );
-            qr::ApplyQ( RIGHT, NORMAL, G, householderScalars, signature, A );
+            qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, G, householderScalars, signature, A );
+            qr::ApplyQ( LeftOrRight::RIGHT, Orientation::NORMAL, G, householderScalars, signature, A );
         }
 
         // || E21 ||1 / || A ||1 and the chosen rank
@@ -1008,9 +1008,9 @@ SDC
     if( ctrl.progress )
         Output("Left subproblem update");
     auto G( QL );
-    Gemm( NORMAL, NORMAL, F(1), G, Z, QL );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), G, Z, QL );
     if( fullTriangle )
-        Gemm( ADJOINT, NORMAL, F(1), Z, ATR, G );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), Z, ATR, G );
 
     // Recurse on the bottom-right quadrant and update Schur vectors and ATR
     if( ctrl.progress )
@@ -1019,9 +1019,9 @@ SDC
     if( ctrl.progress )
         Output("Right subproblem update");
     if( fullTriangle )
-        Gemm( NORMAL, NORMAL, F(1), G, Z, ATR );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), G, Z, ATR );
     G = QR;
-    Gemm( NORMAL, NORMAL, F(1), G, Z, QR );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), G, Z, QR );
 }
 
 // This routine no longer attempts to evenly assign work/process between two
@@ -1475,17 +1475,17 @@ SDC
     if( ctrl.progress && g.Rank() == 0 )
         Output("Updating Schur vectors");
     auto G( QL );
-    Gemm( NORMAL, NORMAL, F(1), G, ZT, QL );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), G, ZT, QL );
     G = QR;
-    Gemm( NORMAL, NORMAL, F(1), G, ZB, QR );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), G, ZB, QR );
 
     if( fullTriangle )
     {
         if( ctrl.progress && g.Rank() == 0 )
             Output("Updating top-right quadrant");
         // Update the top-right quadrant
-        Gemm( ADJOINT, NORMAL, F(1), ZT, ATR, G );
-        Gemm( NORMAL, NORMAL, F(1), G, ZB, ATR );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), ZT, ATR, G );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), G, ZB, ATR );
     }
 }
 

@@ -75,7 +75,7 @@ void LUnblocked( Matrix<F>& L, const Matrix<F>& dSub, bool conjugate=false )
     )
     const Int n = L.Height();
     const Int ldim = L.LDim();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     Matrix<F> s10, S10, D11(2,2), D11Inv(2,2);
 
@@ -144,7 +144,7 @@ void LUnblocked( Matrix<F>& L, const Matrix<F>& dSub, bool conjugate=false )
 
             // L00 := L00 + L10' S10
             // TODO: Custom rank-2 update
-            Trrk( UpperOrLower::LOWER, orientation, NORMAL, F(1), L10, S10, F(1), L00 );
+            Trrk( UpperOrLower::LOWER, orientation, Orientation::NORMAL, F(1), L10, S10, F(1), L00 );
 
             // L11 := inv(D11)
             L11.Set( 0, 0, D11Inv.Get(0,0) );

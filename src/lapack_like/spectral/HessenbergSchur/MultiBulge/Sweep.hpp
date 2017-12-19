@@ -140,19 +140,19 @@ void SweepHelper
             const auto rightInd = IR(rightIndBeg,rightIndEnd);
             const auto horzInd = IR( Max(chaseBeg+1,winBeg), slabEnd );
             auto HHorzFar = H( horzInd, rightInd );
-            Gemm( ADJOINT, NORMAL, Field(1), U, HHorzFar, WAccum );
+            Gemm( Orientation::ADJOINT, Orientation::NORMAL, Field(1), U, HHorzFar, WAccum );
             HHorzFar = WAccum;
 
             // Vertical far-from-diagonal application
             auto vertInd = IR(transformBeg,Max(winBeg,chaseBeg));
             auto HVertFar = H( vertInd, horzInd );
-            Gemm( NORMAL, NORMAL, Field(1), HVertFar, U, WAccum );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), HVertFar, U, WAccum );
             HVertFar = WAccum;
 
             if( ctrl.wantSchurVecs )
             {
                 auto ZSub = Z( ALL, horzInd );
-                Gemm( NORMAL, NORMAL, Field(1), ZSub, U, WAccum );
+                Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), ZSub, U, WAccum );
                 ZSub = WAccum;
             }
         }

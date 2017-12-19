@@ -17,7 +17,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 namespace ldl {
@@ -35,10 +34,10 @@ void DiagonalSolve
 
     if( PivotedFactorization(front.type) )
         QuasiDiagonalSolve
-        ( LEFT, UpperOrLower::LOWER, front.diag, front.subdiag,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, front.diag, front.subdiag,
           X.matrix, front.isHermitian );
     else
-        DiagonalSolve( LEFT, NORMAL, front.diag, X.matrix, true );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, front.diag, X.matrix, true );
 }
 
 template<typename F>
@@ -56,9 +55,9 @@ void DiagonalSolve
 
     if( PivotedFactorization(front.type) )
         QuasiDiagonalSolve
-        ( LEFT, UpperOrLower::LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
     else
-        DiagonalSolve( LEFT, NORMAL, front.diag, X.matrix, true );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, front.diag, X.matrix, true );
 }
 
 template<typename F>
@@ -76,9 +75,9 @@ void DiagonalSolve
 
     if( PivotedFactorization(front.type) )
         QuasiDiagonalSolve
-        ( LEFT, UpperOrLower::LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, front.diag, front.subdiag, X.matrix, front.isHermitian );
     else
-        DiagonalSolve( LEFT, NORMAL, front.diag, X.matrix, true );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, front.diag, X.matrix, true );
 }
 
 #define PROTO(F) \

@@ -36,8 +36,8 @@ void NormalFromEVD
         auto w1 = w( IR(k,k+nb), ALL        );
 
         Y1 = Z1Copy = Z1;
-        DiagonalScale( RIGHT, ADJOINT, w1, Y1 );
-        Gemm( NORMAL, NORMAL, C(1), Z1Copy, Y1, C(1), A );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::ADJOINT, w1, Y1 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Z1Copy, Y1, C(1), A );
     }
 }
 
@@ -78,11 +78,11 @@ void NormalFromEVD
         Z1_VR_STAR.AlignWith( A );
         Z1_VR_STAR = Z1_MC_STAR;
 
-        DiagonalScale( RIGHT, ADJOINT, w1, Z1_VR_STAR );
+        DiagonalScale( LeftOrRight::RIGHT, Orientation::ADJOINT, w1, Z1_VR_STAR );
 
         Z1Adj_STAR_MR.AlignWith( A );
         Adjoint( Z1_VR_STAR, Z1Adj_STAR_MR );
-        LocalGemm( NORMAL, NORMAL, C(1), Z1_MC_STAR, Z1Adj_STAR_MR, C(1), A );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Z1_MC_STAR, Z1Adj_STAR_MR, C(1), A );
     }
 }
 

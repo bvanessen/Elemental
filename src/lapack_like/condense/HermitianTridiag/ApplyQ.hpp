@@ -22,13 +22,13 @@ void ApplyQ
         Matrix<F>& B )
 {
     EL_DEBUG_CSE
-    const bool normal = (orientation==NORMAL);
-    const bool onLeft = (side==LEFT);
+    const bool normal = (orientation==Orientation::NORMAL);
+    const bool onLeft = (side==LeftOrRight::LEFT);
     const ForwardOrBackward direction =
-        ( (normal==onLeft) ^ (uplo==UpperOrLower::UPPER) ? BACKWARD : FORWARD );
+        ( (normal==onLeft) ^ (uplo==UpperOrLower::UPPER) ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
     const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
     const Int offset = ( uplo==UpperOrLower::UPPER ? 1 : -1 );
-    // TODO: Check for error in RIGHT UpperOrLower::UPPER ADJOINT
+    // TODO: Check for error in LeftOrRight::RIGHT UpperOrLower::UPPER Orientation::ADJOINT
     ApplyPackedReflectors
     ( side, uplo, VERTICAL, direction, conjugation, offset,
       A, householderScalars, B );
@@ -44,10 +44,10 @@ void ApplyQ
         AbstractDistMatrix<F>& B )
 {
     EL_DEBUG_CSE
-    const bool normal = (orientation==NORMAL);
-    const bool onLeft = (side==LEFT);
+    const bool normal = (orientation==Orientation::NORMAL);
+    const bool onLeft = (side==LeftOrRight::LEFT);
     const ForwardOrBackward direction =
-        ( (normal==onLeft) ^ (uplo==UpperOrLower::UPPER) ? BACKWARD : FORWARD );
+        ( (normal==onLeft) ^ (uplo==UpperOrLower::UPPER) ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
     const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
     const Int offset = ( uplo==UpperOrLower::UPPER ? 1 : -1 );
     ApplyPackedReflectors

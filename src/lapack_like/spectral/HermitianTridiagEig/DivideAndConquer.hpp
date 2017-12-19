@@ -510,23 +510,23 @@ Merge
         {
             auto Z2 = QPacked( ALL, packingInd2 );
             auto U2 = U( packingInd2, ALL );
-            Gemm( NORMAL, NORMAL, Real(1), Z2, U2, QUndeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), Z2, U2, QUndeflated );
 
             // Finish updating the first block row
             auto Q0Undeflated = QUndeflated( IR(0,n0), ALL );
             auto Z00 = QPacked( IR(0,n0), packingInd0 );
             auto U0 = U( packingInd0, ALL );
-            Gemm( NORMAL, NORMAL, Real(1), Z00, U0, Real(1), Q0Undeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), Z00, U0, Real(1), Q0Undeflated );
 
             // Finish updating the second block row
             auto Q1Undeflated = QUndeflated( IR(n0,n), ALL );
             auto Z11 = QPacked( IR(n0,n), packingInd1 );
             auto U1 = U( packingInd1, ALL );
-            Gemm( NORMAL, NORMAL, Real(1), Z11, U1, Real(1), Q1Undeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), Z11, U1, Real(1), Q1Undeflated );
         }
         else
         {
-            Gemm( NORMAL, NORMAL, Real(1), QPacked, U, QUndeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), QPacked, U, QUndeflated );
         }
     }
     else
@@ -535,23 +535,23 @@ Merge
         {
             auto Z2 = QPacked( ALL, packingInd2 );
             auto U2 = U( packingInd2, ALL );
-            Gemm( NORMAL, NORMAL, Real(1), Z2, U2, QUndeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), Z2, U2, QUndeflated );
 
             // Finish updating the first block row
             auto Q0Undeflated = QUndeflated( IR(0), ALL );
             auto Z00 = QPacked( IR(0), packingInd0 );
             auto U0 = U( packingInd0, ALL );
-            Gemm( NORMAL, NORMAL, Real(1), Z00, U0, Real(1), Q0Undeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), Z00, U0, Real(1), Q0Undeflated );
 
             // Finish updating the second block row
             auto Q1Undeflated = QUndeflated( IR(1), ALL );
             auto Z11 = QPacked( IR(1), packingInd1 );
             auto U1 = U( packingInd1, ALL );
-            Gemm( NORMAL, NORMAL, Real(1), Z11, U1, Real(1), Q1Undeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), Z11, U1, Real(1), Q1Undeflated );
         }
         else
         {
-            Gemm( NORMAL, NORMAL, Real(1), QPacked, U, QUndeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), QPacked, U, QUndeflated );
         }
     }
 
@@ -1063,23 +1063,23 @@ Merge
         {
             auto Z2 = QPacked( ALL, packingInd2 );
             auto U2 = U( packingInd2, ALL );
-            Gemm( NORMAL, NORMAL, Real(1), Z2, U2, QUndeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), Z2, U2, QUndeflated );
 
             // Finish updating the first block row
             auto Q0Undeflated = QUndeflated( IR(0,n0), ALL );
             auto Z00 = QPacked( IR(0,n0), packingInd0 );
             auto U0 = U( packingInd0, ALL );
-            Gemm( NORMAL, NORMAL, Real(1), Z00, U0, Real(1), Q0Undeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), Z00, U0, Real(1), Q0Undeflated );
 
             // Finish updating the second block row
             auto Q1Undeflated = QUndeflated( IR(n0,n), ALL );
             auto Z11 = QPacked( IR(n0,n), packingInd1 );
             auto U1 = U( packingInd1, ALL );
-            Gemm( NORMAL, NORMAL, Real(1), Z11, U1, Real(1), Q1Undeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), Z11, U1, Real(1), Q1Undeflated );
         }
         else
         {
-            Gemm( NORMAL, NORMAL, Real(1), QPacked, U, QUndeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), QPacked, U, QUndeflated );
         }
     }
     else
@@ -1088,23 +1088,23 @@ Merge
         {
             auto Z2 = QPacked( ALL, packingInd2 );
             auto U2 = U( packingInd2, ALL );
-            Gemm( NORMAL, NORMAL, Real(1), Z2, U2, QUndeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), Z2, U2, QUndeflated );
 
             // Finish updating the first block row
             auto Q0Undeflated = QUndeflated( IR(0), ALL );
             auto Z00 = QPacked( IR(0), packingInd0 );
             auto U0 = U( packingInd0, ALL );
-            Gemm( NORMAL, NORMAL, Real(1), Z00, U0, Real(1), Q0Undeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), Z00, U0, Real(1), Q0Undeflated );
 
             // Finish updating the second block row
             auto Q1Undeflated = QUndeflated( IR(1), ALL );
             auto Z11 = QPacked( IR(1), packingInd1 );
             auto U1 = U( packingInd1, ALL );
-            Gemm( NORMAL, NORMAL, Real(1), Z11, U1, Real(1), Q1Undeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), Z11, U1, Real(1), Q1Undeflated );
         }
         else
         {
-            Gemm( NORMAL, NORMAL, Real(1), QPacked, U, QUndeflated );
+            Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1), QPacked, U, QUndeflated );
         }
     }
 

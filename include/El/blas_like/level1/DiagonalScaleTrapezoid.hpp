@@ -32,7 +32,7 @@ void DiagonalScaleTrapezoid
     const Int diagLength = A.DiagonalLength(offset);
     const Int ldim = A.LDim();
     T* ABuf = A.Buffer();
-    const bool conjugate = ( orientation==ADJOINT );
+    const bool conjugate = ( orientation==Orientation::ADJOINT );
 
     const Int iOff = ( offset>=0 ? 0      : -offset );
     const Int jOff = ( offset>=0 ? offset : 0       );
@@ -99,7 +99,7 @@ void DiagonalScaleTrapezoid
     const Int n = A.Width();
     const Int mLoc = A.LocalHeight();
     const Int nLoc = A.LocalWidth();
-    const bool conjugate = ( orientation==ADJOINT );
+    const bool conjugate = ( orientation==Orientation::ADJOINT );
 
     const Int diagLength = A.DiagonalLength(offset);
     const Int ldim = A.LDim();
@@ -226,7 +226,7 @@ void DiagonalScaleTrapezoid
     const Int n = A.Width();
     const Int mLoc = A.LocalHeight();
     const Int nLoc = A.LocalWidth();
-    const bool conjugate = ( orientation==ADJOINT );
+    const bool conjugate = ( orientation==Orientation::ADJOINT );
 
     const Int diagLength = A.DiagonalLength(offset);
     const Int ldim = A.LDim();

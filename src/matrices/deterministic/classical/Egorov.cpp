@@ -13,7 +13,7 @@ namespace El {
 
 template<typename Real>
 void Egorov
-( Matrix<Complex<Real>>& A, function<Real(Int,Int)> phase, Int n )
+( Matrix<Complex<Real>>& A, std::function<Real(Int,Int)> phase, Int n )
 {
     EL_DEBUG_CSE
     A.Resize( n, n );
@@ -21,13 +21,13 @@ void Egorov
       [&]( Int i, Int j ) -> Complex<Real>
       { const Real theta = phase(i,j);
         return Complex<Real>(Cos(theta),Sin(theta)); };
-    IndexDependentFill( A, function<Complex<Real>(Int,Int)>(egorovFill) );
+    IndexDependentFill( A, std::function<Complex<Real>(Int,Int)>(egorovFill) );
 }
 
 template<typename Real>
 void Egorov
 ( AbstractDistMatrix<Complex<Real>>& A,
-  function<Real(Int,Int)> phase, Int n )
+  std::function<Real(Int,Int)> phase, Int n )
 {
     EL_DEBUG_CSE
     A.Resize( n, n );
@@ -35,15 +35,15 @@ void Egorov
       [&]( Int i, Int j ) -> Complex<Real>
       { const Real theta = phase(i,j);
         return Complex<Real>(Cos(theta),Sin(theta)); };
-    IndexDependentFill( A, function<Complex<Real>(Int,Int)>(egorovFill) );
+    IndexDependentFill( A, std::function<Complex<Real>(Int,Int)>(egorovFill) );
 }
 
 #define PROTO(Real) \
   template void Egorov \
-  ( Matrix<Complex<Real>>& A, function<Real(Int,Int)> phase, Int n ); \
+  ( Matrix<Complex<Real>>& A, std::function<Real(Int,Int)> phase, Int n ); \
   template void Egorov \
   ( AbstractDistMatrix<Complex<Real>>& A, \
-    function<Real(Int,Int)> phase, Int n );
+    std::function<Real(Int,Int)> phase, Int n );
 
 #define EL_NO_INT_PROTO
 #define EL_NO_COMPLEX_PROTO

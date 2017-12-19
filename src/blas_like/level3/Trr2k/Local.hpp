@@ -27,10 +27,10 @@ void LocalTrr2kKernel
 {
     EL_DEBUG_CSE
 
-    const bool transA = orientA != NORMAL;
-    const bool transB = orientB != NORMAL;
-    const bool transC = orientC != NORMAL;
-    const bool transD = orientD != NORMAL;
+    const bool transA = orientA != Orientation::NORMAL;
+    const bool transB = orientB != Orientation::NORMAL;
+    const bool transC = orientC != Orientation::NORMAL;
+    const bool transD = orientD != Orientation::NORMAL;
     // TODO: Stringent distribution and alignment checks
 
     typedef AbstractDistMatrix<T> ADM;
@@ -160,10 +160,10 @@ void LocalTrr2k
     using namespace trr2k;
     EL_DEBUG_CSE
 
-    const bool transA = orientA != NORMAL;
-    const bool transB = orientB != NORMAL;
-    const bool transC = orientC != NORMAL;
-    const bool transD = orientD != NORMAL;
+    const bool transA = orientA != Orientation::NORMAL;
+    const bool transB = orientB != Orientation::NORMAL;
+    const bool transC = orientC != Orientation::NORMAL;
+    const bool transD = orientD != Orientation::NORMAL;
     // TODO: Stringent distribution and alignment checks
 
     ScaleTrapezoid( gamma, uplo, E );

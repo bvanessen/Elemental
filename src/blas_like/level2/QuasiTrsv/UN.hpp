@@ -132,7 +132,7 @@ void UN( const Matrix<F>& U, Matrix<F>& x, bool checkIfSingular=false )
         }
 
         quasitrsv::UNUnb( U11, x1, checkIfSingular );
-        Gemv( NORMAL, F(-1), U01, x1, F(1), x0 );
+        Gemv( Orientation::NORMAL, F(-1), U01, x1, F(1), x0 );
 
         if( k == 0 )
             break;
@@ -215,7 +215,7 @@ void UN
 
             x1_MR_STAR.AlignWith( U01 );
             x1_MR_STAR = x1_STAR_STAR;
-            LocalGemv( NORMAL, F(-1), U01, x1_MR_STAR, F(1), z0_MC_STAR );
+            LocalGemv( Orientation::NORMAL, F(-1), U01, x1_MR_STAR, F(1), z0_MC_STAR );
 
             if( k == 0 )
                 break;
@@ -268,7 +268,7 @@ void UN
 
             x1_STAR_MR.AlignWith( U01 );
             x1_STAR_MR = x1_STAR_STAR;
-            LocalGemv( NORMAL, F(-1), U01, x1_STAR_MR, F(1), z0_STAR_MC );
+            LocalGemv( Orientation::NORMAL, F(-1), U01, x1_STAR_MR, F(1), z0_STAR_MC );
 
             if( k == 0 )
                 break;

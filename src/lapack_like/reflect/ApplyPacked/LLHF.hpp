@@ -69,7 +69,7 @@ void LLHFUnblocked
         hPanCopy(0,kj) = 1;
 
         // z := ATop' hPan^T
-        Gemv( ADJOINT, F(1), ATop, hPanCopy, z );
+        Gemv( Orientation::ADJOINT, F(1), ATop, hPanCopy, z );
         // ATop := (I - gamma hPan^T conj(hPan)) ATop = ATop - gamma hPan^T z'
         Ger( -gamma, hPanCopy, z, ATop );
     }
@@ -116,15 +116,15 @@ void LLHFBlocked
         FillDiagonal( HPanConj, F(1), HPanConj.Width()-HPanConj.Height() );
 
         // Form the small triangular matrix needed for the UT transform
-        Herk( UpperOrLower::LOWER, NORMAL, Base<F>(1), HPanConj, SInv );
+        Herk( UpperOrLower::LOWER, Orientation::NORMAL, Base<F>(1), HPanConj, SInv );
         FixDiagonal( conjugation, householderScalars1, SInv );
 
         // Z := conj(HPan) ATop
-        Gemm( NORMAL, NORMAL, F(1), HPanConj, ATop, Z );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), HPanConj, ATop, Z );
         // Z := inv(SInv) conj(HPan) ATop
-        Trsm( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), SInv, Z );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), SInv, Z );
         // ATop := (I - HPan^T inv(SInv) conj(HPan)) ATop
-        Gemm( ADJOINT, NORMAL, F(-1), HPanConj, Z, F(1), ATop );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(-1), HPanConj, Z, F(1), ATop );
     }
 }
 
@@ -205,7 +205,7 @@ void LLHFUnblocked
         // z := ATop' hPan^T
         z_MR_STAR.AlignWith( ATop );
         Zeros( z_MR_STAR, ATop.Width(), 1 );
-        LocalGemv( ADJOINT, F(1), ATop, hPan_STAR_MC, F(0), z_MR_STAR );
+        LocalGemv( Orientation::ADJOINT, F(1), ATop, hPan_STAR_MC, F(0), z_MR_STAR );
         El::AllReduce( z_MR_STAR.Matrix(), ATop.ColComm() );
 
         // ATop := (I - gamma hPan^T conj(hPan)) ATop = ATop - gamma hPan^T z'
@@ -272,7 +272,7 @@ void LLHFBlocked
         HPan_STAR_VR = HPanConj;
         Zeros( SInv_STAR_STAR, nb, nb );
         Herk
-        ( UpperOrLower::LOWER, NORMAL,
+        ( UpperOrLower::LOWER, Orientation::NORMAL,
           Base<F>(1), HPan_STAR_VR.LockedMatrix(),
           Base<F>(0), SInv_STAR_STAR.Matrix() );
         El::AllReduce( SInv_STAR_STAR, HPan_STAR_VR.RowComm() );
@@ -284,18 +284,18 @@ void LLHFBlocked
         HPan_STAR_MC.AlignWith( ATop );
         HPan_STAR_MC = HPan_STAR_VR;
         Z_STAR_MR.AlignWith( ATop );
-        LocalGemm( NORMAL, NORMAL, F(1), HPan_STAR_MC, ATop, Z_STAR_MR );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(1), HPan_STAR_MC, ATop, Z_STAR_MR );
         Z_STAR_VR.AlignWith( ATop );
         Contract( Z_STAR_MR, Z_STAR_VR );
 
         // Z := inv(SInv) conj(HPan) ATop
         LocalTrsm
-        ( LEFT, UpperOrLower::LOWER, NORMAL, NON_UNIT, F(1), SInv_STAR_STAR, Z_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), SInv_STAR_STAR, Z_STAR_VR );
 
         // ATop := (I - HPan^T inv(SInv) conj(HPan)) ATop
         Z_STAR_MR = Z_STAR_VR;
         LocalGemm
-        ( ADJOINT, NORMAL, F(-1), HPan_STAR_MC, Z_STAR_MR, F(1), ATop );
+        ( Orientation::ADJOINT, Orientation::NORMAL, F(-1), HPan_STAR_MC, Z_STAR_MR, F(1), ATop );
     }
 }
 

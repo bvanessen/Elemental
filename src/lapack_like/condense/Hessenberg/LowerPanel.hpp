@@ -81,14 +81,14 @@ void LowerPanel
         //     = conj(a1 - (V0 (inv(G00) u10^H))^H)
         //     = conj(a1) - (V0 (inv(G00) u10^H))^T
         Conjugate( u10, y10 );
-        Trsv( UpperOrLower::UPPER, NORMAL, NON_UNIT, G00, y10 );
+        Trsv( UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, G00, y10 );
         Conjugate( a1 );
-        Gemv( NORMAL, F(-1), V0, y10, F(1), a1 );
+        Gemv( Orientation::NORMAL, F(-1), V0, y10, F(1), a1 );
         // a1 := conj(a1) - conj(a1) U0 inv(G00) U0^H
         //     = conj(a1 - (U0 (inv(G00)^H (U0^H a1^T)))^T)
-        Gemv( ADJOINT, F(1), U0, a1, F(0), y10 );
-        Trsv( UpperOrLower::UPPER, ADJOINT, NON_UNIT, G00, y10 );
-        Gemv( NORMAL, F(-1), U0, y10, F(1), a1 );
+        Gemv( Orientation::ADJOINT, F(1), U0, a1, F(0), y10 );
+        Trsv( UpperOrLower::UPPER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT, G00, y10 );
+        Gemv( Orientation::NORMAL, F(-1), U0, y10, F(1), a1 );
         Conjugate( a1 );
 
         // Find tau and v such that
@@ -103,10 +103,10 @@ void LowerPanel
         u21(0) = F(1);
 
         // v1 := A2^H u21
-        Gemv( ADJOINT, F(1), A2, u21, F(0), v1 );
+        Gemv( Orientation::ADJOINT, F(1), A2, u21, F(0), v1 );
 
         // g01 := U20^H u21
-        Gemv( ADJOINT, F(1), U20, u21, F(0), g01 );
+        Gemv( Orientation::ADJOINT, F(1), U20, u21, F(0), g01 );
 
         // gamma11 := 1/tau
         gamma11(0) = F(1)/tau;
@@ -195,18 +195,18 @@ void LowerPanel
         Conjugate( a1, a1Conj_MR );
         Conjugate( u10_MR, y10_STAR );
         Trsv
-        ( UpperOrLower::UPPER, NORMAL, NON_UNIT,
+        ( UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT,
           G00_STAR_STAR.LockedMatrix(), y10_STAR.Matrix() );
-        LocalGemv( NORMAL, F(-1), V0_MR_STAR, y10_STAR, F(1), a1Conj_MR );
+        LocalGemv( Orientation::NORMAL, F(-1), V0_MR_STAR, y10_STAR, F(1), a1Conj_MR );
         // a1 := conj(a1) - conj(a1) U0 inv(G00) U0^H
         //     = conj(a1 - (U0 (inv(G00)^H (U0^H a1^T)))^T)
         LocalGemv
-        ( ADJOINT, F(1), U0_MR_STAR, a1Conj_MR, F(0), y10_STAR );
+        ( Orientation::ADJOINT, F(1), U0_MR_STAR, a1Conj_MR, F(0), y10_STAR );
         El::AllReduce( y10_STAR, U0_MR_STAR.ColComm() );
         Trsv
-        ( UpperOrLower::UPPER, ADJOINT, NON_UNIT,
+        ( UpperOrLower::UPPER, Orientation::ADJOINT, UnitOrNonUnit::NON_UNIT,
           G00_STAR_STAR.LockedMatrix(), y10_STAR.Matrix() );
-        LocalGemv( NORMAL, F(-1), U0_MR_STAR, y10_STAR, F(1), a1Conj_MR );
+        LocalGemv( Orientation::NORMAL, F(-1), U0_MR_STAR, y10_STAR, F(1), a1Conj_MR );
         Conjugate( a1Conj_MR, a1 );
 
         // Find tau and v such that
@@ -223,12 +223,12 @@ void LowerPanel
         u21_MR.Set(0,0,F(1));
 
         // v1 := A2^H u21
-        LocalGemv( ADJOINT, F(1), A2, u21_MC, F(0), v1_MR );
+        LocalGemv( Orientation::ADJOINT, F(1), A2, u21_MC, F(0), v1_MR );
         El::AllReduce( v1_MR, A2.ColComm() );
 
         // g01 := U20^H u21
         LocalGemv
-        ( ADJOINT, F(1), U20_MC_STAR, u21_MC, F(0), g01_STAR );
+        ( Orientation::ADJOINT, F(1), U20_MC_STAR, u21_MC, F(0), g01_STAR );
         El::AllReduce( g01_STAR, U20_MC_STAR.ColComm() );
 
         // gamma11 := 1/tau

@@ -22,11 +22,11 @@ void ApplyQ
         Matrix<F>& B )
 {
     EL_DEBUG_CSE
-    const bool normal = (orientation==NORMAL);
-    const bool onLeft = (side==LEFT);
+    const bool normal = (orientation==Orientation::NORMAL);
+    const bool onLeft = (side==LeftOrRight::LEFT);
     const bool applyDFirst = normal!=onLeft;
 
-    const ForwardOrBackward direction = ( normal==onLeft ? BACKWARD : FORWARD );
+    const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
     const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
     const Int offset = A.Width()-A.Height();
     const Int minDim = Min(A.Height(),A.Width());
@@ -77,11 +77,11 @@ void ApplyQ
         AbstractDistMatrix<F>& BPre )
 {
     EL_DEBUG_CSE
-    const bool normal = (orientation==NORMAL);
-    const bool onLeft = (side==LEFT);
+    const bool normal = (orientation==Orientation::NORMAL);
+    const bool onLeft = (side==LeftOrRight::LEFT);
     const bool applyDFirst = normal!=onLeft;
 
-    const ForwardOrBackward direction = ( normal==onLeft ? BACKWARD : FORWARD );
+    const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
     const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
     const Int offset = APre.Width()-APre.Height();
     const Int minDim = Min(APre.Height(),APre.Width());

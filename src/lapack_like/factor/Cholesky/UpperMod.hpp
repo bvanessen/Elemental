@@ -60,7 +60,7 @@ void UpperUpdate( Matrix<F>& U, Matrix<F>& V )
         //
         upsilon11 = -upsilon11;
         Conjugate( u12, z12 );
-        Gemv( NORMAL, F(1), V2, v1, F(1), z12 );
+        Gemv( Orientation::NORMAL, F(1), V2, v1, F(1), z12 );
         V2 *= -1;
         Ger( Conj(tau), z12, v1, V2 );
         Conjugate( z12 );
@@ -130,7 +130,7 @@ void UpperUpdate
         Conjugate( u12, z12_STAR_MC );
         v1_STAR_MR = v1;
         Zeros( b12_STAR_MC, 1, V2.Height() );
-        LocalGemv( NORMAL, F(1), V2, v1_STAR_MR, F(0), b12_STAR_MC );
+        LocalGemv( Orientation::NORMAL, F(1), V2, v1_STAR_MR, F(0), b12_STAR_MC );
         El::AllReduce( b12_STAR_MC, V2.RowComm() );
         z12_STAR_MC += b12_STAR_MC;
         V2 *= -1;
@@ -185,7 +185,7 @@ void UpperDowndate( Matrix<F>& U, Matrix<F>& V )
         //
         upsilon11 = -upsilon11;
         Conjugate( u12, z12 );
-        Gemv( NORMAL, F(-1), V2, v1, F(1), z12 );
+        Gemv( Orientation::NORMAL, F(-1), V2, v1, F(1), z12 );
         u12 *= -1;
         V2 *= -1;
         Ger( F(1)/tau, z12, v1, V2 );
@@ -254,7 +254,7 @@ void UpperDowndate
         Conjugate( u12, z12_STAR_MC );
         v1_STAR_MR = v1;
         Zeros( b12_STAR_MC, 1, V2.Height() );
-        LocalGemv( NORMAL, F(-1), V2, v1_STAR_MR, F(0), b12_STAR_MC );
+        LocalGemv( Orientation::NORMAL, F(-1), V2, v1_STAR_MR, F(0), b12_STAR_MC );
         El::AllReduce( b12_STAR_MC, V2.RowComm() );
         z12_STAR_MC += b12_STAR_MC;
         u12 *= -1;

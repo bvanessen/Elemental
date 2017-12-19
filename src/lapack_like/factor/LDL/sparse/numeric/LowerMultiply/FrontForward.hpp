@@ -17,8 +17,8 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#ifndef EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTFORWARD_HPP
-#define EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTFORWARD_HPP
+#ifndef EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTForwardOrBackward::FORWARD_HPP
+#define EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTForwardOrBackward::FORWARD_HPP
 
 namespace El {
 namespace ldl {
@@ -37,8 +37,8 @@ void FrontVanillaLowerForwardMultiply( const Matrix<F>& L, Matrix<F>& X )
     LockedPartitionDown( L, LT, LB, L.Width() );
     PartitionDown( X, XT, XB, L.Width() );
 
-    Gemm( NORMAL, NORMAL, F(1), LB, XT, F(1), XB );
-    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), LT, XT );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), LB, XT, F(1), XB );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), LT, XT );
 }
 
 template<typename F>
@@ -88,10 +88,10 @@ void FrontVanillaLowerForwardMultiply
     PartitionDown( X, XT, XB, snSize );
 
     // XB := XB + LB XT
-    Gemm( NORMAL, NORMAL, F(1), LB, XT, F(1), XB );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), LB, XT, F(1), XB );
 
     // XT := LT XT
-    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), LT, XT );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), LT, XT );
 }
 
 template<typename F>
@@ -121,10 +121,10 @@ void FrontVanillaLowerForwardMultiply
     PartitionDown( X, XT, XB, snSize );
 
     // XB := XB + LB XT
-    Gemm( NORMAL, NORMAL, F(1), LB, XT, F(1), XB );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), LB, XT, F(1), XB );
 
     // XT := LT XT
-    Trmm( LEFT, UpperOrLower::LOWER, NORMAL, UNIT, F(1), LT, XT );
+    Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), LT, XT );
 }
 
 template<typename F>
@@ -152,4 +152,4 @@ FrontLowerForwardMultiply( const DistFront<F>& front, DistMatrix<F>& W )
 } // namespace ldl
 } // namespace El
 
-#endif // ifndef EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTFORWARD_HPP
+#endif // ifndef EL_FACTOR_LDL_NUMERIC_LOWERMULTIPLY_FRONTForwardOrBackward::FORWARD_HPP

@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_TWOSIDEDTRMM_UNBLOCKED_HPP
@@ -30,7 +30,7 @@ void LUnb( UnitOrNonUnit diag, Matrix<T>& A, const Matrix<T>& L )
 
         // Extract and store the diagonal values of A and L
         const T alpha11 = ABuffer[j+j*lda];
-        const T lambda11 = ( diag==UNIT ? 1 : LBuffer[j+j*ldl] );
+        const T lambda11 = ( diag==UnitOrNonUnit::UNIT ? 1 : LBuffer[j+j*ldl] );
 
         // a10 := a10 + (alpha11/2)l10
         T* a10 = &ABuffer[j];
@@ -52,7 +52,7 @@ void LUnb( UnitOrNonUnit diag, Matrix<T>& A, const Matrix<T>& L )
             a10[k*lda] += (alpha11/T(2))*l10[k*ldl];
 
         // a10 := conj(lambda11) a10
-        if( diag != UNIT )
+        if( diag != UnitOrNonUnit::UNIT )
             for( Int k=0; k<j; ++k )
                 a10[k*lda] *= Conj(lambda11);
 
@@ -65,7 +65,7 @@ void LUnb( UnitOrNonUnit diag, Matrix<T>& A, const Matrix<T>& L )
         blas::Geru( a21Height, j, T(1), a21, 1, l10, ldl, A20, lda );
 
         // a21 := lambda11 a21
-        if( diag != UNIT )
+        if( diag != UnitOrNonUnit::UNIT )
             for( Int k=0; k<a21Height; ++k )
                 a21[k] *= lambda11;
     }
@@ -87,7 +87,7 @@ void UUnb( UnitOrNonUnit diag, Matrix<T>& A, const Matrix<T>& U )
 
         // Extract and store the diagonal values of A and U
         const T alpha11 = ABuffer[j+j*lda];
-        const T upsilon11 = ( diag==UNIT ? 1 : UBuffer[j+j*ldu] );
+        const T upsilon11 = ( diag==UnitOrNonUnit::UNIT ? 1 : UBuffer[j+j*ldu] );
 
         // a01 := a01 + (alpha11/2)u01
         T* a01 = &ABuffer[j*lda];
@@ -104,7 +104,7 @@ void UUnb( UnitOrNonUnit diag, Matrix<T>& A, const Matrix<T>& U )
             a01[k] += (alpha11/T(2))*u01[k];
 
         // a01 := conj(upsilon11) a01
-        if( diag != UNIT )
+        if( diag != UnitOrNonUnit::UNIT )
             for( Int k=0; k<j; ++k )
                 a01[k] *= Conj(upsilon11);
 
@@ -117,7 +117,7 @@ void UUnb( UnitOrNonUnit diag, Matrix<T>& A, const Matrix<T>& U )
         ABuffer[j+j*lda] *= Conj(upsilon11)*upsilon11;
 
         // a12 := upsilon11 a12
-        if( diag != UNIT )
+        if( diag != UnitOrNonUnit::UNIT )
             for( Int k=0; k<a21Height; ++k )
                 a12[k*lda] *= upsilon11;
     }

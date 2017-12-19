@@ -55,7 +55,7 @@ void LUNLarge
 
         // X1[* ,VR] := U11^-1[* ,* ] X1[* ,VR]
         LocalTrsm
-        ( LEFT, UpperOrLower::UPPER, NORMAL, diag, F(1), U11_STAR_STAR, X1_STAR_VR,
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, diag, F(1), U11_STAR_STAR, X1_STAR_VR,
           checkIfSingular );
 
         X1_STAR_MR.AlignWith( X0 );
@@ -65,7 +65,7 @@ void LUNLarge
         U01_MC_STAR = U01;        // U01[MC,* ] <- U01[MC,MR]
 
         // X0[MC,MR] -= U01[MC,* ] X1[* ,MR]
-        LocalGemm( NORMAL, NORMAL, F(-1), U01_MC_STAR, X1_STAR_MR, F(1), X0 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), U01_MC_STAR, X1_STAR_MR, F(1), X0 );
     }
 }
 
@@ -111,7 +111,7 @@ void LUNMedium
         // X1^T[MR,* ] := X1^T[MR,* ] U11^-T[* ,* ]
         //              = (U11^-1[* ,* ] X1[* ,MR])^T
         LocalTrsm
-        ( RIGHT, UpperOrLower::UPPER, TRANSPOSE, diag,
+        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::TRANSPOSE, diag,
           F(1), U11_STAR_STAR, X1Trans_MR_STAR, checkIfSingular );
         Transpose( X1Trans_MR_STAR, X1 );
 
@@ -120,7 +120,7 @@ void LUNMedium
 
         // X0[MC,MR] -= U01[MC,* ] X1[* ,MR]
         LocalGemm
-        ( NORMAL, TRANSPOSE, F(-1), U01_MC_STAR, X1Trans_MR_STAR, F(1), X0 );
+        ( Orientation::NORMAL, Orientation::TRANSPOSE, F(-1), U01_MC_STAR, X1Trans_MR_STAR, F(1), X0 );
     }
 }
 
@@ -165,12 +165,12 @@ void LUNSmall
 
         // X1[* ,* ] := U11^-1[* ,* ] X1[* ,* ]
         LocalTrsm
-        ( LEFT, UpperOrLower::UPPER, NORMAL, diag,
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, diag,
           F(1), U11_STAR_STAR, X1_STAR_STAR, checkIfSingular );
         X1 = X1_STAR_STAR;
 
         // X0[VC,* ] -= U01[VC,* ] X1[* ,* ]
-        LocalGemm( NORMAL, NORMAL, F(-1), U01, X1_STAR_STAR, F(1), X0 );
+        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), U01, X1_STAR_STAR, F(1), X0 );
     }
 }
 

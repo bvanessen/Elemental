@@ -9,50 +9,58 @@
 #ifndef EL_MATRICES_DETERMINISTIC_CLASSICAL_CIRCULANT_HPP
 #define EL_MATRICES_DETERMINISTIC_CLASSICAL_CIRCULANT_HPP
 
-namespace El {
+#include <functional>
+#include <vector>
+
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/indexing/decl.hpp"
+#include "El/core/Matrix/decl.hpp"
+
+namespace El
+{
 
 template<typename T>
-void Circulant( Matrix<T>& A, const Matrix<T>& a )
+void Circulant(Matrix<T>& A, const Matrix<T>& a)
 {
     EL_DEBUG_CSE
     const Int n = a.Height();
-    A.Resize( n, n );
+    A.Resize(n, n);
     // NOTE: gcc (Ubuntu 5.2.1-22ubuntu2) 5.2.1 20151010 segfaults here
     //       if the return type of the lambda is not manually specified.
-    auto circFill = [&]( Int i, Int j ) -> T { return a.Get(Mod(i-j,n),0); };
-    IndexDependentFill( A, function<T(Int,Int)>(circFill) );
+    auto circFill = [&](Int i, Int j) -> T { return a.Get(Mod(i-j,n),0); };
+    IndexDependentFill(A, std::function<T(Int,Int)>(circFill));
 }
 
 template<typename T>
-void Circulant( Matrix<T>& A, const vector<T>& a )
+void Circulant(Matrix<T>& A, const std::vector<T>& a)
 {
     EL_DEBUG_CSE
     const Int n = a.size();
-    A.Resize( n, n );
+    A.Resize(n, n);
     // NOTE: gcc (Ubuntu 5.2.1-22ubuntu2) 5.2.1 20151010 segfaults here
     //       if the return type of the lambda is not manually specified.
-    auto circFill = [&]( Int i, Int j ) -> T { return a[Mod(i-j,n)]; };
-    IndexDependentFill( A, function<T(Int,Int)>(circFill) );
+    auto circFill = [&](Int i, Int j) -> T { return a[Mod(i-j,n)]; };
+    IndexDependentFill(A, std::function<T(Int,Int)>(circFill));
 }
 
 template<typename T>
-void Circulant( AbstractDistMatrix<T>& A, const Matrix<T>& a )
+void Circulant(AbstractDistMatrix<T>& A, const Matrix<T>& a)
 {
     EL_DEBUG_CSE
     const Int n = a.Height();
-    A.Resize( n, n );
-    auto circFill = [&]( Int i, Int j ) -> T { return a.Get(Mod(i-j,n),0); };
-    IndexDependentFill( A, function<T(Int,Int)>(circFill) );
+    A.Resize(n, n);
+    auto circFill = [&](Int i, Int j) -> T { return a.Get(Mod(i-j,n),0); };
+    IndexDependentFill(A, std::function<T(Int,Int)>(circFill));
 }
 
 template<typename T>
-void Circulant( AbstractDistMatrix<T>& A, const vector<T>& a )
+void Circulant(AbstractDistMatrix<T>& A, const std::vector<T>& a)
 {
     EL_DEBUG_CSE
     const Int n = a.size();
-    A.Resize( n, n );
-    auto circFill = [&]( Int i, Int j ) -> T { return a[Mod(i-j,n)]; };
-    IndexDependentFill( A, function<T(Int,Int)>(circFill) );
+    A.Resize(n, n);
+    auto circFill = [&](Int i, Int j) -> T { return a[Mod(i-j,n)]; };
+    IndexDependentFill(A, std::function<T(Int,Int)>(circFill));
 }
 
 } // namespace El

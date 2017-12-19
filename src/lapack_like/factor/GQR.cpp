@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 namespace El {
 
@@ -21,7 +20,7 @@ void GQR
 {
     EL_DEBUG_CSE
     QR( A, householderScalarsA, signatureA );
-    qr::ApplyQ( LEFT, ADJOINT, A, householderScalarsA, signatureA, B );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, A, householderScalarsA, signatureA, B );
     RQ( B, householderScalarsB, signatureB );
 }
 
@@ -41,7 +40,7 @@ void GQR
     auto& B = BProx.Get();
 
     QR( A, householderScalarsA, signatureA );
-    qr::ApplyQ( LEFT, ADJOINT, A, householderScalarsA, signatureA, B );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, A, householderScalarsA, signatureA, B );
     RQ( B, householderScalarsB, signatureB );
 }
 
@@ -54,7 +53,7 @@ void ExplicitTriang( Matrix<F>& A, Matrix<F>& B )
     Matrix<F> householderScalarsA;
     Matrix<Base<F>> signatureA;
     QR( A, householderScalarsA, signatureA );
-    qr::ApplyQ( LEFT, ADJOINT, A, householderScalarsA, signatureA, B );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, A, householderScalarsA, signatureA, B );
     MakeTrapezoidal( UpperOrLower::UPPER, A );
     rq::ExplicitTriang( B );
 }
@@ -72,7 +71,7 @@ void ExplicitTriang( AbstractDistMatrix<F>& APre, AbstractDistMatrix<F>& BPre )
     DistMatrix<F,Dist::MD,Dist::STAR> householderScalarsA(g);
     DistMatrix<Base<F>,Dist::MD,Dist::STAR> signatureA(g);
     QR( A, householderScalarsA, signatureA );
-    qr::ApplyQ( LEFT, ADJOINT, A, householderScalarsA, signatureA, B );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::ADJOINT, A, householderScalarsA, signatureA, B );
     MakeTrapezoidal( UpperOrLower::UPPER, A );
     rq::ExplicitTriang( B );
 }

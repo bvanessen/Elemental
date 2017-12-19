@@ -37,7 +37,7 @@ void ProcessFrontVanilla( Matrix<F>& AL, Matrix<F>& ABR, bool conjugate )
           LogicError("AL and ABR don't have conformal dimensions");
     )
     const Int n = AL.Width();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     Matrix<F> d1;
     Matrix<F> S21;
@@ -57,18 +57,18 @@ void ProcessFrontVanilla( Matrix<F>& AL, Matrix<F>& ABR, bool conjugate )
         LDL( AL11, conjugate );
         GetDiagonal( AL11, d1 );
 
-        Trsm( RIGHT, UpperOrLower::LOWER, orientation, UNIT, F(1), AL11, AL21 );
+        Trsm( LeftOrRight::RIGHT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), AL11, AL21 );
 
         S21 = AL21;
-        DiagonalSolve( RIGHT, NORMAL, d1, AL21 );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, d1, AL21 );
 
         const Int ind2Size = AL22.Width();
         auto S21B = S21( IR(ind2Size,END), ALL );
         auto AL21T = AL21( IR(0,ind2Size), ALL );
         auto AL21B = AL21( IR(ind2Size,END), ALL );
-        Gemm( NORMAL, orientation, F(-1), S21, AL21T, F(1), AL22 );
+        Gemm( Orientation::NORMAL, orientation, F(-1), S21, AL21T, F(1), AL22 );
         MakeTrapezoidal( UpperOrLower::LOWER, AL22 );
-        Trrk( UpperOrLower::LOWER, NORMAL, orientation, F(-1), S21B, AL21B, F(1), ABR );
+        Trrk( UpperOrLower::LOWER, Orientation::NORMAL, orientation, F(-1), S21B, AL21B, F(1), ABR );
     }
 }
 
@@ -82,7 +82,7 @@ void ProcessFrontIntraPiv
 {
     EL_DEBUG_CSE
     const Int n = AL.Width();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     auto ATL = AL( IR(0,n  ), ALL );
     auto ABL = AL( IR(n,END), ALL );
@@ -91,11 +91,11 @@ void ProcessFrontIntraPiv
     auto diag = GetDiagonal(ATL);
 
     P.PermuteCols( ABL );
-    Trsm( RIGHT, UpperOrLower::LOWER, orientation, UNIT, F(1), ATL, ABL );
+    Trsm( LeftOrRight::RIGHT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), ATL, ABL );
     Matrix<F> SBL( ABL );
 
-    QuasiDiagonalSolve( RIGHT, UpperOrLower::LOWER, diag, subdiag, ABL, conjugate );
-    Trrk( UpperOrLower::LOWER, NORMAL, orientation, F(-1), SBL, ABL, F(1), ABR );
+    QuasiDiagonalSolve( LeftOrRight::RIGHT, UpperOrLower::LOWER, diag, subdiag, ABL, conjugate );
+    Trrk( UpperOrLower::LOWER, Orientation::NORMAL, orientation, F(-1), SBL, ABL, F(1), ABR );
 }
 
 template<typename F>
@@ -124,14 +124,14 @@ void ProcessFrontBlock
         // Solve against ABL and update ABR
         // NOTE: This does not exploit symmetry
         SolveAfter( ATL, dSub, P, ABL, conjugate );
-        const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
-        Gemm( NORMAL, orientation, F(-1), ABL, BBL, F(1), ABR );
+        const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
+        Gemm( Orientation::NORMAL, orientation, F(-1), ABL, BBL, F(1), ABR );
 
         // Copy the original contents of ABL back
         ABL = BBL;
 
         // Finish inverting ATL
-        TriangularInverse( UpperOrLower::LOWER, UNIT, ATL );
+        TriangularInverse( UpperOrLower::LOWER, UnitOrNonUnit::UNIT, ATL );
         Trdtrmm( UpperOrLower::LOWER, ATL, dSub, conjugate );
         // TODO: SymmetricPermutation
         MakeSymmetric( UpperOrLower::LOWER, ATL, conjugate );
@@ -147,7 +147,7 @@ void ProcessFrontBlock
         ABL = BBL;
 
         // Finish inverting ATL
-        TriangularInverse( UpperOrLower::LOWER, UNIT, ATL );
+        TriangularInverse( UpperOrLower::LOWER, UnitOrNonUnit::UNIT, ATL );
         Trdtrmm( UpperOrLower::LOWER, ATL, conjugate );
         MakeSymmetric( UpperOrLower::LOWER, ATL, conjugate );
     }
@@ -214,7 +214,7 @@ void ProcessFrontVanilla
     )
     const Grid& g = AL.Grid();
     const Int n = AL.Width();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     DistMatrix<F,Dist::STAR,Dist::STAR> AL11_STAR_STAR(g);
     DistMatrix<F,Dist::STAR,Dist::STAR> d1_STAR_STAR(g);
@@ -244,11 +244,11 @@ void ProcessFrontVanilla
         AL21_VC_STAR.AlignWith( AL22 );
         AL21_VC_STAR = AL21;
         LocalTrsm
-        ( RIGHT, UpperOrLower::LOWER, orientation, UNIT, F(1), AL11_STAR_STAR, AL21_VC_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), AL11_STAR_STAR, AL21_VC_STAR );
 
         S21Trans_STAR_MC.AlignWith( AL22 );
         Transpose( AL21_VC_STAR, S21Trans_STAR_MC );
-        DiagonalSolve( RIGHT, NORMAL, d1_STAR_STAR, AL21_VC_STAR );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, d1_STAR_STAR, AL21_VC_STAR );
         AL21Trans_STAR_MR.AlignWith( AL22 );
         Transpose( AL21_VC_STAR, AL21Trans_STAR_MR, conjugate );
 
@@ -262,10 +262,10 @@ void ProcessFrontVanilla
         auto AL22B = AL22( IR(ind2Size,END), ALL );
 
         LocalTrrk( UpperOrLower::LOWER, orientation,  F(-1), leftL, rightL, F(1), AL22T );
-        LocalGemm( orientation, NORMAL, F(-1), leftR, rightL, F(1), AL22B );
+        LocalGemm( orientation, Orientation::NORMAL, F(-1), leftR, rightL, F(1), AL22B );
         LocalTrrk( UpperOrLower::LOWER, orientation,  F(-1), leftR, rightR, F(1), ABR );
 
-        DiagonalSolve( LEFT, NORMAL, d1_STAR_STAR, S21Trans_STAR_MC );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, d1_STAR_STAR, S21Trans_STAR_MC );
         Transpose( S21Trans_STAR_MC, AL21 );
     }
 }
@@ -281,7 +281,7 @@ void ProcessFrontIntraPiv
     EL_DEBUG_CSE
     const Grid& g = AL.Grid();
     const Int n = AL.Width();
-    const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
+    const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
 
     auto ATL = AL( IR(0,n  ), ALL );
     auto ABL = AL( IR(n,END), ALL );
@@ -290,12 +290,12 @@ void ProcessFrontIntraPiv
     auto diag = GetDiagonal(ATL);
 
     P.PermuteCols( ABL );
-    Trsm( RIGHT, UpperOrLower::LOWER, orientation, UNIT, F(1), ATL, ABL );
+    Trsm( LeftOrRight::RIGHT, UpperOrLower::LOWER, orientation, UnitOrNonUnit::UNIT, F(1), ATL, ABL );
     DistMatrix<F,Dist::MC,Dist::STAR> SBL_MC_STAR(g);
     SBL_MC_STAR.AlignWith( ABR );
     SBL_MC_STAR = ABL;
 
-    QuasiDiagonalSolve( RIGHT, UpperOrLower::LOWER, diag, subdiag, ABL, conjugate );
+    QuasiDiagonalSolve( LeftOrRight::RIGHT, UpperOrLower::LOWER, diag, subdiag, ABL, conjugate );
     DistMatrix<F,Dist::VR,Dist::STAR> ABL_VR_STAR(g);
     DistMatrix<F,Dist::STAR,Dist::MR> ABLTrans_STAR_MR(g);
     ABL_VR_STAR.AlignWith( ABR );
@@ -331,14 +331,14 @@ void ProcessFrontBlock
         // Solve against ABL and update ABR
         // NOTE: This update does not exploit symmetry
         SolveAfter( ATL, dSub, P, ABL, conjugate );
-        const Orientation orientation = ( conjugate ? ADJOINT : TRANSPOSE );
-        Gemm( NORMAL, orientation, F(-1), ABL, BBL, F(1), ABR );
+        const Orientation orientation = ( conjugate ? Orientation::ADJOINT : Orientation::TRANSPOSE );
+        Gemm( Orientation::NORMAL, orientation, F(-1), ABL, BBL, F(1), ABR );
 
         // Copy the original contents of ABL back
         ABL = BBL;
 
         // Finish inverting ATL
-        TriangularInverse( UpperOrLower::LOWER, UNIT, ATL );
+        TriangularInverse( UpperOrLower::LOWER, UnitOrNonUnit::UNIT, ATL );
         Trdtrmm( UpperOrLower::LOWER, ATL, dSub, conjugate );
         P.InversePermuteSymmetrically( UpperOrLower::LOWER, ATL, conjugate );
     }
@@ -351,7 +351,7 @@ void ProcessFrontBlock
         ABL = BBL;
 
         // Finish inverting ATL
-        TriangularInverse( UpperOrLower::LOWER, UNIT, ATL );
+        TriangularInverse( UpperOrLower::LOWER, UnitOrNonUnit::UNIT, ATL );
         Trdtrmm( UpperOrLower::LOWER, ATL, conjugate );
     }
     MakeSymmetric( UpperOrLower::LOWER, ATL, conjugate );

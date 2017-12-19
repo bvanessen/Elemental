@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 #include "./Util.hpp"
 
 // The following routines are adaptations of the approach uses by
@@ -302,8 +301,8 @@ void GeomEquil
         for( Int jLoc=0; jLoc<nLocal; ++jLoc )
             if( colScaleLoc(jLoc) == Real(0) )
                 colScaleLoc(jLoc) = Real(1);
-        DiagonalScale( LEFT, NORMAL, colScale, dCol );
-        DiagonalSolve( RIGHT, NORMAL, colScale, A );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, colScale, dCol );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colScale, A );
 
         // Geometrically equilibrate the rows
         // ----------------------------------
@@ -312,8 +311,8 @@ void GeomEquil
         for( Int iLoc=0; iLoc<mLocal; ++iLoc )
             if( rowScaleLoc(iLoc) == Real(0) )
                 rowScaleLoc(iLoc) = Real(1);
-        DiagonalScale( LEFT, NORMAL, rowScale, dRow );
-        DiagonalSolve( LEFT, NORMAL, rowScale, A );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, dRow );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, rowScale, A );
 
         auto newMaxAbs = MaxAbsLoc( A );
         const Real newMaxAbsVal = newMaxAbs.value;
@@ -332,8 +331,8 @@ void GeomEquil
     for( Int jLoc=0; jLoc<nLocal; ++jLoc )
         if( colScaleLoc(jLoc) == Real(0) )
             colScaleLoc(jLoc) = Real(1);
-    DiagonalScale( LEFT, NORMAL, colScale, dCol );
-    DiagonalSolve( RIGHT, NORMAL, colScale, A );
+    DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, colScale, dCol );
+    DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colScale, A );
 }
 
 template<typename Field>
@@ -414,9 +413,9 @@ void StackedGeomEquil
         for( Int jLoc=0; jLoc<nLocal; ++jLoc )
             if( colScaleLoc(jLoc) == Real(0) )
                 colScaleLoc(jLoc) = Real(1);
-        DiagonalScale( LEFT, NORMAL, colScale, dCol );
-        DiagonalSolve( RIGHT, NORMAL, colScale, A );
-        DiagonalSolve( RIGHT, NORMAL, colScale, B );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, colScale, dCol );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colScale, A );
+        DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colScale, B );
 
         // Geometrically equilibrate the rows
         // ----------------------------------
@@ -425,16 +424,16 @@ void StackedGeomEquil
         for( Int iLoc=0; iLoc<mLocalA; ++iLoc )
             if( rowScaleALoc(iLoc) == Real(0) )
                 rowScaleALoc(iLoc) = Real(1);
-        DiagonalScale( LEFT, NORMAL, rowScaleA, dRowA );
-        DiagonalSolve( LEFT, NORMAL, rowScaleA, A );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, rowScaleA, dRowA );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, rowScaleA, A );
 
         // TODO(poulson): Remove GeometricRowScaling
         GeometricRowScaling( B, rowScaleB );
         for( Int iLoc=0; iLoc<mLocalB; ++iLoc )
             if( rowScaleBLoc(iLoc) == Real(0) )
                 rowScaleBLoc(iLoc) = Real(1);
-        DiagonalScale( LEFT, NORMAL, rowScaleB, dRowB );
-        DiagonalSolve( LEFT, NORMAL, rowScaleB, B );
+        DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, rowScaleB, dRowB );
+        DiagonalSolve( LeftOrRight::LEFT, Orientation::NORMAL, rowScaleB, B );
 
         auto newMaxAbsA = MaxAbsLoc( A );
         auto newMaxAbsB = MaxAbsLoc( B );
@@ -463,9 +462,9 @@ void StackedGeomEquil
             maxScale = 1;
         colScaleLoc(jLoc) = maxScale;
     }
-    DiagonalScale( LEFT, NORMAL, colScale, dCol );
-    DiagonalSolve( RIGHT, NORMAL, colScale, A );
-    DiagonalSolve( RIGHT, NORMAL, colScale, B );
+    DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, colScale, dCol );
+    DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colScale, A );
+    DiagonalSolve( LeftOrRight::RIGHT, Orientation::NORMAL, colScale, B );
 }
 
 

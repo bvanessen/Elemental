@@ -50,22 +50,22 @@ void LVar5( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
         // Y10 := A11 L10
         Y10.Resize( nb, k );
         Zero( Y10 );
-        Hemm( LEFT, UpperOrLower::LOWER, F(1), A11, L10, F(0), Y10 );
+        Hemm( LeftOrRight::LEFT, UpperOrLower::LOWER, F(1), A11, L10, F(0), Y10 );
 
         // A10 := A10 L00
-        Trmm( RIGHT, UpperOrLower::LOWER, NORMAL, diag, F(1), L00, A10 );
+        Trmm( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, diag, F(1), L00, A10 );
 
         // A10 := A10 + 1/2 Y10
         Axpy( F(1)/F(2), Y10, A10 );
 
         // A00 := A00 + (L10' A10 + A10' L10)
-        Her2k( UpperOrLower::LOWER, ADJOINT, F(1), L10, A10, Base<F>(1), A00 );
+        Her2k( UpperOrLower::LOWER, Orientation::ADJOINT, F(1), L10, A10, Base<F>(1), A00 );
 
         // A10 := A10 + 1/2 Y10
         Axpy( F(1)/F(2), Y10, A10 );
 
         // A10 := L11' A10
-        Trmm( LEFT, UpperOrLower::LOWER, ADJOINT, diag, F(1), L11, A10 );
+        Trmm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::ADJOINT, diag, F(1), L11, A10 );
 
         // A11 := L11' A11 L11
         twotrmm::LUnb( diag, A11, L11 );
@@ -127,14 +127,14 @@ void LVar5
         Y10_STAR_VR.Resize( nb, k );
         Zero( Y10_STAR_VR );
         Hemm
-        ( LEFT, UpperOrLower::LOWER,
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER,
           F(1), A11_STAR_STAR.Matrix(), L10_STAR_VR.Matrix(),
           F(0), Y10_STAR_VR.Matrix() );
         Y10.AlignWith( A10 );
         Y10 = Y10_STAR_VR;
 
         // A10 := A10 L00
-        Trmm( RIGHT, UpperOrLower::LOWER, NORMAL, diag, F(1), L00, A10 );
+        Trmm( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, diag, F(1), L00, A10 );
 
         // A10 := A10 + 1/2 Y10
         Axpy( F(1)/F(2), Y10, A10 );
@@ -151,7 +151,7 @@ void LVar5
         L10_STAR_MC.AlignWith( A00 );
         L10_STAR_MC = L10_STAR_VR;
         LocalTrr2k
-        ( UpperOrLower::LOWER, ADJOINT, TRANSPOSE, ADJOINT, NORMAL,
+        ( UpperOrLower::LOWER, Orientation::ADJOINT, Orientation::TRANSPOSE, Orientation::ADJOINT, Orientation::NORMAL,
           F(1), L10_STAR_MC, A10Trans_MR_STAR,
           F(1), A10_STAR_MC, L10_STAR_MR,
           F(1), A00 );
@@ -162,7 +162,7 @@ void LVar5
         // A10 := L11' A10
         L11_STAR_STAR = L11;
         LocalTrmm
-        ( LEFT, UpperOrLower::LOWER, ADJOINT, diag, F(1), L11_STAR_STAR, A10_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::ADJOINT, diag, F(1), L11_STAR_STAR, A10_STAR_VR );
         A10 = A10_STAR_VR;
 
         // A11 := L11' A11 L11

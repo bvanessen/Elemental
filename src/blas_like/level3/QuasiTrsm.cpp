@@ -32,7 +32,7 @@ void QuasiTrsm
       AssertSameGrids( A, B );
       if( A.Height() != A.Width() )
           LogicError("A must be square");
-      if( side == LEFT )
+      if( side == LeftOrRight::LEFT )
       {
           if( A.Height() != B.Height() )
               LogicError("Nonconformal Trsm");
@@ -45,7 +45,7 @@ void QuasiTrsm
     )
     B *= alpha;
     // Call the single right-hand side algorithm if appropriate
-    if( side == LEFT && B.Width() == 1 )
+    if( side == LeftOrRight::LEFT && B.Width() == 1 )
     {
         QuasiTrsv( uplo, orientation, A, B );
         return;
@@ -53,7 +53,7 @@ void QuasiTrsm
     // TODO: Compute appropriate transpose/conjugation options to convert
     //       to Trsv.
     /*
-    else if( side == RIGHT && B.Height() == 1 )
+    else if( side == LeftOrRight::RIGHT && B.Height() == 1 )
     {
         QuasiTrsv( uplo, orientation, A, B );
         return;
@@ -61,9 +61,9 @@ void QuasiTrsm
     */
 
     const Int p = B.Grid().Size();
-    if( side == LEFT && uplo == UpperOrLower::LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
         {
             if( B.Width() > 5*p )
                 quasitrsm::LLNLarge( A, B, checkIfSingular );
@@ -78,9 +78,9 @@ void QuasiTrsm
                 quasitrsm::LLTMedium( orientation, A, B, checkIfSingular );
         }
     }
-    else if( side == LEFT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
         {
             if( B.Width() > 5*p )
                 quasitrsm::LUNLarge( A, B, checkIfSingular );
@@ -95,18 +95,18 @@ void QuasiTrsm
                 quasitrsm::LUTMedium( orientation, A, B, checkIfSingular );
         }
     }
-    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //quasitrsm::RLN( A, B, checkIfSingular );
             LogicError("This case not yet handled");
         else
             //quasitrsm::RLT( orientation, A, B, checkIfSingular );
             LogicError("This case not yet handled");
     }
-    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //quasitrsm::RUN( A, B, checkIfSingular );
             LogicError("This case not yet handled");
         else
@@ -124,8 +124,8 @@ void LocalQuasiTrsm
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( (side == LEFT && X.ColDist() != STAR) ||
-          (side == RIGHT && X.RowDist() != STAR) )
+      if( (side == LeftOrRight::LEFT && X.ColDist() != STAR) ||
+          (side == LeftOrRight::RIGHT && X.RowDist() != STAR) )
           LogicError
           ("Dist of RHS must conform with that of triangle");
     )
@@ -145,7 +145,7 @@ void QuasiTrsm
     EL_DEBUG_ONLY(
       if( A.Height() != A.Width() )
           LogicError("A must be square");
-      if( side == LEFT )
+      if( side == LeftOrRight::LEFT )
       {
           if( A.Height() != B.Height() )
               LogicError("Nonconformal Trsm");
@@ -158,7 +158,7 @@ void QuasiTrsm
     )
     B *= alpha;
     // Call the single right-hand side algorithm if appropriate
-    if( side == LEFT && B.Width() == 1 )
+    if( side == LeftOrRight::LEFT && B.Width() == 1 )
     {
         QuasiTrsv( uplo, orientation, A, B );
         return;
@@ -166,39 +166,39 @@ void QuasiTrsm
     // TODO: Compute appropriate transpose/conjugation options to convert
     //       to Trsv.
     /*
-    else if( side == RIGHT && B.Height() == 1 )
+    else if( side == LeftOrRight::RIGHT && B.Height() == 1 )
     {
         QuasiTrsv( uplo, orientation, A, B );
         return;
     }
     */
 
-    if( side == LEFT && uplo == UpperOrLower::LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             quasitrsm::LLN( A, B, checkIfSingular );
         else
             quasitrsm::LLT( orientation, A, B, checkIfSingular );
     }
-    else if( side == LEFT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             quasitrsm::LUN( A, B, checkIfSingular );
         else
             quasitrsm::LUT( orientation, A, B, checkIfSingular );
     }
-    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //quasitrsm::RLN( A, B, checkIfSingular );
             LogicError("This case not yet handled");
         else
             //quasitrsm::RLT( orientation, A, B, checkIfSingular );
             LogicError("This case not yet handled");
     }
-    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             //quasitrsm::RUN( A, B, checkIfSingular );
             LogicError("This case not yet handled");
         else

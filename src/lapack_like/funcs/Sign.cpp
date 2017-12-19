@@ -6,7 +6,6 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El.hpp>
 
 // See Chapter 5 of Nicholas J. Higham's "Functions of Matrices: Theory and
 // Computation", which is currently available at:
@@ -91,10 +90,10 @@ NewtonSchulzStep
 
     // XTmp := 3I - X^2
     Identity( XTmp, n, n );
-    Gemm( NORMAL, NORMAL, Real(-1), X, X, Real(3), XTmp );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(-1), X, X, Real(3), XTmp );
 
     // XNew := 1/2 X XTmp
-    Gemm( NORMAL, NORMAL, Real(1)/Real(2), X, XTmp, XNew );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1)/Real(2), X, XTmp, XNew );
 }
 
 template<typename Field>
@@ -110,10 +109,10 @@ NewtonSchulzStep
 
     // XTmp := 3I - X^2
     Identity( XTmp, n, n );
-    Gemm( NORMAL, NORMAL, Real(-1), X, X, Real(3), XTmp );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(-1), X, X, Real(3), XTmp );
 
     // XNew := 1/2 X XTmp
-    Gemm( NORMAL, NORMAL, Real(1)/Real(2), X, XTmp, XNew );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, Real(1)/Real(2), X, XTmp, XNew );
 }
 
 // Please see Chapter 5 of Higham's
@@ -215,7 +214,7 @@ void Sign
     EL_DEBUG_CSE
     Matrix<Field> ACopy( A );
     sign::Newton( A, ctrl );
-    Gemm( NORMAL, NORMAL, Field(1), A, ACopy, N );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), A, ACopy, N );
 }
 
 template<typename Field>
@@ -244,7 +243,7 @@ void Sign
 
     DistMatrix<Field> ACopy( A );
     sign::Newton( A, ctrl );
-    Gemm( NORMAL, NORMAL, Field(1), A, ACopy, N );
+    Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(1), A, ACopy, N );
 }
 
 // The Hermitian sign decomposition is equivalent to the Hermitian polar

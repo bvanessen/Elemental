@@ -162,7 +162,7 @@ void Sweep
     // TODO(poulson): Optimized versions of the following (especially to avoid
     // temporaries to improve the performance for heap scalars)
     Real cU, sU, cV, sV, rho, eta;
-    if( direction == FORWARD )
+    if( direction == ForwardOrBackward::FORWARD )
     {
         if( shift == zero )
         {
@@ -261,12 +261,12 @@ void Sweep
         if( ctrl.wantU )
         {
             ApplyGivensSequence
-            ( RIGHT, VARIABLE_GIVENS_SEQUENCE, FORWARD, cUList, sUList, U );
+            ( LeftOrRight::RIGHT, VARIABLE_GIVENS_SEQUENCE, ForwardOrBackward::FORWARD, cUList, sUList, U );
         }
         if( ctrl.wantV )
         {
             ApplyGivensSequence
-            ( RIGHT, VARIABLE_GIVENS_SEQUENCE, FORWARD, cVList, sVList, V );
+            ( LeftOrRight::RIGHT, VARIABLE_GIVENS_SEQUENCE, ForwardOrBackward::FORWARD, cVList, sVList, V );
         }
     }
     else
@@ -367,12 +367,12 @@ void Sweep
         if( ctrl.wantU )
         {
             ApplyGivensSequence
-            ( RIGHT, VARIABLE_GIVENS_SEQUENCE, BACKWARD, cUList, sUList, U );
+            ( LeftOrRight::RIGHT, VARIABLE_GIVENS_SEQUENCE, ForwardOrBackward::BACKWARD, cUList, sUList, U );
         }
         if( ctrl.wantV )
         {
             ApplyGivensSequence
-            ( RIGHT, VARIABLE_GIVENS_SEQUENCE, BACKWARD, cVList, sVList, V );
+            ( LeftOrRight::RIGHT, VARIABLE_GIVENS_SEQUENCE, ForwardOrBackward::BACKWARD, cVList, sVList, V );
         }
     }
 }
@@ -462,7 +462,7 @@ Helper
     //  window of the form [winBeg,winEnd).
     Int winEnd = n;
     Int oldWinBeg=-1, oldWinEnd=-1;
-    ForwardOrBackward direction = FORWARD;
+    ForwardOrBackward direction = ForwardOrBackward::FORWARD;
     Matrix<Real> cUList(n,1), sUList(n,1), cVList(n,1), sVList(n,1);
     Matrix<Real> mainDiagSub, superDiagSub;
     Matrix<Field> USub, VSub;
@@ -575,23 +575,23 @@ Helper
             if( Abs(mainDiag(winBeg)) >= Abs(mainDiag(winEnd-1)) )
             {
                 // We are roughly graded downward, so chase a bulge downward
-                direction = FORWARD;
+                direction = ForwardOrBackward::FORWARD;
                 if( ctrl.progress )
-                    Output("  Will chase FORWARD");
+                    Output("  Will chase ForwardOrBackward::FORWARD");
             }
             else
             {
                 // We are roughly graded upward, so chase a bulge upward
-                direction = BACKWARD;
+                direction = ForwardOrBackward::BACKWARD;
                 if( ctrl.progress )
-                    Output("  Will chase BACKWARD");
+                    Output("  Will chase ForwardOrBackward::BACKWARD");
             }
         }
 
         // Check for convergence
         // TODO(poulson): Document the Demmel/Kahan tests employed here
         Real winMinSingValEst = zero;
-        if( direction == FORWARD )
+        if( direction == ForwardOrBackward::FORWARD )
         {
             if( Abs(superDiag(winEnd-2)) <= tol*Abs(mainDiag(winEnd-1)) ||
                 (!relativeToSelfTol && Abs(superDiag(winEnd-2)) <= threshold) )
@@ -659,7 +659,7 @@ Helper
         // diagonal entry is zero to avoid a divide-by-zero when applying the
         // implicit Q theorem within the upcoming sweep.
         const bool zeroStartingValue =
-          direction == FORWARD ?
+          direction == ForwardOrBackward::FORWARD ?
           mainDiag(winBeg) == zero :
           mainDiag(winEnd-1) == zero;
         const bool poorlyConditioned =
@@ -675,7 +675,7 @@ Helper
         else
         {
             Real alphaAbs, sigmaMax, sigmaMin;
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 alphaAbs = Abs(mainDiag(winBeg));
                 svd::TwoByTwoUpper
@@ -700,7 +700,7 @@ Helper
         }
         if( shift == zero )
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 info.numZeroShiftForwardInnerLoops += winEnd-winBeg;
                 ++info.numZeroShiftForwardIterations;
@@ -713,7 +713,7 @@ Helper
         }
         else
         {
-            if( direction == FORWARD )
+            if( direction == ForwardOrBackward::FORWARD )
             {
                 info.numNonzeroShiftForwardInnerLoops += winEnd-winBeg;
                 ++info.numNonzeroShiftForwardIterations;
@@ -744,7 +744,7 @@ Helper
           cUList, sUList, cVList, sVList, ctrl );
 
         // Test for convergence of the last off-diagonal of the sweep
-        if( direction == FORWARD )
+        if( direction == ForwardOrBackward::FORWARD )
         {
             if( Abs(superDiag(winEnd-2)) <= threshold )
                 superDiag(winEnd-2) = zero;

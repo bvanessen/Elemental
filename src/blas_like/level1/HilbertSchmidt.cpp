@@ -6,17 +6,20 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/blas_like/level1.hpp>
 
-namespace El {
+#include "El/blas_like/level1.hpp"
+#include "El/core/Element/Complex/impl.hpp"
+
+namespace El
+{
 
 // TODO(poulson): Think about using a more stable accumulation algorithm?
 
 template<typename Ring>
-Ring HilbertSchmidt( const Matrix<Ring>& A, const Matrix<Ring>& B )
+Ring HilbertSchmidt(const Matrix<Ring>& A, const Matrix<Ring>& B)
 {
     EL_DEBUG_CSE
-    if( A.Height() != B.Height() || A.Width() != B.Width() )
+    if(A.Height() != B.Height() || A.Width() != B.Width())
         LogicError("Matrices must be the same size");
     Ring innerProd(0);
     const Int width = A.Width();
@@ -25,14 +28,14 @@ Ring HilbertSchmidt( const Matrix<Ring>& A, const Matrix<Ring>& B )
     const Ring* BBuf = B.LockedBuffer();
     const Int ALDim = A.LDim();
     const Int BLDim = B.LDim();
-    if( height == ALDim && height == BLDim )
+    if(height == ALDim && height == BLDim)
     {
-        innerProd += blas::Dot( height*width, ABuf, 1, BBuf, 1 );
+        innerProd += blas::Dot(height*width, ABuf, 1, BBuf, 1);
     }
     else
     {
-        for( Int j=0; j<width; ++j )
-            for( Int i=0; i<height; ++i )
+        for(Int j=0; j<width; ++j)
+            for(Int i=0; i<height; ++i)
                 innerProd += Conj(ABuf[i+j*ALDim])*BBuf[i+j*BLDim];
     }
     return innerProd;
@@ -40,24 +43,24 @@ Ring HilbertSchmidt( const Matrix<Ring>& A, const Matrix<Ring>& B )
 
 template<typename Ring>
 Ring HilbertSchmidt
-( const AbstractDistMatrix<Ring>& A, const AbstractDistMatrix<Ring>& B )
+(const AbstractDistMatrix<Ring>& A, const AbstractDistMatrix<Ring>& B)
 {
     EL_DEBUG_CSE
-    if( A.Height() != B.Height() || A.Width() != B.Width() )
+    if(A.Height() != B.Height() || A.Width() != B.Width())
         LogicError("Matrices must be the same size");
-    AssertSameGrids( A, B );
+    AssertSameGrids(A, B);
     // TODO(poulson): Add a general implementation using MatrixReadProxy
-    if( A.DistData().colDist != B.DistData().colDist ||
-        A.DistData().rowDist != B.DistData().rowDist )
+    if(A.DistData().colDist != B.DistData().colDist ||
+        A.DistData().rowDist != B.DistData().rowDist)
         LogicError("A and B must have the same distribution");
-    if( A.ColAlign() != B.ColAlign() || A.RowAlign() != B.RowAlign() )
+    if(A.ColAlign() != B.ColAlign() || A.RowAlign() != B.RowAlign())
         LogicError("Matrices must be aligned");
-    if ( A.BlockHeight() != B.BlockHeight() ||
+    if (A.BlockHeight() != B.BlockHeight() ||
          A.BlockWidth() != B.BlockWidth())
       LogicError("A and B must have the same block size");
 
     Ring innerProd;
-    if( A.Participating() )
+    if(A.Participating())
     {
         Ring localInnerProd(0);
         const Int localHeight = A.LocalHeight();
@@ -66,29 +69,29 @@ Ring HilbertSchmidt
         const Ring* BBuf = B.LockedBuffer();
         const Int ALDim = A.LDim();
         const Int BLDim = B.LDim();
-        if( localHeight == ALDim && localHeight == BLDim )
+        if(localHeight == ALDim && localHeight == BLDim)
         {
             localInnerProd +=
-              blas::Dot( localHeight*localWidth, ABuf, 1, BBuf, 1 );
+              blas::Dot(localHeight*localWidth, ABuf, 1, BBuf, 1);
         }
         else
         {
-            for( Int jLoc=0; jLoc<localWidth; ++jLoc )
-                for( Int iLoc=0; iLoc<localHeight; ++iLoc )
+            for(Int jLoc=0; jLoc<localWidth; ++jLoc)
+                for(Int iLoc=0; iLoc<localHeight; ++iLoc)
                     localInnerProd += Conj(ABuf[iLoc+jLoc*ALDim])*
                                            BBuf[iLoc+jLoc*BLDim];
         }
-        innerProd = mpi::AllReduce( localInnerProd, A.DistComm() );
+        innerProd = mpi::AllReduce(localInnerProd, A.DistComm());
     }
-    mpi::Broadcast( innerProd, A.Root(), A.CrossComm() );
+    mpi::Broadcast(innerProd, A.Root(), A.CrossComm());
     return innerProd;
 }
 
 #define PROTO(Ring) \
   template Ring HilbertSchmidt \
-  ( const Matrix<Ring>& A, const Matrix<Ring>& B ); \
+  (const Matrix<Ring>& A, const Matrix<Ring>& B); \
   template Ring HilbertSchmidt \
-  ( const AbstractDistMatrix<Ring>& A, const AbstractDistMatrix<Ring>& B );
+  (const AbstractDistMatrix<Ring>& A, const AbstractDistMatrix<Ring>& B);
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

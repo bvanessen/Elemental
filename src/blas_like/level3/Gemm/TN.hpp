@@ -48,7 +48,7 @@ void SUMMA_TNA
         // D1[MR,*] := alpha (A1[MC,MR])^T B1[MC,*]
         //           = alpha (A1^T)[MR,MC] B1[MC,*]
         B1_MC_STAR = B1;
-        LocalGemm( orientA, NORMAL, alpha, A, B1_MC_STAR, D1_MR_STAR );
+        LocalGemm( orientA, Orientation::NORMAL, alpha, A, B1_MC_STAR, D1_MR_STAR );
 
         // C1[MC,MR] += scattered & transposed D1[MR,*] summed over grid cols
         Contract( D1_MR_STAR, D1_MR_MC );
@@ -69,7 +69,7 @@ void SUMMA_TNB
     const Int m = CPre.Height();
     const Int bsize = Blocksize();
     const Grid& g = APre.Grid();
-    const bool conjugate = ( orientA == ADJOINT );
+    const bool conjugate = ( orientA == Orientation::ADJOINT );
 
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> AProx( APre );
     DistMatrixReadProxy<T,T,Dist::MC,Dist::MR> BProx( BPre );
@@ -94,7 +94,7 @@ void SUMMA_TNB
         // D1[*,MR] := alpha (A1[MC,*])^[T/H] B[MC,MR]
         //           = alpha (A1^[T/H])[*,MC] B[MC,MR]
         A1_MC_STAR = A1; // A1[MC,*] <- A1[MC,MR]
-        LocalGemm( orientA, NORMAL, T(1), B, A1_MC_STAR, D1Trans_MR_STAR );
+        LocalGemm( orientA, Orientation::NORMAL, T(1), B, A1_MC_STAR, D1Trans_MR_STAR );
         TransposeAxpyContract( alpha, D1Trans_MR_STAR, C1, conjugate );
     }
 }
@@ -138,7 +138,7 @@ void SUMMA_TNC
         A1_STAR_MC = A1;
         Transpose( B1, B1Trans_MR_STAR );
         LocalGemm
-        ( orientA, TRANSPOSE, alpha, A1_STAR_MC, B1Trans_MR_STAR, T(1), C );
+        ( orientA, Orientation::TRANSPOSE, alpha, A1_STAR_MC, B1Trans_MR_STAR, T(1), C );
     }
 }
 
@@ -189,7 +189,7 @@ void SUMMA_TNDot
             auto B1  = B( ALL,      indInner );
             auto C11 = C( indOuter, indInner );
 
-            LocalGemm( orientA, NORMAL, alpha, A1, B1, C11_STAR_STAR );
+            LocalGemm( orientA, Orientation::NORMAL, alpha, A1, B1, C11_STAR_STAR );
             AxpyContract( T(1), C11_STAR_STAR, C11 );
         }
     }
@@ -207,7 +207,7 @@ void SUMMA_TN
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
       AssertSameGrids( A, B, C );
-      if( orientA == NORMAL )
+      if( orientA == Orientation::NORMAL )
           LogicError("A must be (Conjugate)Transposed");
       if( A.Width() != C.Height() ||
           B.Width() != C.Width() ||

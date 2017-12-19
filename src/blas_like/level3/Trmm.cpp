@@ -29,7 +29,7 @@ void Trmm
     EL_DEBUG_ONLY(
       if( A.Height() != A.Width() )
           LogicError("Triangular matrix must be square");
-      if( side == LEFT )
+      if( side == LeftOrRight::LEFT )
       {
           if( A.Height() != B.Height() )
               LogicError("Nonconformal Trmm");
@@ -57,30 +57,30 @@ void Trmm
 {
     EL_DEBUG_CSE
     X *= alpha;
-    if( side == LEFT && uplo == UpperOrLower::LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trmm::LLN( diag, A, X );
         else
             trmm::LLT( orientation, diag, A, X );
     }
-    else if( side == LEFT )
+    else if( side == LeftOrRight::LEFT )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trmm::LUN( diag, A, X );
         else
             trmm::LUT( orientation, diag, A, X );
     }
     else if( uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trmm::RLN( diag, A, X );
         else
             trmm::RLT( orientation, diag, A, X );
     }
     else
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trmm::RUN( diag, A, X );
         else
             trmm::RUT( orientation, diag, A, X );
@@ -95,8 +95,8 @@ void LocalTrmm
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( (side == LEFT && B.ColDist() != STAR) ||
-          (side == RIGHT && B.RowDist() != STAR) )
+      if( (side == LeftOrRight::LEFT && B.ColDist() != STAR) ||
+          (side == LeftOrRight::RIGHT && B.RowDist() != STAR) )
           LogicError
           ("Dist of RHS must conform with that of triangle");
     )

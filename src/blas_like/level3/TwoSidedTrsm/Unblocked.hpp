@@ -27,11 +27,11 @@ void LUnb( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
         const Int a21Height = n - (j+1);
 
         // Extract and store the diagonal value of L
-        const F lambda11 = ( diag==UNIT ? 1 : LBuffer[j+j*ldl] );
+        const F lambda11 = ( diag==UnitOrNonUnit::UNIT ? 1 : LBuffer[j+j*ldl] );
 
         // a10 := a10 / lambda11
         F* a10 = &ABuffer[j];
-        if( diag != UNIT )
+        if( diag != UnitOrNonUnit::UNIT )
             for( Int k=0; k<j; ++k )
                 a10[k*lda] /= lambda11;
 
@@ -46,7 +46,7 @@ void LUnb( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
 
         // a21 := a21 / conj(lambda11)
         F* a21 = &ABuffer[(j+1)+j*lda];
-        if( diag != UNIT )
+        if( diag != UnitOrNonUnit::UNIT )
             for( Int k=0; k<a21Height; ++k )
                 a21[k] /= Conj(lambda11);
 
@@ -81,11 +81,11 @@ void UUnb( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
         const Int a21Height = n - (j+1);
 
         // Extract and store the diagonal value of U
-        const F upsilon11 = ( diag==UNIT ? 1 : UBuffer[j+j*ldu] );
+        const F upsilon11 = ( diag==UnitOrNonUnit::UNIT ? 1 : UBuffer[j+j*ldu] );
 
         // a01 := a01 / upsilon11
         F* a01 = &ABuffer[j*lda];
-        if( diag != UNIT )
+        if( diag != UnitOrNonUnit::UNIT )
             for( Int k=0; k<j; ++k )
                 a01[k] /= upsilon11;
 
@@ -100,7 +100,7 @@ void UUnb( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
 
         // a12 := a12 / conj(upsilon11)
         F* a12 = &ABuffer[j+(j+1)*lda];
-        if( diag != UNIT )
+        if( diag != UnitOrNonUnit::UNIT )
             for( Int k=0; k<a21Height; ++k )
                 a12[k*lda] /= Conj(upsilon11);
 

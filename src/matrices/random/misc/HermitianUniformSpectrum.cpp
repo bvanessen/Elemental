@@ -26,7 +26,7 @@ void HermitianUniformSpectrum
     typedef Base<F> Real;
 
     // Form d and D
-    vector<F> d( n );
+    std::vector<F> d( n );
     for( Int j=0; j<n; ++j )
         d[j] = SampleUniform<Real>( lower, upper );
     Diagonal( A, d );
@@ -35,8 +35,8 @@ void HermitianUniformSpectrum
     Matrix<F> Q, t;
     Matrix<Real> s;
     ImplicitHaar( Q, t, s, n );
-    qr::ApplyQ( LEFT, NORMAL, Q, t, s, A );
-    qr::ApplyQ( RIGHT, ADJOINT, Q, t, s, A );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, Q, t, s, A );
+    qr::ApplyQ( LeftOrRight::RIGHT, Orientation::ADJOINT, Q, t, s, A );
 
     MakeDiagonalReal(A);
 }
@@ -55,7 +55,7 @@ void HermitianUniformSpectrum
     auto& A = AProx.Get();
 
     // Form d and D
-    vector<F> d( n );
+    std::vector<F> d( n );
     if( grid.Rank() == 0 )
         for( Int j=0; j<n; ++j )
             d[j] = SampleUniform<Real>( lower, upper );
@@ -69,8 +69,8 @@ void HermitianUniformSpectrum
     ImplicitHaar( Q, t, s, n );
 
     // Copy the result into the correct distribution
-    qr::ApplyQ( LEFT, NORMAL, Q, t, s, A );
-    qr::ApplyQ( RIGHT, ADJOINT, Q, t, s, A );
+    qr::ApplyQ( LeftOrRight::LEFT, Orientation::NORMAL, Q, t, s, A );
+    qr::ApplyQ( LeftOrRight::RIGHT, Orientation::ADJOINT, Q, t, s, A );
 
     // Force the diagonal to be real-valued
     MakeDiagonalReal(A);

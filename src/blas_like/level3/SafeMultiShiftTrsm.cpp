@@ -25,7 +25,7 @@ void SafeMultiShiftTrsm
 {
     EL_DEBUG_CSE
     B *= alpha;
-    if( side == LEFT && uplo == UpperOrLower::UPPER && orientation == NORMAL)
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER && orientation == Orientation::NORMAL)
     {
         safemstrsm::LUN( A, shifts, B, scales );
     }
@@ -43,7 +43,7 @@ void SafeMultiShiftTrsm
 {
     EL_DEBUG_CSE
     B *= alpha;
-    if( side == LEFT && uplo == UpperOrLower::UPPER && orientation == NORMAL)
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER && orientation == Orientation::NORMAL)
     {
         safemstrsm::LUN( A, shifts, B, scales );
     }

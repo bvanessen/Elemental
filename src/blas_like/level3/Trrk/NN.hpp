@@ -55,7 +55,7 @@ void TrrkNN
         A1_MC_STAR = A1;
         Transpose( B1, B1Trans_MR_STAR );
         LocalTrrk
-        ( uplo, TRANSPOSE, alpha, A1_MC_STAR, B1Trans_MR_STAR, T(1), C );
+        ( uplo, Orientation::TRANSPOSE, alpha, A1_MC_STAR, B1Trans_MR_STAR, T(1), C );
     }
 }
 

@@ -27,9 +27,9 @@ void Trstrm
       if( A.Height() != X.Height() )
           LogicError("Nonconformal Trstrm");
     )
-    if( side == LEFT && uplo == UpperOrLower::LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trstrm::LLN( diag, alpha, A, X, checkIfSingular );
         else
             LogicError("This option not yet implemented");
@@ -41,25 +41,25 @@ void Trstrm
     else
         LogicError("This option not yet implemented");
     /*
-    else if( side == LEFT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trstrm::LUN( diag, alpha, A, X, checkIfSingular );
         else
             trstrm::LUT
             ( orientation, diag, alpha, A, X, checkIfSingular );
     }
-    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trstrm::RLN( diag, alpha, A, X, checkIfSingular );
         else
             trstrm::RLT
             ( orientation, diag, alpha, A, X, checkIfSingular );
     }
-    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trstrm::RUN( diag, alpha, A, X, checkIfSingular );
         else
             trstrm::RUT
@@ -76,9 +76,9 @@ void Trstrm
   bool checkIfSingular )
 {
     EL_DEBUG_CSE
-    if( side == LEFT && uplo == UpperOrLower::LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trstrm::LLN( diag, alpha, A, X, checkIfSingular );
         else
             LogicError("This option not yet implemented");
@@ -90,25 +90,25 @@ void Trstrm
     else
         LogicError("This option not yet implemented");
     /*
-    else if( side == LEFT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::LEFT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trstrm::LUN( diag, alpha, A, X, checkIfSingular );
         else
             trstrm::LUT
             ( orientation, diag, alpha, A, X, checkIfSingular );
     }
-    else if( side == RIGHT && uplo == UpperOrLower::LOWER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::LOWER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trstrm::RLN( diag, alpha, A, X, checkIfSingular );
         else
             trstrm::RLT
             ( orientation, diag, alpha, A, X, checkIfSingular );
     }
-    else if( side == RIGHT && uplo == UpperOrLower::UPPER )
+    else if( side == LeftOrRight::RIGHT && uplo == UpperOrLower::UPPER )
     {
-        if( orientation == NORMAL )
+        if( orientation == Orientation::NORMAL )
             trstrm::RUN( diag, alpha, A, X, checkIfSingular );
         else
             trstrm::RUT

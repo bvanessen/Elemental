@@ -98,18 +98,18 @@ LV
 
         Z.Resize( HPanWidth, effectedWidth );
         PartitionLeft( Z, ZNew, ZOld, oldEffectedWidth );
-        Herk( UpperOrLower::UPPER, ADJOINT, Base<F>(1), HPan, SInv );
+        Herk( UpperOrLower::UPPER, Orientation::ADJOINT, Base<F>(1), HPan, SInv );
         FixDiagonal( conjugation, householderScalars1, SInv );
 
         // Interleave the updates of the already effected portion of the matrix
         // with the newly effected portion to increase performance
         Adjoint( HPanT, ZNew );
         Zero( ZOld );
-        Gemm( ADJOINT, NORMAL, F(1), HPanB, HEffectedOldB, F(0), ZOld );
-        Trsm( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), SInv, Z );
+        Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), HPanB, HEffectedOldB, F(0), ZOld );
+        Trsm( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), SInv, Z );
         HPanCopy = HPan;
         MakeIdentity( HEffectedNew );
-        Gemm( NORMAL, NORMAL, F(-1), HPanCopy, Z, F(1), HEffected );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), HPanCopy, Z, F(1), HEffected );
 
         oldEffectedHeight = effectedHeight;
     }
@@ -208,7 +208,7 @@ LV
         HPan_VC_STAR = HPan;
         Zeros( SInv_STAR_STAR, HPanWidth, HPanWidth );
         Herk
-        ( UpperOrLower::UPPER, ADJOINT,
+        ( UpperOrLower::UPPER, Orientation::ADJOINT,
           Base<F>(1), HPan_VC_STAR.LockedMatrix(),
           Base<F>(0), SInv_STAR_STAR.Matrix() );
         El::AllReduce( SInv_STAR_STAR, HPan_VC_STAR.ColComm() );
@@ -228,15 +228,15 @@ LV
         Adjoint( HPanT_MC_STAR, ZNew_STAR_VR );
         Zero( ZOld_STAR_MR );
         LocalGemm
-        ( ADJOINT, NORMAL,
+        ( Orientation::ADJOINT, Orientation::NORMAL,
           F(1), HPanB_MC_STAR, HEffectedOldB, F(0), ZOld_STAR_MR );
         Contract( ZOld_STAR_MR, ZOld_STAR_VR );
         LocalTrsm
-        ( LEFT, UpperOrLower::UPPER, NORMAL, NON_UNIT, F(1), SInv_STAR_STAR, Z_STAR_VR );
+        ( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), SInv_STAR_STAR, Z_STAR_VR );
         Z_STAR_MR = Z_STAR_VR;
         MakeIdentity( HEffectedNew );
         LocalGemm
-        ( NORMAL, NORMAL, F(-1), HPan_MC_STAR, Z_STAR_MR, F(1), HEffected );
+        ( Orientation::NORMAL, Orientation::NORMAL, F(-1), HPan_MC_STAR, Z_STAR_MR, F(1), HEffected );
 
         oldEffectedHeight = effectedHeight;
     }

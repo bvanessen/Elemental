@@ -27,7 +27,7 @@ void DiagonalScale
     EL_DEBUG_CSE
     const Int m = A.Height();
     const Int n = A.Width();
-    const bool conj = ( orientation == ADJOINT );
+    const bool conj = ( orientation == Orientation::ADJOINT );
     if( side == LeftOrRight::LEFT )
     {
         EL_DEBUG_ONLY(
@@ -90,7 +90,7 @@ void DiagonalScale
             DistMatrixReadProxy<TDiag,TDiag,V,Collect<U>()> dProx( dPre, ctrl );
             auto& d = dProx.GetLocked();
 
-            DiagonalScale( RIGHT, orientation, d.LockedMatrix(), A.Matrix() );
+            DiagonalScale( LeftOrRight::RIGHT, orientation, d.LockedMatrix(), A.Matrix() );
         }
     }
     else
@@ -122,7 +122,7 @@ void DiagonalScale
               dProx( dPre, ctrl );
             auto& d = dProx.GetLocked();
 
-            DiagonalScale( RIGHT, orientation, d.LockedMatrix(), A.Matrix() );
+            DiagonalScale( LeftOrRight::RIGHT, orientation, d.LockedMatrix(), A.Matrix() );
         }
     }
 }

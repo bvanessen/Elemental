@@ -67,7 +67,7 @@ char LeftOrRightToChar( LeftOrRight side )
     char sideChar;
     switch( side )
     {
-        case LEFT:  sideChar = 'L'; break;
+        case LeftOrRight::LEFT:  sideChar = 'L'; break;
         default:    sideChar = 'R'; break;
     }
     return sideChar;
@@ -77,11 +77,11 @@ LeftOrRight CharToLeftOrRight( char c )
 {
     // Most compilers' logic for detecting potentially uninitialized variables
     // is horrendously bad.
-    LeftOrRight side=LEFT;
+    LeftOrRight side=LeftOrRight::LEFT;
     switch( c )
     {
-        case 'L': side = LEFT;  break;
-        case 'R': side = RIGHT; break;
+        case 'L': side = LeftOrRight::LEFT;  break;
+        case 'R': side = LeftOrRight::RIGHT; break;
         default:
             LogicError("CharToLeftOrRight expects char in {L,R}");
     }
@@ -97,8 +97,8 @@ char OrientationToChar( Orientation orientation )
     char orientationChar;
     switch( orientation )
     {
-        case NORMAL:    orientationChar = 'N'; break;
-        case TRANSPOSE: orientationChar = 'T'; break;
+        case Orientation::NORMAL:    orientationChar = 'N'; break;
+        case Orientation::TRANSPOSE: orientationChar = 'T'; break;
         default:        orientationChar = 'C'; break;
     }
     return orientationChar;
@@ -108,12 +108,12 @@ Orientation CharToOrientation( char c )
 {
     // Most compilers' logic for detecting potentially uninitialized variables
     // is horrendously bad.
-    Orientation orientation=NORMAL;
+    Orientation orientation=Orientation::NORMAL;
     switch( c )
     {
-        case 'N': orientation = NORMAL;    break;
-        case 'T': orientation = TRANSPOSE; break;
-        case 'C': orientation = ADJOINT;   break;
+        case 'N': orientation = Orientation::NORMAL;    break;
+        case 'T': orientation = Orientation::TRANSPOSE; break;
+        case 'C': orientation = Orientation::ADJOINT;   break;
         default:
             LogicError
             ("CharToOrientation expects char in {N,T,C}");
@@ -130,7 +130,7 @@ char UnitOrNonUnitToChar( UnitOrNonUnit diag )
     char diagChar;
     switch( diag )
     {
-        case NON_UNIT: diagChar = 'N'; break;
+        case UnitOrNonUnit::NON_UNIT: diagChar = 'N'; break;
         default:       diagChar = 'U'; break;
     }
     return diagChar;
@@ -140,11 +140,11 @@ UnitOrNonUnit CharToUnitOrNonUnit( char c )
 {
     // Most compilers' logic for detecting potentially uninitialized variables
     // is horrendously bad.
-    UnitOrNonUnit diag=NON_UNIT;
+    UnitOrNonUnit diag=UnitOrNonUnit::NON_UNIT;
     switch( c )
     {
-        case 'N': diag = NON_UNIT; break;
-        case 'U': diag = UNIT;     break;
+        case 'N': diag = UnitOrNonUnit::NON_UNIT; break;
+        case 'U': diag = UnitOrNonUnit::UNIT;     break;
         default:
             LogicError("CharToUnitOrNonUnit expects char in {N,U}");
     }

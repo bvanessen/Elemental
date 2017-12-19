@@ -26,7 +26,7 @@ void AfterLUPartialPiv( Matrix<Field>& A, const Permutation& P )
     if( A.Height() != A.Width() )
         LogicError("Cannot invert non-square matrices");
 
-    TriangularInverse( UpperOrLower::UPPER, NON_UNIT, A );
+    TriangularInverse( UpperOrLower::UPPER, UnitOrNonUnit::NON_UNIT, A );
 
     const Int n = A.Height();
 
@@ -53,10 +53,10 @@ void AfterLUPartialPiv( Matrix<Field>& A, const Permutation& P )
         Zero( A21 );
 
         // Perform the lazy update of A1
-        Gemm( NORMAL, NORMAL, Field(-1), A2, L21, Field(1), A1 );
+        Gemm( Orientation::NORMAL, Orientation::NORMAL, Field(-1), A2, L21, Field(1), A1 );
 
         // Solve against this diagonal block of L11
-        Trsm( RIGHT, UpperOrLower::LOWER, NORMAL, UNIT, Field(1), L11, A1 );
+        Trsm( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, Field(1), L11, A1 );
     }
 
     // inv(A) := inv(A) P
@@ -87,7 +87,7 @@ void AfterLUPartialPiv
     if( A.Height() != A.Width() )
         LogicError("Cannot invert non-square matrices");
 
-    TriangularInverse( UpperOrLower::UPPER, NON_UNIT, A );
+    TriangularInverse( UpperOrLower::UPPER, UnitOrNonUnit::NON_UNIT, A );
 
     const Grid& g = A.Grid();
     DistMatrix<Field,Dist::VC,  Dist::STAR> A1_VC_STAR(g);
@@ -127,13 +127,13 @@ void AfterLUPartialPiv
         Z1.AlignWith( A1 );
         Zeros( Z1, n, nb );
         LocalGemm
-        ( NORMAL, TRANSPOSE, Field(-1), A2, L21Trans_STAR_MR, Field(0), Z1 );
+        ( Orientation::NORMAL, Orientation::TRANSPOSE, Field(-1), A2, L21Trans_STAR_MR, Field(0), Z1 );
         AxpyContract( Field(1), Z1, A1 );
 
         // Solve against this diagonal block of L11
         A1_VC_STAR = A1;
         LocalTrsm
-        ( RIGHT, UpperOrLower::LOWER, NORMAL, UNIT, Field(1), L11_STAR_STAR, A1_VC_STAR );
+        ( LeftOrRight::RIGHT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, Field(1), L11_STAR_STAR, A1_VC_STAR );
         A1 = A1_VC_STAR;
     }
 

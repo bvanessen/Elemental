@@ -255,7 +255,7 @@ void PivotedLowerPanel
         RowSwap( YB0, 0, pivot.from[0] );
 
         // Update A(k:end,k) -= X(k:end,0:k-1) Y(k,0:k-1)^T
-        Gemv( NORMAL, F(-1), XB0, y10, F(1), aB1 );
+        Gemv( Orientation::NORMAL, F(-1), XB0, y10, F(1), aB1 );
         aB1.MakeReal(0,0);
 
         // a21 := a21 / sqrt(alpha11)
@@ -326,7 +326,7 @@ void PivotedLowerPanel
 
         // A(k:end,k) -= X(k:end,0:k-1) Y(k,0:k-1)^T
         if( aB1.RowAlign() == aB1.RowRank() )
-            LocalGemv( NORMAL, F(-1), XB0, y10, F(1), aB1 );
+            LocalGemv( Orientation::NORMAL, F(-1), XB0, y10, F(1), aB1 );
         aB1.MakeReal(0,0);
 
         // a21 := a21 / sqrt(alpha11)
@@ -368,7 +368,7 @@ void PivotedLowerVariant3Blocked( Matrix<F>& A, Permutation& P )
         auto A22 = A( ind2, ind2 );
         auto X21 = XB1( ind2Pan, ind1Pan );
         auto Y21 = YB1( ind2Pan, ind1Pan );
-        Trrk( UpperOrLower::LOWER, NORMAL, TRANSPOSE, F(-1), X21, Y21, F(1), A22 );
+        Trrk( UpperOrLower::LOWER, Orientation::NORMAL, Orientation::TRANSPOSE, F(-1), X21, Y21, F(1), A22 );
     }
 }
 
@@ -407,7 +407,7 @@ void PivotedLowerVariant3Blocked
         auto A22 = A( ind2, ind2 );
         auto X21 = XB1( ind2Pan, ind1Pan );
         auto Y21 = YB1( ind2Pan, ind1Pan );
-        LocalTrrk( UpperOrLower::LOWER, TRANSPOSE, F(-1), X21, Y21, F(1), A22 );
+        LocalTrrk( UpperOrLower::LOWER, Orientation::TRANSPOSE, F(-1), X21, Y21, F(1), A22 );
     }
 }
 

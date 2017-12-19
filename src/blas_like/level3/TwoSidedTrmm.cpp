@@ -55,7 +55,7 @@ void ScaLAPACKHelper
         DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& A,
   const DistMatrix<T,Dist::MC,Dist::MR,DistWrap::BLOCK>& B )
 {
-    if( diag == UNIT )
+    if( diag == UnitOrNonUnit::UNIT )
         LogicError("ScaLAPACK does not support unit-diagonal two-sided TRMM");
     // NOTE: ScaLAPACK additionally assumes that the diagonal of the triangular
     //       matrix is real and positive.

@@ -133,7 +133,7 @@ void BusingerGolub
         //      = (I - tau aB1 aB1^H) AB2
         //      = AB2 - tau aB1 (AB2^H aB1)^H
         Zeros( z21, AB2.Width(), 1 );
-        Gemv( ADJOINT, oneF, AB2, aB1, zeroF, z21 );
+        Gemv( Orientation::ADJOINT, oneF, AB2, aB1, zeroF, z21 );
         Ger( -tau, aB1, z21, AB2 );
 
         // Reset alpha11's value
@@ -165,7 +165,7 @@ void BusingerGolub
     GetRealPartOfDiagonal(R,signature);
     auto sgn = [&]( const Real& delta ) { return delta >= zero ? one : -one; };
     EntrywiseMap( signature, MakeFunction(sgn) );
-    DiagonalScaleTrapezoid( LEFT, UpperOrLower::UPPER, NORMAL, signature, R );
+    DiagonalScaleTrapezoid( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, signature, R );
 
     // Ensure that t is the correct length
     householderScalars.Resize( k, 1 );
@@ -435,7 +435,7 @@ void BusingerGolub
         aB1_MC = aB1;
         z21_MR.AlignWith( AB2 );
         Zeros( z21_MR, AB2.Width(), 1 );
-        LocalGemv( ADJOINT, F(1), AB2, aB1_MC, F(0), z21_MR );
+        LocalGemv( Orientation::ADJOINT, F(1), AB2, aB1_MC, F(0), z21_MR );
         El::AllReduce( z21_MR, AB2.ColComm() );
         Ger
         ( -tau, aB1_MC.LockedMatrix(), z21_MR.LockedMatrix(), AB2.Matrix() );
@@ -483,7 +483,7 @@ void BusingerGolub
     GetRealPartOfDiagonal(R,signature);
     auto sgn = [&]( const Real& delta ) { return delta >= zero ? one : -one; };
     EntrywiseMap( signature, MakeFunction(sgn) );
-    DiagonalScaleTrapezoid( LEFT, UpperOrLower::UPPER, NORMAL, signature, R );
+    DiagonalScaleTrapezoid( LeftOrRight::LEFT, UpperOrLower::UPPER, Orientation::NORMAL, signature, R );
 }
 
 } // namespace qr

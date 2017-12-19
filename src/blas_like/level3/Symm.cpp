@@ -25,7 +25,7 @@ void Symm
   bool conjugate )
 {
     EL_DEBUG_CSE
-    if( side == LEFT && B.Width() == 1 )
+    if( side == LeftOrRight::LEFT && B.Width() == 1 )
     {
         Symv( uplo, alpha, A, B, beta, C , conjugate );
         return;
@@ -60,16 +60,16 @@ void Symm
   bool conjugate )
 {
     EL_DEBUG_CSE
-    if( side == LEFT && B.Width() == 1 )
+    if( side == LeftOrRight::LEFT && B.Width() == 1 )
     {
         Symv( uplo, alpha, A, B, beta, C , conjugate );
         return;
     }
 
     C *= beta;
-    if( side == LEFT && uplo == UpperOrLower::LOWER )
+    if( side == LeftOrRight::LEFT && uplo == UpperOrLower::LOWER )
         symm::LL( alpha, A, B, C, conjugate );
-    else if( side == LEFT )
+    else if( side == LeftOrRight::LEFT )
         symm::LU( alpha, A, B, C, conjugate );
     else if( uplo == UpperOrLower::LOWER )
         symm::RL( alpha, A, B, C, conjugate );

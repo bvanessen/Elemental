@@ -12,7 +12,7 @@
 namespace El {
 
 template<typename F1,typename F2>
-void Cauchy( Matrix<F1>& A, const vector<F2>& x, const vector<F2>& y )
+void Cauchy( Matrix<F1>& A, const std::vector<F2>& x, const std::vector<F2>& y )
 {
     EL_DEBUG_CSE
     const Int m = x.size();
@@ -30,13 +30,13 @@ void Cauchy( Matrix<F1>& A, const vector<F2>& x, const vector<F2>& y )
          )
          return F1(1)/F1(x[i]-y[j]);
       };
-    IndexDependentFill( A, function<F1(Int,Int)>(cauchyFill) );
+    IndexDependentFill( A, std::function<F1(Int,Int)>(cauchyFill) );
 }
 
 template<typename F1,typename F2>
 void Cauchy
 ( AbstractDistMatrix<F1>& A,
-  const vector<F2>& x, const vector<F2>& y )
+  const std::vector<F2>& x, const std::vector<F2>& y )
 {
     EL_DEBUG_CSE
     const Int m = x.size();
@@ -54,15 +54,15 @@ void Cauchy
          )
          return F1(1)/F1(x[i]-y[j]);
       };
-    IndexDependentFill( A, function<F1(Int,Int)>(cauchyFill) );
+    IndexDependentFill( A, std::function<F1(Int,Int)>(cauchyFill) );
 }
 
 #define PROTO_TYPES(F1,F2) \
   template void Cauchy \
-  ( Matrix<F1>& A, const vector<F2>& x, const vector<F2>& y ); \
+  ( Matrix<F1>& A, const std::vector<F2>& x, const std::vector<F2>& y ); \
   template void Cauchy \
   ( AbstractDistMatrix<F1>& A, \
-    const vector<F2>& x, const vector<F2>& y );
+    const std::vector<F2>& x, const std::vector<F2>& y );
 
 #define PROTO_REAL(F) \
   PROTO_TYPES(F,Int) \

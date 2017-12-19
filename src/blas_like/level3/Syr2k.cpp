@@ -25,7 +25,7 @@ void Syr2k
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( orientation == NORMAL )
+      if( orientation == Orientation::NORMAL )
       {
           if( A.Height() != C.Height() || A.Height() != C.Width() ||
               B.Height() != C.Height() ||B.Height() != C.Width()    )
@@ -40,7 +40,7 @@ void Syr2k
     )
     const char uploChar = UpperOrLowerToChar( uplo );
     const char transChar = OrientationToChar( orientation );
-    const Int k = ( orientation == NORMAL ? A.Width() : A.Height() );
+    const Int k = ( orientation == Orientation::NORMAL ? A.Width() : A.Height() );
     if( conjugate )
     {
         blas::Her2k
@@ -67,7 +67,7 @@ void Syr2k
   bool conjugate )
 {
     EL_DEBUG_CSE
-    const Int n = ( orientation==NORMAL ? A.Height() : A.Width() );
+    const Int n = ( orientation==Orientation::NORMAL ? A.Height() : A.Width() );
     C.Resize( n, n );
     Zero( C );
     Syr2k( uplo, orientation, alpha, A, B, T(0), C, conjugate );
@@ -81,11 +81,11 @@ void Syr2k
 {
     EL_DEBUG_CSE
     ScaleTrapezoid( beta, uplo, C );
-    if( uplo == UpperOrLower::LOWER && orientation == NORMAL )
+    if( uplo == UpperOrLower::LOWER && orientation == Orientation::NORMAL )
         syr2k::LN( alpha, A, B, C, conjugate );
     else if( uplo == UpperOrLower::LOWER )
         syr2k::LT( alpha, A, B, C, conjugate );
-    else if( orientation == NORMAL )
+    else if( orientation == Orientation::NORMAL )
         syr2k::UN( alpha, A, B, C, conjugate );
     else
         syr2k::UT( alpha, A, B, C, conjugate );
@@ -98,7 +98,7 @@ void Syr2k
                  AbstractDistMatrix<T>& C, bool conjugate )
 {
     EL_DEBUG_CSE
-    const Int n = ( orientation==NORMAL ? A.Height() : A.Width() );
+    const Int n = ( orientation==Orientation::NORMAL ? A.Height() : A.Width() );
     C.Resize( n, n );
     Zero( C );
     Syr2k( uplo, orientation, alpha, A, B, T(0), C, conjugate );
