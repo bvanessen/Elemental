@@ -7,7 +7,7 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-#include <El/blas_like/level2.hpp>
+#include "El/blas_like/level2.hpp"
 
 namespace El {
 namespace trdtrmm {

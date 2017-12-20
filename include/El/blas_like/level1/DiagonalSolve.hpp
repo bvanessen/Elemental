@@ -174,7 +174,7 @@ void DiagonalSolve
     #define PAYLOAD(CDIST,RDIST,WRAP) \
         auto& ACast = static_cast<DistMatrix<F,CDIST,RDIST,WRAP>&>(A); \
         DiagonalSolve( side, orientation, d, ACast, checkIfSingular );
-    #include <El/macros/GuardAndPayload.h>
+    #include "El/macros/GuardAndPayload.h"
 }
 
 
@@ -206,7 +206,7 @@ void DiagonalSolve
 #define EL_ENABLE_QUADDOUBLE
 #define EL_ENABLE_QUAD
 #define EL_ENABLE_BIGFLOAT
-#include <El/macros/Instantiate.h>
+#include "El/macros/Instantiate.h"
 
 #undef EL_EXTERN
 

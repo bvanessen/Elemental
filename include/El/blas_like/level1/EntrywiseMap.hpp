@@ -97,7 +97,7 @@ void EntrywiseMap
           AProx.AlignWith( B.DistData() ); \
           Copy( A, AProx ); \
           EntrywiseMap( AProx.Matrix(), B.Matrix(), func );
-        #include <El/macros/GuardAndPayload.h>
+        #include "El/macros/GuardAndPayload.h"
         #undef GUARD
         #undef PAYLOAD
     }
@@ -130,7 +130,7 @@ void EntrywiseMap
 #define EL_ENABLE_QUAD
 #define EL_ENABLE_BIGINT
 #define EL_ENABLE_BIGFLOAT
-#include <El/macros/Instantiate.h>
+#include "El/macros/Instantiate.h"
 
 #undef EL_EXTERN
 

@@ -7,8 +7,22 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
-namespace quasitrsv {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/MC_MR.hpp"
+#include "El/core/DistMatrix/Element/MR_MC.hpp"
+#include "El/core/DistMatrix/Element/MC_STAR.hpp"
+#include "El/core/DistMatrix/Element/MR_STAR.hpp"
+#include "El/core/DistMatrix/Element/STAR_MC.hpp"
+#include "El/core/DistMatrix/Element/STAR_MR.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
+namespace quasitrsv
+{
 
 template<typename F>
 void UNUnb( const Matrix<F>& U, Matrix<F>& x, bool checkIfSingular=false )
@@ -225,10 +239,10 @@ void UN
     }
     else
     {
-        DistMatrix<F,Dist::STAR,Dist::MR  > x1_STAR_MR(g);
-        DistMatrix<F,Dist::MC,  Dist::MR  > z1(g);
-        DistMatrix<F,Dist::MR,  Dist::MC  > z1_MR_MC(g);
-        DistMatrix<F,Dist::STAR,Dist::MC  > z_STAR_MC(g);
+        DistMatrix<F,Dist::STAR,Dist::MR> x1_STAR_MR(g);
+        DistMatrix<F,Dist::MC,  Dist::MR> z1(g);
+        DistMatrix<F,Dist::MR,  Dist::MC> z1_MR_MC(g);
+        DistMatrix<F,Dist::STAR,Dist::MC> z_STAR_MC(g);
 
         // Views of z[* ,MC]
         DistMatrix<F,Dist::STAR,Dist::MC> z0_STAR_MC(g), z1_STAR_MC(g);

@@ -9,7 +9,7 @@
 #ifndef EL_LITE_HPP
 #define EL_LITE_HPP
 
-#include <El/config.h>
-#include <El/core.hpp>
+#include "El/config.h"
+#include "El/core.hpp"
 
 #endif // ifndef EL_LITE_HPP

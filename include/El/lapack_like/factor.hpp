@@ -879,6 +879,6 @@ void Skeleton
 
 } // namespace El
 
-#include <El/lapack_like/factor/qr/ProxyHouseholder.hpp>
+#include "El/lapack_like/factor/qr/ProxyHouseholder.hpp"
 
 #endif // ifndef EL_FACTOR_HPP

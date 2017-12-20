@@ -21,8 +21,8 @@
 
 #include <ElSuiteSparse/amd.h>
 
-#include <El/lapack_like/factor/ldl/sparse/symbolic/Separator.hpp>
-#include <El/lapack_like/factor/ldl/sparse/symbolic/NodeInfo.hpp>
+#include "El/lapack_like/factor/ldl/sparse/symbolic/Separator.hpp"
+#include "El/lapack_like/factor/ldl/sparse/symbolic/NodeInfo.hpp"
 
 namespace El {
 namespace ldl {

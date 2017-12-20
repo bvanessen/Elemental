@@ -1922,10 +1922,10 @@ DistMatrix<Int,Dist::VR,Dist::STAR> HessenbergSpectralCloud
 
 } // namespace El
 
-#include <El/lapack_like/spectral/Schur.hpp>
-#include <El/lapack_like/spectral/HermitianEig.hpp>
-#include <El/lapack_like/spectral/SVD.hpp>
-#include <El/lapack_like/spectral/Lanczos.hpp>
-#include <El/lapack_like/spectral/ProductLanczos.hpp>
+#include "El/lapack_like/spectral/Schur.hpp"
+#include "El/lapack_like/spectral/HermitianEig.hpp"
+#include "El/lapack_like/spectral/SVD.hpp"
+#include "El/lapack_like/spectral/Lanczos.hpp"
+#include "El/lapack_like/spectral/ProductLanczos.hpp"
 
 #endif // ifndef EL_SPECTRAL_HPP

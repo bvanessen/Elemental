@@ -79,7 +79,7 @@ void SetDiagonal
     #define PAYLOAD(CDIST,RDIST,WRAP) \
       auto& ACast = static_cast<DistMatrix<T,CDIST,RDIST,WRAP>&>(A); \
       SetDiagonal( ACast, d, offset );
-    #include <El/macros/GuardAndPayload.h>
+    #include "El/macros/GuardAndPayload.h"
 }
 
 template<typename T>
@@ -93,7 +93,7 @@ void SetRealPartOfDiagonal
     #define PAYLOAD(CDIST,RDIST,WRAP) \
       auto& ACast = static_cast<DistMatrix<T,CDIST,RDIST,WRAP>&>(A); \
       SetRealPartOfDiagonal( ACast, d, offset );
-    #include <El/macros/GuardAndPayload.h>
+    #include "El/macros/GuardAndPayload.h"
 }
 
 template<typename T>
@@ -107,7 +107,7 @@ void SetImagPartOfDiagonal
     #define PAYLOAD(CDIST,RDIST,WRAP) \
       auto& ACast = static_cast<DistMatrix<T,CDIST,RDIST,WRAP>&>(A); \
       SetImagPartOfDiagonal( ACast, d, offset );
-    #include <El/macros/GuardAndPayload.h>
+    #include "El/macros/GuardAndPayload.h"
 }
 
 } // namespace El

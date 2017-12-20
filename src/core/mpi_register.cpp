@@ -125,7 +125,7 @@ template struct Types<long long int>; // Avoid conflict with Int
 #define EL_ENABLE_QUAD
 #define EL_ENABLE_BIGINT
 #define EL_ENABLE_BIGFLOAT
-#include <El/macros/Instantiate.h>
+#include "El/macros/Instantiate.h"
 
 // TODO(poulson): ValueInt<Real> user functions and ops
 // TODO(poulson): ValueIntPair<Real> user functions and ops

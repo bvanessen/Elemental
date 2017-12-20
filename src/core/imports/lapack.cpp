@@ -6,7 +6,7 @@
    which can be found in the LICENSE file in the root directory, or at 
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/lapack_like.hpp>
+#include "El/lapack_like.hpp"
 
 using El::FortranLogical;
 using El::BlasInt;

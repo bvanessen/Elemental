@@ -6,8 +6,8 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/blas_like/level1.hpp>
-#include <El/blas_like/level3.hpp>
+#include "El/blas_like/level1.hpp"
+#include "El/blas_like/level3.hpp"
 
 #include "./Trrk/Local.hpp"
 #include "./Trrk/NN.hpp"
@@ -154,6 +154,6 @@ void Trrk
 #define EL_ENABLE_QUAD
 #define EL_ENABLE_BIGINT
 #define EL_ENABLE_BIGFLOAT
-#include <El/macros/Instantiate.h>
+#include "El/macros/Instantiate.h"
 
 } // namespace El

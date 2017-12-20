@@ -9,7 +9,7 @@
 #ifndef EL_VIEW_HPP
 #define EL_VIEW_HPP
 
-#include <El/core/View/decl.hpp>
-#include <El/core/View/impl.hpp>
+#include "El/core/View/decl.hpp"
+#include "El/core/View/impl.hpp"
 
 #endif // ifndef EL_VIEW_HPP

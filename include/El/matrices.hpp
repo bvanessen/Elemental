@@ -700,7 +700,7 @@ void Wigner
 } // namespace El
 
 // TODO(poulson): Group these into a small number of includes of parent dir's
-#include <El/matrices/deterministic/classical/Circulant.hpp>
-#include <El/matrices/deterministic/lattice/NTRUAttack.hpp>
+#include "El/matrices/deterministic/classical/Circulant.hpp"
+#include "El/matrices/deterministic/lattice/NTRUAttack.hpp"
 
 #endif // ifndef EL_MATRICES_HPP

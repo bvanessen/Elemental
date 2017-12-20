@@ -140,7 +140,7 @@ void DiagonalScale
     #define PAYLOAD(CDIST,RDIST,WRAP) \
         auto& ACast = static_cast<DistMatrix<T,CDIST,RDIST,WRAP>&>(A); \
         DiagonalScale( side, orientation, d, ACast );
-    #include <El/macros/GuardAndPayload.h>
+    #include "El/macros/GuardAndPayload.h"
 }
 
 
@@ -167,7 +167,7 @@ void DiagonalScale
 #define EL_ENABLE_QUAD
 #define EL_ENABLE_BIGINT
 #define EL_ENABLE_BIGFLOAT
-#include <El/macros/Instantiate.h>
+#include "El/macros/Instantiate.h"
 
 #undef EL_EXTERN
 

@@ -9,7 +9,7 @@
 #ifndef EL_MATRIX_HPP
 #define EL_MATRIX_HPP
 
-#include <El/core/Matrix/decl.hpp>
-#include <El/core/Matrix/impl.hpp>
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Matrix/impl.hpp"
 
 #endif // ifndef EL_MATRIX_HPP

@@ -9,8 +9,8 @@
 #include <functional>
 #include <vector>
 
-#include <El/blas_like/level1.hpp>
-#include <El/matrices.hpp>
+#include "El/blas_like/level1.hpp"
+#include "El/matrices.hpp"
 
 // This is an implementation of the riffle-shuffle matrix made famous by
 // Diaconis et al. and analyzed by Trefethen et al. The binomial and Eulerian
@@ -168,6 +168,6 @@ void RiffleDecay( ElementalMatrix<F>& A, Int n )
 #define EL_ENABLE_QUADDOUBLE
 #define EL_ENABLE_QUAD
 #define EL_ENABLE_BIGFLOAT
-#include <El/macros/Instantiate.h>
+#include "El/macros/Instantiate.h"
 
 } // namespace El

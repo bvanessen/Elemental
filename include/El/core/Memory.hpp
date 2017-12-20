@@ -9,7 +9,7 @@
 #ifndef EL_MEMORY_HPP
 #define EL_MEMORY_HPP
 
-#include <El/core/Memory/decl.hpp>
-#include <El/core/Memory/impl.hpp>
+#include "El/core/Memory/decl.hpp"
+#include "El/core/Memory/impl.hpp"
 
 #endif // ifndef EL_MEMORY_HPP

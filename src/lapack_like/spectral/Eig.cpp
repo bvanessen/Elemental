@@ -131,6 +131,6 @@ void Eig
     AbstractDistMatrix<Complex<Base<Field>>>& X );
 
 #define EL_NO_INT_PROTO
-#include <El/macros/Instantiate.h>
+#include "El/macros/Instantiate.h"
 
 } // namespace El

@@ -9,7 +9,7 @@
 #ifndef EL_CONTROL_HPP
 #define EL_CONTROL_HPP
 
-#include <El/lapack_like/funcs.hpp>
+#include "El/lapack_like/funcs.hpp"
 
 namespace El {
 

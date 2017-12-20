@@ -358,17 +358,17 @@ void Adjoint
 #define EL_ENABLE_QUAD
 #define EL_ENABLE_BIGINT
 #define EL_ENABLE_BIGFLOAT
-#include <El/macros/Instantiate.h>
+#include "El/macros/Instantiate.h"
 
 #undef EL_EXTERN
 
 } // namespace El
 
-#include <El/blas_like/level1/Transpose/ColAllGather.hpp>
-#include <El/blas_like/level1/Transpose/ColFilter.hpp>
-#include <El/blas_like/level1/Transpose/PartialColAllGather.hpp>
-#include <El/blas_like/level1/Transpose/PartialColFilter.hpp>
-#include <El/blas_like/level1/Transpose/PartialRowFilter.hpp>
-#include <El/blas_like/level1/Transpose/RowFilter.hpp>
+#include "El/blas_like/level1/Transpose/ColAllGather.hpp"
+#include "El/blas_like/level1/Transpose/ColFilter.hpp"
+#include "El/blas_like/level1/Transpose/PartialColAllGather.hpp"
+#include "El/blas_like/level1/Transpose/PartialColFilter.hpp"
+#include "El/blas_like/level1/Transpose/PartialRowFilter.hpp"
+#include "El/blas_like/level1/Transpose/RowFilter.hpp"
 
 #endif // ifndef EL_BLAS_TRANSPOSE_HPP

@@ -9,7 +9,7 @@
 #ifndef EL_BLAS_AXPY_HPP
 #define EL_BLAS_AXPY_HPP
 
-#include <El/blas_like/level1/Axpy/util.hpp>
+#include "El/blas_like/level1/Axpy/util.hpp"
 
 namespace El
 {
@@ -181,7 +181,7 @@ void Axpy( S alphaS, const AbstractDistMatrix<T>& X, AbstractDistMatrix<T>& Y )
 #define EL_ENABLE_QUAD
 #define EL_ENABLE_BIGINT
 #define EL_ENABLE_BIGFLOAT
-#include <El/macros/Instantiate.h>
+#include "El/macros/Instantiate.h"
 
 #undef EL_EXTERN
 

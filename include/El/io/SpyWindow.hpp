@@ -13,7 +13,7 @@
 #include <QScrollArea>
 #include <QWidget>
 
-#include <El/io/SpyWidget.hpp>
+#include "El/io/SpyWidget.hpp"
 
 namespace El {
 

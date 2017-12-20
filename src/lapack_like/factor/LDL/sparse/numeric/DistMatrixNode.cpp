@@ -214,7 +214,7 @@ void DistMatrixNode<T>::ComputeCommMeta( const DistNodeInfo& info ) const
 #define EL_ENABLE_QUADDOUBLE
 #define EL_ENABLE_QUAD
 #define EL_ENABLE_BIGFLOAT
-#include <El/macros/Instantiate.h>
+#include "El/macros/Instantiate.h"
 
 } // namespace ldl
 } // namespace El

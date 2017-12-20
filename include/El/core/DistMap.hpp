@@ -19,6 +19,6 @@
 #ifndef EL_CORE_DISTMAP_HPP
 #define EL_CORE_DISTMAP_HPP
 
-#include <El/core/DistMap/decl.hpp>
+#include "El/core/DistMap/decl.hpp"
 
 #endif // ifndef EL_CORE_DISTMAP_HPP

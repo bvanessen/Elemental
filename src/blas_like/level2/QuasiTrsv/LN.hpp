@@ -7,8 +7,23 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
-namespace quasitrsv {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/MC_MR.hpp"
+#include "El/core/DistMatrix/Element/MR_MC.hpp"
+#include "El/core/DistMatrix/Element/MC_STAR.hpp"
+#include "El/core/DistMatrix/Element/MR_STAR.hpp"
+#include "El/core/DistMatrix/Element/STAR_MC.hpp"
+#include "El/core/DistMatrix/Element/STAR_MR.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/core/View/decl.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
+namespace quasitrsv
+{
 
 template<typename F>
 void LNUnb( const Matrix<F>& L, Matrix<F>& x, bool checkIfSingular=false )

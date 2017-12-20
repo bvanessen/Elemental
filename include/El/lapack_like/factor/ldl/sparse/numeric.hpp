@@ -22,7 +22,7 @@
 #define EL_SUITESPARSE_NO_SCALAR_FUNCS
 #include <ElSuiteSparse/ldl.hpp>
 
-#include <El/lapack_like/factor/ldl/sparse/symbolic.hpp>
+#include "El/lapack_like/factor/ldl/sparse/symbolic.hpp"
 
 namespace El {
 

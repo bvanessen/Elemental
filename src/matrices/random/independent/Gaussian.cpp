@@ -8,8 +8,8 @@
 */
 #include <functional>
 
-#include <El/blas_like/level1.hpp>
-#include <El/matrices.hpp>
+#include "El/blas_like/level1.hpp"
+#include "El/matrices.hpp"
 
 namespace El {
 
@@ -63,6 +63,6 @@ void Gaussian
 #define EL_ENABLE_QUADDOUBLE
 #define EL_ENABLE_QUAD
 #define EL_ENABLE_BIGFLOAT
-#include <El/macros/Instantiate.h>
+#include "El/macros/Instantiate.h"
 
 } // namespace El

@@ -9,7 +9,7 @@
 #ifndef EL_BLAS1_HPP
 #define EL_BLAS1_HPP
 
-#include <El/blas_like/level1/decl.hpp>
-#include <El/blas_like/level1/impl.hpp>
+#include "El/blas_like/level1/decl.hpp"
+#include "El/blas_like/level1/impl.hpp"
 
 #endif // ifndef EL_BLAS1_HPP
