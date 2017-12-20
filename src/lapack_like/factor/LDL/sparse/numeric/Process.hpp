@@ -70,8 +70,8 @@ void Process
 
         // Factor the transpose of L
         // TODO(poulson): Reuse these workspaces
-        vector<Int> LNnz(numSources), pattern(numSources), flag(numSources);
-        vector<Field> y(numSources);
+        std::vector<Int> LNnz(numSources), pattern(numSources), flag(numSources);
+        std::vector<Field> y(numSources);
         suite_sparse::ldl::Numeric
         ( numSources,
           front.workSparse.LockedOffsetBuffer(),
@@ -194,18 +194,18 @@ void Process
     mpi::Comm comm = front.L2D.DistComm();
     const int commSize = mpi::Size( comm );
     const auto& childU = childFront.work;
-    vector<int> sendSizes(commSize), recvSizes(commSize);
+    std::vector<int> sendSizes(commSize), recvSizes(commSize);
     for( int q=0; q<commSize; ++q )
     {
         sendSizes[q] = front.commMeta.numChildSendInds[q];
         recvSizes[q] = front.commMeta.childRecvInds[q].size()/2;
     }
-    vector<int> sendOffs, recvOffs;
+    std::vector<int> sendOffs, recvOffs;
     const int sendBufSize = Scan( sendSizes, sendOffs );
     const int recvBufSize = Scan( recvSizes, recvOffs );
 
     // Pack the updates
-    vector<Field> sendBuf( sendBufSize );
+    std::vector<Field> sendBuf( sendBufSize );
     const Int myChild = ( childInfo.onLeft ? 0 : 1 );
     auto offs = sendOffs;
     const Int updateLocHeight = childU.LocalHeight();
@@ -236,7 +236,7 @@ void Process
         childFront.duplicate->workDense.Empty();
 
     // AllToAll to send and receive the child updates
-    vector<Field> recvBuf( recvBufSize );
+    std::vector<Field> recvBuf( recvBufSize );
     EL_DEBUG_ONLY(VerifySendsAndRecvs( sendSizes, recvSizes, comm ))
     SparseAllToAll
     ( sendBuf, sendSizes, sendOffs,

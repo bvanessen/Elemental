@@ -152,8 +152,8 @@ static void PullInit
 template<typename T>
 static void PullLocalUnpack
 ( const NodeInfo& info,
-  const vector<T>& recvVals,
-  const vector<int>& mappedOwners,
+  const std::vector<T>& recvVals,
+  const std::vector<int>& mappedOwners,
         MatrixNode<T>& XNode,
   Int& off, std::vector<int>& offs )
 {
@@ -175,8 +175,8 @@ static void PullLocalUnpack
 template<typename T>
 static void PullLocalUnpackMulti
 ( const NodeInfo& info,
-  const vector<T>& recvVals,
-  const vector<int>& mappedOwners,
+  const std::vector<T>& recvVals,
+  const std::vector<int>& mappedOwners,
         MatrixNode<T>& XNode,
   Int& off, std::vector<int>& offs,
   Int width )
@@ -199,8 +199,8 @@ static void PullLocalUnpackMulti
 template<typename T>
 static void PullUnpack
 ( const DistNodeInfo& info,
-  const vector<T>& recvVals,
-  const vector<int>& mappedOwners,
+  const std::vector<T>& recvVals,
+  const std::vector<int>& mappedOwners,
         DistMultiVecNode<T>& XNode,
   Int& off, std::vector<int>& offs )
 {
@@ -225,8 +225,8 @@ static void PullUnpack
 template<typename T>
 static void PullUnpackMulti
 ( const DistNodeInfo& info,
-  const vector<T>& recvVals,
-  const vector<int>& mappedOwners,
+  const std::vector<T>& recvVals,
+  const std::vector<int>& mappedOwners,
         DistMultiVecNode<T>& XNode,
   Int& off, std::vector<int>& offs,
   Int width )
@@ -273,7 +273,7 @@ void DistMultiVecNode<T>::Pull
 
     // Fulfill the requests
     const Int numSendInds = meta.recvInds.size();
-    vector<T> sendVals( numSendInds*width );
+    std::vector<T> sendVals( numSendInds*width );
     if( width == 1 )
     {
         for( Int s=0; s<numSendInds; ++s )
@@ -288,7 +288,7 @@ void DistMultiVecNode<T>::Pull
 
     // Reply with the values
     const Int numRecvInds = meta.mappedOwners.size();
-    vector<T> recvVals( numRecvInds*width );
+    std::vector<T> recvVals( numRecvInds*width );
     if( width != 1 )
     {
         for( int q=0; q<commSize; ++q )
@@ -335,9 +335,9 @@ template<typename T>
 static void PushLocalPack
 ( const NodeInfo& node,
   const MatrixNode<T>& XNode,
-  const vector<int>& mappedOwners,
-        vector<T>& sendVals,
-  Int& off, vector<int>& offs )
+  const std::vector<int>& mappedOwners,
+        std::vector<T>& sendVals,
+  Int& off, std::vector<int>& offs )
 {
     EL_DEBUG_CSE
     const Int numChildren = node.children.size();
@@ -358,9 +358,9 @@ template<typename T>
 static void PushLocalPackMulti
 ( const NodeInfo& node,
   const MatrixNode<T>& XNode,
-  const vector<int>& mappedOwners,
-        vector<T>& sendVals,
-  Int& off, vector<int>& offs )
+  const std::vector<int>& mappedOwners,
+        std::vector<T>& sendVals,
+  Int& off, std::vector<int>& offs )
 {
     EL_DEBUG_CSE
     const Int numChildren = node.children.size();
@@ -383,9 +383,9 @@ template<typename T>
 static void PushPack
 ( const DistNodeInfo& node,
   const DistMultiVecNode<T>& XNode,
-  const vector<int>& mappedOwners,
-        vector<T>& sendVals,
-  Int& off, vector<int>& offs )
+  const std::vector<int>& mappedOwners,
+        std::vector<T>& sendVals,
+  Int& off, std::vector<int>& offs )
 {
     EL_DEBUG_CSE
     if( node.child.get() == nullptr )
@@ -410,9 +410,9 @@ template<typename T>
 static void PushPackMulti
 ( const DistNodeInfo& node,
   const DistMultiVecNode<T>& XNode,
-  const vector<int>& mappedOwners,
-        vector<T>& sendVals,
-  Int& off, vector<int>& offs )
+  const std::vector<int>& mappedOwners,
+        std::vector<T>& sendVals,
+  Int& off, std::vector<int>& offs )
 {
     EL_DEBUG_CSE
     if( node.child.get() == nullptr )
@@ -601,7 +601,7 @@ void DistMultiVecNode<T>::Push
     if( time && commRank == 0 )
         timer.Start();
     const Int numRecvInds = meta.recvInds.size();
-    vector<T> sendVals( numSendInds*width );
+    std::vector<T> sendVals( numSendInds*width );
     {
         Int off=0;
         auto offs = meta.sendOffs;
@@ -618,7 +618,7 @@ void DistMultiVecNode<T>::Push
     // Send the values
     if( time && commRank == 0 )
         timer.Start();
-    vector<T> recvVals( numRecvInds*width );
+    std::vector<T> recvVals( numRecvInds*width );
     if( width != 1 )
     {
         for( int q=0; q<commSize; ++q )
@@ -707,7 +707,7 @@ void DistMultiVecNode<T>::ComputeCommMeta( const DistNodeInfo& info ) const
 
     // This is currently assumed (and will eventually be lifted)
     const Int numChildren = 2;
-    vector<int> teamSizes(numChildren), teamOffs(numChildren);
+    std::vector<int> teamSizes(numChildren), teamOffs(numChildren);
 
     const Grid& grid = info.Grid();
     const int teamSize = grid.Size();
@@ -750,7 +750,7 @@ void DistMultiVecNode<T>::ComputeCommMeta( const DistNodeInfo& info ) const
     for( Int c=0; c<numChildren; ++c )
     {
         const Int numInds = info.childRelInds[c].size();
-        vector<Int> inds;
+        std::vector<Int> inds;
         for( Int i=0; i<numInds; ++i )
             if( work.IsLocalRow( info.childRelInds[c][i] ) )
                 inds.push_back( i );

@@ -63,7 +63,7 @@ void Print
 // =========
 
 template<typename T>
-void Print( const vector<T>& x, string title, ostream& os )
+void Print( const std::vector<T>& x, string title, ostream& os )
 {
     EL_DEBUG_CSE
     if( title != "" )
@@ -79,7 +79,7 @@ void Print( const vector<T>& x, string title, ostream& os )
 
 #define PROTO(T) \
   template void Print \
-  ( const vector<T>& x, string title, ostream& os ); \
+  ( const std::vector<T>& x, string title, ostream& os ); \
   template void Print \
   ( const Matrix<T>& A, string title, ostream& os ); \
   template void Print \

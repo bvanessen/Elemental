@@ -73,7 +73,7 @@ struct MatrixNode
     DistMultiVecNode<T>* duplicateMV=nullptr;
 
     // Unique pointers to the children.
-    vector<std::unique_ptr<MatrixNode<T>>> children;
+    std::vector<std::unique_ptr<MatrixNode<T>>> children;
 
     MatrixNode( MatrixNode<T>* parentNode=nullptr );
 
@@ -82,7 +82,7 @@ struct MatrixNode
     MatrixNode( DistMultiVecNode<T>* dupNode );
 
     MatrixNode
-    ( const vector<Int>& invMap,
+    ( const std::vector<Int>& invMap,
       const NodeInfo& info,
       const Matrix<T>& X );
 
@@ -91,11 +91,11 @@ struct MatrixNode
     const MatrixNode<T>& operator=( const MatrixNode<T>& X );
 
     void Pull
-    ( const vector<Int>& invMap,
+    ( const std::vector<Int>& invMap,
       const NodeInfo& info,
       const Matrix<T>& X );
     void Push
-    ( const vector<Int>& invMap,
+    ( const std::vector<Int>& invMap,
       const NodeInfo& info,
             Matrix<T>& X ) const;
 
@@ -105,8 +105,8 @@ struct MatrixNode
 struct MultiVecCommMeta
 {
     Int localOff, localSize;
-    vector<int> numChildSendInds;
-    vector<vector<Int>> childRecvInds;
+    std::vector<int> numChildSendInds;
+    std::vector<vector<Int>> childRecvInds;
 
     void Empty()
     {
@@ -117,13 +117,13 @@ struct MultiVecCommMeta
 
 struct DistMultiVecNodeMeta
 {
-    vector<Int> sendInds;
-    vector<Int> recvInds;
-    vector<int> mappedOwners;
-    vector<int> sendSizes;
-    vector<int> sendOffs;
-    vector<int> recvSizes;
-    vector<int> recvOffs;
+    std::vector<Int> sendInds;
+    std::vector<Int> recvInds;
+    std::vector<int> mappedOwners;
+    std::vector<int> sendSizes;
+    std::vector<int> sendOffs;
+    std::vector<int> recvSizes;
+    std::vector<int> recvOffs;
 
     template<typename T>
     void Initialize
@@ -191,8 +191,8 @@ struct DistMultiVecNode
 
 struct MatrixCommMeta
 {
-    vector<int> numChildSendInds;
-    vector<vector<Int>> childRecvInds;
+    std::vector<int> numChildSendInds;
+    std::vector<vector<Int>> childRecvInds;
 
     void Empty()
     {
@@ -275,7 +275,7 @@ struct Front
     DistFront<Field>* duplicate=nullptr;
 
     // Unique pointers to the child fronts (should they exist).
-    vector<std::unique_ptr<Front<Field>>> children;
+    std::vector<std::unique_ptr<Front<Field>>> children;
 
     Front( Front<Field>* parentNode=nullptr );
 
@@ -283,7 +283,7 @@ struct Front
 
     Front
     ( const SparseMatrix<Field>& A,
-      const vector<Int>& reordering,
+      const std::vector<Int>& reordering,
       const NodeInfo& rootInfo,
       bool hermitian=true );
 
@@ -291,17 +291,17 @@ struct Front
 
     void Pull
     ( const SparseMatrix<Field>& A,
-      const vector<Int>& reordering,
+      const std::vector<Int>& reordering,
       const NodeInfo& rootInfo,
       bool hermitian=true );
     void PullUpdate
     ( const SparseMatrix<Field>& A,
-      const vector<Int>& reordering,
+      const std::vector<Int>& reordering,
       const NodeInfo& rootInfo );
 
     void Push
     (       SparseMatrix<Field>& A,
-      const vector<Int>& reordering,
+      const std::vector<Int>& reordering,
       const NodeInfo& rootInfo ) const;
 
     void Unpack( SparseMatrix<Field>& A, const NodeInfo& rootInfo ) const;
@@ -318,10 +318,10 @@ struct Front
 
 struct FactorCommMeta
 {
-    vector<int> numChildSendInds;
+    std::vector<int> numChildSendInds;
     // This information does not necessarily have to be kept and can be
     // computed from the above information (albeit somewhat expensively).
-    mutable vector<vector<Int>> childRecvInds;
+    mutable std::vector<vector<Int>> childRecvInds;
 
     void EmptyChildRecvIndices() const
     { SwapClear(childRecvInds); }
@@ -389,9 +389,9 @@ struct DistFront
       const DistMap& reordering,
       const DistSeparator& rootSep,
       const DistNodeInfo& info,
-            vector<Int>& mappedSources,
-            vector<Int>& mappedTargets,
-            vector<Int>& colOffs,
+            std::vector<Int>& mappedSources,
+            std::vector<Int>& mappedTargets,
+            std::vector<Int>& colOffs,
       bool hermitian=false );
 
     void PullUpdate
@@ -405,9 +405,9 @@ struct DistFront
       const DistMap& reordering,
       const DistSeparator& rootSep,
       const DistNodeInfo& info,
-            vector<Int>& mappedSources,
-            vector<Int>& mappedTargets,
-            vector<Int>& colOffs );
+            std::vector<Int>& mappedSources,
+            std::vector<Int>& mappedTargets,
+            std::vector<Int>& colOffs );
 
     // NOTE: This routine is not yet functioning
     void Push
@@ -530,11 +530,11 @@ public:
     ldl::Separator& Separator();
     const ldl::Separator& Separator() const;
 
-    vector<Int>& Map();
-    const vector<Int>& Map() const;
+    std::vector<Int>& Map();
+    const std::vector<Int>& Map() const;
 
-    vector<Int>& InverseMap();
-    const vector<Int>& InverseMap() const;
+    std::vector<Int>& InverseMap();
+    const std::vector<Int>& InverseMap() const;
 
 private:
     bool initialized_=false;
@@ -543,7 +543,7 @@ private:
     std::unique_ptr<ldl::NodeInfo> info_;
     std::unique_ptr<ldl::Separator> separator_;
 
-    vector<Int> map_, inverseMap_;
+    std::vector<Int> map_, inverseMap_;
 };
 
 template<typename Field>
@@ -671,7 +671,7 @@ private:
 
     // Metadata for repeated calls to DistFront<Field>::Pull
     mutable bool formedPullMetadata_=false;
-    mutable vector<Int> mappedSources_, mappedTargets_, columnOffsets_;
+    mutable std::vector<Int> mappedSources_, mappedTargets_, columnOffsets_;
 
     // Metadata for future use.
     mutable ldl::DistMultiVecNodeMeta dmvMeta_;

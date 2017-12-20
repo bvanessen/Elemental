@@ -90,7 +90,7 @@ void HermitianTridiag
         const Int p = grid.Size();
         const Int pSqrt = Int(sqrt(double(p)));
 
-        vector<int> squareRanks(pSqrt*pSqrt);
+        std::vector<int> squareRanks(pSqrt*pSqrt);
         if( ctrl.order == grid.Order() )
         {
             for( Int j=0; j<pSqrt; ++j )

@@ -27,10 +27,10 @@ DistMap::DistMap( Int numSources, const El::Grid& grid )
 
 DistMap::~DistMap() { }
 
-void DistMap::Translate( vector<Int>& localInds ) const
+void DistMap::Translate( std::vector<Int>& localInds ) const
 {
     EL_DEBUG_CSE
-    vector<int> origOwners;
+    std::vector<int> origOwners;
     if( origOwners.size() != localInds.size() )
     {
         const Int numLocalInds = localInds.size();
@@ -48,7 +48,7 @@ void DistMap::Translate( vector<Int>& localInds ) const
 }
 
 void DistMap::Translate
-( vector<Int>& localInds, const vector<int>& origOwners ) const
+( std::vector<Int>& localInds, const std::vector<int>& origOwners ) const
 {
     EL_DEBUG_CSE
     const Int numLocalInds = localInds.size();
@@ -57,7 +57,7 @@ void DistMap::Translate
 
     // Count how many indices we need each process to map
     // Avoid unncessary branching within the loop by avoiding RowToProcess
-    vector<int> requestSizes( commSize, 0 );
+    std::vector<int> requestSizes( commSize, 0 );
     for( Int s=0; s<numLocalInds; ++s )
     {
         const Int i = localInds[s];
@@ -66,17 +66,17 @@ void DistMap::Translate
     }
 
     // Send our requests and find out what we need to fulfill
-    vector<int> fulfillSizes( commSize );
+    std::vector<int> fulfillSizes( commSize );
     mpi::AllToAll
     ( requestSizes.data(), 1, fulfillSizes.data(), 1, grid_->Comm() );
 
     // Prepare for the AllToAll to exchange request sizes
-    vector<int> requestOffs, fulfillOffs;
+    std::vector<int> requestOffs, fulfillOffs;
     const int numRequests = Scan( requestSizes, requestOffs );
     const int numFulfills = Scan( fulfillSizes, fulfillOffs );
 
     // Pack the requested information
-    vector<int> requests( numRequests );
+    std::vector<int> requests( numRequests );
     auto offs = requestOffs;
     for( Int s=0; s<numLocalInds; ++s )
     {
@@ -86,7 +86,7 @@ void DistMap::Translate
     }
 
     // Perform the first index exchange
-    vector<int> fulfills( numFulfills );
+    std::vector<int> fulfills( numFulfills );
     mpi::AllToAll
     ( requests.data(), requestSizes.data(), requestOffs.data(),
       fulfills.data(), fulfillSizes.data(), fulfillOffs.data(), grid_->Comm() );
@@ -192,8 +192,8 @@ void DistMap::SetLocal( Int localSource, Int target )
     map_[localSource] = target;
 }
 
-      vector<Int>& DistMap::Map()       { return map_; }
-const vector<Int>& DistMap::Map() const { return map_; }
+      std::vector<Int>& DistMap::Map()       { return map_; }
+const std::vector<Int>& DistMap::Map() const { return map_; }
 
       Int* DistMap::Buffer()       { return map_.data(); }
 const Int* DistMap::Buffer() const { return map_.data(); }
@@ -231,7 +231,7 @@ const DistMap& DistMap::operator=( const DistMap& map )
     return *this;
 }
 
-void InvertMap( const vector<Int>& map, vector<Int>& inverseMap )
+void InvertMap( const std::vector<Int>& map, std::vector<Int>& inverseMap )
 {
     EL_DEBUG_CSE
     const int n = map.size();
@@ -248,25 +248,25 @@ void InvertMap( const DistMap& map, DistMap& inverseMap )
     const int commSize = grid.Size();
 
     const Int numLocalSources = map.NumLocalSources();
-    const vector<Int>& localMap = map.Map();
+    const std::vector<Int>& localMap = map.Map();
     const Int firstLocalSource = map.FirstLocalSource();
 
     // TODO(poulson): Allow this to be cached?
-    vector<int> owners(numLocalSources);
+    std::vector<int> owners(numLocalSources);
     for( Int s=0; s<numLocalSources; ++s )
         owners[s] = map.RowOwner(localMap[s]);
 
     // How many pairs of original and mapped indices to send to each process
-    vector<int> sendSizes( commSize, 0 );
+    std::vector<int> sendSizes( commSize, 0 );
     for( Int s=0; s<numLocalSources; ++s )
         sendSizes[owners[s]] += 2;
 
     // Coordinate all of the processes on their send sizes
-    vector<int> recvSizes( commSize );
+    std::vector<int> recvSizes( commSize );
     mpi::AllToAll( sendSizes.data(), 1, recvSizes.data(), 1, comm );
 
     // Prepare for the AllToAll to exchange send sizes
-    vector<int> sendOffs, recvOffs;
+    std::vector<int> sendOffs, recvOffs;
     const int numSends = Scan( sendSizes, sendOffs );
     const int numRecvs = Scan( recvSizes, recvOffs );
     EL_DEBUG_ONLY(
@@ -277,7 +277,7 @@ void InvertMap( const DistMap& map, DistMap& inverseMap )
     )
 
     // Pack our map information
-    vector<int> sends( numSends );
+    std::vector<int> sends( numSends );
     auto offs = sendOffs;
     for( Int s=0; s<numLocalSources; ++s )
     {
@@ -288,7 +288,7 @@ void InvertMap( const DistMap& map, DistMap& inverseMap )
     }
 
     // Send out the map information
-    vector<int> recvs( numRecvs );
+    std::vector<int> recvs( numRecvs );
     mpi::AllToAll
     ( sends.data(), sendSizes.data(), sendOffs.data(),
       recvs.data(), recvSizes.data(), recvOffs.data(), comm );

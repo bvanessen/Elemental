@@ -592,7 +592,7 @@ MRRRHelper
     dSub_STAR_STAR.Resize( n-1, 1, n );
     Copy( dSub, dSub_STAR_STAR );
 
-    vector<double> wVector(n);
+    std::vector<double> wVector(n);
     herm_tridiag_eig::Info rangeInfo;
     if( ctrl.subset.rangeSubset )
         rangeInfo = herm_tridiag_eig::Eig
@@ -694,7 +694,7 @@ MRRRHelper
     RemovePhase( dSub_STAR_STAR, dSubReal );
 
     herm_tridiag_eig::Info rangeInfo;
-    vector<double> wVector(n);
+    std::vector<double> wVector(n);
     if( ctrl.subset.rangeSubset )
     {
         rangeInfo = herm_tridiag_eig::Eig
@@ -1184,7 +1184,7 @@ MRRRHelper
     Int k;
     if( ctrl.subset.rangeSubset )
     {
-        vector<double> dVector(n), dSubVector(n), wVector(n);
+        std::vector<double> dVector(n), dSubVector(n), wVector(n);
         MemCopy( dVector.data(), d_STAR_STAR.Buffer(), n );
         MemCopy( dSubVector.data(), dSub_STAR_STAR.Buffer(), n-1 );
         auto estimate = herm_tridiag_eig::EigEstimate
@@ -1202,7 +1202,7 @@ MRRRHelper
     Q.Resize( n, k );
 
     herm_tridiag_eig::Info rangeInfo;
-    vector<double> wVector(n);
+    std::vector<double> wVector(n);
     if( ctrl.subset.rangeSubset )
         rangeInfo = herm_tridiag_eig::Eig
           ( int(n), d_STAR_STAR.Buffer(), dSub_STAR_STAR.Buffer(),
@@ -1271,7 +1271,7 @@ MRRRHelper
     Int k;
     if( ctrl.subset.rangeSubset )
     {
-        vector<double> dVector(n), dSubVector(n), wVector(n);
+        std::vector<double> dVector(n), dSubVector(n), wVector(n);
         MemCopy( dVector.data(), d_STAR_STAR.Buffer(), n );
         MemCopy( dSubVector.data(), dSubReal.Buffer(), n-1 );
         auto estimate = herm_tridiag_eig::EigEstimate
@@ -1290,7 +1290,7 @@ MRRRHelper
     QReal.Resize( n, k );
 
     herm_tridiag_eig::Info rangeInfo;
-    vector<double> wVector(n);
+    std::vector<double> wVector(n);
     if( ctrl.subset.rangeSubset )
         rangeInfo = herm_tridiag_eig::Eig
           ( int(n), d_STAR_STAR.Buffer(), dSubReal.Buffer(),
@@ -1451,7 +1451,7 @@ Int MRRREstimateHelper
     Copy( d, d_STAR_STAR );
     dSub_STAR_STAR.Resize( n-1, 1, n );
     Copy( dSub, dSub_STAR_STAR );
-    vector<double> dVector(n), dSubVector(n), wVector(n);
+    std::vector<double> dVector(n), dSubVector(n), wVector(n);
     MemCopy( dVector.data(), d_STAR_STAR.Buffer(), n );
     MemCopy( dSubVector.data(), dSub_STAR_STAR.Buffer(), n-1 );
     auto estimate = herm_tridiag_eig::EigEstimate
@@ -1509,7 +1509,7 @@ MRRRPostEstimateHelper
     dSub_STAR_STAR.Resize( n-1, 1, n );
     Copy( dSub, dSub_STAR_STAR );
 
-    vector<double> wVector(n);
+    std::vector<double> wVector(n);
     auto rangeInfo = herm_tridiag_eig::Eig
     ( int(n), d_STAR_STAR.Buffer(), dSub_STAR_STAR.Buffer(), wVector.data(),
       Q.Buffer(), Q.LDim(), w.ColComm(), vl, vu );

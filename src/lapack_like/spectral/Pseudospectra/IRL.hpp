@@ -16,8 +16,8 @@ namespace pspec {
 
 template<typename Real>
 void ComputeNewEstimates
-( const vector<Matrix<Real>>& HDiagList,
-  const vector<Matrix<Real>>& HSubdiagList,
+( const std::vector<Matrix<Real>>& HDiagList,
+  const std::vector<Matrix<Real>>& HSubdiagList,
   const Matrix<Int>& activeConverged,
   Matrix<Real>& activeEsts )
 {
@@ -55,8 +55,8 @@ void ComputeNewEstimates
 
 template<typename Real>
 void ComputeNewEstimates
-( const vector<Matrix<Real>>& HDiagList,
-  const vector<Matrix<Real>>& HSubdiagList,
+( const std::vector<Matrix<Real>>& HDiagList,
+  const std::vector<Matrix<Real>>& HSubdiagList,
   const DistMatrix<Int,Dist::MR,Dist::STAR>& activeConverged,
         DistMatrix<Real,Dist::MR,Dist::STAR>& activeEsts )
 {
@@ -68,10 +68,10 @@ void ComputeNewEstimates
 
 template<typename Real>
 void Restart
-( const vector<Matrix<Real>>& HDiagList,
-  const vector<Matrix<Real>>& HSubdiagList,
+( const std::vector<Matrix<Real>>& HDiagList,
+  const std::vector<Matrix<Real>>& HSubdiagList,
   const Matrix<Int>& activeConverged,
-  vector<Matrix<Complex<Real>>>& VList )
+  std::vector<Matrix<Complex<Real>>>& VList )
 {
     EL_DEBUG_CSE
     const Int n = VList[0].Height();
@@ -117,14 +117,14 @@ void Restart
 
 template<typename Real>
 void Restart
-( const vector<Matrix<Real>>& HDiagList,
-  const vector<Matrix<Real>>& HSubdiagList,
+( const std::vector<Matrix<Real>>& HDiagList,
+  const std::vector<Matrix<Real>>& HSubdiagList,
   const DistMatrix<Int,Dist::MR,Dist::STAR>& activeConverged,
-  vector<DistMatrix<Complex<Real>>>& VList )
+  std::vector<DistMatrix<Complex<Real>>>& VList )
 {
     EL_DEBUG_CSE
     const Int basisSize = HDiagList[0].size();
-    vector<Matrix<Complex<Real>>> VLocList(basisSize+1);
+    std::vector<Matrix<Complex<Real>>> VLocList(basisSize+1);
     for( Int j=0; j<basisSize+1; ++j )
         View( VLocList[j], VList[j].Matrix() );
     Restart
@@ -174,11 +174,11 @@ IRL
         Adjoint( U, UAdj );
 
     // Simultaneously run IRL for different shifts
-    vector<Matrix<C>> VList(basisSize+1), activeVList(basisSize+1);
+    std::vector<Matrix<C>> VList(basisSize+1), activeVList(basisSize+1);
     for( Int j=0; j<basisSize+1; ++j )
         Zeros( VList[j], n, numShifts );
     Gaussian( VList[0], n, numShifts );
-    vector<Matrix<Real>> HDiagList(numShifts), HSubdiagList(numShifts);
+    std::vector<Matrix<Real>> HDiagList(numShifts), HSubdiagList(numShifts);
     Matrix<Real> realComponents;
     Matrix<Complex<Real>> components;
     Matrix<Real> colNorms;
@@ -414,7 +414,7 @@ IRL
     }
 
     // Simultaneously run IRL for different shifts
-    vector<DistMatrix<C>> VList(basisSize+1), activeVList(basisSize+1);
+    std::vector<DistMatrix<C>> VList(basisSize+1), activeVList(basisSize+1);
     for( Int j=0; j<basisSize+1; ++j )
     {
         VList[j].SetGrid( g );
@@ -422,7 +422,7 @@ IRL
     }
     Gaussian( VList[0], n, numShifts );
     const Int numMRShifts = VList[0].LocalWidth();
-    vector<Matrix<Real>> HDiagList(numMRShifts),
+    std::vector<Matrix<Real>> HDiagList(numMRShifts),
                          HSubdiagList(numMRShifts);
     Matrix<Real> realComponents;
     Matrix<Complex<Real>> components;

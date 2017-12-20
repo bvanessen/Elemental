@@ -21,7 +21,7 @@ namespace El {
 namespace ldl {
 
 inline void PairwiseExchangeLowerStruct
-( Int& theirSize, vector<Int>& theirLowerStruct, const DistNodeInfo& node )
+( Int& theirSize, std::vector<Int>& theirLowerStruct, const DistNodeInfo& node )
 {
     EL_DEBUG_CSE
     const Grid& grid = node.Grid();
@@ -56,7 +56,7 @@ inline void PairwiseExchangeLowerStruct
 }
 
 inline void BroadcastLowerStruct
-( Int& theirSize, vector<Int>& theirLowerStruct, const DistNodeInfo& node )
+( Int& theirSize, std::vector<Int>& theirLowerStruct, const DistNodeInfo& node )
 {
     EL_DEBUG_CSE
     const Grid& grid = node.Grid();
@@ -116,7 +116,7 @@ inline void BroadcastLowerStruct
 }
 
 inline void GetLowerStruct
-( Int& theirSize, vector<Int>& theirLowerStruct, const DistNodeInfo& node )
+( Int& theirSize, std::vector<Int>& theirLowerStruct, const DistNodeInfo& node )
 {
     EL_DEBUG_CSE
     const Grid& grid = node.Grid();
@@ -134,7 +134,7 @@ inline void GetLowerStruct
 }
 
 inline void ComputeStructAndRelInds
-( Int theirSize, const vector<Int>& theirLowerStruct, DistNodeInfo& node )
+( Int theirSize, const std::vector<Int>& theirLowerStruct, DistNodeInfo& node )
 {
     EL_DEBUG_CSE
     const auto& myLowerStruct = node.child->lowerStruct;
@@ -169,7 +169,7 @@ inline void ComputeStructAndRelInds
     auto partialStruct = Union( childrenStruct, node.origLowerStruct );
 
     // Now the node indices
-    vector<Int> nodeInds( node.size );
+    std::vector<Int> nodeInds( node.size );
     for( Int i=0; i<node.size; ++i )
         nodeInds[i] = node.off + i;
     auto fullStruct = Union( nodeInds, partialStruct );
@@ -257,7 +257,7 @@ Int Analysis( NodeInfo& node, Int myOff )
         }
 
         // Now add in the node indices
-        vector<Int> nodeInds( node.size );
+        std::vector<Int> nodeInds( node.size );
         for( Int i=0; i<node.size; ++i )
             nodeInds[i] = node.off+ i;
         fullStruct = Union( fullStruct, nodeInds );
@@ -331,7 +331,7 @@ void Analysis( DistNodeInfo& node, bool computeFactRecvInds )
 
     // Get the lower struct for the child we do not share
     Int theirSize;
-    vector<Int> theirLowerStruct;
+    std::vector<Int> theirLowerStruct;
     GetLowerStruct( theirSize, theirLowerStruct, node );
 
     // Perform one level of symbolic factorization and then compute

@@ -102,7 +102,7 @@ void InPlaceRedist( DistMatrix<F>& Q, Int rowAlign, const Base<F>* readBuffer )
     const Int portionSize = mpi::Pad( maxHeight*maxWidth );
 
     // Allocate our send/recv buffers
-    vector<Real> buffer(2*r*portionSize);
+    std::vector<Real> buffer(2*r*portionSize);
     Real* sendBuffer = &buffer[0];
     Real* recvBuffer = &buffer[r*portionSize];
 

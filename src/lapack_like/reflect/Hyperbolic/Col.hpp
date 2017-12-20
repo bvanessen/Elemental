@@ -30,7 +30,7 @@ F Col( F& chi, AbstractDistMatrix<F>& x )
     mpi::Comm colComm = x.ColComm();
     const Int colStride = x.ColStride();
 
-    vector<Real> localNorms(colStride);
+    std::vector<Real> localNorms(colStride);
     Real localNorm = Nrm2( x.LockedMatrix() ); 
     mpi::AllGather( &localNorm, 1, localNorms.data(), 1, colComm );
     Real norm = blas::Nrm2( colStride, localNorms.data(), 1 );

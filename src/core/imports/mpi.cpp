@@ -434,7 +434,7 @@ template<typename T>
 void WaitAll( int numRequests, Request<T>* requests ) EL_NO_RELEASE_EXCEPT
 {
     EL_DEBUG_CSE
-    vector<Status> statuses( numRequests );
+    std::vector<Status> statuses( numRequests );
     WaitAll( numRequests, requests, statuses.data() );
 }
 
@@ -450,7 +450,7 @@ EL_NO_RELEASE_EXCEPT
     // which implies that the following code is legal. AFAIK, there are not
     // any popular MPI implementations which should break this logic, but
     // the alternative #ifdef logic is provided in case a breakage is observed.
-    vector<MPI_Request> backends( numRequests );
+    std::vector<MPI_Request> backends( numRequests );
     for( Int j=0; j<numRequests; ++j )
         backends[j] = requests[j].backend;
     SafeMpi( MPI_Waitall( numRequests, backends.data(), statuses ) );
@@ -495,7 +495,7 @@ EL_NO_RELEASE_EXCEPT
     // which implies that the following code is legal. AFAIK, there are not
     // any popular MPI implementations which should break this logic, but
     // the alternative #ifdef logic is provided in case a breakage is observed.
-    vector<MPI_Request> backends( numRequests );
+    std::vector<MPI_Request> backends( numRequests );
     for( Int j=0; j<numRequests; ++j )
         backends[j] = requests[j].backend;
     SafeMpi( MPI_Waitall( numRequests, backends.data(), statuses ) );
@@ -1340,7 +1340,7 @@ EL_NO_RELEASE_EXCEPT
 #ifdef EL_AVOID_COMPLEX_MPI
     const int commRank = Rank( comm );
     const int commSize = Size( comm );
-    vector<int> rcsDouble, rdsDouble;
+    std::vector<int> rcsDouble, rdsDouble;
     if( commRank == root )
     {
         rcsDouble.resize( commSize );
@@ -1497,7 +1497,7 @@ EL_NO_RELEASE_EXCEPT
     EL_DEBUG_CSE
 #ifdef EL_USE_BYTE_ALLGATHERS
     const int commSize = Size( comm );
-    vector<int> byteRcs( commSize ), byteRds( commSize );
+    std::vector<int> byteRcs( commSize ), byteRds( commSize );
     for( int i=0; i<commSize; ++i )
     {
         byteRcs[i] = sizeof(Real)*rcs[i];
@@ -1534,7 +1534,7 @@ EL_NO_RELEASE_EXCEPT
     EL_DEBUG_CSE
 #ifdef EL_USE_BYTE_ALLGATHERS
     const int commSize = Size( comm );
-    vector<int> byteRcs( commSize ), byteRds( commSize );
+    std::vector<int> byteRcs( commSize ), byteRds( commSize );
     for( int i=0; i<commSize; ++i )
     {
         byteRcs[i] = 2*sizeof(Real)*rcs[i];
@@ -1550,7 +1550,7 @@ EL_NO_RELEASE_EXCEPT
 #else
  #ifdef EL_AVOID_COMPLEX_MPI
     const int commSize = Size( comm );
-    vector<int> realRcs( commSize ), realRds( commSize );
+    std::vector<int> realRcs( commSize ), realRds( commSize );
     for( int i=0; i<commSize; ++i )
     {
         realRcs[i] = 2*rcs[i];
@@ -1845,7 +1845,7 @@ EL_NO_RELEASE_EXCEPT
 #ifdef EL_AVOID_COMPLEX_MPI
     int p;
     MPI_Comm_size( comm.comm, &p );
-    vector<int> scsDoubled(p), sdsDoubled(p),
+    std::vector<int> scsDoubled(p), sdsDoubled(p),
                 rcsDoubled(p), rdsDoubled(p);
     for( int i=0; i<p; ++i )
     {
@@ -1902,18 +1902,18 @@ EL_NO_RELEASE_EXCEPT
 
 template<typename T>
 vector<T> AllToAll
-( const vector<T>& sendBuf,
-  const vector<int>& sendCounts,
-  const vector<int>& sendOffs,
+( const std::vector<T>& sendBuf,
+  const std::vector<int>& sendCounts,
+  const std::vector<int>& sendOffs,
   Comm comm )
 EL_NO_RELEASE_EXCEPT
 {
     const int commSize = Size( comm );
-    vector<int> recvCounts(commSize);
+    std::vector<int> recvCounts(commSize);
     AllToAll( sendCounts.data(), 1, recvCounts.data(), 1, comm );
-    vector<int> recvOffs;
+    std::vector<int> recvOffs;
     const int totalRecv = El::Scan( recvCounts, recvOffs );
-    vector<T> recvBuf(totalRecv);
+    std::vector<T> recvBuf(totalRecv);
     AllToAll
     ( sendBuf.data(), sendCounts.data(), sendOffs.data(),
       recvBuf.data(), recvCounts.data(), recvOffs.data(), comm );
@@ -2544,7 +2544,7 @@ EL_NO_RELEASE_EXCEPT
         MPI_Op opC = NativeOp<Real>( op );
         int p;
         MPI_Comm_size( comm.comm, &p );
-        vector<int> rcsDoubled(p);
+        std::vector<int> rcsDoubled(p);
         for( int i=0; i<p; ++i )
             rcsDoubled[i] = 2*rcs[i];
         SafeMpi
@@ -2603,12 +2603,12 @@ EL_NO_RELEASE_EXCEPT
 { ReduceScatter( sbuf, rbuf, rcs, SUM, comm ); }
 
 void VerifySendsAndRecvs
-( const vector<int>& sendCounts,
-  const vector<int>& recvCounts, Comm comm )
+( const std::vector<int>& sendCounts,
+  const std::vector<int>& recvCounts, Comm comm )
 {
     EL_DEBUG_CSE
     const int commSize = Size( comm );
-    vector<int> actualRecvCounts(commSize);
+    std::vector<int> actualRecvCounts(commSize);
     AllToAll
     ( sendCounts.data(),       1,
       actualRecvCounts.data(), 1, comm );
@@ -2793,12 +2793,12 @@ EL_NO_RELEASE_EXCEPT
 
 template<typename T>
 void SparseAllToAll
-( const vector<T>& sendBuffer,
-  const vector<int>& sendCounts,
-  const vector<int>& sendDispls,
-        vector<T>& recvBuffer,
-  const vector<int>& recvCounts,
-  const vector<int>& recvDispls,
+( const std::vector<T>& sendBuffer,
+  const std::vector<int>& sendCounts,
+  const std::vector<int>& sendDispls,
+        std::vector<T>& recvBuffer,
+  const std::vector<int>& recvCounts,
+  const std::vector<int>& recvDispls,
         Comm comm )
 EL_NO_RELEASE_EXCEPT
 {
@@ -2814,8 +2814,8 @@ EL_NO_RELEASE_EXCEPT
         if( recvCounts[q] != 0 )
             ++numRecvs;
     }
-    vector<Status> statuses(numSends+numRecvs);
-    vector<Request<T>> requests(numSends+numRecvs);
+    std::vector<Status> statuses(numSends+numRecvs);
+    std::vector<Request<T>> requests(numSends+numRecvs);
     int rCount=0;
     for( int q=0; q<commSize; ++q )
     {
@@ -2957,10 +2957,10 @@ EL_NO_RELEASE_EXCEPT
   ( const T* sbuf, const int* scs, const int* sds, \
           T* rbuf, const int* rcs, const int* rds, Comm comm ) \
   EL_NO_RELEASE_EXCEPT; \
-  template vector<T> AllToAll \
-  ( const vector<T>& sendBuf, \
-    const vector<int>& sendCounts, \
-    const vector<int>& sendOffs, \
+  template std::vector<T> AllToAll \
+  ( const std::vector<T>& sendBuf, \
+    const std::vector<int>& sendCounts, \
+    const std::vector<int>& sendOffs, \
     Comm comm ) \
   EL_NO_RELEASE_EXCEPT; \
   template void Reduce \
@@ -3080,12 +3080,12 @@ MPI_PROTO(Entry<Complex<BigFloat>>)
 
 #define PROTO(T) \
   template void SparseAllToAll \
-  ( const vector<T>& sendBuffer, \
-    const vector<int>& sendCounts, \
-    const vector<int>& sendDispls, \
-          vector<T>& recvBuffer, \
-    const vector<int>& recvCounts, \
-    const vector<int>& recvDispls, \
+  ( const std::vector<T>& sendBuffer, \
+    const std::vector<int>& sendCounts, \
+    const std::vector<int>& sendDispls, \
+          std::vector<T>& recvBuffer, \
+    const std::vector<int>& recvCounts, \
+    const std::vector<int>& recvDispls, \
           Comm comm ) EL_NO_RELEASE_EXCEPT;
 
 #define EL_ENABLE_DOUBLEDOUBLE

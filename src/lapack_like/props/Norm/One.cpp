@@ -86,7 +86,7 @@ Base<Ring> OneNorm( const AbstractDistMatrix<Ring>& A )
         const Int localWidth = A.LocalWidth();
         const Matrix<Ring>& ALoc = A.LockedMatrix();
 
-        vector<Real> myPartialColSums( localWidth );
+        std::vector<Real> myPartialColSums( localWidth );
         for( Int jLoc=0; jLoc<localWidth; ++jLoc )
         {
             myPartialColSums[jLoc] = 0;
@@ -95,7 +95,7 @@ Base<Ring> OneNorm( const AbstractDistMatrix<Ring>& A )
         }
 
         // Sum our partial column sums to get the column sums over A[* ,V]
-        vector<Real> myColSums( localWidth );
+        std::vector<Real> myColSums( localWidth );
         mpi::AllReduce
         ( myPartialColSums.data(), myColSums.data(), localWidth, A.ColComm() );
 
@@ -134,7 +134,7 @@ HermitianOneNorm( UpperOrLower uplo, const AbstractDistMatrix<Ring>& A )
 
         if( uplo == UpperOrLower::UPPER )
         {
-            vector<Real> myPartialUpperColSums( localWidth ),
+            std::vector<Real> myPartialUpperColSums( localWidth ),
                          myPartialStrictlyUpperRowSums( localHeight );
             for( Int jLoc=0; jLoc<localWidth; ++jLoc )
             {
@@ -156,7 +156,7 @@ HermitianOneNorm( UpperOrLower uplo, const AbstractDistMatrix<Ring>& A )
             // Just place the sums into their appropriate places in a vector an
             // AllReduce sum to get the results. This isn't optimal, but it
             // should be good enough.
-            vector<Real> partialColSums( height, 0 );
+            std::vector<Real> partialColSums( height, 0 );
             for( Int jLoc=0; jLoc<localWidth; ++jLoc )
             {
                 const Int j = A.GlobalCol(jLoc);
@@ -167,7 +167,7 @@ HermitianOneNorm( UpperOrLower uplo, const AbstractDistMatrix<Ring>& A )
                 const Int i = A.GlobalRow(iLoc);
                 partialColSums[i] += myPartialStrictlyUpperRowSums[iLoc];
             }
-            vector<Real> colSums( height );
+            std::vector<Real> colSums( height );
             mpi::AllReduce
             ( partialColSums.data(), colSums.data(), height, A.DistComm() );
 
@@ -177,7 +177,7 @@ HermitianOneNorm( UpperOrLower uplo, const AbstractDistMatrix<Ring>& A )
         }
         else
         {
-            vector<Real> myPartialLowerColSums( localWidth ),
+            std::vector<Real> myPartialLowerColSums( localWidth ),
                          myPartialStrictlyLowerRowSums( localHeight );
             for( Int jLoc=0; jLoc<localWidth; ++jLoc )
             {
@@ -199,7 +199,7 @@ HermitianOneNorm( UpperOrLower uplo, const AbstractDistMatrix<Ring>& A )
             // Just place the sums into their appropriate places in a vector an
             // AllReduce sum to get the results. This isn't optimal, but it
             // should be good enough.
-            vector<Real> partialColSums( height, 0 );
+            std::vector<Real> partialColSums( height, 0 );
             for( Int jLoc=0; jLoc<localWidth; ++jLoc )
             {
                 const Int j = A.GlobalCol(jLoc);
@@ -210,7 +210,7 @@ HermitianOneNorm( UpperOrLower uplo, const AbstractDistMatrix<Ring>& A )
                 const Int i = A.GlobalRow(iLoc);
                 partialColSums[i] += myPartialStrictlyLowerRowSums[iLoc];
             }
-            vector<Real> colSums( height );
+            std::vector<Real> colSums( height );
             mpi::AllReduce
             ( partialColSums.data(), colSums.data(), height, A.DistComm() );
 

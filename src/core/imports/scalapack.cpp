@@ -444,7 +444,7 @@ void QR( int m, int n, float* A, const int* descA, float* tau )
     ( &m, &n, A, &iA, &jA, descA, tau, &dummyWork, &lwork, &info );
     
     lwork = dummyWork;
-    vector<float> work(lwork);
+    std::vector<float> work(lwork);
     EL_SCALAPACK(psgeqrf)
     ( &m, &n, A, &iA, &jA, descA, tau, work.data(), &lwork, &info );
     if( info != 0 )
@@ -462,7 +462,7 @@ void QR( int m, int n, double* A, const int* descA, double* tau )
     ( &m, &n, A, &iA, &jA, descA, tau, &dummyWork, &lwork, &info );
     
     lwork = dummyWork;
-    vector<double> work(lwork);
+    std::vector<double> work(lwork);
     EL_SCALAPACK(pdgeqrf)
     ( &m, &n, A, &iA, &jA, descA, tau, work.data(), &lwork, &info );
     if( info != 0 )
@@ -480,7 +480,7 @@ void QR( int m, int n, scomplex* A, const int* descA, scomplex* tau )
     ( &m, &n, A, &iA, &jA, descA, tau, &dummyWork, &lwork, &info );
     
     lwork = dummyWork.real();
-    vector<scomplex> work(lwork);
+    std::vector<scomplex> work(lwork);
     EL_SCALAPACK(pcgeqrf)
     ( &m, &n, A, &iA, &jA, descA, tau, work.data(), &lwork, &info );
     if( info != 0 )
@@ -498,7 +498,7 @@ void QR( int m, int n, dcomplex* A, const int* descA, dcomplex* tau )
     ( &m, &n, A, &iA, &jA, descA, tau, &dummyWork, &lwork, &info );
     
     lwork = dummyWork.real();
-    vector<dcomplex> work(lwork);
+    std::vector<dcomplex> work(lwork);
     EL_SCALAPACK(pzgeqrf)
     ( &m, &n, A, &iA, &jA, descA, tau, work.data(), &lwork, &info );
     if( info != 0 )
@@ -606,8 +606,8 @@ void HermitianEig
     // Actual call
     lWork = dummyWork;
     liWork = dummyIWork;
-    vector<float> work(lWork);
-    vector<int> iWork(liWork);
+    std::vector<float> work(lWork);
+    std::vector<int> iWork(liWork);
     EL_SCALAPACK(pssyevr)
     ( &jobZ, &range, &uplo, &n,
       A, &iA, &jA, descA,
@@ -653,8 +653,8 @@ void HermitianEig
     // Actual call
     lWork = dummyWork;
     liWork = dummyIWork;
-    vector<double> work(lWork);
-    vector<int> iWork(liWork);
+    std::vector<double> work(lWork);
+    std::vector<int> iWork(liWork);
     EL_SCALAPACK(pdsyevr)    
     ( &jobZ, &range, &uplo, &n,
       A, &iA, &jA, descA,
@@ -703,9 +703,9 @@ void HermitianEig
     lWork = dummyWork.real();
     lrWork = dummyRWork;
     liWork = dummyIWork;
-    vector<scomplex> work(lWork);
-    vector<float> rWork(lrWork);
-    vector<int> iWork(liWork);
+    std::vector<scomplex> work(lWork);
+    std::vector<float> rWork(lrWork);
+    std::vector<int> iWork(liWork);
     EL_SCALAPACK(pcheevr)
     ( &jobZ, &range, &uplo, &n,
       A, &iA, &jA, descA,
@@ -755,9 +755,9 @@ void HermitianEig
     lWork = dummyWork.real();
     lrWork = dummyRWork;
     liWork = dummyIWork;
-    vector<dcomplex> work(lWork);
-    vector<double> rWork(lrWork);
-    vector<int> iWork(liWork);
+    std::vector<dcomplex> work(lWork);
+    std::vector<double> rWork(lrWork);
+    std::vector<int> iWork(liWork);
     EL_SCALAPACK(pzheevr)
     ( &jobZ, &range, &uplo, &n,
       A, &iA, &jA, descA,
@@ -808,8 +808,8 @@ void HermitianEig
     // Actual call
     lWork = dummyWork;
     liWork = dummyIWork;
-    vector<float> work(lWork);
-    vector<int> iWork(liWork);
+    std::vector<float> work(lWork);
+    std::vector<int> iWork(liWork);
     EL_SCALAPACK(pssyevr)
     ( &jobZ, &range, &uplo, &n,
       A, &iA, &jA, descA,
@@ -857,8 +857,8 @@ void HermitianEig
     // Actual call
     lWork = dummyWork;
     liWork = dummyIWork;
-    vector<double> work(lWork);
-    vector<int> iWork(liWork);
+    std::vector<double> work(lWork);
+    std::vector<int> iWork(liWork);
     EL_SCALAPACK(pdsyevr)    
     ( &jobZ, &range, &uplo, &n,
       A, &iA, &jA, descA,
@@ -909,9 +909,9 @@ void HermitianEig
     lWork = dummyWork.real();
     lrWork = dummyRWork;
     liWork = dummyIWork;
-    vector<scomplex> work(lWork);
-    vector<float> rWork(lrWork);
-    vector<int> iWork(liWork);
+    std::vector<scomplex> work(lWork);
+    std::vector<float> rWork(lrWork);
+    std::vector<int> iWork(liWork);
     EL_SCALAPACK(pcheevr)
     ( &jobZ, &range, &uplo, &n,
       A, &iA, &jA, descA,
@@ -963,9 +963,9 @@ void HermitianEig
     lWork = dummyWork.real();
     lrWork = dummyRWork;
     liWork = dummyIWork;
-    vector<dcomplex> work(lWork);
-    vector<double> rWork(lrWork);
-    vector<int> iWork(liWork);
+    std::vector<dcomplex> work(lWork);
+    std::vector<double> rWork(lrWork);
+    std::vector<int> iWork(liWork);
     EL_SCALAPACK(pzheevr)
     ( &jobZ, &range, &uplo, &n,
       A, &iA, &jA, descA,
@@ -1008,7 +1008,7 @@ void SingularValues( int m, int n, float* A, const int* descA, float* s )
 
     // Actual call
     lwork = dummyWork;
-    vector<float> work(lwork);
+    std::vector<float> work(lwork);
     EL_SCALAPACK(psgesvd)
     ( &jobU, &jobVH, &m, &n,
       A, &iA, &jA, descA,
@@ -1043,7 +1043,7 @@ void SingularValues( int m, int n, double* A, const int* descA, double* s )
 
     // Actual call
     lwork = dummyWork;
-    vector<double> work(lwork);
+    std::vector<double> work(lwork);
     EL_SCALAPACK(pdgesvd)
     ( &jobU, &jobVH, &m, &n,
       A, &iA, &jA, descA,
@@ -1065,7 +1065,7 @@ void SingularValues( int m, int n, scomplex* A, const int* descA, float* s )
     scomplex* VH=nullptr;
 
     const int maxDim = Max(m,n);
-    vector<float> rwork(1+4*maxDim);
+    std::vector<float> rwork(1+4*maxDim);
 
     // Workspace query
     scomplex dummyWork;
@@ -1088,7 +1088,7 @@ void SingularValues( int m, int n, scomplex* A, const int* descA, float* s )
 
     // Actual call
     lwork = dummyWork.real();
-    vector<scomplex> work(lwork);
+    std::vector<scomplex> work(lwork);
     EL_SCALAPACK(pcgesvd)
     ( &jobU, &jobVH, &m, &n,
       A, &iA, &jA, descA,
@@ -1110,7 +1110,7 @@ void SingularValues( int m, int n, dcomplex* A, const int* descA, double* s )
     dcomplex* VH=nullptr;
 
     const int maxDim = Max(m,n);
-    vector<double> rwork(1+4*maxDim);
+    std::vector<double> rwork(1+4*maxDim);
 
     // Workspace query
     dcomplex dummyWork;
@@ -1133,7 +1133,7 @@ void SingularValues( int m, int n, dcomplex* A, const int* descA, double* s )
 
     // Actual call
     lwork = dummyWork.real();
-    vector<dcomplex> work(lwork);
+    std::vector<dcomplex> work(lwork);
     EL_SCALAPACK(pzgesvd)
     ( &jobU, &jobVH, &m, &n,
       A, &iA, &jA, descA,
@@ -1174,7 +1174,7 @@ void SVD
 
     // Actual call
     lwork = dummyWork;
-    vector<float> work(lwork);
+    std::vector<float> work(lwork);
     EL_SCALAPACK(psgesvd)
     ( &jobU, &jobVH, &m, &n,
       A, &iA, &jA, descA,
@@ -1212,7 +1212,7 @@ void SVD
 
     // Actual call
     lwork = dummyWork;
-    vector<double> work(lwork);
+    std::vector<double> work(lwork);
     EL_SCALAPACK(pdgesvd)
     ( &jobU, &jobVH, &m, &n,
       A, &iA, &jA, descA,
@@ -1236,7 +1236,7 @@ void SVD
     int iA=1, jA=1, iU=1, jU=1, iVH=1, jVH=1, info;
 
     const int maxDim = Max(m,n);
-    vector<float> rwork(1+4*maxDim);
+    std::vector<float> rwork(1+4*maxDim);
 
     const char jobU='V', jobVH='V';
     scomplex dummyWork;
@@ -1256,7 +1256,7 @@ void SVD
     }
 
     lwork = dummyWork.real();
-    vector<scomplex> work(lwork);
+    std::vector<scomplex> work(lwork);
     EL_SCALAPACK(pcgesvd)
     ( &jobU, &jobVH, &m, &n,
       A, &iA, &jA, descA,
@@ -1277,7 +1277,7 @@ void SVD
     int iA=1, jA=1, iU=1, jU=1, iVH=1, jVH=1, info;
 
     const int maxDim = Max(m,n);
-    vector<double> rwork(1+4*maxDim);
+    std::vector<double> rwork(1+4*maxDim);
 
     const char jobU='V', jobVH='V';
     dcomplex dummyWork;
@@ -1297,7 +1297,7 @@ void SVD
     }
 
     lwork = dummyWork.real();
-    vector<dcomplex> work(lwork);
+    std::vector<dcomplex> work(lwork);
     EL_SCALAPACK(pzgesvd)
     ( &jobU, &jobVH, &m, &n,
       A, &iA, &jA, descA,
@@ -1361,7 +1361,7 @@ void TwoSidedTrsm
       &scale, &dummyWork, &workSize, &info );
 
     workSize = dummyWork;
-    vector<float> work( workSize );
+    std::vector<float> work( workSize );
     EL_SCALAPACK(pssyngst)
     ( &typeB, &uplo, &n,
       A, &iA, &jA, descA,
@@ -1386,7 +1386,7 @@ void TwoSidedTrsm
       &scale, &dummyWork, &workSize, &info );
 
     workSize = dummyWork;
-    vector<double> work( workSize );
+    std::vector<double> work( workSize );
     EL_SCALAPACK(pdsyngst)
     ( &typeB, &uplo, &n,
       A, &iA, &jA, descA,
@@ -1412,7 +1412,7 @@ void TwoSidedTrsm
       &scale, &dummyWork, &workSize, &info );
 
     workSize = dummyWork.real();
-    vector<scomplex> work( workSize );
+    std::vector<scomplex> work( workSize );
     EL_SCALAPACK(pchengst)
     ( &typeB, &uplo, &n,
       A, &iA, &jA, descA,
@@ -1438,7 +1438,7 @@ void TwoSidedTrsm
       &scale, &dummyWork, &workSize, &info );
 
     workSize = dummyWork.real();
-    vector<dcomplex> work( workSize );
+    std::vector<dcomplex> work( workSize );
     EL_SCALAPACK(pzhengst)
     ( &typeB, &uplo, &n,
       A, &iA, &jA, descA,
@@ -1465,7 +1465,7 @@ void TwoSidedTrmm
       &scale, &dummyWork, &workSize, &info );
 
     workSize = dummyWork;
-    vector<float> work( workSize );
+    std::vector<float> work( workSize );
     EL_SCALAPACK(pssyngst)
     ( &typeB, &uplo, &n,
       A, &iA, &jA, descA,
@@ -1490,7 +1490,7 @@ void TwoSidedTrmm
       &scale, &dummyWork, &workSize, &info );
 
     workSize = dummyWork;
-    vector<double> work( workSize );
+    std::vector<double> work( workSize );
     EL_SCALAPACK(pdsyngst)
     ( &typeB, &uplo, &n,
       A, &iA, &jA, descA,
@@ -1516,7 +1516,7 @@ void TwoSidedTrmm
       &scale, &dummyWork, &workSize, &info );
 
     workSize = dummyWork.real();
-    vector<scomplex> work( workSize );
+    std::vector<scomplex> work( workSize );
     EL_SCALAPACK(pchengst)
     ( &typeB, &uplo, &n,
       A, &iA, &jA, descA,
@@ -1542,7 +1542,7 @@ void TwoSidedTrmm
       &scale, &dummyWork, &workSize, &info );
 
     workSize = dummyWork.real();
-    vector<dcomplex> work( workSize );
+    std::vector<dcomplex> work( workSize );
     EL_SCALAPACK(pzhengst)
     ( &typeB, &uplo, &n,
       A, &iA, &jA, descA,
@@ -1559,7 +1559,7 @@ void HessenbergSchur
 {
     EL_DEBUG_CSE
     const int ilo=1, ihi=n;
-    vector<float> wr(n), wi(n);
+    std::vector<float> wr(n), wi(n);
     int descQ[9] = 
         { 1, descH[1], 0, 0, descH[4], descH[5], descH[6], descH[7], 1 };
     int info;
@@ -1581,8 +1581,8 @@ void HessenbergSchur
         // Compute the eigenvalues in parallel
         workSize = dummyWork;
         iWorkSize = dummyIWork;
-        vector<float> work(workSize);
-        vector<int> iWork(iWorkSize);
+        std::vector<float> work(workSize);
+        std::vector<int> iWork(iWorkSize);
         EL_SCALAPACK(pshseqr)
         ( &job, &compz, &n, &ilo, &ihi, H, descH, wr.data(), wi.data(), 
           0, descQ, work.data(), &workSize, iWork.data(), &iWorkSize, &info );
@@ -1614,8 +1614,8 @@ void HessenbergSchur
         const Int numRowBlocks = n/mb + 1;
         int workSize= 3*n + Max(2*Max(ldH,ldQ)+2*localWidth,numRowBlocks),
             iWorkSize=0;
-        vector<float> work(workSize);
-        vector<int> iWork(iWorkSize);
+        std::vector<float> work(workSize);
+        std::vector<int> iWork(iWorkSize);
 
         // Compute the eigenvalues in parallel
         EL_SCALAPACK(pslahqr)
@@ -1635,7 +1635,7 @@ void HessenbergSchur
 {
     EL_DEBUG_CSE
     const int ilo=1, ihi=n;
-    vector<double> wr(n), wi(n);
+    std::vector<double> wr(n), wi(n);
     int descQ[9] = 
         { 1, descH[1], 0, 0, descH[4], descH[5], descH[6], descH[7], 1 };
     int info;
@@ -1656,8 +1656,8 @@ void HessenbergSchur
         // Compute the eigenvalues in parallel
         workSize = dummyWork;
         iWorkSize = dummyIWork;
-        vector<double> work(workSize);
-        vector<int> iWork(iWorkSize);
+        std::vector<double> work(workSize);
+        std::vector<int> iWork(iWorkSize);
         EL_SCALAPACK(pdhseqr)
         ( &job, &compz, &n, &ilo, &ihi, H, descH, wr.data(), wi.data(), 
           0, descQ, work.data(), &workSize, iWork.data(), &iWorkSize, &info );
@@ -1689,8 +1689,8 @@ void HessenbergSchur
         const Int numRowBlocks = n/mb + 1;
         int workSize= 3*n + Max(2*Max(ldH,ldQ)+2*localWidth,numRowBlocks),
             iWorkSize=0;
-        vector<double> work(workSize);
-        vector<int> iWork(iWorkSize);
+        std::vector<double> work(workSize);
+        std::vector<int> iWork(iWorkSize);
 
         // Compute the eigenvalues in parallel
         EL_SCALAPACK(pdlahqr)
@@ -1730,8 +1730,8 @@ void HessenbergSchur
     // Compute the eigenvalues in parallel
     workSize = dummyWork.real();
     iWorkSize = dummyIWork;
-    vector<scomplex> work(workSize);
-    vector<int> iWork(iWorkSize);
+    std::vector<scomplex> work(workSize);
+    std::vector<int> iWork(iWorkSize);
     EL_SCALAPACK(pclahqr)
     ( &wantt, &wantz, &n, &ilo, &ihi, H, descH, w, &ilo, &ihi, 0, descQ,
       work.data(), &workSize, iWork.data(), &iWorkSize, &info );
@@ -1764,8 +1764,8 @@ void HessenbergSchur
     // Compute the eigenvalues in parallel
     workSize = dummyWork.real();
     iWorkSize = dummyIWork;
-    vector<dcomplex> work(workSize);
-    vector<int> iWork(iWorkSize);
+    std::vector<dcomplex> work(workSize);
+    std::vector<int> iWork(iWorkSize);
     EL_SCALAPACK(pzlahqr)
     ( &wantt, &wantz, &n, &ilo, &ihi, H, descH, w, &ilo, &ihi, 0, descQ,
       work.data(), &workSize, iWork.data(), &iWorkSize, &info );
@@ -1779,7 +1779,7 @@ void HessenbergSchur
 {
     EL_DEBUG_CSE
     const int ilo=1, ihi=n;
-    vector<float> wr(n), wi(n);
+    std::vector<float> wr(n), wi(n);
     int info;
     if( aed )
     {
@@ -1802,8 +1802,8 @@ void HessenbergSchur
         // Compute the eigenvalues in parallel
         workSize = dummyWork;
         iWorkSize = dummyIWork;
-        vector<float> work(workSize);
-        vector<int> iWork(iWorkSize);
+        std::vector<float> work(workSize);
+        std::vector<int> iWork(iWorkSize);
         EL_SCALAPACK(pshseqr)
         ( &job, &compz, &n, &ilo, &ihi, H, descH, wr.data(), wi.data(), 
           Q, descQ, work.data(), &workSize, iWork.data(), &iWorkSize, &info );
@@ -1837,8 +1837,8 @@ void HessenbergSchur
         const Int numRowBlocks = n/mb + 1;
         int workSize= 3*n + Max(2*Max(ldH,ldQ)+2*localWidth,numRowBlocks),
             iWorkSize=0;
-        vector<float> work(workSize);
-        vector<int> iWork(iWorkSize);
+        std::vector<float> work(workSize);
+        std::vector<int> iWork(iWorkSize);
 
         // Compute the eigenvalues in parallel
         EL_SCALAPACK(pslahqr)
@@ -1864,7 +1864,7 @@ void HessenbergSchur
 {
     EL_DEBUG_CSE
     const int ilo=1, ihi=n;
-    vector<double> wr(n), wi(n);
+    std::vector<double> wr(n), wi(n);
     int info;
     if( aed )
     {
@@ -1887,8 +1887,8 @@ void HessenbergSchur
         // Compute the eigenvalues in parallel
         workSize = dummyWork;
         iWorkSize = dummyIWork;
-        vector<double> work(workSize);
-        vector<int> iWork(iWorkSize);
+        std::vector<double> work(workSize);
+        std::vector<int> iWork(iWorkSize);
         EL_SCALAPACK(pdhseqr)
         ( &job, &compz, &n, &ilo, &ihi, H, descH, wr.data(), wi.data(), 
           Q, descQ, work.data(), &workSize, iWork.data(), &iWorkSize, &info );
@@ -1922,8 +1922,8 @@ void HessenbergSchur
         const Int numRowBlocks = n/mb + 1;
         int workSize= 3*n + Max(2*Max(ldH,ldQ)+2*localWidth,numRowBlocks),
             iWorkSize=0;
-        vector<double> work(workSize);
-        vector<int> iWork(iWorkSize);
+        std::vector<double> work(workSize);
+        std::vector<int> iWork(iWorkSize);
 
         // Compute the eigenvalues in parallel
         EL_SCALAPACK(pdlahqr)
@@ -1968,8 +1968,8 @@ void HessenbergSchur
     // Compute the eigenvalues in parallel
     workSize = dummyWork.real();
     iWorkSize = dummyIWork;
-    vector<scomplex> work(workSize);
-    vector<int> iWork(iWorkSize);
+    std::vector<scomplex> work(workSize);
+    std::vector<int> iWork(iWorkSize);
     EL_SCALAPACK(pclahqr)
     ( &wantt, &wantz, &n, &ilo, &ihi, H, descH, w, &ilo, &ihi, Q, descQ,
       work.data(), &workSize, iWork.data(), &iWorkSize, &info );
@@ -2007,8 +2007,8 @@ void HessenbergSchur
     // Compute the eigenvalues in parallel
     workSize = dummyWork.real();
     iWorkSize = dummyIWork;
-    vector<dcomplex> work(workSize);
-    vector<int> iWork(iWorkSize);
+    std::vector<dcomplex> work(workSize);
+    std::vector<int> iWork(iWorkSize);
     EL_SCALAPACK(pzlahqr)
     ( &wantt, &wantz, &n, &ilo, &ihi, H, descH, w, &ilo, &ihi, Q, descQ,
       work.data(), &workSize, iWork.data(), &iWorkSize, &info );

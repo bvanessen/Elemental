@@ -129,19 +129,19 @@ inline void LowerBackwardMultiply
         X.ComputeCommMeta( info );
         mpi::Comm comm = W.DistComm();
         const int commSize = mpi::Size( comm );
-        vector<int> sendSizes(commSize), recvSizes(commSize);
+        std::vector<int> sendSizes(commSize), recvSizes(commSize);
         for( int q=0; q<commSize; ++q )
         {
             sendSizes[q] = X.commMeta.childRecvInds[q].size()*numRHS;
             recvSizes[q] = X.commMeta.numChildSendInds[q]*numRHS;
         }
         EL_DEBUG_ONLY(VerifySendsAndRecvs( sendSizes, recvSizes, comm ))
-        vector<int> sendOffs, recvOffs;
+        std::vector<int> sendOffs, recvOffs;
         const int sendBufSize = Scan( sendSizes, sendOffs );
         const int recvBufSize = Scan( recvSizes, recvOffs );
 
         // Pack the updates for the children
-        vector<F> sendBuf( sendBufSize );
+        std::vector<F> sendBuf( sendBufSize );
         for( int q=0; q<commSize; ++q )
         {
             F* sendVals = &sendBuf[sendOffs[q]];
@@ -154,7 +154,7 @@ inline void LowerBackwardMultiply
         }
 
         // AllToAll to send and recv parent updates
-        vector<F> recvBuf( recvBufSize );
+        std::vector<F> recvBuf( recvBufSize );
         SparseAllToAll
         ( sendBuf, sendSizes, sendOffs,
           recvBuf, recvSizes, recvOffs, comm );
@@ -225,19 +225,19 @@ inline void LowerBackwardMultiply
         X.ComputeCommMeta( info );
         mpi::Comm comm = W.DistComm();
         const int commSize = mpi::Size( comm );
-        vector<int> sendSizes(commSize), recvSizes(commSize);
+        std::vector<int> sendSizes(commSize), recvSizes(commSize);
         for( int q=0; q<commSize; ++q )
         {
             sendSizes[q] = X.commMeta.childRecvInds[q].size()/2;
             recvSizes[q] = X.commMeta.numChildSendInds[q];
         }
         EL_DEBUG_ONLY(VerifySendsAndRecvs( sendSizes, recvSizes, comm ))
-        vector<int> sendOffs, recvOffs;
+        std::vector<int> sendOffs, recvOffs;
         const int sendBufSize = Scan( sendSizes, sendOffs );
         const int recvBufSize = Scan( recvSizes, recvOffs );
 
         // Pack the updates
-        vector<F> sendBuf( sendBufSize );
+        std::vector<F> sendBuf( sendBufSize );
         for( int q=0; q<commSize; ++q )
         {
             F* sendVals = &sendBuf[sendOffs[q]];
@@ -251,7 +251,7 @@ inline void LowerBackwardMultiply
         }
 
         // AllToAll to send and recv parent updates
-        vector<F> recvBuf( recvBufSize );
+        std::vector<F> recvBuf( recvBufSize );
         SparseAllToAll
         ( sendBuf, sendSizes, sendOffs,
           recvBuf, recvSizes, recvOffs, comm );

@@ -80,7 +80,7 @@ void QuasiTriangEig
     BlasInt mm=n, m=n;
     BlasInt info = 0;
 
-    vector<float> work(3*n);
+    std::vector<float> work(3*n);
     EL_LAPACK(strevc)
     ( &side, &howMany, select, &n,
       T, &ldT,
@@ -107,7 +107,7 @@ void QuasiTriangEig
     BlasInt mm=n, m=n;
     BlasInt info = 0;
 
-    vector<double> work(3*n);
+    std::vector<double> work(3*n);
     EL_LAPACK(dtrevc)
     ( &side, &howMany, select, &n,
       T, &ldT,
@@ -134,8 +134,8 @@ void TriangEig
     BlasInt mm=n, m=n;
     BlasInt info = 0;
 
-    vector<scomplex> work(2*n);
-    vector<float> rWork(n);
+    std::vector<scomplex> work(2*n);
+    std::vector<float> rWork(n);
     EL_LAPACK(ctrevc)
     ( &side, &howMany, select, &n,
       T, &ldT,
@@ -162,8 +162,8 @@ void TriangEig
     BlasInt mm=n, m=n;
     BlasInt info = 0;
 
-    vector<dcomplex> work(2*n);
-    vector<double> rWork(n);
+    std::vector<dcomplex> work(2*n);
+    std::vector<double> rWork(n);
     EL_LAPACK(ztrevc)
     ( &side, &howMany, select, &n,
       T, &ldT,

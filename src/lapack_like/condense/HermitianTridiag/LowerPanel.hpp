@@ -55,7 +55,7 @@ void LowerPanel
     e.AlignCols( A.DiagonalAlign(-1) );
     e.Resize( nW, 1 );
 
-    vector<F> w21LastBuf;
+    std::vector<F> w21LastBuf;
     FastResize( w21LastBuf, n/r+1 );
 
     DistMatrix<F> w21Last(g);
@@ -143,7 +143,7 @@ void LowerPanel
         if( k == 0 )
         {
             const Int a21LocalHeight = a21.LocalHeight();
-            vector<F> rowBcastBuf;
+            std::vector<F> rowBcastBuf;
             FastResize( rowBcastBuf, a21LocalHeight+1 );
 
             if( thisIsMyCol )
@@ -181,7 +181,7 @@ void LowerPanel
         {
             const Int a21LocalHeight = a21.LocalHeight();
             const Int w21LastLocalHeight = aB1.LocalHeight();
-            vector<F> rowBcastBuf;
+            std::vector<F> rowBcastBuf;
             FastResize( rowBcastBuf, a21LocalHeight+w21LastLocalHeight+1 );
             if( thisIsMyCol )
             {
@@ -256,7 +256,7 @@ void LowerPanel
             const Int recvRankRM =
                 (recvRankCM/r)+c*(recvRankCM%r);
 
-            vector<F> transBuf;
+            std::vector<F> transBuf;
             FastResize( transBuf, (r+1)*portionSize );
             F* sendBuf = &transBuf[0];
             F* recvBuf = &transBuf[r*portionSize];
@@ -371,7 +371,7 @@ void LowerPanel
         {
             const Int x01LocalHeight = x01_MR.LocalHeight();
             const Int q21LocalHeight = q21_MR.LocalHeight();
-            vector<F> colSumSendBuf, colSumRecvBuf;
+            std::vector<F> colSumSendBuf, colSumRecvBuf;
             FastResize( colSumSendBuf, 2*x01LocalHeight+q21LocalHeight );
             FastResize( colSumRecvBuf, 2*x01LocalHeight+q21LocalHeight );
             MemCopy
@@ -405,7 +405,7 @@ void LowerPanel
             // combine the Reduce to one of p21[MC] with the redistribution
             // of q21[MR,* ] -> q21[MC,MR] to the next process column.
             const Int localHeight = p21_MC.LocalHeight();
-            vector<F> reduceToOneSendBuf, reduceToOneRecvBuf;
+            std::vector<F> reduceToOneSendBuf, reduceToOneRecvBuf;
             FastResize( reduceToOneSendBuf, 2*localHeight );
             FastResize( reduceToOneRecvBuf, 2*localHeight );
 
@@ -509,7 +509,7 @@ void LowerPanel
             // w21[MC] and w21[MR] so that we may place them into W[MC,* ]
             // and W[MR,* ]
             const Int localHeight = p21_MC.LocalHeight();
-            vector<F> allReduceSendBuf, allReduceRecvBuf;
+            std::vector<F> allReduceSendBuf, allReduceRecvBuf;
             FastResize( allReduceSendBuf, 2*localHeight );
             FastResize( allReduceRecvBuf, 2*localHeight );
 

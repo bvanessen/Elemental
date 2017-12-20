@@ -46,7 +46,7 @@ Front<Field>::Front( DistFront<Field>* dupNode )
 template<typename Field>
 Front<Field>::Front
 ( const SparseMatrix<Field>& A,
-  const vector<Int>& reordering,
+  const std::vector<Int>& reordering,
   const NodeInfo& info,
   bool conjugate )
 {
@@ -60,7 +60,7 @@ Front<Field>::~Front() { }
 template<typename Field>
 void Front<Field>::Pull
 ( const SparseMatrix<Field>& A,
-  const vector<Int>& reordering,
+  const std::vector<Int>& reordering,
   const NodeInfo& rootInfo,
   bool conjugate )
 {
@@ -78,7 +78,7 @@ void Front<Field>::Pull
       if( A.Height() != n || A.Width() != n )
           LogicError("Expected A to be square and consistent with reordering");
     )
-    vector<Int> invReorder(n);
+    std::vector<Int> invReorder(n);
     for( Int j=0; j<n; ++j )
         invReorder[reordering[j]] = j;
 
@@ -208,7 +208,7 @@ void Front<Field>::Pull
 template<typename Field>
 void Front<Field>::PullUpdate
 ( const SparseMatrix<Field>& A,
-  const vector<Int>& reordering,
+  const std::vector<Int>& reordering,
   const NodeInfo& rootInfo )
 {
     EL_DEBUG_CSE
@@ -223,7 +223,7 @@ void Front<Field>::PullUpdate
       if( A.Height() != n || A.Width() != n )
           LogicError("Expected A to be square and consistent with reordering");
     )
-    vector<Int> invReorder(n);
+    std::vector<Int> invReorder(n);
     for( Int j=0; j<n; ++j )
         invReorder[reordering[j]] = j;
 
@@ -284,14 +284,14 @@ void Front<Field>::PullUpdate
 template<typename Field>
 void Front<Field>::Push
 ( SparseMatrix<Field>& A,
-  const vector<Int>& reordering,
+  const std::vector<Int>& reordering,
   const NodeInfo& rootInfo ) const
 {
     EL_DEBUG_CSE
 
     // Invert the reordering
     const Int n = reordering.size();
-    vector<Int> invReorder( n );
+    std::vector<Int> invReorder( n );
     for( Int j=0; j<n; ++j )
         invReorder[reordering[j]] = j;
 

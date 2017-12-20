@@ -43,7 +43,7 @@ MatrixNode<T>::MatrixNode( DistMultiVecNode<T>* dupNode )
 
 template<typename T>
 MatrixNode<T>::MatrixNode
-( const vector<Int>& invMap, const NodeInfo& info, const Matrix<T>& X )
+( const std::vector<Int>& invMap, const NodeInfo& info, const Matrix<T>& X )
 {
     EL_DEBUG_CSE
     Pull( invMap, info, X );
@@ -76,7 +76,7 @@ const MatrixNode<T>& MatrixNode<T>::operator=( const MatrixNode<T>& X )
 
 template<typename T>
 void MatrixNode<T>::Pull
-( const vector<Int>& invMap, const NodeInfo& info, const Matrix<T>& X )
+( const std::vector<Int>& invMap, const NodeInfo& info, const Matrix<T>& X )
 {
     EL_DEBUG_CSE
 
@@ -105,7 +105,7 @@ void MatrixNode<T>::Pull
 
 template<typename T>
 void MatrixNode<T>::Push
-( const vector<Int>& invMap, const NodeInfo& info, Matrix<T>& X ) const
+( const std::vector<Int>& invMap, const NodeInfo& info, Matrix<T>& X ) const
 {
     EL_DEBUG_CSE
 

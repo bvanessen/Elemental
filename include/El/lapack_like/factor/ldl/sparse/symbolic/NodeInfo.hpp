@@ -29,7 +29,7 @@ struct NodeInfo
     // Known before analysis
     // ---------------------
     Int size, off;
-    vector<Int> origLowerStruct;
+    std::vector<Int> origLowerStruct;
 
     // This observing pointer is to the parent node (should one exist).
     NodeInfo* parent=nullptr;
@@ -40,21 +40,21 @@ struct NodeInfo
     DistNodeInfo* duplicate=nullptr;
 
     // Unique pointers to any children of this node.
-    vector<std::unique_ptr<NodeInfo>> children;
+    std::vector<std::unique_ptr<NodeInfo>> children;
 
     // Known after analysis
     // --------------------
     Int myOff;
-    vector<Int> lowerStruct;
-    vector<Int> origLowerRelInds;
+    std::vector<Int> lowerStruct;
+    std::vector<Int> origLowerRelInds;
     // (maps from the child update indices to our frontal indices).
-    vector<vector<Int>> childRelInds;
+    std::vector<vector<Int>> childRelInds;
 
     // Symbolic analysis for modification of SuiteSparse LDL
     // -----------------------------------------------------
     // NOTE: These are only used within leaf nodes
-    vector<Int> LOffsets;
-    vector<Int> LParents;
+    std::vector<Int> LOffsets;
+    std::vector<Int> LParents;
 
     NodeInfo( NodeInfo* parentNode=nullptr );
     NodeInfo( DistNodeInfo* duplicateNode );
@@ -66,7 +66,7 @@ struct DistNodeInfo
     // Known before analysis
     // ---------------------
     Int size, off;
-    vector<Int> origLowerStruct;
+    std::vector<Int> origLowerStruct;
     bool onLeft;
 
     // This observing pointer is to the parent node (should one exist).
@@ -84,15 +84,15 @@ struct DistNodeInfo
     // Known after analysis
     // --------------------
     Int myOff;
-    vector<Int> lowerStruct;
-    vector<Int> origLowerRelInds;
+    std::vector<Int> lowerStruct;
+    std::vector<Int> origLowerRelInds;
 
-    vector<Int> childSizes;
+    std::vector<Int> childSizes;
     // The relative indices of our children
     // (maps from the child update indices to our frontal indices).
     // These could be replaced with just the relative indices of our local
     // submatrices of the child updates.
-    vector<vector<Int>> childRelInds;
+    std::vector<vector<Int>> childRelInds;
 
     // For constructing the root of the tree.
     explicit DistNodeInfo( const El::Grid& grid );
@@ -107,7 +107,7 @@ struct DistNodeInfo
     const El::Grid& Grid() const;
 
     void GetChildGridDims
-    ( vector<int>& gridHeights, vector<int>& gridWidths ) const;
+    ( std::vector<int>& gridHeights, std::vector<int>& gridWidths ) const;
 
 private:
     // If we are the root node, there is no need to construct a grid, so we

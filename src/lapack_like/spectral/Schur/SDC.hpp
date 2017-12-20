@@ -37,7 +37,7 @@ ValueInt<Base<F>> ComputePartition( Matrix<F>& A )
     }
 
     // Compute the sets of row and column sums
-    vector<Real> colSums(n-1,0), rowSums(n-1,0);
+    std::vector<Real> colSums(n-1,0), rowSums(n-1,0);
     for( Int j=0; j<n-1; ++j )
         for( Int i=j+1; i<n; ++i )
             colSums[j] += Abs( A(i,j) );
@@ -47,7 +47,7 @@ ValueInt<Base<F>> ComputePartition( Matrix<F>& A )
 
     // Compute the list of norms and its minimum value/index
     ValueInt<Real> part;
-    vector<Real> norms(n-1);
+    std::vector<Real> norms(n-1);
     norms[0] = colSums[0];
     part.value = norms[0];
     part.index = 1;
@@ -84,7 +84,7 @@ ValueInt<Base<F>> ComputePartition( DistMatrix<F>& A )
     }
 
     // Compute the sets of row and column sums
-    vector<Real> colSums(n-1,0), rowSums(n-1,0);
+    std::vector<Real> colSums(n-1,0), rowSums(n-1,0);
     const Int mLocal = A.LocalHeight();
     const Int nLocal = A.LocalWidth();
     auto& ALoc = A.LockedMatrix();
@@ -110,7 +110,7 @@ ValueInt<Base<F>> ComputePartition( DistMatrix<F>& A )
     // Compute the list of norms and its minimum value/index
     // TODO: Think of the proper way to parallelize this if necessary
     ValueInt<Real> part;
-    vector<Real> norms(n-1);
+    std::vector<Real> norms(n-1);
     norms[0] = colSums[0];
     part.value = norms[0];
     part.index = 1;
@@ -1059,7 +1059,7 @@ inline bool SplitGrid
         const Int p = grid.Size();
         const Int pLeft = p/2;
         const Int pRight = p-pLeft;
-        vector<int> leftRanks(pLeft), rightRanks(pRight);
+        std::vector<int> leftRanks(pLeft), rightRanks(pRight);
         for( int j=0; j<pLeft; ++j )
             leftRanks[j] = j;
         for( int j=0; j<pRight; ++j )

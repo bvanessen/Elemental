@@ -64,7 +64,7 @@ void UpperPanelSquare
     e.AlignCols( expandedABR.DiagonalAlign(1) );
     e.Resize( nW, 1 );
 
-    vector<F> w01LastBuf;
+    std::vector<F> w01LastBuf;
     FastResize( w01LastBuf, n/r+1 );
 
     DistMatrix<F> w01Last(g);
@@ -156,7 +156,7 @@ void UpperPanelSquare
         if( firstIteration )
         {
             const Int a01LocalHeight = a01.LocalHeight();
-            vector<F> rowBcastBuf;
+            std::vector<F> rowBcastBuf;
             FastResize( rowBcastBuf, a01LocalHeight+1 );
 
             if( thisIsMyCol )
@@ -207,7 +207,7 @@ void UpperPanelSquare
         {
             const Int a01LocalHeight = a01.LocalHeight();
             const Int w01LastLocalHeight = aT1.LocalHeight();
-            vector<F> rowBcastBuf;
+            std::vector<F> rowBcastBuf;
             FastResize( rowBcastBuf, a01LocalHeight+w01LastLocalHeight+1 );
 
             if( thisIsMyCol )
@@ -269,7 +269,7 @@ void UpperPanelSquare
             {
                 const Int sendSize = A00.LocalHeight()+ATL.LocalHeight();
                 const Int recvSize = A00.LocalWidth()+ATL.LocalWidth();
-                vector<F> sendBuf, recvBuf;
+                std::vector<F> sendBuf, recvBuf;
                 FastResize( sendBuf, sendSize );
                 FastResize( recvBuf, recvSize );
 
@@ -338,7 +338,7 @@ void UpperPanelSquare
             const Int x21LocalHeight = x21_MR.LocalHeight();
             const Int y21LocalHeight = y21_MR.LocalHeight();
             const Int reduceSize = x21LocalHeight+y21LocalHeight;
-            vector<F> colSumSendBuf, colSumRecvBuf;
+            std::vector<F> colSumSendBuf, colSumRecvBuf;
             FastResize( colSumSendBuf, reduceSize );
             FastResize( colSumRecvBuf, reduceSize );
 
@@ -377,7 +377,7 @@ void UpperPanelSquare
             // Pairwise exchange with the transpose process
             const Int sendSize = A00.LocalWidth();
             const Int recvSize = A00.LocalHeight();
-            vector<F> recvBuf;
+            std::vector<F> recvBuf;
             FastResize( recvBuf, recvSize );
 
             mpi::SendRecv
@@ -399,7 +399,7 @@ void UpperPanelSquare
             const Int nextProcRow = Mod( alpha11.ColAlign()-1, r );
             const Int nextProcCol = Mod( alpha11.RowAlign()-1, r );
 
-            vector<F> reduceToOneRecvBuf;
+            std::vector<F> reduceToOneRecvBuf;
             FastResize( reduceToOneRecvBuf, a01LocalHeight );
 
             mpi::Reduce
@@ -438,7 +438,7 @@ void UpperPanelSquare
             const Int a01LocalHeight = a01.LocalHeight();
 
             // AllReduce sum p01[MC] over process rows
-            vector<F> allReduceRecvBuf;
+            std::vector<F> allReduceRecvBuf;
             FastResize( allReduceRecvBuf, a01LocalHeight );
 
             mpi::AllReduce

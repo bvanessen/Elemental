@@ -108,7 +108,7 @@ void Eig
     const char jobVL='N', jobVR='V';
     const BlasInt fakeLDim = 1;
 
-    vector<float> wReal(n), wImag(n);
+    std::vector<float> wReal(n), wImag(n);
     BlasInt workSize=-1, info;
     float workDummy;
     EL_LAPACK(sgeev)
@@ -116,7 +116,7 @@ void Eig
       XPacked, &ldX, &workDummy, &workSize, &info );
 
     workSize = workDummy;
-    vector<float> work( workSize );
+    std::vector<float> work( workSize );
     EL_LAPACK(sgeev)
     ( &jobVL, &jobVR, &n, A, &ldA, wReal.data(), wImag.data(), 0, &fakeLDim, 
       XPacked, &ldX, work.data(), &workSize, &info );
@@ -137,7 +137,7 @@ void Eig
     const char jobVL='N', jobVR='V';
     const BlasInt fakeLDim = 1;
 
-    vector<double> wReal(n), wImag(n);
+    std::vector<double> wReal(n), wImag(n);
     BlasInt workSize=-1, info;
     double workDummy;
     EL_LAPACK(dgeev)
@@ -145,7 +145,7 @@ void Eig
       XPacked, &ldX, &workDummy, &workSize, &info );
 
     workSize = workDummy;
-    vector<double> work( workSize );
+    std::vector<double> work( workSize );
     EL_LAPACK(dgeev)
     ( &jobVL, &jobVR, &n, A, &ldA, wReal.data(), wImag.data(), 0, &fakeLDim,
       XPacked, &ldX, work.data(), &workSize, &info );
@@ -166,7 +166,7 @@ void Eig
     float* XPacked = (float*)X;    
     Eig( n, A, ldA, w, XPacked, ldX );
     // Unpack the eigenvectors
-    vector<scomplex> z(n);
+    std::vector<scomplex> z(n);
     Int j=n-1;
     while( j >= 0 )
     {
@@ -204,7 +204,7 @@ void Eig
     double* XPacked = (double*)X;    
     Eig( n, A, ldA, w, XPacked, ldX );
     // Unpack the eigenvectors
-    vector<scomplex> z(n);
+    std::vector<scomplex> z(n);
     Int j=n-1;
     while( j >= 0 )
     {
@@ -239,7 +239,7 @@ void Eig
   bool time )
 {
     EL_DEBUG_CSE
-    vector<float> rWork( 2*n );
+    std::vector<float> rWork( 2*n );
     const char jobVL='N', jobVR='V';
     const BlasInt fakeLDim = 1;
 
@@ -250,7 +250,7 @@ void Eig
       &workDummy, &workSize, rWork.data(), &info );
 
     workSize = workDummy.real();
-    vector<scomplex> work( workSize );
+    std::vector<scomplex> work( workSize );
     EL_LAPACK(cgeev)
     ( &jobVL, &jobVR, &n, A, &ldA, w, 0, &fakeLDim, X, &ldX, 
       work.data(), &workSize, rWork.data(), &info );
@@ -264,7 +264,7 @@ void Eig
   bool time )
 {
     EL_DEBUG_CSE
-    vector<double> rWork( 2*n );
+    std::vector<double> rWork( 2*n );
     const char jobVL='N', jobVR='V';
     const BlasInt fakeLDim = 1;
 
@@ -275,7 +275,7 @@ void Eig
       &workDummy, &workSize, rWork.data(), &info );
 
     workSize = workDummy.real();
-    vector<dcomplex> work( workSize );
+    std::vector<dcomplex> work( workSize );
     EL_LAPACK(zgeev)
     ( &jobVL, &jobVR, &n, A, &ldA, w, 0, &fakeLDim, X, &ldX,
       work.data(), &workSize, rWork.data(), &info );

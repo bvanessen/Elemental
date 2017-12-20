@@ -36,7 +36,7 @@ void FormDiagonalBlocks
     const Int maxLocalHeight = MaxLength(height,colStride);
     const Int portionSize = maxLocalHeight*blocksize;
 
-    vector<F> sendBuf( portionSize );
+    std::vector<F> sendBuf( portionSize );
     for( Int iLoc=0; iLoc<localHeight; ++iLoc )
     {
         const Int i = L.GlobalRow(iLoc);
@@ -50,7 +50,7 @@ void FormDiagonalBlocks
         }
     }
 
-    vector<F> recvBuf( portionSize*colStride );
+    std::vector<F> recvBuf( portionSize*colStride );
     mpi::AllGather
     ( sendBuf.data(), portionSize,
       recvBuf.data(), portionSize, L.ColComm() );

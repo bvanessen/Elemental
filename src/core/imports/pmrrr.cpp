@@ -50,7 +50,7 @@ Estimate EigEstimate
     int highAccuracy=0;
     int nz, offset;
     int ldz=1;
-    vector<int> ZSupport(2*n);
+    std::vector<int> ZSupport(2*n);
     int retval = pmrrr
     ( &jobz, &range, &n, d, e, &lowerBound, &upperBound, &il, &iu,
       &highAccuracy, comm.comm, &nz, &offset, w, 0, &ldz, ZSupport.data() );
@@ -74,7 +74,7 @@ Info Eig( int n, double* d, double* e, double* w, mpi::Comm comm )
     int highAccuracy=0;
     int nz, offset;
     int ldz=1;
-    vector<int> ZSupport(2*n);
+    std::vector<int> ZSupport(2*n);
     int retval = pmrrr
     ( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &highAccuracy, comm.comm,
       &nz, &offset, w, 0, &ldz, ZSupport.data() );
@@ -99,7 +99,7 @@ Info Eig
     int il, iu;
     int highAccuracy=0;
     int nz, offset;
-    vector<int> ZSupport(2*n);
+    std::vector<int> ZSupport(2*n);
     int retval = pmrrr
     ( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &highAccuracy, comm.comm,
       &nz, &offset, w, Z, &ldz, ZSupport.data() );
@@ -125,7 +125,7 @@ Info Eig
     int highAccuracy=0;
     int nz, offset;
     int ldz=1;
-    vector<int> ZSupport(2*n);
+    std::vector<int> ZSupport(2*n);
     int retval = pmrrr
     ( &jobz, &range, &n, d, e, &lowerBound, &upperBound, &il, &iu,
       &highAccuracy, comm.comm, &nz, &offset, w, 0, &ldz, ZSupport.data() );
@@ -150,7 +150,7 @@ Info Eig
     int il, iu;
     int highAccuracy=0;
     int nz, offset;
-    vector<int> ZSupport(2*n);
+    std::vector<int> ZSupport(2*n);
     int retval = pmrrr
     ( &jobz, &range, &n, d, e, &lowerBound, &upperBound, &il, &iu,
       &highAccuracy, comm.comm, &nz, &offset, w, Z, &ldz, ZSupport.data() );
@@ -178,7 +178,7 @@ Info Eig
     int highAccuracy=0;
     int nz, offset;
     int ldz=1;
-    vector<int> ZSupport(2*n);
+    std::vector<int> ZSupport(2*n);
     int retval = pmrrr
     ( &jobz, &range, &n, d, e, &vl, &vu, &lowerBound, &upperBound,
       &highAccuracy, comm.comm, &nz, &offset, w, 0, &ldz, ZSupport.data() );
@@ -206,7 +206,7 @@ Info Eig
     double vl, vu;
     int highAccuracy=0;
     int nz, offset;
-    vector<int> ZSupport(2*n);
+    std::vector<int> ZSupport(2*n);
     int retval = pmrrr
     ( &jobz, &range, &n, d, e, &vl, &vu, &lowerBound, &upperBound,
       &highAccuracy, comm.comm, &nz, &offset, w, Z, &ldz, ZSupport.data() );

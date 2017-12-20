@@ -649,14 +649,14 @@ DetermineInteraction
     return interaction;
 }
 
-inline vector<InterBlockInteraction>
+inline std::vector<InterBlockInteraction>
 FormRowInteractionList
 ( bool evenToOdd,
   const Grid& grid,
   const DistChaseState& state )
 {
     EL_DEBUG_CSE
-    vector<InterBlockInteraction> interactionList;
+    std::vector<InterBlockInteraction> interactionList;
     // Only loop over the blocks that are assigned to our process row
     // and occur within the active window.
     Int diagBlock = state.activeRowBlockBeg;
@@ -681,14 +681,14 @@ FormRowInteractionList
     return interactionList;
 }
 
-inline vector<InterBlockInteraction>
+inline std::vector<InterBlockInteraction>
 FormColumnInteractionList
 ( bool evenToOdd,
   const Grid& grid,
   const DistChaseState& state )
 {
     EL_DEBUG_CSE
-    vector<InterBlockInteraction> interactionList;
+    std::vector<InterBlockInteraction> interactionList;
     // Only loop over the blocks that are assigned to our process column
     // and occur within the active window.
     Int diagBlock = state.activeColBlockBeg;
@@ -1212,7 +1212,7 @@ void InterBlockChase
     for( const auto& interaction : rowInteractionList )
         if( interaction.onDiagonal )
             ++numDiagInteractions;
-    vector<Matrix<Field>> UList(numDiagInteractions);
+    std::vector<Matrix<Field>> UList(numDiagInteractions);
 
     const int prevGridRow = Mod( grid.Row()-1, grid.Height() );
     const int nextGridRow = Mod( grid.Row()+1, grid.Height() );

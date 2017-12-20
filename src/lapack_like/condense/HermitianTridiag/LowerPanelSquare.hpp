@@ -61,7 +61,7 @@ void LowerPanelSquare
     e.AlignCols( A.DiagonalAlign(-1) );
     e.Resize( nW, 1 );
 
-    vector<F> w21LastBuf;
+    std::vector<F> w21LastBuf;
     FastResize( w21LastBuf, A.Height()/r+1 );
 
     DistMatrix<F> w21Last(g);
@@ -151,7 +151,7 @@ void LowerPanelSquare
         if( k == 0 )
         {
             const Int a21LocalHeight = a21.LocalHeight();
-            vector<F> rowBcastBuf;
+            std::vector<F> rowBcastBuf;
             FastResize( rowBcastBuf, a21LocalHeight+1 );
 
             if( thisIsMyCol )
@@ -198,7 +198,7 @@ void LowerPanelSquare
         {
             const Int a21LocalHeight = a21.LocalHeight();
             const Int w21LastLocalHeight = aB1.LocalHeight();
-            vector<F> rowBcastBuf;
+            std::vector<F> rowBcastBuf;
             FastResize( rowBcastBuf, a21LocalHeight+w21LastLocalHeight+1 );
             if( thisIsMyCol )
             {
@@ -261,7 +261,7 @@ void LowerPanelSquare
             {
                 const Int sendSize = A22.LocalHeight()+ABR.LocalHeight();
                 const Int recvSize = A22.LocalWidth()+ABR.LocalWidth();
-                vector<F> sendBuf, recvBuf;
+                std::vector<F> sendBuf, recvBuf;
                 FastResize( sendBuf, sendSize );
                 FastResize( recvBuf, recvSize );
 
@@ -334,7 +334,7 @@ void LowerPanelSquare
         // Combine the AllReduce column summations of x01[MR], y01[MR]
         {
             const Int x01LocalHeight = x01_MR.LocalHeight();
-            vector<F> colSumSendBuf, colSumRecvBuf;
+            std::vector<F> colSumSendBuf, colSumRecvBuf;
             FastResize( colSumSendBuf, 2*x01LocalHeight );
             FastResize( colSumRecvBuf, 2*x01LocalHeight );
             MemCopy
@@ -373,8 +373,8 @@ void LowerPanelSquare
             // Pairwise exchange with the transpose process
             const Int sendSize = A22.LocalWidth();
             const Int recvSize = A22.LocalHeight();
-            //vector<F> recvBuf(recvSize);
-            vector<F> recvBuf;
+            //std::vector<F> recvBuf(recvSize);
+            std::vector<F> recvBuf;
             FastResize( recvBuf, recvSize );
             mpi::SendRecv
             ( q21_MR.Buffer(), sendSize, transposeRank,
@@ -394,8 +394,8 @@ void LowerPanelSquare
             const Int nextProcessRow = (alpha11.ColAlign()+1) % r;
             const Int nextProcessCol = (alpha11.RowAlign()+1) % r;
 
-            //vector<F> reduceToOneRecvBuf(a21LocalHeight);
-            vector<F> reduceToOneRecvBuf;
+            //std::vector<F> reduceToOneRecvBuf(a21LocalHeight);
+            std::vector<F> reduceToOneRecvBuf;
             FastResize( reduceToOneRecvBuf, a21LocalHeight );
             mpi::Reduce
             ( p21_MC.Buffer(), reduceToOneRecvBuf.data(),
@@ -433,7 +433,7 @@ void LowerPanelSquare
             const Int a21LocalHeight = a21.LocalHeight();
 
             // AllReduce sum p21[MC] over process rows
-            vector<F> allReduceRecvBuf;
+            std::vector<F> allReduceRecvBuf;
             FastResize( allReduceRecvBuf, a21LocalHeight );
             mpi::AllReduce
             ( p21_MC.Buffer(), allReduceRecvBuf.data(),

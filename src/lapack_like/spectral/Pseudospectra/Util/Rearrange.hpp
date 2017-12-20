@@ -121,7 +121,7 @@ void RestoreOrdering
 
 template<typename T1,typename T2>
 void ExtractList
-( const vector<Matrix<T1>>& vecList, Matrix<T2>& list, Int i )
+( const std::vector<Matrix<T1>>& vecList, Matrix<T2>& list, Int i )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -136,7 +136,7 @@ void ExtractList
 
 template<typename T1,typename T2>
 void ExtractList
-( const vector<Matrix<T1>>& matList, Matrix<T2>& list, Int i, Int j )
+( const std::vector<Matrix<T1>>& matList, Matrix<T2>& list, Int i, Int j )
 {
     EL_DEBUG_CSE
     const Int numMats = matList.size();
@@ -147,7 +147,7 @@ void ExtractList
 
 template<typename T1,typename T2>
 void PlaceList
-( vector<Matrix<T1>>& vecList, const Matrix<T2>& list, Int i )
+( std::vector<Matrix<T1>>& vecList, const Matrix<T2>& list, Int i )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -165,7 +165,7 @@ void PlaceList
 
 template<typename T1,typename T2>
 void PlaceList
-( vector<Matrix<T1>>& matList, const Matrix<T2>& list, Int i, Int j )
+( std::vector<Matrix<T1>>& matList, const Matrix<T2>& list, Int i, Int j )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -181,7 +181,7 @@ void PlaceList
 
 template<typename T1,typename T2>
 void UpdateList
-( vector<Matrix<T1>>& matList, const Matrix<T2>& list, Int i, Int j )
+( std::vector<Matrix<T1>>& matList, const Matrix<T2>& list, Int i, Int j )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -197,7 +197,7 @@ void UpdateList
 
 template<typename T1,typename T2>
 void PushBackList
-( vector<Matrix<T1>>& vecList, const Matrix<T2>& list )
+( std::vector<Matrix<T1>>& vecList, const Matrix<T2>& list )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(

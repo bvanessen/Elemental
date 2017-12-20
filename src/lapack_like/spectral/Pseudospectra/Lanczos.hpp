@@ -18,8 +18,8 @@ const Int HCapacityInit = 10;
 
 template<typename Real>
 void ComputeNewEstimates
-( const vector<Matrix<Real>>& HDiagList,
-  const vector<Matrix<Real>>& HSubdiagList,
+( const std::vector<Matrix<Real>>& HDiagList,
+  const std::vector<Matrix<Real>>& HSubdiagList,
   Matrix<Real>& activeEsts )
 {
     EL_DEBUG_CSE
@@ -53,8 +53,8 @@ void ComputeNewEstimates
 
 template<typename Real>
 void ComputeNewEstimates
-( const vector<Matrix<Real>>& HDiagList,
-  const vector<Matrix<Real>>& HSubdiagList,
+( const std::vector<Matrix<Real>>& HDiagList,
+  const std::vector<Matrix<Real>>& HSubdiagList,
   DistMatrix<Real,Dist::MR,Dist::STAR>& activeEsts )
 {
     EL_DEBUG_CSE
@@ -63,8 +63,8 @@ void ComputeNewEstimates
 
 template<typename Real>
 void Deflate
-( vector<Matrix<Real>>& HDiagList,
-  vector<Matrix<Real>>& HSubdiagList,
+( std::vector<Matrix<Real>>& HDiagList,
+  std::vector<Matrix<Real>>& HSubdiagList,
   Matrix<Complex<Real>>& activeShifts,
   Matrix<Int          >& activePreimage,
   Matrix<Complex<Real>>& activeXOld,
@@ -104,8 +104,8 @@ void Deflate
 
 template<typename Real>
 void Deflate
-( vector<Matrix<Real>>& HDiagList,
-  vector<Matrix<Real>>& HSubdiagList,
+( std::vector<Matrix<Real>>& HDiagList,
+  std::vector<Matrix<Real>>& HSubdiagList,
   DistMatrix<Complex<Real>,Dist::VR,Dist::STAR>& activeShifts,
   DistMatrix<Int,          Dist::VR,Dist::STAR>& activePreimage,
   DistMatrix<Complex<Real>        >& activeXOld,
@@ -264,7 +264,7 @@ Lanczos
     Gaussian( X, n, numShifts );
     FixColumns( X );
     Zeros( XNew, n, numShifts );
-    vector<Matrix<Real>> HDiagList( numShifts ),
+    std::vector<Matrix<Real>> HDiagList( numShifts ),
                          HSubdiagList( numShifts );
     for( Int j=0; j<numShifts; ++j )
     {
@@ -469,7 +469,7 @@ Lanczos
     Gaussian( X, n, numShifts );
     FixColumns( X );
     Zeros( XNew, n, numShifts );
-    vector<Matrix<Real>> HDiagList( X.LocalWidth() ),
+    std::vector<Matrix<Real>> HDiagList( X.LocalWidth() ),
                          HSubdiagList( X.LocalWidth() );
     for( Int j=0; j<X.LocalWidth(); ++j )
     {

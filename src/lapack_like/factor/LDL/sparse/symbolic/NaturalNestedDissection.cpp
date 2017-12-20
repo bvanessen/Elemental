@@ -19,7 +19,7 @@ NaturalNestedDissectionRecursion
         Int ny,
         Int nz,
   const Graph& graph,
-  const vector<Int>& perm,
+  const std::vector<Int>& perm,
         Separator& sep,
         NodeInfo& info,
         Int off,
@@ -38,7 +38,7 @@ NaturalNestedDissectionRecursion
         for( Int e=0; e<numEdges; ++e )
             if( targetBuf[e] < numSources )
                 ++numValidEdges;
-        vector<Int> subOffsets(numSources+1), subTargets(Max(numValidEdges,1));
+        std::vector<Int> subOffsets(numSources+1), subTargets(Max(numValidEdges,1));
         Int sourceOff = 0;
         Int validCounter = 0;
         Int prevSource = -1;
@@ -60,14 +60,14 @@ NaturalNestedDissectionRecursion
         // Technically, SuiteSparse expects column-major storage, but since
         // the matrix is structurally symmetric, it's okay to pass in the
         // row-major representation
-        vector<Int> amdPerm;
+        std::vector<Int> amdPerm;
         AMDOrder( subOffsets, subTargets, amdPerm );
 
         // Compute the symbolic factorization of this leaf node using the
         // reordering just computed
         info.LOffsets.resize( numSources+1 );
         info.LParents.resize( numSources );
-        vector<Int> LNnz( numSources ), Flag( numSources ),
+        std::vector<Int> LNnz( numSources ), Flag( numSources ),
                     amdPermInv( numSources );
         suite_sparse::ldl::Symbolic
         ( numSources, subOffsets.data(), subTargets.data(),
@@ -102,13 +102,13 @@ NaturalNestedDissectionRecursion
         // Partition the graph and construct the inverse map
         Int nxLeft, nyLeft, nzLeft, nxRight, nyRight, nzRight;
         Graph leftChild, rightChild;
-        vector<Int> map;
+        std::vector<Int> map;
         const Int sepSize =
             NaturalBisect
             ( nx, ny, nz, graph,
               nxLeft, nyLeft, nzLeft, leftChild,
               nxRight, nyRight, nzRight, rightChild, map );
-        vector<Int> invMap( numSources );
+        std::vector<Int> invMap( numSources );
         for( Int s=0; s<numSources; ++s )
             invMap[map[s]] = s;
 
@@ -147,11 +147,11 @@ NaturalNestedDissectionRecursion
         // Construct the inverse maps from the child indices to the original
         // degrees of freedom
         const Int leftChildSize = leftChild.NumSources();
-        vector<Int> leftPerm( leftChildSize );
+        std::vector<Int> leftPerm( leftChildSize );
         for( Int s=0; s<leftChildSize; ++s )
             leftPerm[s] = perm[invMap[s]];
         const Int rightChildSize = rightChild.NumSources();
-        vector<Int> rightPerm( rightChildSize );
+        std::vector<Int> rightPerm( rightChildSize );
         for( Int s=0; s<rightChildSize; ++s )
             rightPerm[s] = perm[invMap[s+leftChildSize]];
 
@@ -248,13 +248,13 @@ NaturalNestedDissectionRecursion
             }
         }
         const int localStructSize = localStructSet.size();
-        vector<int> localStructSizes( commSize );
+        std::vector<int> localStructSizes( commSize );
         mpi::AllGather( &localStructSize, 1, localStructSizes.data(), 1, comm );
-        vector<Int> localStruct;
+        std::vector<Int> localStruct;
         CopySTL( localStructSet, localStruct );
-        vector<int> localStructOffs;
+        std::vector<int> localStructOffs;
         int nonUniqueStructSize = Scan( localStructSizes, localStructOffs );
-        vector<Int> nonUniqueStruct( nonUniqueStructSize );
+        std::vector<Int> nonUniqueStruct( nonUniqueStructSize );
         mpi::AllGather
         ( localStruct.data(), localStructSize,
           nonUniqueStruct.data(),
@@ -311,7 +311,7 @@ void NaturalNestedDissection
         Int ny,
         Int nz,
   const Graph& graph,
-        vector<Int>& map,
+        std::vector<Int>& map,
         Separator& sep,
         NodeInfo& info,
         Int cutoff )
@@ -319,7 +319,7 @@ void NaturalNestedDissection
     EL_DEBUG_CSE
 
     const Int numSources = graph.NumSources();
-    vector<Int> perm( numSources );
+    std::vector<Int> perm( numSources );
     for( Int s=0; s<numSources; ++s )
         perm[s] = s;
 

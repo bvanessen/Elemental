@@ -7,8 +7,14 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
-namespace trsv {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/core/View/decl.hpp"
+
+namespace El
+{
+namespace trsv
+{
 
 template<typename F>
 void LN

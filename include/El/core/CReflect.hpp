@@ -574,22 +574,22 @@ inline PermutationMeta CReflect( const ElPermutationMeta& metaC )
     int commSize;
     MPI_Comm_size( metaC.comm, &commSize );
     meta.sendCounts =
-        vector<int>( metaC.sendCounts, metaC.sendCounts+commSize );
+        std::vector<int>( metaC.sendCounts, metaC.sendCounts+commSize );
     meta.sendDispls =
-        vector<int>( metaC.sendDispls, metaC.sendDispls+commSize );
+        std::vector<int>( metaC.sendDispls, metaC.sendDispls+commSize );
     meta.recvCounts =
-        vector<int>( metaC.recvCounts, metaC.recvCounts+commSize );
+        std::vector<int>( metaC.recvCounts, metaC.recvCounts+commSize );
     meta.recvDispls =
-        vector<int>( metaC.recvDispls, metaC.recvDispls+commSize );
+        std::vector<int>( metaC.recvDispls, metaC.recvDispls+commSize );
 
     meta.sendIdx =
-        vector<int>( metaC.sendIdx, metaC.sendIdx+metaC.numSendIdx );
+        std::vector<int>( metaC.sendIdx, metaC.sendIdx+metaC.numSendIdx );
     meta.sendRanks =
-        vector<int>( metaC.sendRanks, metaC.sendRanks+metaC.numSendIdx );
+        std::vector<int>( metaC.sendRanks, metaC.sendRanks+metaC.numSendIdx );
     meta.recvIdx =
-        vector<int>( metaC.recvIdx, metaC.recvIdx+metaC.numRecvIdx );
+        std::vector<int>( metaC.recvIdx, metaC.recvIdx+metaC.numRecvIdx );
     meta.recvRanks =
-        vector<int>( metaC.recvRanks, metaC.recvRanks+metaC.numRecvIdx );
+        std::vector<int>( metaC.recvRanks, metaC.recvRanks+metaC.numRecvIdx );
 
     return meta;
 }

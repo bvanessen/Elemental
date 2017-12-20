@@ -36,9 +36,9 @@ public:
 
     // Map manipulation
     // Collectively map each process's local set of indices
-    void Translate( vector<Int>& localInds ) const;
+    void Translate( std::vector<Int>& localInds ) const;
     void Translate
-    ( vector<Int>& localInds, const vector<int>& origOwners ) const;
+    ( std::vector<Int>& localInds, const std::vector<int>& origOwners ) const;
 
     // composite(i) := second(first(i))
     void Extend( DistMap& firstMap ) const;
@@ -60,8 +60,8 @@ public:
     void SetLocal( Int localSource, Int target );
     Int* Buffer();
     const Int* Buffer() const;
-    vector<Int>& Map();
-    const vector<Int>& Map() const;
+    std::vector<Int>& Map();
+    const std::vector<Int>& Map() const;
 
     // For modifying the size of the map
     void Empty();
@@ -78,12 +78,12 @@ private:
 
     Int blocksize_;
 
-    vector<Int> map_;
+    std::vector<Int> map_;
 
     void InitializeLocalData();
 };
 
-void InvertMap( const vector<Int>& map, vector<Int>& inverseMap );
+void InvertMap( const std::vector<Int>& map, std::vector<Int>& inverseMap );
 void InvertMap( const DistMap& map, DistMap& inverseMap );
 
 } // namespace El

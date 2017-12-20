@@ -7,6 +7,10 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/Types/Enums.hpp"
+
 #include "./MultiShiftTrsm/LUN.hpp"
 #include "./MultiShiftTrsm/LUT.hpp"
 

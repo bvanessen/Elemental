@@ -86,7 +86,7 @@ void Gemv
         Scal( n, beta, y, incy );
 
         // Prescale x to avoid a factor of two more work than necessary
-        vector<T> xAlpha(m);
+        std::vector<T> xAlpha(m);
         for( Int j=0; j<m; ++j )
         {
             xAlpha[j] = x[j*incx];
@@ -115,7 +115,7 @@ void Gemv
         Scal( n, beta, y, incy );
 
         // Prescale x to avoid a factor of two more work than necessary
-        vector<T> xAlpha(m);
+        std::vector<T> xAlpha(m);
         for( Int j=0; j<m; ++j )
         {
             xAlpha[j] = x[j*incx];

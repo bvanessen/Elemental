@@ -82,7 +82,7 @@ void Hemv
     }
 
     // Pre-scale x to avoid redundant computation
-    vector<T> xAlpha(m);
+    std::vector<T> xAlpha(m);
     for( Int i=0; i<m; ++i )
     {
         xAlpha[i] = x[i*incx];
@@ -283,7 +283,7 @@ void Symv
     }
 
     // Pre-scale x to avoid redundant computation
-    vector<T> xAlpha(m);
+    std::vector<T> xAlpha(m);
     for( Int i=0; i<m; ++i )
     {
         xAlpha[i] = x[i*incx];

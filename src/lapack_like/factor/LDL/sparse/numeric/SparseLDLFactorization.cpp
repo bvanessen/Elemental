@@ -445,7 +445,7 @@ vector<Int>& SparseLDLFactorization<Field>::Map()
 }
 
 template<typename Field>
-const vector<Int>& SparseLDLFactorization<Field>::Map() const
+const std::vector<Int>& SparseLDLFactorization<Field>::Map() const
 {
     EL_DEBUG_CSE
     return map_;
@@ -459,7 +459,7 @@ vector<Int>& SparseLDLFactorization<Field>::InverseMap()
 }
 
 template<typename Field>
-const vector<Int>& SparseLDLFactorization<Field>::InverseMap() const
+const std::vector<Int>& SparseLDLFactorization<Field>::InverseMap() const
 {
     EL_DEBUG_CSE
     return inverseMap_;

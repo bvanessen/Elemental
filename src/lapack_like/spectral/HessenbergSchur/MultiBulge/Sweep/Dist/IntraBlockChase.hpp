@@ -102,7 +102,7 @@ void LocalChase
   const DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& shifts,
   const DistChaseState& state,
   const HessenbergSchurCtrl& ctrl,
-        vector<Matrix<Field>>& UList )
+        std::vector<Matrix<Field>>& UList )
 {
     EL_DEBUG_CSE
     const Grid& grid = H.Grid();
@@ -232,7 +232,7 @@ void ApplyAccumulatedReflections
   const DistMatrix<Complex<Base<Field>>,Dist::STAR,Dist::STAR>& shifts,
   const DistChaseState& state,
   const HessenbergSchurCtrl& ctrl,
-  const vector<Matrix<Field>>& UList )
+  const std::vector<Matrix<Field>>& UList )
 {
     EL_DEBUG_CSE
     const Grid& grid = H.Grid();
@@ -389,7 +389,7 @@ void IntraBlockChase
     // transformation leaves the first and last rows unchanged when applied from
     // the left), and H_i is the i'th locally-owned diagonal block of H.
     //
-    vector<Matrix<Field>> UList;
+    std::vector<Matrix<Field>> UList;
     intrablock::LocalChase( H, shifts, state, ctrl, UList );
 
     // Broadcast the accumulated transformations from the owning diagonal block

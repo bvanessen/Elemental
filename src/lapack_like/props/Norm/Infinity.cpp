@@ -60,7 +60,7 @@ Base<Ring> InfinityNorm( const AbstractDistMatrix<Ring>& A )
         const Int localWidth = A.LocalWidth();
         const Matrix<Ring>& ALoc = A.LockedMatrix();
 
-        vector<Real> myPartialRowSums( localHeight );
+        std::vector<Real> myPartialRowSums( localHeight );
         for( Int iLoc=0; iLoc<localHeight; ++iLoc )
         {
             myPartialRowSums[iLoc] = 0;
@@ -69,7 +69,7 @@ Base<Ring> InfinityNorm( const AbstractDistMatrix<Ring>& A )
         }
 
         // Sum our partial row sums to get the row sums over A[U,* ]
-        vector<Real> myRowSums( localHeight );
+        std::vector<Real> myRowSums( localHeight );
         mpi::AllReduce
         ( myPartialRowSums.data(), myRowSums.data(), localHeight, A.RowComm() );
 

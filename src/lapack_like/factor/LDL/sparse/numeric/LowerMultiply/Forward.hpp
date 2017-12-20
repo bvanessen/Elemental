@@ -118,19 +118,19 @@ inline void LowerForwardMultiply
     X.ComputeCommMeta( info );
     auto& childW = X.child->work;
     auto childU = childW( IR(childInfo.size,childW.Height()), IR(0,numRHS) );
-    vector<int> sendSizes(commSize), recvSizes(commSize);
+    std::vector<int> sendSizes(commSize), recvSizes(commSize);
     for( int q=0; q<commSize; ++q )
     {
         sendSizes[q] = X.commMeta.numChildSendInds[q]*numRHS;
         recvSizes[q] = X.commMeta.childRecvInds[q].size()*numRHS;
     }
     EL_DEBUG_ONLY(VerifySendsAndRecvs( sendSizes, recvSizes, comm ))
-    vector<int> sendOffs, recvOffs;
+    std::vector<int> sendOffs, recvOffs;
     const int sendBufSize = Scan( sendSizes, sendOffs );
     const int recvBufSize = Scan( recvSizes, recvOffs );
 
     // Pack our child's update
-    vector<F> sendBuf( sendBufSize );
+    std::vector<F> sendBuf( sendBufSize );
     const Int myChild = ( childInfo.onLeft ? 0 : 1 );
     auto packOffs = sendOffs;
     const Int localHeight = childU.LocalHeight();
@@ -147,7 +147,7 @@ inline void LowerForwardMultiply
         X.child->duplicate->work.Empty();
 
     // AllToAll to send and receive the child updates
-    vector<F> recvBuf( recvBufSize );
+    std::vector<F> recvBuf( recvBufSize );
     SparseAllToAll
     ( sendBuf, sendSizes, sendOffs,
       recvBuf, recvSizes, recvOffs, comm );
@@ -217,19 +217,19 @@ inline void LowerForwardMultiply
     X.ComputeCommMeta( info );
     auto& childW = X.child->work;
     auto childU = childW( IR(childInfo.size,childW.Height()), IR(0,numRHS) );
-    vector<int> sendSizes(commSize), recvSizes(commSize);
+    std::vector<int> sendSizes(commSize), recvSizes(commSize);
     for( int q=0; q<commSize; ++q )
     {
         sendSizes[q] = X.commMeta.numChildSendInds[q];
         recvSizes[q] = X.commMeta.childRecvInds[q].size()/2;
     }
     EL_DEBUG_ONLY(VerifySendsAndRecvs( sendSizes, recvSizes, comm ))
-    vector<int> sendOffs, recvOffs;
+    std::vector<int> sendOffs, recvOffs;
     const int sendBufSize = Scan( sendSizes, sendOffs );
     const int recvBufSize = Scan( recvSizes, recvOffs );
 
     // Pack send data
-    vector<F> sendBuf( sendBufSize );
+    std::vector<F> sendBuf( sendBufSize );
     const Int myChild = ( childInfo.onLeft ? 0 : 1 );
     auto packOffs = sendOffs;
     const Int localWidth = childU.LocalWidth();
@@ -251,7 +251,7 @@ inline void LowerForwardMultiply
         X.child->duplicate->work.Empty();
 
     // AllToAll to send and receive the child updates
-    vector<F> recvBuf( recvBufSize );
+    std::vector<F> recvBuf( recvBufSize );
     SparseAllToAll
     ( sendBuf, sendSizes, sendOffs,
       recvBuf, recvSizes, recvOffs, comm );

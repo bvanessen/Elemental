@@ -506,14 +506,14 @@ Helper
 } // namespace qr
 
 // TODO(poulson): Lift these routines up somewhere else?
-void AllocatePackedQRInfo( vector<Int>& packedQRInfo )
+void AllocatePackedQRInfo( std::vector<Int>& packedQRInfo )
 {
     EL_DEBUG_CSE
     packedQRInfo.resize( 2 );
 }
 
 void PackQRInfo
-( const herm_tridiag_eig::QRInfo& qrInfo, vector<Int>& packedQRInfo )
+( const herm_tridiag_eig::QRInfo& qrInfo, std::vector<Int>& packedQRInfo )
 {
     EL_DEBUG_CSE
     if( packedQRInfo.size() != 2 )
@@ -524,7 +524,7 @@ void PackQRInfo
 }
 
 void UnpackQRInfo
-( const vector<Int>& packedQRInfo, herm_tridiag_eig::QRInfo& qrInfo )
+( const std::vector<Int>& packedQRInfo, herm_tridiag_eig::QRInfo& qrInfo )
 {
     EL_DEBUG_CSE
     if( packedQRInfo.size() != 2 )
@@ -570,7 +570,7 @@ QRAlg
     if( ctrl.qrCtrl.broadcast )
     {
         const Grid& grid = mainDiag.Grid();
-        vector<Int> packedQRInfo;
+        std::vector<Int> packedQRInfo;
         AllocatePackedQRInfo( packedQRInfo );
         if( grid.VCRank() == 0 )
         {

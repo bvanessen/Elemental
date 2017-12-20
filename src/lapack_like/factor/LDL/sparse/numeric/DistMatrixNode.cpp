@@ -157,7 +157,7 @@ void DistMatrixNode<T>::ComputeCommMeta( const DistNodeInfo& info ) const
 
     // Compute the solve recv indices
     // ==============================
-    vector<int> gridHeights, gridWidths;
+    std::vector<int> gridHeights, gridWidths;
     info.GetChildGridDims( gridHeights, gridWidths );
     const bool onLeft = info.child->onLeft;
     const Grid& childGrid = info.child->Grid();
@@ -165,7 +165,7 @@ void DistMatrixNode<T>::ComputeCommMeta( const DistNodeInfo& info ) const
     const int childTeamRank = childGrid.Rank();
     const bool inFirstTeam = ( childTeamRank == teamRank );
     const bool leftIsFirst = ( onLeft==inFirstTeam );
-    vector<int> teamSizes(2), teamOffs(2);
+    std::vector<int> teamSizes(2), teamOffs(2);
     teamSizes[0] = ( onLeft ? childTeamSize : teamSize-childTeamSize );
     teamSizes[1] = teamSize - teamSizes[0];
     teamOffs[0] = ( leftIsFirst ? 0            : teamSizes[1] );
@@ -184,7 +184,7 @@ void DistMatrixNode<T>::ComputeCommMeta( const DistNodeInfo& info ) const
     for( Int c=0; c<2; ++c )
     {
         const Int numInds = info.childRelInds[c].size();
-        vector<Int> rowInds;
+        std::vector<Int> rowInds;
         for( Int iChild=0; iChild<numInds; ++iChild )
             if( matrix.IsLocalRow( info.childRelInds[c][iChild] ) )
                 rowInds.push_back( iChild );

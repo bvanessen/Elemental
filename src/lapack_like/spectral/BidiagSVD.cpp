@@ -294,13 +294,13 @@ Helper
 }
 
 // TODO(poulson): Lift these routines up somewhere else?
-void AllocatePackedQRInfo( vector<Int>& packedQRInfo )
+void AllocatePackedQRInfo( std::vector<Int>& packedQRInfo )
 {
     EL_DEBUG_CSE
     packedQRInfo.resize( 11 );
 }
 
-void PackQRInfo( const bidiag_svd::QRInfo& qrInfo, vector<Int>& packedQRInfo )
+void PackQRInfo( const bidiag_svd::QRInfo& qrInfo, std::vector<Int>& packedQRInfo )
 {
     EL_DEBUG_CSE
     if( packedQRInfo.size() != 11 )
@@ -319,7 +319,7 @@ void PackQRInfo( const bidiag_svd::QRInfo& qrInfo, vector<Int>& packedQRInfo )
     packedQRInfo[offset++] = qrInfo.numNonzeroShiftBackwardInnerLoops;
 }
 
-void UnpackQRInfo( const vector<Int>& packedQRInfo, bidiag_svd::QRInfo& qrInfo )
+void UnpackQRInfo( const std::vector<Int>& packedQRInfo, bidiag_svd::QRInfo& qrInfo )
 {
     EL_DEBUG_CSE
     if( packedQRInfo.size() != 11 )
@@ -371,7 +371,7 @@ Helper
     {
         if( ctrl.qrCtrl.broadcast )
         {
-            vector<Int> packedQRInfo;
+            std::vector<Int> packedQRInfo;
             AllocatePackedQRInfo( packedQRInfo );
             if( grid.VCRank() == 0 )
             {
@@ -400,7 +400,7 @@ Helper
         auto offDiag0 = offDiag( IR(0,n-1), ALL );
         if( ctrl.qrCtrl.broadcast )
         {
-            vector<Int> packedQRInfo;
+            std::vector<Int> packedQRInfo;
             AllocatePackedQRInfo( packedQRInfo );
             if( grid.VCRank() == 0 )
             {
@@ -429,7 +429,7 @@ Helper
         auto offDiag0 = offDiag( IR(0,m-1), ALL );
         if( ctrl.qrCtrl.broadcast )
         {
-            vector<Int> packedQRInfo;
+            std::vector<Int> packedQRInfo;
             AllocatePackedQRInfo( packedQRInfo );
             if( grid.VCRank() == 0 )
             {

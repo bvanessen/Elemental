@@ -27,7 +27,7 @@ AEDInfo SpikeDeflation
         Matrix<Real>& V,
   const Real& eta,
         Int numUnconverged,
-        vector<Real>& work )
+        std::vector<Real>& work )
 {
     EL_DEBUG_CSE
 
@@ -132,7 +132,7 @@ AEDInfo SpikeDeflation
         Matrix<Complex<Real>>& V,
   const Complex<Real>& eta,
         Int numUnconverged,
-        vector<Complex<Real>>& work )
+        std::vector<Complex<Real>>& work )
 {
     EL_DEBUG_CSE
     const Int n = T.Height();

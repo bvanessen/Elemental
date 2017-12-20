@@ -34,7 +34,7 @@ Separator::Separator( DistSeparator* dupNode )
 
 Separator::~Separator() { }
 
-void Separator::BuildMap( vector<Int>& map ) const
+void Separator::BuildMap( std::vector<Int>& map ) const
 {
     EL_DEBUG_CSE
     const Int numSources = off + inds.size();
@@ -68,7 +68,7 @@ void DistSeparator::BuildMap
     map.SetGrid( rootGrid );
     map.Resize( numSources );
 
-    vector<int> sendSizes( commSize, 0 );
+    std::vector<int> sendSizes( commSize, 0 );
     function<void(const NodeInfo&,const Separator&)> sendSizeLocalAccumulate =
       [&]( const NodeInfo& info, const Separator& sep )
       {
@@ -110,13 +110,13 @@ void DistSeparator::BuildMap
 
     // Use a single-entry AllToAll to coordinate how many indices will be
     // exchanges
-    vector<int> recvSizes( commSize );
+    std::vector<int> recvSizes( commSize );
     mpi::AllToAll( sendSizes.data(), 1, recvSizes.data(), 1, rootGrid.Comm() );
 
     // Pack the reordered indices
-    vector<int> sendOffs;
+    std::vector<int> sendOffs;
     const int numSends = Scan( sendSizes, sendOffs );
-    vector<Int> sendInds(numSends), sendOrigInds(numSends);
+    std::vector<Int> sendInds(numSends), sendOrigInds(numSends);
     auto offs = sendOffs;
     function<void(const NodeInfo&,const Separator&)> packRowsLocal =
       [&]( const NodeInfo& info, const Separator& sep )
@@ -170,20 +170,20 @@ void DistSeparator::BuildMap
     packRows( rootInfo, *this );
 
     // Perform an AllToAll to exchange the reordered indices
-    vector<int> recvOffs;
+    std::vector<int> recvOffs;
     const int numRecvs = Scan( recvSizes, recvOffs );
     EL_DEBUG_ONLY(
       const Int numLocalSources = map.NumLocalSources();
       if( numRecvs != numLocalSources )
           LogicError("incorrect number of recv indices");
     )
-    vector<Int> recvInds( numRecvs );
+    std::vector<Int> recvInds( numRecvs );
     mpi::AllToAll
     ( sendInds.data(), sendSizes.data(), sendOffs.data(),
       recvInds.data(), recvSizes.data(), recvOffs.data(), rootGrid.Comm() );
 
     // Perform an AllToAll to exchange the original indices
-    vector<Int> recvOrigInds( numRecvs );
+    std::vector<Int> recvOrigInds( numRecvs );
     mpi::AllToAll
     ( sendOrigInds.data(), sendSizes.data(), sendOffs.data(),
       recvOrigInds.data(), recvSizes.data(), recvOffs.data(), rootGrid.Comm() );

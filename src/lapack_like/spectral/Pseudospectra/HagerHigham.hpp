@@ -33,7 +33,7 @@ OneNormConvergenceTest
     Zeros( activeConverged, numActiveShifts, 1 );
 
     // Compute the infinity norm of each column of Z and its location
-    vector<ValueInt<Real>> valueInts(numActiveShifts);
+    std::vector<ValueInt<Real>> valueInts(numActiveShifts);
     for( Int j=0; j<numActiveShifts; ++j )
     {
         valueInts[j].index = 0;
@@ -52,7 +52,7 @@ OneNormConvergenceTest
     // Compute the real parts of the inner products of each column of Z and X
     // NOTE: Except in the first iteration, each column of X should only have
     //       a single nonzero entry, so this can be greatly accelerated.
-    vector<Real> innerProds(numActiveShifts);
+    std::vector<Real> innerProds(numActiveShifts);
     for( Int j=0; j<numActiveShifts; ++j )
     {
         const C innerProd =
@@ -127,7 +127,7 @@ OneNormConvergenceTest
 
     // Compute the infinity norm of each local column of Z and its location
     const Int numLocShifts = activeEsts.LocalHeight();
-    vector<ValueInt<Real>> valueInts(numLocShifts);
+    std::vector<ValueInt<Real>> valueInts(numLocShifts);
     for( Int jLoc=0; jLoc<numLocShifts; ++jLoc )
     {
         valueInts[jLoc].value = 0;
@@ -149,7 +149,7 @@ OneNormConvergenceTest
     // Compute the real parts of the inner products of each column of Z and X
     // NOTE: Except in the first iteration, each column of X should only have
     //       a single nonzero entry, so this can be greatly accelerated.
-    vector<Real> innerProds(numLocShifts);
+    std::vector<Real> innerProds(numLocShifts);
     for( Int jLoc=0; jLoc<numLocShifts; ++jLoc )
     {
         const C innerProd =
@@ -162,7 +162,7 @@ OneNormConvergenceTest
     ( innerProds.data(), numLocShifts, mpi::SUM, activeZ.ColComm() );
 
     // Compute the one norms
-    vector<Real> oneNorms(numLocShifts);
+    std::vector<Real> oneNorms(numLocShifts);
     for( Int jLoc=0; jLoc<numLocShifts; ++jLoc )
         oneNorms[jLoc] = blas::Nrm1( nLoc, activeY.LockedBuffer(0,jLoc), 1 );
     mpi::AllReduce
@@ -699,7 +699,7 @@ HagerHigham
         MultiShiftHessSolve( UpperOrLower::UPPER, Orientation::NORMAL, C(1), U, shifts, X_STAR_VR );
         X = X_STAR_VR;
     }
-    vector<Real> oneNorms(numLocShifts);
+    std::vector<Real> oneNorms(numLocShifts);
     for( Int jLoc=0; jLoc<numLocShifts; ++jLoc )
         oneNorms[jLoc] = blas::Nrm1( nLoc, X.LockedBuffer(0,jLoc), 1 );
     mpi::AllReduce( oneNorms.data(), numLocShifts, mpi::SUM, g.ColComm() );
@@ -924,7 +924,7 @@ HagerHigham
         Y = Y_STAR_VR;
     }
     Gemm( Orientation::NORMAL, Orientation::NORMAL, C(1), Q, Y, X );
-    vector<Real> oneNorms(numLocShifts);
+    std::vector<Real> oneNorms(numLocShifts);
     for( Int jLoc=0; jLoc<numLocShifts; ++jLoc )
         oneNorms[jLoc] = blas::Nrm1( nLoc, X.LockedBuffer(0,jLoc), 1 );
     mpi::AllReduce( oneNorms.data(), numLocShifts, mpi::SUM, g.ColComm() );

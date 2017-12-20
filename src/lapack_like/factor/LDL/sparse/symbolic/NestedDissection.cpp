@@ -14,9 +14,9 @@ namespace El {
 namespace ldl {
 
 void AMDOrder
-( const vector<Int>& subOffsets,
-  const vector<Int>& subTargets,
-        vector<Int>& amdPerm,
+( const std::vector<Int>& subOffsets,
+  const std::vector<Int>& subTargets,
+        std::vector<Int>& amdPerm,
         double* control,
         double* info )
 {
@@ -25,7 +25,7 @@ void AMDOrder
     // TODO(poulson): Simplify this after templating ElSuiteSparse's AMD
 #ifdef EL_USE_64BIT_INTS
     const Int numEdges = subTargets.size();
-    vector<int> subOffsets_int( numSources+1 ),
+    std::vector<int> subOffsets_int( numSources+1 ),
                 subTargets_int( numEdges ),
                 amdPerm_int( numSources );
     for( Int j=0; j<numSources+1; ++j )
@@ -77,7 +77,7 @@ inline bool IsSymmetric( const Graph& graph )
 inline void
 NestedDissectionRecursion
 ( const Graph& graph,
-  const vector<Int>& perm,
+  const std::vector<Int>& perm,
         Separator& sep,
         NodeInfo& info,
         Int off,
@@ -96,7 +96,7 @@ NestedDissectionRecursion
         for( Int e=0; e<numEdges; ++e )
             if( targetBuf[e] < numSources )
                 ++numValidEdges;
-        vector<Int> subOffsets(numSources+1), subTargets(Max(numValidEdges,1));
+        std::vector<Int> subOffsets(numSources+1), subTargets(Max(numValidEdges,1));
         Int sourceOff = 0;
         Int validCounter = 0;
         Int prevSource = -1;
@@ -118,14 +118,14 @@ NestedDissectionRecursion
         // Technically, SuiteSparse expects column-major storage, but since
         // the matrix is structurally symmetric, it's okay to pass in the
         // row-major representation
-        vector<Int> amdPerm;
+        std::vector<Int> amdPerm;
         AMDOrder( subOffsets, subTargets, amdPerm );
 
         // Compute the symbolic factorization of this leaf node using the
         // reordering just computed
         info.LOffsets.resize( numSources+1 );
         info.LParents.resize( numSources );
-        vector<Int> LNnz( numSources ), Flag( numSources ),
+        std::vector<Int> LNnz( numSources ), Flag( numSources ),
                     amdPermInv( numSources );
         suite_sparse::ldl::Symbolic
         ( numSources, subOffsets.data(), subTargets.data(),
@@ -171,9 +171,9 @@ NestedDissectionRecursion
 
         // Partition the graph and construct the inverse map
         Graph leftChild, rightChild;
-        vector<Int> map;
+        std::vector<Int> map;
         const Int sepSize = Bisect( graph, leftChild, rightChild, map, ctrl );
-        vector<Int> invMap( numSources );
+        std::vector<Int> invMap( numSources );
         for( Int s=0; s<numSources; ++s )
             invMap[map[s]] = s;
 
@@ -230,12 +230,12 @@ NestedDissectionRecursion
         // degrees of freedom
 
         const Int leftChildSize = leftChild.NumSources();
-        vector<Int> leftPerm( leftChildSize );
+        std::vector<Int> leftPerm( leftChildSize );
         for( Int s=0; s<leftChildSize; ++s )
             leftPerm[s] = perm[invMap[s]];
 
         const Int rightChildSize = rightChild.NumSources();
-        vector<Int> rightPerm( rightChildSize );
+        std::vector<Int> rightPerm( rightChildSize );
         for( Int s=0; s<rightChildSize; ++s )
             rightPerm[s] = perm[invMap[s+leftChildSize]];
 
@@ -328,15 +328,15 @@ NestedDissectionRecursion
             }
         }
         const int numLocalConnected = localLowerStruct.size();
-        vector<int> localConnectedSizes( commSize );
+        std::vector<int> localConnectedSizes( commSize );
         mpi::AllGather
         ( &numLocalConnected, 1, localConnectedSizes.data(), 1, comm );
-        vector<Int> localConnectedVec;
+        std::vector<Int> localConnectedVec;
         CopySTL( localLowerStruct, localConnectedVec );
-        vector<int> localConnectedOffs;
+        std::vector<int> localConnectedOffs;
         const int sumOfLocalConnectedSizes =
             Scan( localConnectedSizes, localConnectedOffs );
-        vector<Int> localConnections( sumOfLocalConnectedSizes );
+        std::vector<Int> localConnections( sumOfLocalConnectedSizes );
         mpi::AllGather
         ( localConnectedVec.data(), numLocalConnected,
           localConnections.data(),
@@ -388,7 +388,7 @@ NestedDissectionRecursion
 
 void NestedDissection
 ( const Graph& graph,
-        vector<Int>& map,
+        std::vector<Int>& map,
         Separator& sep,
         NodeInfo& info,
   const BisectCtrl& ctrl )
@@ -396,7 +396,7 @@ void NestedDissection
     EL_DEBUG_CSE
 
     const Int numSources = graph.NumSources();
-    vector<Int> perm(numSources);
+    std::vector<Int> perm(numSources);
     for( Int s=0; s<numSources; ++s )
         perm[s] = s;
 

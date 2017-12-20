@@ -58,11 +58,11 @@ void UnpackEntriesLocal
   const NodeInfo& node,
         Front<Field>& front,
   const DistSparseMatrix<Field>& A,
-  const vector<Int>& rRowLengths,
-  const vector<Field>& rEntries,
-  const vector<Int>& rTargets,
-        vector<int>& offs,
-        vector<int>& entryOffs )
+  const std::vector<Int>& rRowLengths,
+  const std::vector<Field>& rEntries,
+  const std::vector<Int>& rTargets,
+        std::vector<int>& offs,
+        std::vector<int>& entryOffs )
 {
     EL_DEBUG_CSE
 
@@ -195,11 +195,11 @@ void UnpackEntries
   const DistNodeInfo& node,
         DistFront<Field>& front,
   const DistSparseMatrix<Field>& A,
-  const vector<Int>& rRowLengths,
-  const vector<Field>& rEntries,
-  const vector<Int>& rTargets,
-        vector<int>& offs,
-        vector<int>& entryOffs )
+  const std::vector<Int>& rRowLengths,
+  const std::vector<Field>& rEntries,
+  const std::vector<Int>& rTargets,
+        std::vector<int>& offs,
+        std::vector<int>& entryOffs )
 {
     EL_DEBUG_CSE
     const Grid& grid = node.Grid();
@@ -272,7 +272,7 @@ void DistFront<Field>::Pull
   bool conjugate )
 {
     EL_DEBUG_CSE
-    vector<Int> mappedSources, mappedTargets, colOffs;
+    std::vector<Int> mappedSources, mappedTargets, colOffs;
     Pull
     ( A, reordering, rootSep, rootInfo,
       mappedSources, mappedTargets, colOffs,
@@ -285,9 +285,9 @@ void DistFront<Field>::Pull
   const DistMap& reordering,
   const DistSeparator& rootSep,
   const DistNodeInfo& rootInfo,
-        vector<Int>& mappedSources,
-        vector<Int>& mappedTargets,
-        vector<Int>& colOffs,
+        std::vector<Int>& mappedSources,
+        std::vector<Int>& mappedTargets,
+        std::vector<Int>& colOffs,
   bool conjugate )
 {
     EL_DEBUG_CSE
@@ -307,7 +307,7 @@ void DistFront<Field>::Pull
     // Set up the indices for the rows we need from each process
     if( time && commRank == 0 )
         timer.Start();
-    vector<int> rRowSizes( commSize, 0 );
+    std::vector<int> rRowSizes( commSize, 0 );
     function<void(const Separator&)> rRowLocalAccumulate =
       [&]( const Separator& sep )
       {
@@ -335,14 +335,14 @@ void DistFront<Field>::Pull
               ++rRowSizes[ A.RowOwner(sep.inds[t]) ];
       };
     rRowAccumulate( rootSep, rootInfo );
-    vector<int> rRowOffs;
+    std::vector<int> rRowOffs;
     const Int numRecvRows = Scan( rRowSizes, rRowOffs );
     if( time && commRank == 0 )
         Output("Row index setup: ",timer.Stop()," secs");
 
     if( time && commRank == 0 )
         timer.Start();
-    vector<Int> rRows( numRecvRows );
+    std::vector<Int> rRows( numRecvRows );
     auto offs = rRowOffs;
     function<void(const Separator&)> rRowsLocalPack =
       [&]( const Separator& sep )
@@ -379,11 +379,11 @@ void DistFront<Field>::Pull
     // Retreive the list of rows that we must send to each process
     if( time && commRank == 0 )
         timer.Start();
-    vector<int> sRowSizes( commSize );
+    std::vector<int> sRowSizes( commSize );
     mpi::AllToAll( rRowSizes.data(), 1, sRowSizes.data(), 1, grid.Comm() );
-    vector<int> sRowOffs;
+    std::vector<int> sRowOffs;
     const Int numSendRows = Scan( sRowSizes, sRowOffs );
-    vector<Int> sRows( numSendRows );
+    std::vector<Int> sRows( numSendRows );
     mpi::AllToAll
     ( rRows.data(), rRowSizes.data(), rRowOffs.data(),
       sRows.data(), sRowSizes.data(), sRowOffs.data(), grid.Comm() );
@@ -394,8 +394,8 @@ void DistFront<Field>::Pull
     if( time && commRank == 0 )
         timer.Start();
     const Int firstLocalRow = A.FirstLocalRow();
-    vector<Int> sRowLengths( numSendRows );
-    vector<int> sEntriesSizes(commSize,0);
+    std::vector<Int> sRowLengths( numSendRows );
+    std::vector<int> sEntriesSizes(commSize,0);
     for( Int q=0; q<commSize; ++q )
     {
         const Int size = sRowSizes[q];
@@ -419,10 +419,10 @@ void DistFront<Field>::Pull
             }
         }
     }
-    vector<int> sEntriesOffs;
+    std::vector<int> sEntriesOffs;
     const int numSendEntries = Scan( sEntriesSizes, sEntriesOffs );
-    vector<Field> sEntries( numSendEntries );
-    vector<Int> sTargets( numSendEntries );
+    std::vector<Field> sEntries( numSendEntries );
+    std::vector<Int> sTargets( numSendEntries );
     for( Int q=0; q<commSize; ++q )
     {
         Int index = sEntriesOffs[q];
@@ -458,11 +458,11 @@ void DistFront<Field>::Pull
     // Send back the number of nonzeros per row and the nonzeros themselves
     if( time && commRank == 0 )
         timer.Start();
-    vector<Int> rRowLengths( numRecvRows );
+    std::vector<Int> rRowLengths( numRecvRows );
     mpi::AllToAll
     ( sRowLengths.data(), sRowSizes.data(), sRowOffs.data(),
       rRowLengths.data(), rRowSizes.data(), rRowOffs.data(), grid.Comm() );
-    vector<int> rEntriesSizes(commSize,0);
+    std::vector<int> rEntriesSizes(commSize,0);
     for( Int q=0; q<commSize; ++q )
     {
         const Int size = rRowSizes[q];
@@ -470,10 +470,10 @@ void DistFront<Field>::Pull
         for( Int s=0; s<size; ++s )
             rEntriesSizes[q] += rRowLengths[off+s];
     }
-    vector<int> rEntriesOffs;
+    std::vector<int> rEntriesOffs;
     const int numRecvEntries = Scan( rEntriesSizes, rEntriesOffs );
-    vector<Field> rEntries( numRecvEntries );
-    vector<Int> rTargets( numRecvEntries );
+    std::vector<Field> rEntries( numRecvEntries );
+    std::vector<Int> rTargets( numRecvEntries );
     mpi::AllToAll
     ( sEntries.data(), sEntriesSizes.data(), sEntriesOffs.data(),
       rEntries.data(), rEntriesSizes.data(), rEntriesOffs.data(), grid.Comm() );
@@ -504,7 +504,7 @@ void DistFront<Field>::PullUpdate
   const DistNodeInfo& rootInfo )
 {
     EL_DEBUG_CSE
-    vector<Int> mappedSources, mappedTargets, colOffs;
+    std::vector<Int> mappedSources, mappedTargets, colOffs;
     PullUpdate
     ( A, reordering, rootSep, rootInfo, mappedSources, mappedTargets, colOffs );
 }
@@ -516,9 +516,9 @@ void DistFront<Field>::PullUpdate
   const DistMap& reordering,
   const DistSeparator& rootSep,
   const DistNodeInfo& rootInfo,
-        vector<Int>& mappedSources,
-        vector<Int>& mappedTargets,
-        vector<Int>& colOffs )
+        std::vector<Int>& mappedSources,
+        std::vector<Int>& mappedTargets,
+        std::vector<Int>& colOffs )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
@@ -537,7 +537,7 @@ void DistFront<Field>::PullUpdate
     // Set up the indices for the rows we need from each process
     if( time && commRank == 0 )
         timer.Start();
-    vector<int> rRowSizes( commSize, 0 );
+    std::vector<int> rRowSizes( commSize, 0 );
     function<void(const Separator&)> rRowLocalAccumulate =
       [&]( const Separator& sep )
       {
@@ -565,14 +565,14 @@ void DistFront<Field>::PullUpdate
               ++rRowSizes[ A.RowOwner(sep.inds[t]) ];
       };
     rRowAccumulate( rootSep, rootInfo );
-    vector<int> rRowOffs;
+    std::vector<int> rRowOffs;
     const Int numRecvRows = Scan( rRowSizes, rRowOffs );
     if( time && commRank == 0 )
         Output("Row index setup: ",timer.Stop()," secs");
 
     if( time && commRank == 0 )
         timer.Start();
-    vector<Int> rRows( numRecvRows );
+    std::vector<Int> rRows( numRecvRows );
     auto offs = rRowOffs;
     function<void(const Separator&)> rRowsLocalPack =
       [&]( const Separator& sep )
@@ -609,11 +609,11 @@ void DistFront<Field>::PullUpdate
     // Retreive the list of rows that we must send to each process
     if( time && commRank == 0 )
         timer.Start();
-    vector<int> sRowSizes( commSize );
+    std::vector<int> sRowSizes( commSize );
     mpi::AllToAll( rRowSizes.data(), 1, sRowSizes.data(), 1, grid.Comm() );
-    vector<int> sRowOffs;
+    std::vector<int> sRowOffs;
     const Int numSendRows = Scan( sRowSizes, sRowOffs );
-    vector<Int> sRows( numSendRows );
+    std::vector<Int> sRows( numSendRows );
     mpi::AllToAll
     ( rRows.data(), rRowSizes.data(), rRowOffs.data(),
       sRows.data(), sRowSizes.data(), sRowOffs.data(), grid.Comm() );
@@ -624,8 +624,8 @@ void DistFront<Field>::PullUpdate
     if( time && commRank == 0 )
         timer.Start();
     const Int firstLocalRow = A.FirstLocalRow();
-    vector<Int> sRowLengths( numSendRows );
-    vector<int> sEntriesSizes(commSize,0);
+    std::vector<Int> sRowLengths( numSendRows );
+    std::vector<int> sEntriesSizes(commSize,0);
     for( Int q=0; q<commSize; ++q )
     {
         const Int size = sRowSizes[q];
@@ -649,10 +649,10 @@ void DistFront<Field>::PullUpdate
             }
         }
     }
-    vector<int> sEntriesOffs;
+    std::vector<int> sEntriesOffs;
     const int numSendEntries = Scan( sEntriesSizes, sEntriesOffs );
-    vector<Field> sEntries( numSendEntries );
-    vector<Int> sTargets( numSendEntries );
+    std::vector<Field> sEntries( numSendEntries );
+    std::vector<Int> sTargets( numSendEntries );
     for( Int q=0; q<commSize; ++q )
     {
         Int index = sEntriesOffs[q];
@@ -688,11 +688,11 @@ void DistFront<Field>::PullUpdate
     // Send back the number of nonzeros per row and the nonzeros themselves
     if( time && commRank == 0 )
         timer.Start();
-    vector<Int> rRowLengths( numRecvRows );
+    std::vector<Int> rRowLengths( numRecvRows );
     mpi::AllToAll
     ( sRowLengths.data(), sRowSizes.data(), sRowOffs.data(),
       rRowLengths.data(), rRowSizes.data(), rRowOffs.data(), grid.Comm() );
-    vector<int> rEntriesSizes(commSize,0);
+    std::vector<int> rEntriesSizes(commSize,0);
     for( Int q=0; q<commSize; ++q )
     {
         const Int size = rRowSizes[q];
@@ -700,10 +700,10 @@ void DistFront<Field>::PullUpdate
         for( Int s=0; s<size; ++s )
             rEntriesSizes[q] += rRowLengths[off+s];
     }
-    vector<int> rEntriesOffs;
+    std::vector<int> rEntriesOffs;
     const int numRecvEntries = Scan( rEntriesSizes, rEntriesOffs );
-    vector<Field> rEntries( numRecvEntries );
-    vector<Int> rTargets( numRecvEntries );
+    std::vector<Field> rEntries( numRecvEntries );
+    std::vector<Int> rTargets( numRecvEntries );
     mpi::AllToAll
     ( sEntries.data(), sEntriesSizes.data(), sEntriesOffs.data(),
       rEntries.data(), rEntriesSizes.data(), rEntriesOffs.data(), grid.Comm() );
@@ -1241,7 +1241,7 @@ void DistFront<Field>::ComputeRecvInds( const DistNodeInfo& info ) const
 {
     EL_DEBUG_CSE
 
-    vector<int> gridHeights, gridWidths;
+    std::vector<int> gridHeights, gridWidths;
     info.GetChildGridDims( gridHeights, gridWidths );
 
     const Grid& grid = info.Grid();
@@ -1254,7 +1254,7 @@ void DistFront<Field>::ComputeRecvInds( const DistNodeInfo& info ) const
     const int childTeamRank = childGrid.Rank();
     const bool inFirstTeam = ( childTeamRank == teamRank );
     const bool leftIsFirst = ( onLeft==inFirstTeam );
-    vector<int> teamSizes(2), teamOffs(2);
+    std::vector<int> teamSizes(2), teamOffs(2);
     teamSizes[0] = ( onLeft ? childTeamSize : teamSize-childTeamSize );
     teamSizes[1] = teamSize - teamSizes[0];
     teamOffs[0] = ( leftIsFirst ? 0            : teamSizes[1] );
@@ -1273,7 +1273,7 @@ void DistFront<Field>::ComputeRecvInds( const DistNodeInfo& info ) const
     {
         // Compute the recv indices of the child from each process
         const Int numInds = info.childRelInds[c].size();
-        vector<Int> rowInds, colInds;
+        std::vector<Int> rowInds, colInds;
         for( Int iChild=0; iChild<numInds; ++iChild )
         {
             if( L2D.IsLocalRow( info.childRelInds[c][iChild] ) )
@@ -1282,7 +1282,7 @@ void DistFront<Field>::ComputeRecvInds( const DistNodeInfo& info ) const
                 colInds.push_back( iChild );
         }
 
-        vector<Int>::const_iterator it;
+        std::vector<Int>::const_iterator it;
         const Int numColInds = colInds.size();
         const Int numRowInds = rowInds.size();
         for( Int jPre=0; jPre<numColInds; ++jPre )

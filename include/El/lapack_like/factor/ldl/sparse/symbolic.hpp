@@ -31,15 +31,15 @@ Int Analysis( NodeInfo& rootInfo, Int myOff=0 );
 void Analysis( DistNodeInfo& rootInfo, bool storeFactRecvInds=true );
 
 void AMDOrder
-( const vector<Int>& subOffsets,
-  const vector<Int>& subTargets,
-        vector<Int>& amdPerm,
+( const std::vector<Int>& subOffsets,
+  const std::vector<Int>& subTargets,
+        std::vector<Int>& amdPerm,
         double* control=nullptr,
         double* info=nullptr );
 
 void NestedDissection
 ( const Graph& graph,
-        vector<Int>& map,
+        std::vector<Int>& map,
         Separator& rootSep,
         NodeInfo& rootInfo,
   const BisectCtrl& ctrl=BisectCtrl() );
@@ -53,7 +53,7 @@ void NestedDissection
 void NaturalNestedDissection
 ( Int nx, Int ny, Int nz,
   const Graph& graph,
-        vector<Int>& map,
+        std::vector<Int>& map,
         Separator& rootSep,
         NodeInfo& info,
         Int cutoff );

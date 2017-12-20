@@ -89,12 +89,12 @@ const El::Grid& DistNodeInfo::Grid() const
 }
 
 void DistNodeInfo::GetChildGridDims
-( vector<int>& gridHeights, vector<int>& gridWidths ) const
+( std::vector<int>& gridHeights, std::vector<int>& gridWidths ) const
 {
     EL_DEBUG_CSE
 
     // We will pack this with (gridHeight0,gridWidth0,gridHeight1,gridWidth1).
-    vector<int> gridDims(4,0);
+    std::vector<int> gridDims(4,0);
     if( child->onLeft )
     {
         if( child->Grid().Rank() == 0 )

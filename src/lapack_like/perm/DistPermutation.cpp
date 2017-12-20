@@ -39,7 +39,7 @@ void PermuteCols
         // Fill vectors with the send data
         auto offsets = meta.recvDispls;
         const int totalSend = meta.TotalRecv();
-        vector<T> sendData;
+        std::vector<T> sendData;
         FastResize( sendData, mpi::Pad(totalSend) );
         const int numSends = meta.recvIdx.size();
         for( int send=0; send<numSends; ++send )
@@ -52,7 +52,7 @@ void PermuteCols
 
         // Communicate all pivot rows
         const int totalRecv = meta.TotalSend();
-        vector<T> recvData;
+        std::vector<T> recvData;
         FastResize( recvData, mpi::Pad(totalRecv) );
         mpi::AllToAll
         ( sendData.data(), meta.recvCounts.data(), meta.recvDispls.data(),
@@ -75,7 +75,7 @@ void PermuteCols
         // Fill vectors with the send data
         auto offsets = meta.sendDispls;
         const int totalSend = meta.TotalSend();
-        vector<T> sendData;
+        std::vector<T> sendData;
         FastResize( sendData, mpi::Pad(totalSend) );
         const int numSends = meta.sendIdx.size();
         for( int send=0; send<numSends; ++send )
@@ -88,7 +88,7 @@ void PermuteCols
 
         // Communicate all pivot rows
         const int totalRecv = meta.TotalRecv();
-        vector<T> recvData;
+        std::vector<T> recvData;
         FastResize( recvData, mpi::Pad(totalRecv) );
         mpi::AllToAll
         ( sendData.data(), meta.sendCounts.data(), meta.sendDispls.data(),
@@ -136,7 +136,7 @@ void PermuteRows
         // Fill vectors with the send data
         auto offsets = meta.recvDispls;
         const int totalSend = meta.TotalRecv();
-        vector<T> sendData;
+        std::vector<T> sendData;
         FastResize( sendData, mpi::Pad(totalSend) );
         const int numSends = meta.recvIdx.size();
         for( int send=0; send<numSends; ++send )
@@ -151,7 +151,7 @@ void PermuteRows
 
         // Communicate all pivot rows
         const int totalRecv = meta.TotalSend();
-        vector<T> recvData;
+        std::vector<T> recvData;
         FastResize( recvData, mpi::Pad(totalRecv) );
         mpi::AllToAll
         ( sendData.data(), meta.recvCounts.data(), meta.recvDispls.data(),
@@ -175,7 +175,7 @@ void PermuteRows
         // Fill vectors with the send data
         auto offsets = meta.sendDispls;
         const int totalSend = meta.TotalSend();
-        vector<T> sendData;
+        std::vector<T> sendData;
         FastResize( sendData, mpi::Pad(totalSend) );
         const int numSends = meta.sendIdx.size();
         for( int send=0; send<numSends; ++send )
@@ -190,7 +190,7 @@ void PermuteRows
 
         // Communicate all pivot rows
         const int totalRecv = meta.TotalRecv();
-        vector<T> recvData;
+        std::vector<T> recvData;
         FastResize( recvData, mpi::Pad(totalRecv) );
         mpi::AllToAll
         ( sendData.data(), meta.sendCounts.data(), meta.sendDispls.data(),
@@ -244,7 +244,7 @@ void InvertPermutation
     // Compute the send counts
     const mpi::Comm colComm = p.ColComm();
     const Int commSize = mpi::Size( colComm );
-    vector<int> sendSizes(commSize,0), recvSizes(commSize,0);
+    std::vector<int> sendSizes(commSize,0), recvSizes(commSize,0);
     for( Int iLoc=0; iLoc<p.LocalHeight(); ++iLoc )
     {
         const Int iDest = pLoc(iLoc);
@@ -253,12 +253,12 @@ void InvertPermutation
     }
     // Perform a small AllToAll to get the receive counts
     mpi::AllToAll( sendSizes.data(), 1, recvSizes.data(), 1, colComm );
-    vector<int> sendOffs, recvOffs;
+    std::vector<int> sendOffs, recvOffs;
     const int sendTotal = Scan( sendSizes, sendOffs );
     const int recvTotal = Scan( recvSizes, recvOffs );
 
     // Pack the send data
-    vector<Int> sendBuf(sendTotal);
+    std::vector<Int> sendBuf(sendTotal);
     auto offsets = sendOffs;
     for( Int iLoc=0; iLoc<p.LocalHeight(); ++iLoc )
     {
@@ -270,7 +270,7 @@ void InvertPermutation
     }
 
     // Perform the actual exchange
-    vector<Int> recvBuf(recvTotal);
+    std::vector<Int> recvBuf(recvTotal);
     mpi::AllToAll
     ( sendBuf.data(), sendSizes.data(), sendOffs.data(),
       recvBuf.data(), recvSizes.data(), recvOffs.data(), colComm );

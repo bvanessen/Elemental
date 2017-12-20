@@ -68,7 +68,7 @@ AEDInfo NibbleHelper
           Output(infoSub.numUnconverged," eigenvalues did not converge");
     )
 
-    vector<Real> work(2*n);
+    std::vector<Real> work(2*n);
     info = SpikeDeflation( T, V, spikeValue, infoSub.numUnconverged, work );
     if( ctrl.progress )
     {
@@ -239,7 +239,7 @@ AEDInfo NibbleHelper
           Output(infoSub.numUnconverged," eigenvalues did not converge");
     )
 
-    vector<Field> work(2*n);
+    std::vector<Field> work(2*n);
     info = SpikeDeflation( T, V, spikeValue, infoSub.numUnconverged, work );
     if( ctrl.progress )
     {

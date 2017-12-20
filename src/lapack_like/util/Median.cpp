@@ -23,7 +23,7 @@ ValueInt<Real> Median( const Matrix<Real>& x )
     const Int stride = ( n==1 ? 1 : x.LDim() );
     const Real* xBuffer = x.LockedBuffer();
 
-    vector<ValueInt<Real>> pairs( k );
+    std::vector<ValueInt<Real>> pairs( k );
     for( Int i=0; i<k; ++i )
     {
         pairs[i].value = xBuffer[i*stride];

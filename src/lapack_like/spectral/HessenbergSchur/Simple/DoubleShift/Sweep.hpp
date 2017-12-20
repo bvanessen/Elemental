@@ -60,7 +60,7 @@ Int ChooseStart
 ( const Matrix<Real>& H, 
   const Complex<Real>& shift0,
   const Complex<Real>& shift1,
-        vector<Real>& v )
+        std::vector<Real>& v )
 {
     EL_DEBUG_CSE
     const Real ulp = limits::Precision<Real>();
@@ -124,7 +124,7 @@ void Sweep
     const Int transformBeg = ( ctrl.fullTriangle ? 0 : winBeg ); 
     const Int transformEnd = ( ctrl.fullTriangle ? n : winEnd );
 
-    vector<Real> v(3);
+    std::vector<Real> v(3);
     auto subInd = IR(winBeg,winEnd);
     Int shiftStart = winBeg +
       ChooseStart( H(subInd,subInd), shift0, shift1, v );
@@ -244,7 +244,7 @@ void SweepOpt
     const Int transformBeg = ( ctrl.fullTriangle ? 0 : winBeg ); 
     const Int transformEnd = ( ctrl.fullTriangle ? n : winEnd );
 
-    vector<Real> v(3);
+    std::vector<Real> v(3);
     auto subInd = IR(winBeg,winEnd);
     Int shiftStart = winBeg +
       ChooseStart( H(subInd,subInd), shift0, shift1, v );

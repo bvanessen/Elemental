@@ -13,7 +13,7 @@ namespace El {
 namespace qr {
 
 template<typename F>
-Base<F> ColNorms( const Matrix<F>& A, vector<Base<F>>& norms )
+Base<F> ColNorms( const Matrix<F>& A, std::vector<Base<F>>& norms )
 {
     EL_DEBUG_CSE
     typedef Base<F> Real;
@@ -31,7 +31,7 @@ Base<F> ColNorms( const Matrix<F>& A, vector<Base<F>>& norms )
 
 template<typename Real,class Compare=std::less<Real>>
 ValueInt<Real> FindPivot
-( const vector<Real>& norms,
+( const std::vector<Real>& norms,
         Int col,
         Compare compare=std::less<Real>() )
 {
@@ -75,7 +75,7 @@ void BusingerGolub
     // Initialize two copies of the column norms, one will be consistently
     // updated, but the original copy will be kept to determine when the
     // updated quantities are no longer accurate.
-    vector<Real> origNorms;
+    std::vector<Real> origNorms;
     const Real maxOrigNorm = ColNorms( A, origNorms );
     auto norms = origNorms;
     const Real updateTol = Sqrt(limits::Epsilon<Real>());
@@ -179,7 +179,7 @@ template<typename F>
 ValueInt<Base<F>>
 FindColPivot
 ( const DistMatrix<F>& A,
-  const vector<Base<F>>& norms,
+  const std::vector<Base<F>>& norms,
         Int col,
         bool smallestFirst=false )
 {
@@ -204,7 +204,7 @@ FindColPivot
 }
 
 template<typename F>
-Base<F> ColNorms( const DistMatrix<F>& A, vector<Base<F>>& norms )
+Base<F> ColNorms( const DistMatrix<F>& A, std::vector<Base<F>>& norms )
 {
     EL_DEBUG_CSE
     typedef Base<F> Real;
@@ -215,7 +215,7 @@ Base<F> ColNorms( const DistMatrix<F>& A, vector<Base<F>>& norms )
     mpi::Comm rowComm = A.Grid().RowComm();
 
     // Carefully perform the local portion of the computation
-    vector<Real> localScales(localWidth,0),
+    std::vector<Real> localScales(localWidth,0),
                  localScaledSquares(localWidth,1);
     for( Int jLoc=0; jLoc<localWidth; ++jLoc )
         for( Int iLoc=0; iLoc<localHeight; ++iLoc )
@@ -223,7 +223,7 @@ Base<F> ColNorms( const DistMatrix<F>& A, vector<Base<F>>& norms )
             ( ALoc(iLoc,jLoc), localScales[jLoc], localScaledSquares[jLoc] );
 
     // Find the maximum relative scales
-    vector<Real> scales(localWidth);
+    std::vector<Real> scales(localWidth);
     mpi::AllReduce
     ( localScales.data(), scales.data(), localWidth, mpi::MAX, colComm );
 
@@ -238,7 +238,7 @@ Base<F> ColNorms( const DistMatrix<F>& A, vector<Base<F>>& norms )
     }
 
     // Now sum the local contributions (can ignore results where scale is 0)
-    vector<Real> scaledSquares(localWidth);
+    std::vector<Real> scaledSquares(localWidth);
     mpi::AllReduce
     ( localScaledSquares.data(), scaledSquares.data(), localWidth, colComm );
 
@@ -259,9 +259,9 @@ Base<F> ColNorms( const DistMatrix<F>& A, vector<Base<F>>& norms )
 template<typename F>
 void ReplaceColNorms
 ( const DistMatrix<F>& A,
-        vector<Int>& inaccurateNorms,
-        vector<Base<F>>& norms,
-        vector<Base<F>>& origNorms )
+        std::vector<Int>& inaccurateNorms,
+        std::vector<Base<F>>& norms,
+        std::vector<Base<F>>& origNorms )
 {
     EL_DEBUG_CSE
     typedef Base<F> Real;
@@ -271,7 +271,7 @@ void ReplaceColNorms
     mpi::Comm colComm = A.Grid().ColComm();
 
     // Carefully perform the local portion of the computation
-    vector<Real> localScales(numInaccurate,0),
+    std::vector<Real> localScales(numInaccurate,0),
                  localScaledSquares(numInaccurate,1);
     for( Int s=0; s<numInaccurate; ++s )
         for( Int iLoc=0; iLoc<localHeight; ++iLoc )
@@ -280,7 +280,7 @@ void ReplaceColNorms
               localScales[s], localScaledSquares[s] );
 
     // Find the maximum relative scales
-    vector<Real> scales(numInaccurate);
+    std::vector<Real> scales(numInaccurate);
     mpi::AllReduce
     ( localScales.data(), scales.data(), numInaccurate, mpi::MAX, colComm );
 
@@ -295,7 +295,7 @@ void ReplaceColNorms
     }
 
     // Now sum the local contributions (can ignore results where scale is 0)
-    vector<Real> scaledSquares(numInaccurate);
+    std::vector<Real> scaledSquares(numInaccurate);
     mpi::AllReduce
     ( localScaledSquares.data(), scaledSquares.data(), numInaccurate, colComm );
 
@@ -338,11 +338,11 @@ void BusingerGolub
     // Initialize two copies of the column norms, one will be consistently
     // updated, but the original copy will be kept to determine when the
     // updated quantities are no longer accurate.
-    vector<Real> origNorms( A.LocalWidth() );
+    std::vector<Real> origNorms( A.LocalWidth() );
     const Real maxOrigNorm = ColNorms( A, origNorms );
     auto norms = origNorms;
     const Real updateTol = Sqrt(limits::Epsilon<Real>());
-    vector<Int> inaccurateNorms;
+    std::vector<Int> inaccurateNorms;
 
     Omega.MakeIdentity( n );
     Omega.ReserveSwaps( n );

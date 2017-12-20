@@ -87,7 +87,7 @@ TaggedSort( const Matrix<Real>& x, SortType sort, bool stable )
     const Int stride = ( n==1 ? 1 : x.LDim() );
     const Real* xBuffer = x.LockedBuffer();
 
-    vector<ValueInt<Real>> pairs( k );
+    std::vector<ValueInt<Real>> pairs( k );
     for( Int i=0; i<k; ++i )
     {
         pairs[i].value = xBuffer[i*stride];
@@ -133,7 +133,7 @@ TaggedSort( const AbstractDistMatrix<Real>& x, SortType sort, bool stable )
 
 template<typename Real,typename Field>
 void ApplyTaggedSortToEachRow
-( const vector<ValueInt<Real>>& sortPairs,
+( const std::vector<ValueInt<Real>>& sortPairs,
         Matrix<Field>& Z )
 {
     EL_DEBUG_CSE
@@ -150,7 +150,7 @@ void ApplyTaggedSortToEachRow
 
 template<typename Real,typename Field>
 void ApplyTaggedSortToEachColumn
-( const vector<ValueInt<Real>>& sortPairs,
+( const std::vector<ValueInt<Real>>& sortPairs,
         Matrix<Field>& Z )
 {
     EL_DEBUG_CSE
@@ -168,7 +168,7 @@ void ApplyTaggedSortToEachColumn
 
 template<typename Real,typename Field>
 void ApplyTaggedSortToEachRow
-( const vector<ValueInt<Real>>& sortPairs,
+( const std::vector<ValueInt<Real>>& sortPairs,
         AbstractDistMatrix<Field>& Z )
 {
     EL_DEBUG_CSE
@@ -192,7 +192,7 @@ void ApplyTaggedSortToEachRow
 
 template<typename Real,typename Field>
 void ApplyTaggedSortToEachColumn
-( const vector<ValueInt<Real>>& sortPairs,
+( const std::vector<ValueInt<Real>>& sortPairs,
         AbstractDistMatrix<Field>& Z )
 {
     EL_DEBUG_CSE
@@ -244,7 +244,7 @@ void MergeSortingPermutation
     const Int stride = ( n==1 ? 1 : x.LDim() );
     const Real* xBuffer = x.LockedBuffer();
 
-    vector<ValueInt<Real>> pairs( k );
+    std::vector<ValueInt<Real>> pairs( k );
     for( Int i=0; i<k; ++i )
     {
         pairs[i].value = xBuffer[i*stride];
@@ -267,16 +267,16 @@ void MergeSortingPermutation
 
 #define PROTO_COMPLEX(Field) \
   template void ApplyTaggedSortToEachRow \
-  ( const vector<ValueInt<Base<Field>>>& sortPairs, \
+  ( const std::vector<ValueInt<Base<Field>>>& sortPairs, \
           Matrix<Field>& Z ); \
   template void ApplyTaggedSortToEachColumn \
-  ( const vector<ValueInt<Base<Field>>>& sortPairs, \
+  ( const std::vector<ValueInt<Base<Field>>>& sortPairs, \
           Matrix<Field>& Z ); \
   template void ApplyTaggedSortToEachRow \
-  ( const vector<ValueInt<Base<Field>>>& sortPairs, \
+  ( const std::vector<ValueInt<Base<Field>>>& sortPairs, \
           AbstractDistMatrix<Field>& Z ); \
   template void ApplyTaggedSortToEachColumn \
-  ( const vector<ValueInt<Base<Field>>>& sortPairs, \
+  ( const std::vector<ValueInt<Base<Field>>>& sortPairs, \
           AbstractDistMatrix<Field>& Z );
 
 #define PROTO(Real) \
@@ -284,9 +284,9 @@ void MergeSortingPermutation
   template void Sort( Matrix<Real>& x, SortType sort, bool stable ); \
   template void Sort \
   ( AbstractDistMatrix<Real>& x, SortType sort, bool stable ); \
-  template vector<ValueInt<Real>> TaggedSort \
+  template std::vector<ValueInt<Real>> TaggedSort \
   ( const Matrix<Real>& x, SortType sort, bool stable ); \
-  template vector<ValueInt<Real>> TaggedSort \
+  template std::vector<ValueInt<Real>> TaggedSort \
   ( const AbstractDistMatrix<Real>& x, SortType sort, bool stable ); \
   template void SortingPermutation \
   ( const Matrix<Real>& x, Permutation& sortPerm, SortType sort, bool stable );
@@ -296,19 +296,19 @@ void MergeSortingPermutation
 #define PROTO_FLOAT \
   PROTO(float) \
   template void ApplyTaggedSortToEachRow \
-  ( const vector<ValueInt<float>>& sortPairs, \
+  ( const std::vector<ValueInt<float>>& sortPairs, \
     AbstractDistMatrix<double>& Z ); \
   template void ApplyTaggedSortToEachColumn \
-  ( const vector<ValueInt<float>>& sortPairs, \
+  ( const std::vector<ValueInt<float>>& sortPairs, \
     AbstractDistMatrix<double>& Z );
 
 #define PROTO_COMPLEX_FLOAT \
   PROTO_COMPLEX(Complex<float>) \
   template void ApplyTaggedSortToEachRow \
-  ( const vector<ValueInt<float>>& sortPairs, \
+  ( const std::vector<ValueInt<float>>& sortPairs, \
     AbstractDistMatrix<Complex<double>>& Z ); \
   template void ApplyTaggedSortToEachColumn \
-  ( const vector<ValueInt<float>>& sortPairs, \
+  ( const std::vector<ValueInt<float>>& sortPairs, \
     AbstractDistMatrix<Complex<double>>& Z );
 
 #define EL_ENABLE_DOUBLEDOUBLE

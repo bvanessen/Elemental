@@ -7,8 +7,13 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
-namespace mstrsm {
+#include "El/blas_like/level3.hpp"
+#include "El/core/Proxy.hpp"
+
+namespace El
+{
+namespace mstrsm
+{
 
 template<typename F>
 void LeftUnb

@@ -21,7 +21,7 @@ void Panel
   DistPermutation& P,
   DistPermutation& PB,
   Int offset,
-  vector<Field>& pivotBuf );
+  std::vector<Field>& pivotBuf );
 
 } // namespace lu
 
@@ -105,7 +105,7 @@ void RowEchelon( DistMatrix<Field>& A, DistMatrix<Field>& B )
     const bool BAligned = ( B.ColShift() == A.ColShift() );
     DistMatrix<Field,Dist::MC,Dist::STAR> A21_MC_STAR_B(grid);
 
-    vector<Field> panelBuf, pivotBuf;
+    std::vector<Field> panelBuf, pivotBuf;
     for( Int k=0; k<minDimA; k+=bsize )
     {
         const Int nb = Min(bsize,minDimA-k);
@@ -232,7 +232,7 @@ void ScaLAPACKHelper
     const int mLocal = A.LocalHeight();
 
     auto ACopy = A;
-    vector<int> ipiv(mLocal+mb);
+    std::vector<int> ipiv(mLocal+mb);
 
     auto descA = FillDesc( A );
     auto descB = FillDesc( B );

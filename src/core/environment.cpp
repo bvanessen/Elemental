@@ -324,7 +324,7 @@ void ComplainIfDebug()
 }
 
 template<typename T>
-bool IsSorted( const vector<T>& x )
+bool IsSorted( const std::vector<T>& x )
 {
     const Int vecLength = x.size();
     for( Int i=1; i<vecLength; ++i )
@@ -337,7 +337,7 @@ bool IsSorted( const vector<T>& x )
 
 // While is_strictly_sorted exists in Boost, it does not exist in the STL (yet)
 template<typename T>
-bool IsStrictlySorted( const vector<T>& x )
+bool IsStrictlySorted( const std::vector<T>& x )
 {
     const Int vecLength = x.size();
     for( Int i=1; i<vecLength; ++i )
@@ -349,7 +349,7 @@ bool IsStrictlySorted( const vector<T>& x )
 }
 
 void Union
-( vector<Int>& both, const vector<Int>& first, const vector<Int>& second )
+( std::vector<Int>& both, const std::vector<Int>& first, const std::vector<Int>& second )
 {
     both.resize( first.size()+second.size() );
     auto it = std::set_union
@@ -360,15 +360,15 @@ void Union
 }
 
 vector<Int>
-Union( const vector<Int>& first, const vector<Int>& second )
+Union( const std::vector<Int>& first, const std::vector<Int>& second )
 {
-    vector<Int> both;
+    std::vector<Int> both;
     Union( both, first, second );
     return both;
 }
 
 void RelativeIndices
-( vector<Int>& relInds, const vector<Int>& sub, const vector<Int>& full )
+( std::vector<Int>& relInds, const std::vector<Int>& sub, const std::vector<Int>& full )
 {
     const Int numSub = sub.size();
     relInds.resize( numSub );
@@ -385,14 +385,14 @@ void RelativeIndices
     }
 }
 
-vector<Int> RelativeIndices( const vector<Int>& sub, const vector<Int>& full )
+vector<Int> RelativeIndices( const std::vector<Int>& sub, const std::vector<Int>& full )
 {
-    vector<Int> relInds;
+    std::vector<Int> relInds;
     RelativeIndices( relInds, sub, full );
     return relInds;
 }
 
-Int Find( const vector<Int>& sortedInds, Int index )
+Int Find( const std::vector<Int>& sortedInds, Int index )
 {
     EL_DEBUG_CSE
     auto it = std::lower_bound( sortedInds.cbegin(), sortedInds.cend(), index );
@@ -407,8 +407,8 @@ Int Find( const vector<Int>& sortedInds, Int index )
 
 #define EL_NO_COMPLEX_PROTO
 #define PROTO(T) \
-  template bool IsSorted( const vector<T>& x ); \
-  template bool IsStrictlySorted( const vector<T>& x );
+  template bool IsSorted( const std::vector<T>& x ); \
+  template bool IsStrictlySorted( const std::vector<T>& x );
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE
 #define EL_ENABLE_QUAD

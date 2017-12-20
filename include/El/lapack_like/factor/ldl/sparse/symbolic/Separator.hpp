@@ -27,7 +27,7 @@ struct DistSeparator;
 struct Separator
 {
     Int off;
-    vector<Int> inds;
+    std::vector<Int> inds;
 
     // An observing pointer to the parent (should it exist).
     Separator* parent=nullptr;
@@ -36,13 +36,13 @@ struct Separator
     DistSeparator* duplicate=nullptr;
 
     // Unique pointers to the childen (should they exist).
-    vector<std::unique_ptr<Separator>> children;
+    std::vector<std::unique_ptr<Separator>> children;
 
     Separator( Separator* parentNode=nullptr );
     Separator( DistSeparator* dupNode );
     ~Separator();
 
-    void BuildMap( vector<Int>& map ) const;
+    void BuildMap( std::vector<Int>& map ) const;
 };
 
 struct DistNodeInfo;
@@ -50,7 +50,7 @@ struct DistNodeInfo;
 struct DistSeparator
 {
     Int off;
-    vector<Int> inds;
+    std::vector<Int> inds;
 
     // An observing pointer to the parent (should it exist).
     DistSeparator* parent=nullptr;

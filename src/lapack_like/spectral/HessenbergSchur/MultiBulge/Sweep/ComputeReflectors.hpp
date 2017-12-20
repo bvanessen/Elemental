@@ -48,7 +48,7 @@ void ComputeReflectors
 
     // Set aside space for a Householder vector for a candidate reinflation of
     // a deflated bulge
-    vector<Field> wCand(3);
+    std::vector<Field> wCand(3);
 
     if( haveSmallBulge )
     {
