@@ -6,7 +6,7 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/blas_like/level3.hpp>
+#include "El/blas_like/level3.hpp"
 
 #include "./Trmm/LLN.hpp"
 #include "./Trmm/LLT.hpp"
@@ -17,7 +17,8 @@
 #include "./Trmm/RUN.hpp"
 #include "./Trmm/RUT.hpp"
 
-namespace El {
+namespace El
+{
 
 template<typename T>
 void Trmm
@@ -95,8 +96,8 @@ void LocalTrmm
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( (side == LeftOrRight::LEFT && B.ColDist() != STAR) ||
-          (side == LeftOrRight::RIGHT && B.RowDist() != STAR) )
+    if( (side == LeftOrRight::LEFT && B.ColDist() != Dist::STAR) ||
+        (side == LeftOrRight::RIGHT && B.RowDist() != Dist::STAR) )
           LogicError
           ("Dist of RHS must conform with that of triangle");
     )

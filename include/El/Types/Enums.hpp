@@ -73,4 +73,5 @@ enum class FileFormat
 };
 
 }// namespace El
+
 #endif // EL_TYPES_ENUMS_HPP_

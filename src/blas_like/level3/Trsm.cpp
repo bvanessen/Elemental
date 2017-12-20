@@ -6,9 +6,9 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/blas_like/level1.hpp>
-#include <El/blas_like/level2.hpp>
-#include <El/blas_like/level3.hpp>
+#include "El/blas_like/level1.hpp"
+#include "El/blas_like/level2.hpp"
+#include "El/blas_like/level3.hpp"
 
 #include "./Trsm/LLN.hpp"
 #include "./Trsm/LLT.hpp"
@@ -127,7 +127,7 @@ void Trsm
                 trsm::LLNMedium( diag, A, B, checkIfSingular );
             else if( alg == TRSM_SMALL )
             {
-                if( A.ColDist() == VR )
+                if( A.ColDist() == Dist::VR )
                 {
                     DistMatrixReadProxy<F,F,Dist::VR,Dist::STAR> AProx( A );
                     auto& APost = AProx.GetLocked();
@@ -174,7 +174,7 @@ void Trsm
                 trsm::LLTMedium( orientation, diag, A, B, checkIfSingular );
             else if( alg == TRSM_SMALL )
             {
-                if( A.ColDist() == VR )
+                if( A.ColDist() == Dist::VR )
                 {
                     DistMatrixReadProxy<F,F,Dist::VR,Dist::STAR> AProx( A );
                     auto& APost = AProx.GetLocked();
@@ -189,7 +189,7 @@ void Trsm
                     trsm::LLTSmall
                     ( orientation, diag, APost, BPost, checkIfSingular );
                 }
-                else if( A.RowDist() == VC )
+                else if( A.RowDist() == Dist::VC )
                 {
                     DistMatrixReadProxy<F,F,Dist::STAR,Dist::VC> AProx( A );
                     auto& APost = AProx.GetLocked();
@@ -204,7 +204,7 @@ void Trsm
                     trsm::LLTSmall
                     ( orientation, diag, APost, BPost, checkIfSingular );
                 }
-                else if( A.RowDist() == VR )
+                else if( A.RowDist() == Dist::VR )
                 {
                     DistMatrixReadProxy<F,F,Dist::STAR,Dist::VR> AProx( A );
                     auto& APost = AProx.GetLocked();
@@ -256,7 +256,7 @@ void Trsm
                 trsm::LUNMedium( diag, A, B, checkIfSingular );
             else if( alg == TRSM_SMALL )
             {
-                if( A.ColDist() == VR )
+                if( A.ColDist() == Dist::VR )
                 {
                     DistMatrixReadProxy<F,F,Dist::VR,Dist::STAR> AProx( A );
                     auto& APost = AProx.GetLocked();
@@ -303,7 +303,7 @@ void Trsm
                 trsm::LUTMedium( orientation, diag, A, B, checkIfSingular );
             else if( alg == TRSM_SMALL )
             {
-                if( A.RowDist() == VC )
+                if( A.RowDist() == Dist::VC )
                 {
                     DistMatrixReadProxy<F,F,Dist::STAR,Dist::VC> AProx( A );
                     auto& APost = AProx.GetLocked();
@@ -387,8 +387,8 @@ void LocalTrsm
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( (side == LeftOrRight::LEFT && X.ColDist() != STAR) ||
-          (side == LeftOrRight::RIGHT && X.RowDist() != STAR) )
+    if( (side == LeftOrRight::LEFT && X.ColDist() != Dist::STAR) ||
+        (side == LeftOrRight::RIGHT && X.RowDist() != Dist::STAR) )
           LogicError
           ("Dist of RHS must conform with that of triangle");
     )

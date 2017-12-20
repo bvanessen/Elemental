@@ -2,10 +2,12 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
+
+#include "El/core/imports/mpi.hpp"
 
 extern "C" {
 
@@ -37,7 +39,7 @@ namespace herm_tridiag_eig {
 // Return upper bounds on the number of (local) eigenvalues in the given range,
 // (lowerBound,upperBound]
 Estimate EigEstimate
-( int n, double* d, double* e, double* w, mpi::Comm comm, 
+( int n, double* d, double* e, double* w, mpi::Comm comm,
   double lowerBound, double upperBound )
 {
     EL_DEBUG_CSE
@@ -50,7 +52,7 @@ Estimate EigEstimate
     int ldz=1;
     vector<int> ZSupport(2*n);
     int retval = pmrrr
-    ( &jobz, &range, &n, d, e, &lowerBound, &upperBound, &il, &iu, 
+    ( &jobz, &range, &n, d, e, &lowerBound, &upperBound, &il, &iu,
       &highAccuracy, comm.comm, &nz, &offset, w, 0, &ldz, ZSupport.data() );
     if( retval != 0 )
         RuntimeError("pmrrr returned ",retval);
@@ -69,7 +71,7 @@ Info Eig( int n, double* d, double* e, double* w, mpi::Comm comm )
     char range='A';
     double vl, vu;
     int il, iu;
-    int highAccuracy=0; 
+    int highAccuracy=0;
     int nz, offset;
     int ldz=1;
     vector<int> ZSupport(2*n);
@@ -95,7 +97,7 @@ Info Eig
     char range='A';
     double vl, vu;
     int il, iu;
-    int highAccuracy=0; 
+    int highAccuracy=0;
     int nz, offset;
     vector<int> ZSupport(2*n);
     int retval = pmrrr
@@ -112,7 +114,7 @@ Info Eig
 
 // Compute all of the eigenvalues in (lowerBound,upperBound]
 Info Eig
-( int n, double* d, double* e, double* w, mpi::Comm comm, 
+( int n, double* d, double* e, double* w, mpi::Comm comm,
   double lowerBound, double upperBound )
 {
     EL_DEBUG_CSE
@@ -120,12 +122,12 @@ Info Eig
     char jobz='N';
     char range='V';
     int il, iu;
-    int highAccuracy=0; 
+    int highAccuracy=0;
     int nz, offset;
     int ldz=1;
     vector<int> ZSupport(2*n);
     int retval = pmrrr
-    ( &jobz, &range, &n, d, e, &lowerBound, &upperBound, &il, &iu, 
+    ( &jobz, &range, &n, d, e, &lowerBound, &upperBound, &il, &iu,
       &highAccuracy, comm.comm, &nz, &offset, w, 0, &ldz, ZSupport.data() );
     if( retval != 0 )
         RuntimeError("pmrrr returned ",retval);
@@ -138,7 +140,7 @@ Info Eig
 
 // Compute all of the eigenpairs with eigenvalues in (lowerBound,upperBound]
 Info Eig
-( int n, double* d, double* e, double* w, double* Z, int ldz, mpi::Comm comm, 
+( int n, double* d, double* e, double* w, double* Z, int ldz, mpi::Comm comm,
   double lowerBound, double upperBound )
 {
     EL_DEBUG_CSE
@@ -146,11 +148,11 @@ Info Eig
     char jobz='V';
     char range='V';
     int il, iu;
-    int highAccuracy=0; 
+    int highAccuracy=0;
     int nz, offset;
     vector<int> ZSupport(2*n);
     int retval = pmrrr
-    ( &jobz, &range, &n, d, e, &lowerBound, &upperBound, &il, &iu, 
+    ( &jobz, &range, &n, d, e, &lowerBound, &upperBound, &il, &iu,
       &highAccuracy, comm.comm, &nz, &offset, w, Z, &ldz, ZSupport.data() );
     if( retval != 0 )
         RuntimeError("pmrrr returned ",retval);
@@ -163,7 +165,7 @@ Info Eig
 
 // Compute all of the eigenvalues with indices in [lowerBound,upperBound]
 Info Eig
-( int n, double* d, double* e, double* w, mpi::Comm comm, 
+( int n, double* d, double* e, double* w, mpi::Comm comm,
   int lowerBound, int upperBound )
 {
     EL_DEBUG_CSE
@@ -173,12 +175,12 @@ Info Eig
     char jobz='N';
     char range='I';
     double vl, vu;
-    int highAccuracy=0; 
+    int highAccuracy=0;
     int nz, offset;
     int ldz=1;
     vector<int> ZSupport(2*n);
     int retval = pmrrr
-    ( &jobz, &range, &n, d, e, &vl, &vu, &lowerBound, &upperBound, 
+    ( &jobz, &range, &n, d, e, &vl, &vu, &lowerBound, &upperBound,
       &highAccuracy, comm.comm, &nz, &offset, w, 0, &ldz, ZSupport.data() );
     if( retval != 0 )
         RuntimeError("pmrrr returned ",retval);
@@ -189,10 +191,10 @@ Info Eig
     return info;
 }
 
-// Compute all of the eigenpairs with eigenvalues indices in 
+// Compute all of the eigenpairs with eigenvalues indices in
 // [lowerBound,upperBound]
 Info Eig
-( int n, double* d, double* e, double* w, double* Z, int ldz, mpi::Comm comm, 
+( int n, double* d, double* e, double* w, double* Z, int ldz, mpi::Comm comm,
   int lowerBound, int upperBound )
 {
     EL_DEBUG_CSE
@@ -202,11 +204,11 @@ Info Eig
     char jobz='V';
     char range='I';
     double vl, vu;
-    int highAccuracy=0; 
+    int highAccuracy=0;
     int nz, offset;
     vector<int> ZSupport(2*n);
     int retval = pmrrr
-    ( &jobz, &range, &n, d, e, &vl, &vu, &lowerBound, &upperBound, 
+    ( &jobz, &range, &n, d, e, &vl, &vu, &lowerBound, &upperBound,
       &highAccuracy, comm.comm, &nz, &offset, w, Z, &ldz, ZSupport.data() );
     if( retval != 0 )
         RuntimeError("pmrrr returned ",retval);

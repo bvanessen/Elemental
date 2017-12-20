@@ -7,8 +7,13 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
-namespace gemm {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Proxy.hpp"
+
+namespace El
+{
+namespace gemm
+{
 
 // Cannon's algorithm
 template<typename T>

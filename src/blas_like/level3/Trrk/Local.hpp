@@ -9,17 +9,27 @@
 #ifndef EL_TRRK_LOCAL_HPP
 #define EL_TRRK_LOCAL_HPP
 
-#include <El/io.hpp>
+#include <string>
 
-namespace El {
+#include "El/io.hpp"
+#include "El/core/DistMatrix_decl.hpp"
+#include "El/core/DistMatrix/Element/MC_STAR.hpp"
+#include "El/core/DistMatrix/Element/MR_STAR.hpp"
+#include "El/core/DistMatrix/Element/STAR_MC.hpp"
+#include "El/core/DistMatrix/Element/STAR_MR.hpp"
+#include "El/core/Matrix/decl.hpp"
 
-namespace trrk {
+namespace El
+{
+
+namespace trrk
+{
 
 #ifndef EL_RELEASE
 
 template<typename T>
 void EnsureConformal
-( const DistMatrix<T,Dist::MC,Dist::STAR>& A, const DistMatrix<T>& C, string name )
+( const DistMatrix<T,Dist::MC,Dist::STAR>& A, const DistMatrix<T>& C, std::string name )
 {
     if( A.Height() != C.Height() || A.ColAlign() != C.ColAlign() )
         LogicError(name," not conformal with C");
@@ -27,7 +37,7 @@ void EnsureConformal
 
 template<typename T>
 void EnsureConformal
-( const DistMatrix<T,Dist::STAR,Dist::MC>& A, const DistMatrix<T>& C, string name )
+( const DistMatrix<T,Dist::STAR,Dist::MC>& A, const DistMatrix<T>& C, std::string name )
 {
     if( A.Width() != C.Height() || A.RowAlign() != C.ColAlign() )
         LogicError(name," not conformal with C");
@@ -35,7 +45,7 @@ void EnsureConformal
 
 template<typename T>
 void EnsureConformal
-( const DistMatrix<T,Dist::MR,Dist::STAR>& A, const DistMatrix<T>& C, string name )
+( const DistMatrix<T,Dist::MR,Dist::STAR>& A, const DistMatrix<T>& C, std::string name )
 {
     if( A.Height() != C.Width() || A.ColAlign() != C.RowAlign() )
         LogicError(name," not conformal with C");
@@ -43,7 +53,7 @@ void EnsureConformal
 
 template<typename T>
 void EnsureConformal
-( const DistMatrix<T,Dist::STAR,Dist::MR>& A, const DistMatrix<T>& C, string name )
+( const DistMatrix<T,Dist::STAR,Dist::MR>& A, const DistMatrix<T>& C, std::string name )
 {
     if( A.Width() != C.Width() || A.RowAlign() != C.RowAlign() )
         LogicError(name," not conformal with C");

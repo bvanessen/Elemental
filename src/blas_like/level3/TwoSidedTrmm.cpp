@@ -6,13 +6,15 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/blas_like/level3.hpp>
+#include "El/blas_like/level3.hpp"
+#include "El/core/imports/scalapack.hpp"
 
 #include "./TwoSidedTrmm/Unblocked.hpp"
 #include "./TwoSidedTrmm/LVar4.hpp"
 #include "./TwoSidedTrmm/UVar4.hpp"
 
-namespace El {
+namespace El
+{
 
 template<typename T>
 void TwoSidedTrmm

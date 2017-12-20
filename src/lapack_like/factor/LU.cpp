@@ -7,47 +7,57 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level3.hpp"
+
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/MC_MR.hpp"
+#include "El/core/DistMatrix/Element/STAR_MR.hpp"
+#include "El/core/DistMatrix/Element/STAR_VR.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Proxy.hpp"
+
 #include "./LU/Local.hpp"
 #include "./LU/Panel.hpp"
 #include "./LU/Full.hpp"
 #include "./LU/Mod.hpp"
 #include "./LU/SolveAfter.hpp"
 
-namespace El {
+namespace El
+{
 
 // Performs LU factorization without pivoting
 
 template<typename F>
-void LU( Matrix<F>& A )
+void LU(Matrix<F>& A)
 {
     EL_DEBUG_CSE
     const Int m = A.Height();
     const Int n = A.Width();
     const Int minDim = Min(m,n);
     const Int bsize = Blocksize();
-    for( Int k=0; k<minDim; k+=bsize )
+    for(Int k=0; k<minDim; k+=bsize)
     {
         const Int nb = Min(bsize,minDim-k);
-        const IR ind1( k, k+nb ), ind2( k+nb, END );
+        const IR ind1(k, k+nb), ind2(k+nb, END);
 
-        auto A11 = A( ind1, ind1 );
-        auto A12 = A( ind1, ind2 );
-        auto A21 = A( ind2, ind1 );
-        auto A22 = A( ind2, ind2 );
+        auto A11 = A(ind1, ind1);
+        auto A12 = A(ind1, ind2);
+        auto A21 = A(ind2, ind1);
+        auto A22 = A(ind2, ind2);
 
-        lu::Unb( A11 );
-        Trsm( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A11, A21 );
-        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A11, A12 );
-        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), A21, A12, F(1), A22 );
+        lu::Unb(A11);
+        Trsm(LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A11, A21);
+        Trsm(LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A11, A12);
+        Gemm(Orientation::NORMAL, Orientation::NORMAL, F(-1), A21, A12, F(1), A22);
     }
 }
 
 template<typename F>
-void LU( AbstractDistMatrix<F>& APre )
+void LU(AbstractDistMatrix<F>& APre)
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx(APre);
     auto& A = AProx.Get();
 
     const Grid& g = A.Grid();
@@ -60,48 +70,48 @@ void LU( AbstractDistMatrix<F>& APre )
     const Int n = A.Width();
     const Int minDim = Min(m,n);
     const Int bsize = Blocksize();
-    for( Int k=0; k<minDim; k+=bsize )
+    for(Int k=0; k<minDim; k+=bsize)
     {
         const Int nb = Min(bsize,minDim-k);
-        const IR ind1( k, k+nb ), ind2( k+nb, END );
+        const IR ind1(k, k+nb), ind2(k+nb, END);
 
-        auto A11 = A( ind1, ind1 );
-        auto A12 = A( ind1, ind2 );
-        auto A21 = A( ind2, ind1 );
-        auto A22 = A( ind2, ind2 );
+        auto A11 = A(ind1, ind1);
+        auto A12 = A(ind1, ind2);
+        auto A21 = A(ind2, ind1);
+        auto A22 = A(ind2, ind2);
 
         A11_STAR_STAR = A11;
-        LU( A11_STAR_STAR );
+        LU(A11_STAR_STAR);
         A11 = A11_STAR_STAR;
 
-        A21_MC_STAR.AlignWith( A22 );
+        A21_MC_STAR.AlignWith(A22);
         A21_MC_STAR = A21;
         LocalTrsm
-        ( LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A11_STAR_STAR, A21_MC_STAR );
+        (LeftOrRight::RIGHT, UpperOrLower::UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, F(1), A11_STAR_STAR, A21_MC_STAR);
         A21 = A21_MC_STAR;
 
         // Perhaps we should give up perfectly distributing this operation since
         // it's total contribution is only O(n^2)
-        A12_STAR_VR.AlignWith( A22 );
+        A12_STAR_VR.AlignWith(A22);
         A12_STAR_VR = A12;
         LocalTrsm
-        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A11_STAR_STAR, A12_STAR_VR );
+        (LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A11_STAR_STAR, A12_STAR_VR);
 
-        A12_STAR_MR.AlignWith( A22 );
+        A12_STAR_MR.AlignWith(A22);
         A12_STAR_MR = A12_STAR_VR;
-        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), A21_MC_STAR, A12_STAR_MR, F(1), A22 );
+        LocalGemm(Orientation::NORMAL, Orientation::NORMAL, F(-1), A21_MC_STAR, A12_STAR_MR, F(1), A22);
         A12 = A12_STAR_MR;
     }
 }
 
 template<typename F>
-void LU( DistMatrix<F,Dist::STAR,Dist::STAR>& A )
-{ LU( A.Matrix() ); }
+void LU(DistMatrix<F,Dist::STAR,Dist::STAR>& A)
+{ LU(A.Matrix()); }
 
 // Performs LU factorization with partial pivoting
 
 template<typename F>
-void LU( Matrix<F>& A, Permutation& P )
+void LU(Matrix<F>& A, Permutation& P)
 {
     EL_DEBUG_CSE
 
@@ -110,52 +120,52 @@ void LU( Matrix<F>& A, Permutation& P )
     const Int minDim = Min(m,n);
     const Int bsize = Blocksize();
 
-    P.MakeIdentity( m );
-    P.ReserveSwaps( minDim );
+    P.MakeIdentity(m);
+    P.ReserveSwaps(minDim);
 
     Permutation PB;
 
     // Temporaries for accumulating partial permutations for each block
-    for( Int k=0; k<minDim; k+=bsize )
+    for(Int k=0; k<minDim; k+=bsize)
     {
         const Int nb = Min(bsize,minDim-k);
-        const IR ind0( 0, k ), ind1( k, k+nb ), ind2( k+nb, END ),
-                 indB( k, END );
+        const IR ind0(0, k), ind1(k, k+nb), ind2(k+nb, END),
+                 indB(k, END);
 
-        auto A11 = A( ind1, ind1 );
-        auto A12 = A( ind1, ind2 );
-        auto A21 = A( ind2, ind1 );
-        auto A22 = A( ind2, ind2 );
+        auto A11 = A(ind1, ind1);
+        auto A12 = A(ind1, ind2);
+        auto A21 = A(ind2, ind1);
+        auto A22 = A(ind2, ind2);
 
-        auto AB0 = A( indB, ind0 );
-        auto AB1 = A( indB, ind1 );
-        auto AB2 = A( indB, ind2 );
+        auto AB0 = A(indB, ind0);
+        auto AB1 = A(indB, ind1);
+        auto AB2 = A(indB, ind2);
 
-        lu::Panel( AB1, P, PB, k );
-        PB.PermuteRows( AB0 );
-        PB.PermuteRows( AB2 );
+        lu::Panel(AB1, P, PB, k);
+        PB.PermuteRows(AB0);
+        PB.PermuteRows(AB2);
 
-        Trsm( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A11, A12 );
-        Gemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), A21, A12, F(1), A22 );
+        Trsm(LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A11, A12);
+        Gemm(Orientation::NORMAL, Orientation::NORMAL, F(-1), A21, A12, F(1), A22);
     }
 }
 
 template<typename F>
 void LU
-( Matrix<F>& A,
+(Matrix<F>& A,
   Permutation& P,
-  Permutation& Q )
+  Permutation& Q)
 {
     EL_DEBUG_CSE
-    lu::Full( A, P, Q );
+    lu::Full(A, P, Q);
 }
 
 template<typename F>
-void LU( AbstractDistMatrix<F>& APre, DistPermutation& P )
+void LU(AbstractDistMatrix<F>& APre, DistPermutation& P)
 {
     EL_DEBUG_CSE
 
-    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> AProx(APre);
     auto& A = AProx.Get();
 
     const Grid& g = A.Grid();
@@ -167,51 +177,51 @@ void LU( AbstractDistMatrix<F>& APre, DistPermutation& P )
     const Int m = A.Height();
     const Int n = A.Width();
     const Int minDim = Min(m,n);
-    P.SetGrid( g );
+    P.SetGrid(g);
 
-    P.MakeIdentity( m );
-    P.ReserveSwaps( minDim );
+    P.MakeIdentity(m);
+    P.ReserveSwaps(minDim);
 
     DistPermutation PB(g);
 
-    vector<F> panelBuf, pivotBuf;
+    std::vector<F> panelBuf, pivotBuf;
     const Int bsize = Blocksize();
-    for( Int k=0; k<minDim; k+=bsize )
+    for(Int k=0; k<minDim; k+=bsize)
     {
         const Int nb = Min(bsize,minDim-k);
-        const IR ind1( k, k+nb ), ind2( k+nb, END ), indB( k, END );
+        const IR ind1(k, k+nb), ind2(k+nb, END), indB(k, END);
 
-        auto A11 = A( ind1, ind1 );
-        auto A12 = A( ind1, ind2 );
-        auto A21 = A( ind2, ind1 );
-        auto A22 = A( ind2, ind2 );
+        auto A11 = A(ind1, ind1);
+        auto A12 = A(ind1, ind2);
+        auto A21 = A(ind2, ind1);
+        auto A22 = A(ind2, ind2);
 
-        auto AB  = A( indB, ALL );
+        auto AB  = A(indB, ALL);
 
         const Int A21Height = A21.Height();
         const Int A21LocHeight = A21.LocalHeight();
         const Int panelLDim = nb+A21LocHeight;
-        FastResize( panelBuf, panelLDim*nb );
+        FastResize(panelBuf, panelLDim*nb);
         A11_STAR_STAR.Attach
-        ( nb, nb, g, 0, 0, &panelBuf[0], panelLDim, 0 );
+        (nb, nb, g, 0, 0, &panelBuf[0], panelLDim, 0);
         A21_MC_STAR.Attach
-        ( A21Height, nb, g, A21.ColAlign(), 0, &panelBuf[nb], panelLDim, 0 );
+        (A21Height, nb, g, A21.ColAlign(), 0, &panelBuf[nb], panelLDim, 0);
         A11_STAR_STAR = A11;
         A21_MC_STAR = A21;
-        lu::Panel( A11_STAR_STAR, A21_MC_STAR, P, PB, k, pivotBuf );
+        lu::Panel(A11_STAR_STAR, A21_MC_STAR, P, PB, k, pivotBuf);
 
-        PB.PermuteRows( AB );
+        PB.PermuteRows(AB);
 
         // Perhaps we should give up perfectly distributing this operation since
         // it's total contribution is only O(n^2)
-        A12_STAR_VR.AlignWith( A22 );
+        A12_STAR_VR.AlignWith(A22);
         A12_STAR_VR = A12;
         LocalTrsm
-        ( LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A11_STAR_STAR, A12_STAR_VR );
+        (LeftOrRight::LEFT, UpperOrLower::LOWER, Orientation::NORMAL, UnitOrNonUnit::UNIT, F(1), A11_STAR_STAR, A12_STAR_VR);
 
-        A12_STAR_MR.AlignWith( A22 );
+        A12_STAR_MR.AlignWith(A22);
         A12_STAR_MR = A12_STAR_VR;
-        LocalGemm( Orientation::NORMAL, Orientation::NORMAL, F(-1), A21_MC_STAR, A12_STAR_MR, F(1), A22 );
+        LocalGemm(Orientation::NORMAL, Orientation::NORMAL, F(-1), A21_MC_STAR, A12_STAR_MR, F(1), A22);
 
         A11 = A11_STAR_STAR;
         A12 = A12_STAR_MR;
@@ -221,88 +231,88 @@ void LU( AbstractDistMatrix<F>& APre, DistPermutation& P )
 
 template<typename F>
 void LU
-( AbstractDistMatrix<F>& A,
+(AbstractDistMatrix<F>& A,
   DistPermutation& P,
-  DistPermutation& Q )
+  DistPermutation& Q)
 {
     EL_DEBUG_CSE
-    lu::Full( A, P, Q );
+    lu::Full(A, P, Q);
 }
 
 #define PROTO(F) \
-  template void LU( Matrix<F>& A ); \
-  template void LU( AbstractDistMatrix<F>& A ); \
-  template void LU( DistMatrix<F,Dist::STAR,Dist::STAR>& A ); \
+  template void LU(Matrix<F>& A); \
+  template void LU(AbstractDistMatrix<F>& A); \
+  template void LU(DistMatrix<F,Dist::STAR,Dist::STAR>& A); \
   template void LU \
-  ( Matrix<F>& A, \
-    Permutation& P ); \
+  (Matrix<F>& A, \
+    Permutation& P); \
   template void LU \
-  ( AbstractDistMatrix<F>& A, \
-    DistPermutation& P ); \
+  (AbstractDistMatrix<F>& A, \
+    DistPermutation& P); \
   template void LU \
-  ( Matrix<F>& A, \
+  (Matrix<F>& A, \
     Permutation& P, \
-    Permutation& Q ); \
+    Permutation& Q); \
   template void LU \
-  ( AbstractDistMatrix<F>& A, \
+  (AbstractDistMatrix<F>& A, \
     DistPermutation& P, \
-    DistPermutation& Q ); \
+    DistPermutation& Q); \
   template void LUMod \
-  (       Matrix<F>& A, \
+  (      Matrix<F>& A, \
           Permutation& P, \
     const Matrix<F>& U, \
     const Matrix<F>& V, \
     bool conjugate, \
-    Base<F> tau ); \
+    Base<F> tau); \
   template void LUMod \
-  (       AbstractDistMatrix<F>& A, \
+  (      AbstractDistMatrix<F>& A, \
           DistPermutation& P, \
     const AbstractDistMatrix<F>& U, \
     const AbstractDistMatrix<F>& V, \
     bool conjugate, \
-    Base<F> tau ); \
+    Base<F> tau); \
   template void lu::Panel \
-  ( Matrix<F>& APan, \
+  (Matrix<F>& APan, \
     Permutation& P, \
     Permutation& PB, \
-    Int offset ); \
+    Int offset); \
   template void lu::Panel \
-  ( DistMatrix<F,  Dist::STAR,Dist::STAR>& A11, \
+  (DistMatrix<F,  Dist::STAR,Dist::STAR>& A11, \
     DistMatrix<F,  Dist::MC,  Dist::STAR>& A21, \
     DistPermutation& P, \
     DistPermutation& PB, \
     Int offset, \
-    vector<F>& pivotBuf ); \
+    std::vector<F>& pivotBuf); \
   template void lu::SolveAfter \
-  ( Orientation orientation, \
+  (Orientation orientation, \
     const Matrix<F>& A, \
-          Matrix<F>& B ); \
+          Matrix<F>& B); \
   template void lu::SolveAfter \
-  ( Orientation orientation, \
+  (Orientation orientation, \
     const AbstractDistMatrix<F>& A, \
-          AbstractDistMatrix<F>& B ); \
+          AbstractDistMatrix<F>& B); \
   template void lu::SolveAfter \
-  ( Orientation orientation, \
+  (Orientation orientation, \
     const Matrix<F>& A, \
     const Permutation& P, \
-          Matrix<F>& B ); \
+          Matrix<F>& B); \
   template void lu::SolveAfter \
-  ( Orientation orientation, \
+  (Orientation orientation, \
     const AbstractDistMatrix<F>& A, \
     const DistPermutation& P, \
-          AbstractDistMatrix<F>& B ); \
+          AbstractDistMatrix<F>& B); \
   template void lu::SolveAfter \
-  ( Orientation orientation, \
+  (Orientation orientation, \
     const Matrix<F>& A, \
     const Permutation& P, \
     const Permutation& Q, \
-          Matrix<F>& B ); \
+          Matrix<F>& B); \
   template void lu::SolveAfter \
-  ( Orientation orientation, \
+  (Orientation orientation, \
     const AbstractDistMatrix<F>& A, \
     const DistPermutation& P, \
     const DistPermutation& Q, \
-          AbstractDistMatrix<F>& B );
+          AbstractDistMatrix<F>& B);
 
 #define EL_NO_INT_PROTO
 #define EL_ENABLE_DOUBLEDOUBLE

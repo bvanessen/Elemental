@@ -9,6 +9,8 @@
 #ifndef EL_DISTMATRIX_BLOCK_HPP
 #define EL_DISTMATRIX_BLOCK_HPP
 
+#include "El/core/DistMatrix/Abstract.hpp"
+
 namespace El
 {
 

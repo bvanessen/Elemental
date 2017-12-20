@@ -8,8 +8,8 @@
 */
 #include <El/blas_like.hpp>
 
-#define COLDIST CIRC
-#define ROWDIST CIRC
+#define COLDIST Dist::CIRC
+#define ROWDIST Dist::CIRC
 
 #include "./setup.hpp"
 
@@ -125,20 +125,20 @@ int DM::PartialUnionRowRank() const EL_NO_EXCEPT
   OTHER(T,U,V)
 #define PROTO(T) \
   template class DistMatrix<T,COLDIST,ROWDIST>; \
-  OTHER(T,Dist::CIRC,CIRC); \
-  BOTH( T,Dist::MC,  MR  ); \
-  BOTH( T,Dist::MC,  STAR); \
-  BOTH( T,Dist::MD,  STAR); \
-  BOTH( T,Dist::MR,  MC  ); \
-  BOTH( T,Dist::MR,  STAR); \
-  BOTH( T,Dist::STAR,MC  ); \
-  BOTH( T,Dist::STAR,MD  ); \
-  BOTH( T,Dist::STAR,MR  ); \
-  BOTH( T,Dist::STAR,STAR); \
-  BOTH( T,Dist::STAR,VC  ); \
-  BOTH( T,Dist::STAR,VR  ); \
-  BOTH( T,Dist::VC,  STAR); \
-  BOTH( T,Dist::VR,  STAR);
+  OTHER(T,Dist::CIRC,Dist::CIRC); \
+  BOTH( T,Dist::MC,  Dist::MR  ); \
+  BOTH( T,Dist::MC,  Dist::STAR); \
+  BOTH( T,Dist::MD,  Dist::STAR); \
+  BOTH( T,Dist::MR,  Dist::MC  ); \
+  BOTH( T,Dist::MR,  Dist::STAR); \
+  BOTH( T,Dist::STAR,Dist::MC  ); \
+  BOTH( T,Dist::STAR,Dist::MD  ); \
+  BOTH( T,Dist::STAR,Dist::MR  ); \
+  BOTH( T,Dist::STAR,Dist::STAR); \
+  BOTH( T,Dist::STAR,Dist::VC  ); \
+  BOTH( T,Dist::STAR,Dist::VR  ); \
+  BOTH( T,Dist::VC,  Dist::STAR); \
+  BOTH( T,Dist::VR,  Dist::STAR);
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

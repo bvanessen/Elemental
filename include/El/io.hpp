@@ -9,12 +9,19 @@
 #ifndef EL_IO_HPP
 #define EL_IO_HPP
 
-namespace El {
+#include <fstream>
+#include <iostream>
+
+#include "El/core/Matrix/decl.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
 
 const char* QtImageFormat( FileFormat format );
-string FileExtension( FileFormat format );
-FileFormat FormatFromExtension( const string ext );
-FileFormat DetectFormat( const string filename );
+std::string FileExtension( FileFormat format );
+FileFormat FormatFromExtension( const std::string ext );
+FileFormat DetectFormat( const std::string filename );
 
 std::ifstream::pos_type FileSize( std::ifstream& file );
 
@@ -44,11 +51,11 @@ void ProcessEvents( int numMsecs );
 // Dense
 // -----
 template<typename Real>
-void Display( const Matrix<Real>& A, string title="Matrix" );
+void Display( const Matrix<Real>& A, std::string title="Matrix" );
 template<typename Real>
-void Display( const Matrix<Complex<Real>>& A, string title="Matrix" );
+void Display( const Matrix<Complex<Real>>& A, std::string title="Matrix" );
 template<typename T>
-void Display( const AbstractDistMatrix<T>& A, string title="DistMatrix" );
+void Display( const AbstractDistMatrix<T>& A, std::string title="DistMatrix" );
 
 // Print
 // =====
@@ -56,43 +63,48 @@ void Display( const AbstractDistMatrix<T>& A, string title="DistMatrix" );
 // Dense
 // -----
 template<typename T>
-void Print( const Matrix<T>& A, string title="Matrix", ostream& os=cout );
+void Print(
+    const Matrix<T>& A, std::string title="Matrix", std::ostream& os=std::cout);
 template<typename T>
-void Print
-( const AbstractDistMatrix<T>& A, string title="DistMatrix", ostream& os=cout );
+void Print(
+    const AbstractDistMatrix<T>& A, std::string title="DistMatrix",
+    std::ostream& os=std::cout );
 
 // Utilities
 // ---------
 template<typename T>
-void Print( const vector<T>& x, string title="vector", ostream& os=cout );
+void Print(
+    const std::vector<T>& x, std::string title="vector",
+    std::ostream& os=std::cout);
 
 // Read
 // ====
 template<typename T>
-void Read( Matrix<T>& A, const string filename, FileFormat format=FileFormat::AUTO );
+void Read( Matrix<T>& A, const std::string filename, FileFormat format=FileFormat::AUTO );
 template<typename T>
 void Read
 ( AbstractDistMatrix<T>& A,
-  const string filename, FileFormat format=FileFormat::AUTO, bool sequential=false );
+  const std::string filename, FileFormat format=FileFormat::AUTO, bool sequential=false );
 
 // Spy
 // ===
 template<typename T>
-void Spy( const Matrix<T>& A, string title="Matrix", Base<T> tol=0 );
+void Spy( const Matrix<T>& A, std::string title="Matrix", Base<T> tol=0 );
 template<typename T>
 void Spy
-( const AbstractDistMatrix<T>& A, string title="DistMatrix", Base<T> tol=0 );
+( const AbstractDistMatrix<T>& A, std::string title="DistMatrix", Base<T> tol=0 );
 
 // Write
 // =====
 template<typename T>
 void Write
-( const Matrix<T>& A, string basename="Matrix", FileFormat format=FileFormat::BINARY,
-  string title="" );
+( const Matrix<T>& A, std::string basename="Matrix",
+  FileFormat format=FileFormat::BINARY,
+  std::string title="" );
 template<typename T>
 void Write
-( const AbstractDistMatrix<T>& A, string basename="DistMatrix",
-  FileFormat format=FileFormat::BINARY, string title="" );
+( const AbstractDistMatrix<T>& A, std::string basename="DistMatrix",
+  FileFormat format=FileFormat::BINARY, std::string title="" );
 
 } // namespace El
 

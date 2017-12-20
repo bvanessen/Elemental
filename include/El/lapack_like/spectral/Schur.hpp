@@ -9,8 +9,12 @@
 #ifndef EL_SPECTRAL_SCHUR_HPP
 #define EL_SPECTRAL_SCHUR_HPP
 
-namespace El {
-namespace schur {
+#include "El/core/limits.hpp"
+
+namespace El
+{
+namespace schur
+{
 
 // Put a two-by-two nonsymmetric real matrix into standard form
 // ============================================================

@@ -2,13 +2,18 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/control.hpp>
 
-namespace El {
+#include "El/control.hpp"
+#include "El/core/DistMatrix/Element.hpp"
+#include "El/core/FlamePart/Partition.hpp"
+#include "El/core/Matrix/decl.hpp"
+
+namespace El
+{
 
 // A is assumed to have all of its eigenvalues in the open right-half plane.
 // X is then returned as the solution of the system of equations:
@@ -18,7 +23,7 @@ namespace El {
 
 template<typename F>
 void Lyapunov
-( const Matrix<F>& A, const Matrix<F>& C, Matrix<F>& X, 
+( const Matrix<F>& A, const Matrix<F>& C, Matrix<F>& X,
   SignCtrl<Base<F>> ctrl )
 {
     EL_DEBUG_CSE
@@ -45,7 +50,7 @@ void Lyapunov
 template<typename F>
 void Lyapunov
 ( const ElementalMatrix<F>& A,
-  const ElementalMatrix<F>& C, 
+  const ElementalMatrix<F>& C,
         ElementalMatrix<F>& X, SignCtrl<Base<F>> ctrl )
 {
     EL_DEBUG_CSE

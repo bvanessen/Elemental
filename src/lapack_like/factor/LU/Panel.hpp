@@ -9,11 +9,22 @@
 #ifndef EL_LU_PANEL_HPP
 #define EL_LU_PANEL_HPP
 
-namespace El {
-namespace lu {
+#include <vector>
+
+#include "El/core/DistMatrix.hpp"
+#include "El/core/DistMatrix/Element/MC_STAR.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/DistPermutation.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Permutation.hpp"
+
+namespace El
+{
+namespace lu
+{
 
 template<typename F>
-void Panel( Matrix<F>& A, Permutation& P, Permutation& PB, Int offset )
+void Panel(Matrix<F>& A, Permutation& P, Permutation& PB, Int offset)
 {
     EL_DEBUG_CSE
     const Int m = A.Height();
@@ -21,14 +32,14 @@ void Panel( Matrix<F>& A, Permutation& P, Permutation& PB, Int offset )
     F* ABuf = A.Buffer();
     const Int ALDim = A.LDim();
     EL_DEBUG_ONLY(
-      if( A.Height() < n )
+      if(A.Height() < n)
           LogicError("Must be a column panel");
-    )
+   )
 
-    PB.MakeIdentity( A.Height() );
-    PB.ReserveSwaps( n );
+    PB.MakeIdentity(A.Height());
+    PB.ReserveSwaps(n);
 
-    for( Int k=0; k<n; ++k )
+    for(Int k=0; k<n; ++k)
     {
         const Int ind2HorzSize = n - (k+1);
         const Int ind2VertSize = m - (k+1);
@@ -38,24 +49,24 @@ void Panel( Matrix<F>& A, Permutation& P, Permutation& PB, Int offset )
               F* A22Buf = &ABuf[(k+1) + (k+1)*ALDim];
 
         // Find the index and value of the pivot candidate
-        const Int maxInd = blas::MaxInd( ind2VertSize+1, aB1Buf, 1 );
+        const Int maxInd = blas::MaxInd(ind2VertSize+1, aB1Buf, 1);
         const Int iPiv = maxInd + k;
-        P.Swap( k+offset, iPiv+offset );
-        PB.Swap( k, iPiv );
+        P.Swap(k+offset, iPiv+offset);
+        PB.Swap(k, iPiv);
 
         // Swap the pivot row and current row
-        if( iPiv != k )
-            blas::Swap( n, &ABuf[k], ALDim, &ABuf[iPiv], ALDim );
+        if(iPiv != k)
+            blas::Swap(n, &ABuf[k], ALDim, &ABuf[iPiv], ALDim);
 
         // Now we can perform the update of the current panel
         const F alpha = ABuf[k+k*ALDim];
-        if( alpha == F(0) )
+        if(alpha == F(0))
             throw SingularMatrixException();
         const F alpha11Inv = F(1) / alpha;
-        blas::Scal( ind2VertSize, alpha11Inv, a21Buf, 1 );
+        blas::Scal(ind2VertSize, alpha11Inv, a21Buf, 1);
         blas::Geru
-        ( ind2VertSize, ind2HorzSize,
-          F(-1), a21Buf, 1, a12Buf, ALDim, A22Buf, ALDim );
+        (ind2VertSize, ind2HorzSize,
+          F(-1), a21Buf, 1, a12Buf, ALDim, A22Buf, ALDim);
     }
 }
 
@@ -66,12 +77,12 @@ void Panel( Matrix<F>& A, Permutation& P, Permutation& PB, Int offset )
 //       data for A.
 template<typename F>
 void Panel
-( DistMatrix<F,  Dist::STAR,Dist::STAR>& A,
+(DistMatrix<F,  Dist::STAR,Dist::STAR>& A,
   DistMatrix<F,  Dist::MC,  Dist::STAR>& B,
   DistPermutation& P,
   DistPermutation& PB,
   Int offset,
-  vector<F>& pivotBuffer )
+  std::vector<F>& pivotBuffer)
 {
     EL_DEBUG_CSE
     typedef Base<F> Real;
@@ -84,18 +95,18 @@ void Panel
     mpi::Comm colComm = B.ColComm();
     mpi::Op maxLocOp = mpi::MaxLocOp<Real>();
     EL_DEBUG_ONLY(
-      AssertSameGrids( A, B );
-      if( n != B.Width() )
+      AssertSameGrids(A, B);
+      if(n != B.Width())
           LogicError("A and B must be the same width");
-      if( A.Buffer()+n != B.Buffer() )
+      if(A.Buffer()+n != B.Buffer())
           LogicError("Buffers of A and B did not properly align");
-    )
+   )
 
-    PB.MakeIdentity( A.Height()+B.Height() );
-    PB.ReserveSwaps( n );
+    PB.MakeIdentity(A.Height()+B.Height());
+    PB.ReserveSwaps(n);
 
-    pivotBuffer.resize( n );
-    for( Int k=0; k<n; ++k )
+    pivotBuffer.resize(n);
+    for(Int k=0; k<n; ++k)
     {
         const Int ind2Size = n-k-1;
         const F* a12Buf = &ABuf[ k    + (k+1)*ALDim];
@@ -104,24 +115,24 @@ void Panel
               F* A22Buf = &ABuf[(k+1) + (k+1)*ALDim];
 
         // Store the index/value of the local pivot candidate
-        Int aB1LocalInd = blas::MaxInd( ind2Size+1+BLocHeight, aB1Buf, 1 );
+        Int aB1LocalInd = blas::MaxInd(ind2Size+1+BLocHeight, aB1Buf, 1);
         ValueInt<Real> localPivot;
         localPivot.value = Abs(aB1Buf[aB1LocalInd]);
-        if( aB1LocalInd+k < n )
+        if(aB1LocalInd+k < n)
             localPivot.index = aB1LocalInd + k;
         else
             localPivot.index = B.GlobalRow(aB1LocalInd-(n-k)) + n;
 
         // Compute and store the location of the new pivot
-        const auto pivot = mpi::AllReduce( localPivot, maxLocOp, colComm );
+        const auto pivot = mpi::AllReduce(localPivot, maxLocOp, colComm);
         const Int iPiv = pivot.index;
-        P.Swap( k+offset, iPiv+offset );
-        PB.Swap( k, iPiv );
+        P.Swap(k+offset, iPiv+offset);
+        PB.Swap(k, iPiv);
 
         // Perform the pivot within this panel
-        if( iPiv < n )
+        if(iPiv < n)
         {
-            blas::Swap( n, &ABuf[iPiv], ALDim, &ABuf[k], ALDim );
+            blas::Swap(n, &ABuf[iPiv], ALDim, &ABuf[k], ALDim);
         }
         else
         {
@@ -129,30 +140,30 @@ void Panel
             // and then overwrites with the current row
             const Int relIndex = iPiv - n;
             const int ownerRow = B.RowOwner(relIndex);
-            if( B.IsLocalRow(relIndex) )
+            if(B.IsLocalRow(relIndex))
             {
                 const Int iLoc = B.LocalRow(relIndex);
-                for( Int j=0; j<n; ++j )
+                for(Int j=0; j<n; ++j)
                     pivotBuffer[j] = BBuf[iLoc+j*BLDim];
-                for( Int j=0; j<n; ++j )
+                for(Int j=0; j<n; ++j)
                     BBuf[iLoc+j*BLDim] = ABuf[k+j*ALDim];
             }
             // The owning row broadcasts within process columns
-            mpi::Broadcast( pivotBuffer.data(), n, ownerRow, colComm );
+            mpi::Broadcast(pivotBuffer.data(), n, ownerRow, colComm);
             // Overwrite the current row with the pivot row
-            for( Int j=0; j<n; ++j )
+            for(Int j=0; j<n; ++j)
                 ABuf[k+j*ALDim] = pivotBuffer[j];
         }
 
         // Now we can perform the update of the current panel
         const F alpha = aB1Buf[0];
-        if( alpha == F(0) )
+        if(alpha == F(0))
             throw SingularMatrixException();
         const F alpha11Inv = F(1) / alpha;
-        blas::Scal( ind2Size+BLocHeight, alpha11Inv, a21Buf, 1 );
+        blas::Scal(ind2Size+BLocHeight, alpha11Inv, a21Buf, 1);
         blas::Geru
-        ( ind2Size+BLocHeight, ind2Size, F(-1),
-          a21Buf, 1, a12Buf, ALDim, A22Buf, ALDim );
+        (ind2Size+BLocHeight, ind2Size, F(-1),
+          a21Buf, 1, a12Buf, ALDim, A22Buf, ALDim);
     }
 }
 

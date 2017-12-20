@@ -8,8 +8,8 @@
 */
 #include <El/blas_like.hpp>
 
-#define COLDIST MC
-#define ROWDIST STAR
+#define COLDIST Dist::MC
+#define ROWDIST Dist::STAR
 
 #include "./setup.hpp"
 
@@ -24,15 +24,15 @@ namespace El {
 // Make a copy
 // -----------
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::MC,Dist::MR>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::MC,Dist::MR>& A)
 {
     EL_DEBUG_CSE
-    copy::RowAllGather( A, *this );
+    copy::RowAllGather(A, *this);
     return *this;
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::MR>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::STAR,Dist::MR>& A)
 {
     EL_DEBUG_CSE
     DistMatrix<T,Dist::MC,Dist::MR> A_MC_MR(this->Grid());
@@ -43,29 +43,29 @@ DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::MR>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::MD,Dist::STAR>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::MD,Dist::STAR>& A)
 {
     EL_DEBUG_CSE
     // TODO: More efficient implementation
-    copy::GeneralPurpose( A, *this );
+    copy::GeneralPurpose(A, *this);
     return *this;
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::MD>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::STAR,Dist::MD>& A)
 {
     EL_DEBUG_CSE
     // TODO: More efficient implementation
-    copy::GeneralPurpose( A, *this );
+    copy::GeneralPurpose(A, *this);
     return *this;
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::MR,Dist::MC>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::MR,Dist::MC>& A)
 {
     EL_DEBUG_CSE
-    DistMatrix<T,Dist::VR,Dist::STAR> A_VR_STAR( A );
-    DistMatrix<T,Dist::VC,Dist::STAR> A_VC_STAR( this->Grid() );
+    DistMatrix<T,Dist::VR,Dist::STAR> A_VR_STAR(A);
+    DistMatrix<T,Dist::VC,Dist::STAR> A_VC_STAR(this->Grid());
     A_VC_STAR.AlignColsWith(*this);
     A_VC_STAR = A_VR_STAR;
     A_VR_STAR.Empty();
@@ -74,22 +74,22 @@ DM& DM::operator=( const DistMatrix<T,Dist::MR,Dist::MC>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::MR,Dist::STAR>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::MR,Dist::STAR>& A)
 {
     EL_DEBUG_CSE
-    EL_DEBUG_ONLY(AssertSameGrids( *this, A ))
+    EL_DEBUG_ONLY(AssertSameGrids(*this, A))
     const Grid& grid = A.Grid();
-    if( grid.Height() == grid.Width() )
+    if(grid.Height() == grid.Width())
     {
         const int gridDim = grid.Height();
         const int transposeRank =
             this->RowOwner(A.ColShift()) + gridDim*A.RowOwner(this->ColShift());
-        copy::Exchange( A, *this, transposeRank, transposeRank, grid.VCComm() );
+        copy::Exchange(A, *this, transposeRank, transposeRank, grid.VCComm());
     }
     else
     {
-        DistMatrix<T,Dist::VR,Dist::STAR> A_VR_STAR( A );
-        DistMatrix<T,Dist::VC,Dist::STAR> A_VC_STAR( grid );
+        DistMatrix<T,Dist::VR,Dist::STAR> A_VR_STAR(A);
+        DistMatrix<T,Dist::VC,Dist::STAR> A_VC_STAR(grid);
         A_VC_STAR.AlignColsWith(*this);
         A_VC_STAR = A_VR_STAR;
         A_VR_STAR.Empty();
@@ -99,14 +99,14 @@ DM& DM::operator=( const DistMatrix<T,Dist::MR,Dist::STAR>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::MC>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::STAR,Dist::MC>& A)
 {
     EL_DEBUG_CSE
-    DistMatrix<T,Dist::MR,Dist::MC> A_MR_MC( A );
-    DistMatrix<T,Dist::VR,Dist::STAR> A_VR_STAR( A_MR_MC );
+    DistMatrix<T,Dist::MR,Dist::MC> A_MR_MC(A);
+    DistMatrix<T,Dist::VR,Dist::STAR> A_VR_STAR(A_MR_MC);
     A_MR_MC.Empty();
 
-    DistMatrix<T,Dist::VC,Dist::STAR> A_VC_STAR( this->Grid() );
+    DistMatrix<T,Dist::VC,Dist::STAR> A_VC_STAR(this->Grid());
     A_VC_STAR.AlignColsWith(*this);
     A_VC_STAR = A_VR_STAR;
     A_VR_STAR.Empty();
@@ -116,19 +116,19 @@ DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::MC>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::VC,Dist::STAR>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::VC,Dist::STAR>& A)
 {
     EL_DEBUG_CSE
-    copy::PartialColAllGather( A, *this );
+    copy::PartialColAllGather(A, *this);
     return *this;
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::VC>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::STAR,Dist::VC>& A)
 {
     EL_DEBUG_CSE
-    DistMatrix<T,Dist::STAR,Dist::VR> A_STAR_VR( A );
-    DistMatrix<T> A_MC_MR( this->Grid() );
+    DistMatrix<T,Dist::STAR,Dist::VR> A_STAR_VR(A);
+    DistMatrix<T> A_MC_MR(this->Grid());
     A_MC_MR.AlignColsWith(*this);
     A_MC_MR = A_STAR_VR;
     A_STAR_VR.Empty();
@@ -137,7 +137,7 @@ DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::VC>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::VR,Dist::STAR>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::VR,Dist::STAR>& A)
 {
     EL_DEBUG_CSE
     DistMatrix<T,Dist::VC,Dist::STAR> A_VC_STAR(this->Grid());
@@ -148,7 +148,7 @@ DM& DM::operator=( const DistMatrix<T,Dist::VR,Dist::STAR>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::VR>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::STAR,Dist::VR>& A)
 {
     EL_DEBUG_CSE
     DistMatrix<T,Dist::MC,Dist::MR> A_MC_MR(this->Grid());
@@ -159,26 +159,26 @@ DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::VR>& A )
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::STAR,Dist::STAR>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::STAR,Dist::STAR>& A)
 {
     EL_DEBUG_CSE
-    copy::ColFilter( A, *this );
+    copy::ColFilter(A, *this);
     return *this;
 }
 
 template<typename T>
-DM& DM::operator=( const DistMatrix<T,Dist::CIRC,Dist::CIRC>& A )
+DM& DM::operator=(const DistMatrix<T,Dist::CIRC,Dist::CIRC>& A)
 {
     EL_DEBUG_CSE
-    DistMatrix<T,Dist::MC,Dist::MR> A_MC_MR( this->Grid() );
-    A_MC_MR.AlignWith( *this );
+    DistMatrix<T,Dist::MC,Dist::MR> A_MC_MR(this->Grid());
+    A_MC_MR.AlignWith(*this);
     A_MC_MR = A;
     *this = A_MC_MR;
     return *this;
 }
 
 template<typename T>
-DM& DM::operator=( const ElementalMatrix<T>& A )
+DM& DM::operator=(const ElementalMatrix<T>& A)
 {
     EL_DEBUG_CSE
     #define GUARD(CDIST,RDIST,WRAP) \
@@ -203,7 +203,7 @@ mpi::Comm DM::RedundantComm() const EL_NO_EXCEPT
 
 template<typename T>
 mpi::Comm DM::CrossComm() const EL_NO_EXCEPT
-{ return ( this->Grid().InGrid() ? mpi::COMM_SELF : mpi::COMM_NULL ); }
+{ return (this->Grid().InGrid() ? mpi::COMM_SELF : mpi::COMM_NULL); }
 
 template<typename T>
 mpi::Comm DM::ColComm() const EL_NO_EXCEPT
@@ -211,7 +211,7 @@ mpi::Comm DM::ColComm() const EL_NO_EXCEPT
 
 template<typename T>
 mpi::Comm DM::RowComm() const EL_NO_EXCEPT
-{ return ( this->Grid().InGrid() ? mpi::COMM_SELF : mpi::COMM_NULL ); }
+{ return (this->Grid().InGrid() ? mpi::COMM_SELF : mpi::COMM_NULL); }
 
 template<typename T>
 mpi::Comm DM::PartialColComm() const EL_NO_EXCEPT
@@ -221,10 +221,10 @@ mpi::Comm DM::PartialRowComm() const EL_NO_EXCEPT
 { return this->RowComm(); }
 template<typename T>
 mpi::Comm DM::PartialUnionColComm() const EL_NO_EXCEPT
-{ return ( this->Grid().InGrid() ? mpi::COMM_SELF : mpi::COMM_NULL ); }
+{ return (this->Grid().InGrid() ? mpi::COMM_SELF : mpi::COMM_NULL); }
 template<typename T>
 mpi::Comm DM::PartialUnionRowComm() const EL_NO_EXCEPT
-{ return ( this->Grid().InGrid() ? mpi::COMM_SELF : mpi::COMM_NULL ); }
+{ return (this->Grid().InGrid() ? mpi::COMM_SELF : mpi::COMM_NULL); }
 
 template<typename T>
 int DM::ColStride() const EL_NO_EXCEPT { return this->grid_->MCSize(); }
@@ -249,12 +249,12 @@ template<typename T>
 int DM::ColRank() const EL_NO_EXCEPT { return this->grid_->MCRank(); }
 template<typename T>
 int DM::RowRank() const EL_NO_EXCEPT
-{ return ( this->Grid().InGrid() ? 0 : mpi::UNDEFINED ); }
+{ return (this->Grid().InGrid() ? 0 : mpi::UNDEFINED); }
 template<typename T>
 int DM::DistRank() const EL_NO_EXCEPT { return this->grid_->MCRank(); }
 template<typename T>
 int DM::CrossRank() const EL_NO_EXCEPT
-{ return ( this->Grid().InGrid() ? 0 : mpi::UNDEFINED ); }
+{ return (this->Grid().InGrid() ? 0 : mpi::UNDEFINED); }
 template<typename T>
 int DM::RedundantRank() const EL_NO_EXCEPT { return this->grid_->MRRank(); }
 template<typename T>
@@ -263,42 +263,42 @@ template<typename T>
 int DM::PartialRowRank() const EL_NO_EXCEPT { return this->RowRank(); }
 template<typename T>
 int DM::PartialUnionColRank() const EL_NO_EXCEPT
-{ return ( this->Grid().InGrid() ? 0 : mpi::UNDEFINED ); }
+{ return (this->Grid().InGrid() ? 0 : mpi::UNDEFINED); }
 template<typename T>
 int DM::PartialUnionRowRank() const EL_NO_EXCEPT
-{ return ( this->Grid().InGrid() ? 0 : mpi::UNDEFINED ); }
+{ return (this->Grid().InGrid() ? 0 : mpi::UNDEFINED); }
 
 // Instantiate {Int,Real,Complex<Real>} for each Real in {float,double}
 // ####################################################################
 
 #define SELF(T,U,V) \
   template DistMatrix<T,COLDIST,ROWDIST>::DistMatrix \
-  ( const DistMatrix<T,U,V>& A );
+  (const DistMatrix<T,U,V>& A);
 #define OTHER(T,U,V) \
   template DistMatrix<T,COLDIST,ROWDIST>::DistMatrix \
-  ( const DistMatrix<T,U,V,DistWrap::BLOCK>& A ); \
+  (const DistMatrix<T,U,V,DistWrap::BLOCK>& A); \
   template DistMatrix<T,COLDIST,ROWDIST>& \
            DistMatrix<T,COLDIST,ROWDIST>::operator= \
-           ( const DistMatrix<T,U,V,DistWrap::BLOCK>& A )
+           (const DistMatrix<T,U,V,DistWrap::BLOCK>& A)
 #define BOTH(T,U,V) \
   SELF(T,U,V) \
   OTHER(T,U,V)
 #define PROTO(T) \
   template class DistMatrix<T,COLDIST,ROWDIST>; \
-  BOTH( T,Dist::CIRC,CIRC); \
-  BOTH( T,Dist::MC,  MR  ); \
-  OTHER(T,Dist::MC,  STAR); \
-  BOTH( T,Dist::MD,  STAR); \
-  BOTH( T,Dist::MR,  MC  ); \
-  BOTH( T,Dist::MR,  STAR); \
-  BOTH( T,Dist::STAR,MC  ); \
-  BOTH( T,Dist::STAR,MD  ); \
-  BOTH( T,Dist::STAR,MR  ); \
-  BOTH( T,Dist::STAR,STAR); \
-  BOTH( T,Dist::STAR,VC  ); \
-  BOTH( T,Dist::STAR,VR  ); \
-  BOTH( T,Dist::VC,  STAR); \
-  BOTH( T,Dist::VR,  STAR);
+  BOTH(T,Dist::CIRC,Dist::CIRC); \
+  BOTH(T,Dist::MC,  Dist::MR ); \
+  OTHER(T,Dist::MC,  Dist::STAR); \
+  BOTH(T,Dist::MD,  Dist::STAR); \
+  BOTH(T,Dist::MR,  Dist::MC ); \
+  BOTH(T,Dist::MR,  Dist::STAR); \
+  BOTH(T,Dist::STAR,Dist::MC ); \
+  BOTH(T,Dist::STAR,Dist::MD ); \
+  BOTH(T,Dist::STAR,Dist::MR ); \
+  BOTH(T,Dist::STAR,Dist::STAR); \
+  BOTH(T,Dist::STAR,Dist::VC ); \
+  BOTH(T,Dist::STAR,Dist::VR ); \
+  BOTH(T,Dist::VC,  Dist::STAR); \
+  BOTH(T,Dist::VR,  Dist::STAR);
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

@@ -6,10 +6,14 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/blas_like/level1.hpp>
-#include <El/matrices.hpp>
+#include "El/blas_like/level1.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/random/decl.hpp"
+#include "El/matrices.hpp"
 
-namespace El {
+namespace El
+{
 
 // See Subsection 3.4 of Nguyen and Stehle's "LLL on the Average"
 

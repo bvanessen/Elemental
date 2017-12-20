@@ -9,8 +9,15 @@
 #ifndef EL_TWOSIDEDTRSM_UNBLOCKED_HPP
 #define EL_TWOSIDEDTRSM_UNBLOCKED_HPP
 
-namespace El {
-namespace twotrsm {
+#include <vector>
+
+#include "El/core/Matrix/decl.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
+namespace twotrsm
+{
 
 template<typename F>
 void LUnb( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )
@@ -75,7 +82,7 @@ void UUnb( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& U )
     const Int ldu = U.LDim();
     F* ABuffer = A.Buffer();
     const F* UBuffer = U.LockedBuffer();
-    vector<F> a12Conj( n ), u12Conj( n );
+    std::vector<F> a12Conj( n ), u12Conj( n );
     for( Int j=0; j<n; ++j )
     {
         const Int a21Height = n - (j+1);

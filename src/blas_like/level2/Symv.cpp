@@ -6,7 +6,9 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/blas_like/level2.hpp>
+#include "El/blas_like/level2.hpp"
+#include "El/core/DistMatrix.hpp"
+#include "El/core/Proxy.hpp"
 
 #include "./Symv/L.hpp"
 #include "./Symv/U.hpp"

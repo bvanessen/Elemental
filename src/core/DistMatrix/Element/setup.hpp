@@ -29,7 +29,7 @@ template<typename T>
 DM::DistMatrix( const El::Grid& grid, int root )
 : EM(grid,root)
 {
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
 }
@@ -38,7 +38,7 @@ template<typename T>
 DM::DistMatrix( Int height, Int width, const El::Grid& grid, int root )
 : EM(grid,root)
 {
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
     this->Resize(height,width);
@@ -49,7 +49,7 @@ DM::DistMatrix( const DM& A )
 : EM(A.Grid())
 {
     EL_DEBUG_CSE
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
     if( &A != this )
@@ -64,7 +64,7 @@ DM::DistMatrix( const DistMatrix<T,U,V>& A )
 : EM(A.Grid())
 {
     EL_DEBUG_CSE
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
     if( COLDIST != U || ROWDIST != V ||
@@ -79,7 +79,7 @@ DM::DistMatrix( const AbstractDistMatrix<T>& A )
 : EM(A.Grid())
 {
     EL_DEBUG_CSE
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
     #define GUARD(CDIST,RDIST,WRAP) \
@@ -99,7 +99,7 @@ DM::DistMatrix( const ElementalMatrix<T>& A )
 : EM(A.Grid())
 {
     EL_DEBUG_CSE
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
     #define GUARD(CDIST,RDIST,WRAP) \
@@ -121,7 +121,7 @@ DM::DistMatrix( const DistMatrix<T,U,V,DistWrap::BLOCK>& A )
 : EM(A.Grid())
 {
     EL_DEBUG_CSE
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
     *this = A;
@@ -175,7 +175,7 @@ const DM DM::operator()( Range<Int> I, Range<Int> J ) const
 // Non-contiguous
 // --------------
 template<typename T>
-DM DM::operator()( Range<Int> I, const vector<Int>& J ) const
+DM DM::operator()( Range<Int> I, const std::vector<Int>& J ) const
 {
     EL_DEBUG_CSE
     DM ASub( this->Grid() );
@@ -184,7 +184,7 @@ DM DM::operator()( Range<Int> I, const vector<Int>& J ) const
 }
 
 template<typename T>
-DM DM::operator()( const vector<Int>& I, Range<Int> J ) const
+DM DM::operator()( const std::vector<Int>& I, Range<Int> J ) const
 {
     EL_DEBUG_CSE
     DM ASub( this->Grid() );
@@ -193,7 +193,7 @@ DM DM::operator()( const vector<Int>& I, Range<Int> J ) const
 }
 
 template<typename T>
-DM DM::operator()( const vector<Int>& I, const vector<Int>& J ) const
+DM DM::operator()( const std::vector<Int>& I, const std::vector<Int>& J ) const
 {
     EL_DEBUG_CSE
     DM ASub( this->Grid() );
@@ -216,7 +216,7 @@ DM& DM::operator=( const AbstractDistMatrix<T>& A )
 {
     EL_DEBUG_CSE
     // TODO: Use either AllGather or Gather if the distribution of this matrix
-    //       is respectively either (STAR,STAR) or (CIRC,CIRC)
+    //       is respectively either (STAR,Dist::STAR) or (CIRC,Dist::CIRC)
     #define GUARD(CDIST,RDIST,WRAP) \
       A.ColDist() == CDIST && A.RowDist() == RDIST && A.Wrap() == WRAP
     #define PAYLOAD(CDIST,RDIST,WRAP) \

@@ -6,9 +6,15 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/blas_like/level3.hpp>
 
-namespace El {
+#include "El/blas_like/level1/decl.hpp"
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
 
 template<typename T>
 void Herk

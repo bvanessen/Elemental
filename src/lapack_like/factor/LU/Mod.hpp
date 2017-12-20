@@ -9,7 +9,10 @@
 #ifndef EL_LU_MOD_HPP
 #define EL_LU_MOD_HPP
 
-namespace El {
+#include "El/matrices.hpp"
+
+namespace El
+{
 
 // Begin with an LU factorization with partial pivoting,
 //     A = P^T L U,

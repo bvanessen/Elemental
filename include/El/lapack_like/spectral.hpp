@@ -12,6 +12,7 @@
 #include <functional>
 #include <string>
 
+#include "El/core/DistMatrix/Block.hpp"
 #include "El/core/indexing/decl.hpp"
 #include "El/core/Matrix/decl.hpp"
 #include "El/lapack_like/condense.hpp"

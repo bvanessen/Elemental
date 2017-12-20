@@ -9,8 +9,17 @@
 #ifndef EL_LU_FULL_HPP
 #define EL_LU_FULL_HPP
 
-namespace El {
-namespace lu {
+#include "El/blas_like/level1/decl.hpp"
+#include "El/blas_like/level2.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/core/Proxy.hpp"
+
+namespace El
+{
+namespace lu
+{
 
 template<typename F>
 void

@@ -6,7 +6,7 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/blas_like/level3.hpp>
+#include "El/blas_like/level3.hpp"
 
 #include "./Gemm/NN.hpp"
 #include "./Gemm/NT.hpp"
@@ -145,10 +145,13 @@ void LocalGemm
           if( A.ColDist() != C.ColDist() ||
               A.RowDist() != B.ColDist() ||
               B.RowDist() != C.RowDist() )
-              LogicError
-              ("Tried to form C[",C.ColDist(),",",C.RowDist(),"] := "
-               "A[",A.ColDist(),",",A.RowDist(),"] "
-               "B[",B.ColDist(),",",B.RowDist(),"]");
+              LogicError(
+                  "Tried to form C[",DistToString(C.ColDist()),",",
+                  DistToString(C.RowDist()),"] := "
+                  "A[",DistToString(A.ColDist()),",",
+                  DistToString(A.RowDist()),"] "
+                  "B[",DistToString(B.ColDist()),",",
+                  DistToString(B.RowDist()),"]");
           if( A.ColAlign() != C.ColAlign() )
               LogicError("A's cols must align with C's rows");
           if( A.RowAlign() != B.ColAlign() )
@@ -170,9 +173,9 @@ void LocalGemm
               A.RowDist() != B.RowDist() ||
               B.ColDist() != C.RowDist() )
               LogicError
-              ("Tried to form C[",C.ColDist(),",",C.RowDist(),"] := "
-               "A[",A.ColDist(),",",A.RowDist(),"] "
-               "B[",B.ColDist(),",",B.RowDist(),"]'");
+              ("Tried to form C[",DistToString(C.ColDist()),",",DistToString(C.RowDist()),"] := "
+               "A[",DistToString(A.ColDist()),",",DistToString(A.RowDist()),"] "
+               "B[",DistToString(B.ColDist()),",",DistToString(B.RowDist()),"]'");
           if( A.ColAlign() != C.ColAlign() )
               LogicError("A's cols must align with C's rows");
           if( A.RowAlign() != B.RowAlign() )
@@ -194,9 +197,9 @@ void LocalGemm
               A.ColDist() != B.ColDist() ||
               B.RowDist() != C.RowDist() )
               LogicError
-              ("Tried to form C[",C.ColDist(),",",C.RowDist(),"] := "
-               "A[",A.ColDist(),",",A.RowDist(),"]' "
-               "B[",B.ColDist(),",",B.RowDist(),"]");
+              ("Tried to form C[",DistToString(C.ColDist()),",",DistToString(C.RowDist()),"] := "
+               "A[",DistToString(A.ColDist()),",",DistToString(A.RowDist()),"]' "
+               "B[",DistToString(B.ColDist()),",",DistToString(B.RowDist()),"]");
           if( A.RowAlign() != C.ColAlign() )
               LogicError("A's rows must align with C's cols");
           if( A.ColAlign() != B.ColAlign() )
@@ -218,9 +221,9 @@ void LocalGemm
               A.ColDist() != B.RowDist() ||
               B.ColDist() != C.RowDist() )
               LogicError
-              ("Tried to form C[",C.ColDist(),",",C.RowDist(),"] := "
-               "A[",A.ColDist(),",",A.RowDist(),"]' "
-               "B[",B.ColDist(),",",B.RowDist(),"]'");
+              ("Tried to form C[",DistToString(C.ColDist()),",",DistToString(C.RowDist()),"] := "
+               "A[",DistToString(A.ColDist()),",",DistToString(A.RowDist()),"]' "
+               "B[",DistToString(B.ColDist()),",",DistToString(B.RowDist()),"]'");
           if( A.RowAlign() != C.ColAlign() )
               LogicError("A's rows must align with C's cols");
           if( A.ColAlign() != B.RowAlign() )

@@ -9,8 +9,22 @@
 #ifndef EL_TWOSIDEDTRSM_LVAR4_HPP
 #define EL_TWOSIDEDTRSM_LVAR4_HPP
 
-namespace El {
-namespace twotrsm {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/MC_STAR.hpp"
+#include "El/core/DistMatrix/Element/STAR_MC.hpp"
+#include "El/core/DistMatrix/Element/STAR_MR.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/DistMatrix/Element/STAR_VR.hpp"
+#include "El/core/DistMatrix/Element/VC_STAR.hpp"
+#include "El/core/DistMatrix/Element/VR_STAR.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
+namespace twotrsm
+{
 
 template<typename F>
 void LVar4( UnitOrNonUnit diag, Matrix<F>& A, const Matrix<F>& L )

@@ -7,21 +7,30 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/Element/Complex/decl.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/spectral.hpp"
+#include "El/lapack_like/util.hpp"
+#include "El/matrices.hpp"
+#include "El/Typedefs.hpp"
+
+namespace El
+{
 
 template<typename Real>
-void FoxLi( Matrix<Complex<Real>>& A, Int n, Real omega )
+void FoxLi(Matrix<Complex<Real>>& A, Int n, Real omega)
 {
     EL_DEBUG_CSE
     typedef Complex<Real> C;
-    const Real pi = 4*Atan( Real(1) );
-    const C phi = Sqrt( C(0,omega/pi) );
+    const Real pi = 4*Atan(Real(1));
+    const C phi = Sqrt(C(0,omega/pi));
 
     // Compute Gauss quadrature points and weights
     Matrix<Real> d, e;
-    Zeros( d, n, 1 );
-    e.Resize( n-1, 1 );
-    for( Int j=0; j<n-1; ++j )
+    Zeros(d, n, 1);
+    e.Resize(n-1, 1);
+    for(Int j=0; j<n-1; ++j)
     {
         const Real betaInv = 2*Sqrt(1-Pow(j+Real(1),-2)/4);
         e(j) = 1/betaInv;
@@ -29,22 +38,22 @@ void FoxLi( Matrix<Complex<Real>>& A, Int n, Real omega )
     Matrix<Real> x, Z;
     HermitianTridiagEigCtrl<Real> ctrl;
     ctrl.sort = SortType::UNSORTED;
-    HermitianTridiagEig( d, e, x, Z, ctrl );
-    auto z = Z( IR(0), ALL );
-    Matrix<Real> sqrtWeights( z ), sqrtWeightsTrans;
-    for( Int j=0; j<n; ++j )
+    HermitianTridiagEig(d, e, x, Z, ctrl);
+    auto z = Z(IR(0), ALL);
+    Matrix<Real> sqrtWeights(z), sqrtWeightsTrans;
+    for(Int j=0; j<n; ++j)
         sqrtWeights(0,j) = Sqrt(Real(2))*Abs(sqrtWeights(0,j));
-    auto sortPairs = TaggedSort( x, SortType::ASCENDING );
-    for( Int j=0; j<n; ++j )
+    auto sortPairs = TaggedSort(x, SortType::ASCENDING);
+    for(Int j=0; j<n; ++j)
         x(j) = sortPairs[j].value;
-    ApplyTaggedSortToEachRow( sortPairs, sqrtWeights );
-    Transpose( sqrtWeights, sqrtWeightsTrans );
+    ApplyTaggedSortToEachRow(sortPairs, sqrtWeights);
+    Transpose(sqrtWeights, sqrtWeightsTrans);
 
     // Form the integral operator
-    A.Resize( n, n );
-    for( Int j=0; j<n; ++j )
+    A.Resize(n, n);
+    for(Int j=0; j<n; ++j)
     {
-        for( Int i=0; i<n; ++i )
+        for(Int i=0; i<n; ++i)
         {
             const Real theta = -omega*Pow(x(i)-x(j),2);
             const Real realPart = Cos(theta);
@@ -54,28 +63,28 @@ void FoxLi( Matrix<Complex<Real>>& A, Int n, Real omega )
     }
 
     // Apply the weighting
-    DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, sqrtWeightsTrans, A );
-    DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, sqrtWeightsTrans, A );
+    DiagonalScale(LeftOrRight::LEFT, Orientation::NORMAL, sqrtWeightsTrans, A);
+    DiagonalScale(LeftOrRight::RIGHT, Orientation::NORMAL, sqrtWeightsTrans, A);
 }
 
 template<typename Real>
-void FoxLi( AbstractDistMatrix<Complex<Real>>& APre, Int n, Real omega )
+void FoxLi(AbstractDistMatrix<Complex<Real>>& APre, Int n, Real omega)
 {
     EL_DEBUG_CSE
     typedef Complex<Real> C;
-    const Real pi = 4*Atan( Real(1) );
-    const C phi = Sqrt( C(0,omega/pi) );
+    const Real pi = 4*Atan(Real(1));
+    const C phi = Sqrt(C(0,omega/pi));
 
-    DistMatrixWriteProxy<C,C,Dist::MC,Dist::MR> AProx( APre );
+    DistMatrixWriteProxy<C,C,Dist::MC,Dist::MR> AProx(APre);
     auto& A = AProx.Get();
 
     // Compute Gauss quadrature points and weights
     const Grid& g = A.Grid();
     DistMatrix<Real,Dist::VR,Dist::STAR> d(g), e(g);
-    Zeros( d, n, 1 );
-    e.Resize( n-1, 1 );
+    Zeros(d, n, 1);
+    e.Resize(n-1, 1);
     auto& eLoc = e.Matrix();
-    for( Int iLoc=0; iLoc<e.LocalHeight(); ++iLoc )
+    for(Int iLoc=0; iLoc<e.LocalHeight(); ++iLoc)
     {
         const Int i = e.GlobalRow(iLoc);
         const Real betaInv = 2*Sqrt(1-Pow(i+Real(1),-2)/4);
@@ -85,31 +94,31 @@ void FoxLi( AbstractDistMatrix<Complex<Real>>& APre, Int n, Real omega )
     DistMatrix<Real,Dist::STAR,Dist::VR> Z(g);
     HermitianTridiagEigCtrl<Real> ctrl;
     ctrl.sort = SortType::UNSORTED;
-    HermitianTridiagEig( d, e, x, Z, ctrl );
-    auto z = Z( IR(0), ALL );
-    DistMatrix<Real,Dist::STAR,Dist::VR> sqrtWeights( z );
+    HermitianTridiagEig(d, e, x, Z, ctrl);
+    auto z = Z(IR(0), ALL);
+    DistMatrix<Real,Dist::STAR,Dist::VR> sqrtWeights(z);
     auto& sqrtWeightsLoc = sqrtWeights.Matrix();
-    for( Int jLoc=0; jLoc<sqrtWeights.LocalWidth(); ++jLoc )
+    for(Int jLoc=0; jLoc<sqrtWeights.LocalWidth(); ++jLoc)
         sqrtWeightsLoc(0,jLoc) = Sqrt(Real(2))*Abs(sqrtWeightsLoc(0,jLoc));
-    auto sortPairs = TaggedSort( x, SortType::ASCENDING );
-    for( Int j=0; j<n; ++j )
-        x.Set( j, 0, sortPairs[j].value );
-    ApplyTaggedSortToEachRow( sortPairs, sqrtWeights );
+    auto sortPairs = TaggedSort(x, SortType::ASCENDING);
+    for(Int j=0; j<n; ++j)
+        x.Set(j, 0, sortPairs[j].value);
+    ApplyTaggedSortToEachRow(sortPairs, sqrtWeights);
 
     // Form the integral operator
-    A.Resize( n, n );
-    DistMatrix<Real,Dist::MC,Dist::STAR> x_MC( A.Grid() );
-    DistMatrix<Real,Dist::MR,Dist::STAR> x_MR( A.Grid() );
-    x_MC.AlignWith( A );
-    x_MR.AlignWith( A );
+    A.Resize(n, n);
+    DistMatrix<Real,Dist::MC,Dist::STAR> x_MC(A.Grid());
+    DistMatrix<Real,Dist::MR,Dist::STAR> x_MR(A.Grid());
+    x_MC.AlignWith(A);
+    x_MR.AlignWith(A);
     x_MC = x;
     x_MR = x;
     auto& ALoc = A.Matrix();
     auto& x_MCLoc = x_MC.Matrix();
     auto& x_MRLoc = x_MR.Matrix();
-    for( Int jLoc=0; jLoc<A.LocalWidth(); ++jLoc )
+    for(Int jLoc=0; jLoc<A.LocalWidth(); ++jLoc)
     {
-        for( Int iLoc=0; iLoc<A.LocalHeight(); ++iLoc )
+        for(Int iLoc=0; iLoc<A.LocalHeight(); ++iLoc)
         {
             const Real diff = x_MCLoc(iLoc)-x_MRLoc(jLoc);
             const Real theta = -omega*Pow(diff,2);
@@ -121,15 +130,15 @@ void FoxLi( AbstractDistMatrix<Complex<Real>>& APre, Int n, Real omega )
 
     // Apply the weighting
     DistMatrix<Real,Dist::VR,Dist::STAR> sqrtWeightsTrans(g);
-    Transpose( sqrtWeights, sqrtWeightsTrans );
-    DiagonalScale( LeftOrRight::LEFT, Orientation::NORMAL, sqrtWeightsTrans, A );
-    DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, sqrtWeightsTrans, A );
+    Transpose(sqrtWeights, sqrtWeightsTrans);
+    DiagonalScale(LeftOrRight::LEFT, Orientation::NORMAL, sqrtWeightsTrans, A);
+    DiagonalScale(LeftOrRight::RIGHT, Orientation::NORMAL, sqrtWeightsTrans, A);
 }
 
 #define PROTO(Real) \
-  template void FoxLi( Matrix<Complex<Real>>& A, Int n, Real omega ); \
+  template void FoxLi(Matrix<Complex<Real>>& A, Int n, Real omega); \
   template void FoxLi \
-  ( AbstractDistMatrix<Complex<Real>>& A, Int n, Real omega );
+  (AbstractDistMatrix<Complex<Real>>& A, Int n, Real omega);
 
 #define EL_NO_INT_PROTO
 #define EL_NO_COMPLEX_PROTO

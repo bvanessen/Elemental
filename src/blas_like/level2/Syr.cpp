@@ -6,9 +6,13 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <El/blas_like/level2.hpp>
+#include "El/blas_like/level2.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/MC_STAR.hpp"
+#include "El/core/DistMatrix/Element/MR_STAR.hpp"
 #include "El/core/imports/blas.hpp"
 #include "El/core/Matrix/decl.hpp"
+#include "El/core/Proxy.hpp"
 
 namespace El
 {

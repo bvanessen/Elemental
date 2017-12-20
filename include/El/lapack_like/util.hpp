@@ -11,6 +11,8 @@
 
 #include <vector>
 
+#include "El/core/Permutation.hpp"
+
 namespace El
 {
 

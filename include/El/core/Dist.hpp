@@ -168,4 +168,5 @@ inline Dist ProductDistPartner(Dist U, Dist V) EL_NO_EXCEPT
 }
 
 }// namespace El
+
 #endif // EL_CORE_DIST_HPP_

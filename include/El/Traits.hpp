@@ -1,6 +1,7 @@
 #ifndef EL_TRAITS_HPP_
 #define EL_TRAITS_HPP_
 
+#include "El/core/Element/Complex/decl.hpp"
 
 namespace El
 {
@@ -58,8 +59,6 @@ template<> struct IsScalar<BigInt>
 template<> struct IsScalar<BigFloat>
 { static const bool value=true; };
 #endif
-template<typename T> struct IsScalar<Complex<T>>
-{ static const bool value=IsScalar<T>::value; };
 
 // For querying whether an element's type is a field
 // -------------------------------------------------
@@ -85,8 +84,6 @@ template<> struct IsField<Quad>
 template<> struct IsField<BigFloat>
 { static const bool value=true; };
 #endif
-template<typename T> struct IsField<Complex<T>>
-{ static const bool value=IsField<T>::value; };
 
 // For querying whether an element's type is supported by the STL's math
 // ---------------------------------------------------------------------
@@ -114,8 +111,6 @@ template<> struct IsStdScalar<long double>
 template<> struct IsStdScalar<Quad>
 { static const bool value=true; };
 #endif
-template<typename T> struct IsStdScalar<Complex<T>>
-{ static const bool value=IsStdScalar<T>::value; };
 
 // For querying whether an element's type is a field supported by STL
 // ------------------------------------------------------------------
@@ -131,8 +126,6 @@ template<> struct IsStdField<long double>
 template<> struct IsStdField<Quad>
 { static const bool value=true; };
 #endif
-template<typename T> struct IsStdField<Complex<T>>
-{ static const bool value=IsStdField<T>::value; };
 
 } // namespace El
 

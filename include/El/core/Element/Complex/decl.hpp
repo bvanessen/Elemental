@@ -24,7 +24,8 @@
 
 #include "El/Traits.hpp"
 
-namespace El {
+namespace El
+{
 
 template<typename Real>
 class Complex
@@ -599,6 +600,16 @@ template<typename Real> struct BaseHelper                { typedef Real type; };
 template<typename Real> struct BaseHelper<Complex<Real>> { typedef Real type; };
 
 template<typename F> using Base = typename BaseHelper<F>::type;
+
+// Additional Traits
+template<typename T> struct IsScalar<Complex<T>>
+{ static const bool value=IsScalar<T>::value; };
+template<typename T> struct IsField<Complex<T>>
+{ static const bool value=IsField<T>::value; };
+template<typename T> struct IsStdScalar<Complex<T>>
+{ static const bool value=IsStdScalar<T>::value; };
+template<typename T> struct IsStdField<Complex<T>>
+{ static const bool value=IsStdField<T>::value; };
 
 // For querying whether or not an element's type is complex
 // --------------------------------------------------------

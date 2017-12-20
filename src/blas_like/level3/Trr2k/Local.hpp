@@ -9,9 +9,15 @@
 #ifndef EL_TRR2K_LOCAL_HPP
 #define EL_TRR2K_LOCAL_HPP
 
-namespace El {
+#include <memory>
 
-namespace trr2k {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
+namespace trr2k
+{
 
 // TODO: Fuse pairs of Gemms
 
@@ -34,18 +40,18 @@ void LocalTrr2kKernel
     // TODO: Stringent distribution and alignment checks
 
     typedef AbstractDistMatrix<T> ADM;
-    auto A0 = unique_ptr<ADM>( A.Construct(A.Grid(),A.Root()) );
-    auto A1 = unique_ptr<ADM>( A.Construct(A.Grid(),A.Root()) );
-    auto B0 = unique_ptr<ADM>( B.Construct(B.Grid(),B.Root()) );
-    auto B1 = unique_ptr<ADM>( B.Construct(B.Grid(),B.Root()) );
-    auto C0 = unique_ptr<ADM>( C.Construct(C.Grid(),C.Root()) );
-    auto C1 = unique_ptr<ADM>( C.Construct(C.Grid(),C.Root()) );
-    auto D0 = unique_ptr<ADM>( D.Construct(D.Grid(),D.Root()) );
-    auto D1 = unique_ptr<ADM>( D.Construct(D.Grid(),D.Root()) );
-    auto ETL = unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
-    auto ETR = unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
-    auto EBL = unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
-    auto EBR = unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
+    auto A0 = std::unique_ptr<ADM>( A.Construct(A.Grid(),A.Root()) );
+    auto A1 = std::unique_ptr<ADM>( A.Construct(A.Grid(),A.Root()) );
+    auto B0 = std::unique_ptr<ADM>( B.Construct(B.Grid(),B.Root()) );
+    auto B1 = std::unique_ptr<ADM>( B.Construct(B.Grid(),B.Root()) );
+    auto C0 = std::unique_ptr<ADM>( C.Construct(C.Grid(),C.Root()) );
+    auto C1 = std::unique_ptr<ADM>( C.Construct(C.Grid(),C.Root()) );
+    auto D0 = std::unique_ptr<ADM>( D.Construct(D.Grid(),D.Root()) );
+    auto D1 = std::unique_ptr<ADM>( D.Construct(D.Grid(),D.Root()) );
+    auto ETL = std::unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
+    auto ETR = std::unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
+    auto EBL = std::unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
+    auto EBR = std::unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
 
     const Int half = E.Height() / 2;
     const auto indTL = IR(0,half);
@@ -118,7 +124,7 @@ void LocalTrr2kKernel
           T(1), ETR->Matrix() );
     }
 
-    auto FTL = unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
+    auto FTL = std::unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
     FTL->AlignWith( *ETL );
     FTL->Resize( ETL->Height(), ETL->Width() );
     Gemm
@@ -131,7 +137,7 @@ void LocalTrr2kKernel
       T(1), FTL->Matrix() );
     LocalAxpyTrapezoid( uplo, T(1), *FTL, *ETL );
 
-    auto FBR = unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
+    auto FBR = std::unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
     FBR->AlignWith( *EBR );
     FBR->Resize( EBR->Height(), EBR->Width() );
     Gemm
@@ -177,18 +183,18 @@ void LocalTrr2k
     {
         typedef AbstractDistMatrix<T> ADM;
         // Ugh. This is likely too much overhead. It should be measured.
-        auto A0 = unique_ptr<ADM>( A.Construct(A.Grid(),A.Root()) );
-        auto A1 = unique_ptr<ADM>( A.Construct(A.Grid(),A.Root()) );
-        auto B0 = unique_ptr<ADM>( B.Construct(B.Grid(),B.Root()) );
-        auto B1 = unique_ptr<ADM>( B.Construct(B.Grid(),B.Root()) );
-        auto C0 = unique_ptr<ADM>( C.Construct(C.Grid(),C.Root()) );
-        auto C1 = unique_ptr<ADM>( C.Construct(C.Grid(),C.Root()) );
-        auto D0 = unique_ptr<ADM>( D.Construct(D.Grid(),D.Root()) );
-        auto D1 = unique_ptr<ADM>( D.Construct(D.Grid(),D.Root()) );
-        auto ETL = unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
-        auto ETR = unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
-        auto EBL = unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
-        auto EBR = unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
+        auto A0 = std::unique_ptr<ADM>( A.Construct(A.Grid(),A.Root()) );
+        auto A1 = std::unique_ptr<ADM>( A.Construct(A.Grid(),A.Root()) );
+        auto B0 = std::unique_ptr<ADM>( B.Construct(B.Grid(),B.Root()) );
+        auto B1 = std::unique_ptr<ADM>( B.Construct(B.Grid(),B.Root()) );
+        auto C0 = std::unique_ptr<ADM>( C.Construct(C.Grid(),C.Root()) );
+        auto C1 = std::unique_ptr<ADM>( C.Construct(C.Grid(),C.Root()) );
+        auto D0 = std::unique_ptr<ADM>( D.Construct(D.Grid(),D.Root()) );
+        auto D1 = std::unique_ptr<ADM>( D.Construct(D.Grid(),D.Root()) );
+        auto ETL = std::unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
+        auto ETR = std::unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
+        auto EBL = std::unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
+        auto EBR = std::unique_ptr<ADM>( E.Construct(E.Grid(),E.Root()) );
 
         const Int half = E.Height() / 2;
         const auto indTL = IR(0,half);

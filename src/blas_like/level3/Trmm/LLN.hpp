@@ -12,8 +12,18 @@
 #ifndef EL_TRMM_LLN_HPP
 #define EL_TRMM_LLN_HPP
 
-namespace El {
-namespace trmm {
+#include "El/core/DistMatrix.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/MC_MR.hpp"
+#include "El/core/DistMatrix/Element/STAR_MR.hpp"
+#include "El/core/DistMatrix/Element/MC_STAR.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
+namespace trmm
+{
 
 template<typename T>
 void LocalAccumulateLLN

@@ -9,7 +9,13 @@
 #ifndef EL_BLAS3_HPP
 #define EL_BLAS3_HPP
 
-namespace El {
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/Typedefs.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
 
 template<typename T> void SetLocalTrrkBlocksize(Int blocksize);
 template<typename T> Int LocalTrrkBlocksize();
@@ -229,7 +235,7 @@ template<typename T>
 void LocalAccumulateLL
 (Orientation orientation, T alpha,
   const DistMatrix<T>& A,
-  const DistMatrix<T,Dist::MC,  Dist::STAR>& B_Dist::MC_STAR,
+  const DistMatrix<T,Dist::MC,  Dist::STAR>& B_MC_STAR,
   const DistMatrix<T,Dist::STAR,Dist::MR  >& BTrans_STAR_MR,
         DistMatrix<T,Dist::MC,  Dist::STAR>& Z_MC_STAR,
         DistMatrix<T,Dist::MR,  Dist::STAR>& Z_MR_STAR);

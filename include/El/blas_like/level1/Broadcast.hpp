@@ -9,8 +9,9 @@
 #ifndef EL_BLAS_BROADCAST_HPP
 #define EL_BLAS_BROADCAST_HPP
 
-#include "El/core/imports/mpi.hpp"
 #include "El/blas_like/level1/Copy/util.hpp"
+#include "El/blas_like/level1/decl.hpp"
+#include "El/core/imports/mpi.hpp"
 
 namespace El
 {

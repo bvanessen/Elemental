@@ -6,16 +6,22 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
+
+#include <string>
+
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
 #include "El/io/SpyWindow.hpp"
 
 #ifdef EL_HAVE_QT5
 # include <QApplication>
 #endif
 
-namespace El {
+namespace El
+{
 
 template<typename T>
-void Spy( const Matrix<T>& A, string title, Base<T> tol )
+void Spy( const Matrix<T>& A, std::string title, Base<T> tol )
 {
     EL_DEBUG_CSE
 #ifdef EL_HAVE_QT5
@@ -42,7 +48,7 @@ void Spy( const Matrix<T>& A, string title, Base<T> tol )
 }
 
 template<typename T>
-void Spy( const AbstractDistMatrix<T>& A, string title, Base<T> tol )
+void Spy( const AbstractDistMatrix<T>& A, std::string title, Base<T> tol )
 {
     EL_DEBUG_CSE
 #ifdef EL_HAVE_QT5
@@ -65,9 +71,9 @@ void Spy( const AbstractDistMatrix<T>& A, string title, Base<T> tol )
 }
 
 #define PROTO(T) \
-  template void Spy ( const Matrix<T>& A, string title, Base<T> tol ); \
+  template void Spy ( const Matrix<T>& A, std::string title, Base<T> tol ); \
   template void Spy \
-  ( const AbstractDistMatrix<T>& A, string title, Base<T> tol );
+  ( const AbstractDistMatrix<T>& A, std::string title, Base<T> tol );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

@@ -9,7 +9,8 @@
 
 #include "El/blas_like/level1/Copy/internal_impl.hpp"
 
-namespace El {
+namespace El
+{
 
 #define DM DistMatrix<T,COLDIST,ROWDIST>
 #define BDM DistMatrix<T,COLDIST,ROWDIST,DistWrap::BLOCK>
@@ -26,7 +27,7 @@ template<typename T>
 BDM::DistMatrix( const El::Grid& g, int root )
 : BCM(g,root)
 {
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
 }
@@ -36,7 +37,7 @@ BDM::DistMatrix
 ( const El::Grid& g, Int blockHeight, Int blockWidth, int root )
 : BCM(g,blockHeight,blockWidth,root)
 {
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
 }
@@ -46,7 +47,7 @@ BDM::DistMatrix
 ( Int height, Int width, const El::Grid& g, int root )
 : BCM(g,root)
 {
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts(); this->Resize(height,width);
 }
@@ -57,7 +58,7 @@ BDM::DistMatrix
   Int blockHeight, Int blockWidth, int root )
 : BCM(g,blockHeight,blockWidth,root)
 {
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
     this->Resize(height,width);
@@ -68,7 +69,7 @@ BDM::DistMatrix( const BDM& A )
 : BCM(A.Grid())
 {
     EL_DEBUG_CSE
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
     if( &A != this )
@@ -83,7 +84,7 @@ BDM::DistMatrix( const DistMatrix<T,U,V,DistWrap::BLOCK>& A )
 : BCM(A.Grid())
 {
     EL_DEBUG_CSE
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
     if( COLDIST != U || ROWDIST != V ||
@@ -98,7 +99,7 @@ BDM::DistMatrix( const AbstractDistMatrix<T>& A )
 : BCM(A.Grid())
 {
     EL_DEBUG_CSE
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
     #define GUARD(CDIST,RDIST,WRAP) \
@@ -115,7 +116,7 @@ BDM::DistMatrix( const BlockMatrix<T>& A )
 : BCM(A.Grid())
 {
     EL_DEBUG_CSE
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
     #define GUARD(CDIST,RDIST,WRAP) \
@@ -138,7 +139,7 @@ BDM::DistMatrix( const DistMatrix<T,U,V>& A )
 : BCM(A.Grid())
 {
     EL_DEBUG_CSE
-    if( COLDIST != CIRC || ROWDIST != CIRC )
+    if( COLDIST != Dist::CIRC || ROWDIST != Dist::CIRC )
         this->Matrix().FixSize();
     this->SetShifts();
     *this = A;
@@ -194,7 +195,7 @@ const BDM BDM::operator()( Range<Int> I, Range<Int> J ) const
 // Non-contiguous
 // --------------
 template<typename T>
-BDM BDM::operator()( Range<Int> I, const vector<Int>& J ) const
+BDM BDM::operator()( Range<Int> I, const std::vector<Int>& J ) const
 {
     EL_DEBUG_CSE
     BDM ASub( this->Grid(), this->BlockHeight(), this->BlockWidth() );
@@ -203,7 +204,7 @@ BDM BDM::operator()( Range<Int> I, const vector<Int>& J ) const
 }
 
 template<typename T>
-BDM BDM::operator()( const vector<Int>& I, Range<Int> J ) const
+BDM BDM::operator()( const std::vector<Int>& I, Range<Int> J ) const
 {
     EL_DEBUG_CSE
     BDM ASub( this->Grid(), this->BlockHeight(), this->BlockWidth() );
@@ -212,7 +213,7 @@ BDM BDM::operator()( const vector<Int>& I, Range<Int> J ) const
 }
 
 template<typename T>
-BDM BDM::operator()( const vector<Int>& I, const vector<Int>& J ) const
+BDM BDM::operator()( const std::vector<Int>& I, const std::vector<Int>& J ) const
 {
     EL_DEBUG_CSE
     BDM ASub( this->Grid(), this->BlockHeight(), this->BlockWidth() );

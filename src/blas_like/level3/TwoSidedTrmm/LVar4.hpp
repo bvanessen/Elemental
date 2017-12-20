@@ -12,8 +12,22 @@
 #ifndef EL_TWOSIDEDTRMM_LVAR4_HPP
 #define EL_TWOSIDEDTRMM_LVAR4_HPP
 
-namespace El {
-namespace twotrmm {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/MC_STAR.hpp"
+#include "El/core/DistMatrix/Element/MR_STAR.hpp"
+#include "El/core/DistMatrix/Element/STAR_MC.hpp"
+#include "El/core/DistMatrix/Element/STAR_MR.hpp"
+#include "El/core/DistMatrix/Element/STAR_VR.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/DistMatrix/Element/VC_STAR.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
+namespace twotrmm
+{
 
 // The only reason a field is required is for the existence of 1/2, which is
 // an artifact of the algorithm...
