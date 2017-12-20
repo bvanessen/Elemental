@@ -40,7 +40,7 @@ struct NodeInfo
     DistNodeInfo* duplicate=nullptr;
 
     // Unique pointers to any children of this node.
-    vector<unique_ptr<NodeInfo>> children;
+    vector<std::unique_ptr<NodeInfo>> children;
 
     // Known after analysis
     // --------------------
@@ -75,11 +75,11 @@ struct DistNodeInfo
     // A unique pointer to the sequential equivalent node (should one exist).
     // Such a pointer should exist when this node is distributed over a single
     // process.
-    unique_ptr<NodeInfo> duplicate;
+    std::unique_ptr<NodeInfo> duplicate;
 
     // A unique pointer to the distributed child shared by this process
     // (should one exist).
-    unique_ptr<DistNodeInfo> child;
+    std::unique_ptr<DistNodeInfo> child;
 
     // Known after analysis
     // --------------------
@@ -103,7 +103,7 @@ struct DistNodeInfo
     ~DistNodeInfo();
 
     void SetRootGrid( const El::Grid& grid );
-    void AssignGrid( unique_ptr<El::Grid>& grid );
+    void AssignGrid( std::unique_ptr<El::Grid>& grid );
     const El::Grid& Grid() const;
 
     void GetChildGridDims
@@ -117,7 +117,7 @@ private:
     // If we are not the root node, the following will point to a constructed
     // grid.
     // TODO(poulson): Accept a function for determining the grid dimensions.
-    unique_ptr<El::Grid> grid_;
+    std::unique_ptr<El::Grid> grid_;
 };
 
 } // namespace ldl

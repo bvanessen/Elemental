@@ -66,7 +66,7 @@ void DistNodeInfo::SetRootGrid( const El::Grid& grid )
     rootGrid_ = &grid;
 }
 
-void DistNodeInfo::AssignGrid( unique_ptr<El::Grid>& grid )
+void DistNodeInfo::AssignGrid( std::unique_ptr<El::Grid>& grid )
 {
     EL_DEBUG_CSE
     grid_ = std::move(grid);

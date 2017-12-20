@@ -95,7 +95,7 @@ void MakeExtendedKahan
     // Start by setting A to the identity, and then modify the necessary 
     // l x l blocks of its 3 x 3 partitioning.
     MakeIdentity( A );
-    unique_ptr<ElementalMatrix<F>> ABlock( A.Construct(A.Grid(),A.Root()) );
+    std::unique_ptr<ElementalMatrix<F>> ABlock( A.Construct(A.Grid(),A.Root()) );
     View( *ABlock, A, IR(2*l,3*l), IR(2*l,3*l) );
     *ABlock *= mu;
     View( *ABlock, A, IR(0,l), IR(l,2*l) );

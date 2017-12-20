@@ -145,7 +145,7 @@ void RiffleDecay( ElementalMatrix<F>& A, Int n )
 {
     EL_DEBUG_CSE
     Riffle( A, n );
-    unique_ptr<ElementalMatrix<F>> PInf( A.Construct(A.Grid(),A.Root()) );
+    std::unique_ptr<ElementalMatrix<F>> PInf( A.Construct(A.Grid(),A.Root()) );
     PInf->AlignWith( A.DistData() );
     RiffleStationary( *PInf, n );
     A -= *PInf;

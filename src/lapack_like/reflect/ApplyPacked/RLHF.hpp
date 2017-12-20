@@ -184,7 +184,7 @@ RLHFUnblocked
           ("householderScalars must be the same length as H's offset diag");
     )
     const Grid& g = H.Grid();
-    auto hPan = unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
+    auto hPan = std::unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
     DistMatrix<F,Dist::STAR,Dist::MR> hPan_STAR_MR(g);
     DistMatrix<F,Dist::MC,Dist::STAR> z_MC_STAR(g);
 
@@ -247,7 +247,7 @@ RLHFBlocked
           ("householderScalars must be the same length as H's offset diag");
     )
     const Grid& g = H.Grid();
-    auto HPan = unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
+    auto HPan = std::unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
     DistMatrix<F> HPanConj(g);
     DistMatrix<F,Dist::STAR,Dist::VR  > HPan_STAR_VR(g);
     DistMatrix<F,Dist::STAR,Dist::MR  > HPan_STAR_MR(g);

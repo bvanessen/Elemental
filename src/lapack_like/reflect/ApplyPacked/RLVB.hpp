@@ -185,7 +185,7 @@ RLVBUnblocked
           ("householderScalars must be the same length as H's offset diag");
     )
     const Grid& g = H.Grid();
-    auto hPan = unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
+    auto hPan = std::unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
     DistMatrix<F,Dist::MR,Dist::STAR> hPan_MR_STAR(g);
     DistMatrix<F,Dist::MC,Dist::STAR> z_MC_STAR(g);
 
@@ -245,7 +245,7 @@ RLVBBlocked
           ("householderScalars must be the same length as H's offset diag");
     )
     const Grid& g = H.Grid();
-    auto HPan = unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
+    auto HPan = std::unique_ptr<AbstractDistMatrix<F>>( H.Construct(g,H.Root()) );
     DistMatrix<F> HPanCopy(g);
     DistMatrix<F,Dist::VC,  Dist::STAR> HPan_VC_STAR(g);
     DistMatrix<F,Dist::MR,  Dist::STAR> HPan_MR_STAR(g);

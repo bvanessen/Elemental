@@ -284,7 +284,7 @@ NestedDissectionRecursion
         bool childIsOnLeft;
         DistMap map(grid);
         info.child.reset( new DistNodeInfo(&info) );
-        unique_ptr<Grid> childGrid;
+        std::unique_ptr<Grid> childGrid;
         const Int sepSize =
           Bisect( graph, childGrid, child, map, childIsOnLeft, ctrl );
         info.child->AssignGrid( childGrid );

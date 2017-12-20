@@ -203,7 +203,7 @@ NaturalNestedDissectionRecursion
         bool childIsOnLeft;
         DistMap map;
         info.child.reset( new DistNodeInfo(&info) );
-        unique_ptr<Grid> childGrid;
+        std::unique_ptr<Grid> childGrid;
         const Int sepSize =
             NaturalBisect
             ( nx, ny, nz, graph, nxChild, nyChild, nzChild,

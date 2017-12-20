@@ -36,7 +36,7 @@ struct Separator
     DistSeparator* duplicate=nullptr;
 
     // Unique pointers to the childen (should they exist).
-    vector<unique_ptr<Separator>> children;
+    vector<std::unique_ptr<Separator>> children;
 
     Separator( Separator* parentNode=nullptr );
     Separator( DistSeparator* dupNode );
@@ -57,10 +57,10 @@ struct DistSeparator
 
     // A unique pointer to the distributed child node shared by this process
     // (should it exist).
-    unique_ptr<DistSeparator> child;
+    std::unique_ptr<DistSeparator> child;
 
     // A unique pointer to the sequential duplicate node (should it exist).
-    unique_ptr<Separator> duplicate;
+    std::unique_ptr<Separator> duplicate;
 
     DistSeparator( DistSeparator* parentNode=nullptr );
     ~DistSeparator();

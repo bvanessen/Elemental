@@ -37,7 +37,7 @@ void GEPPGrowth( ElementalMatrix<T>& A, Int n )
         return;
 
     // Set the last column to all ones
-    unique_ptr<ElementalMatrix<T>> aLast( A.Construct(A.Grid(),A.Root()) );
+    std::unique_ptr<ElementalMatrix<T>> aLast( A.Construct(A.Grid(),A.Root()) );
     View( *aLast, A, IR(0,n), IR(n-1,n) );
     Fill( *aLast, T(1) );
 

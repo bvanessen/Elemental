@@ -39,9 +39,9 @@ void ReshapeIntoGrid
     X.SetGrid( x.Grid() );
     X.Resize( imagSize, realSize );
 
-    auto xSub = unique_ptr<AbstractDistMatrix<T>>
+    auto xSub = std::unique_ptr<AbstractDistMatrix<T>>
     ( x.Construct(x.Grid(),x.Root()) );
-    auto XSub = unique_ptr<AbstractDistMatrix<T>>
+    auto XSub = std::unique_ptr<AbstractDistMatrix<T>>
     ( X.Construct(X.Grid(),X.Root()) );
 
     for( Int j=0; j<realSize; ++j )

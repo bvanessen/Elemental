@@ -73,7 +73,7 @@ struct MatrixNode
     DistMultiVecNode<T>* duplicateMV=nullptr;
 
     // Unique pointers to the children.
-    vector<unique_ptr<MatrixNode<T>>> children;
+    vector<std::unique_ptr<MatrixNode<T>>> children;
 
     MatrixNode( MatrixNode<T>* parentNode=nullptr );
 
@@ -145,11 +145,11 @@ struct DistMultiVecNode
     DistMultiVecNode<T>* parent=nullptr;
 
     // A unique pointer to the equivalent sequential node (should it exist).
-    unique_ptr<MatrixNode<T>> duplicate;
+    std::unique_ptr<MatrixNode<T>> duplicate;
 
     // A unique pointer to the child node shared by this process
     // (should it exist).
-    unique_ptr<DistMultiVecNode<T>> child;
+    std::unique_ptr<DistMultiVecNode<T>> child;
 
     mutable MultiVecCommMeta commMeta;
 
@@ -213,11 +213,11 @@ struct DistMatrixNode
     DistMatrixNode<T>* parent=nullptr;
 
     // A unique pointer to the equivalent sequential node (should it exist).
-    unique_ptr<MatrixNode<T>> duplicate;
+    std::unique_ptr<MatrixNode<T>> duplicate;
 
     // A unique pointer to the child node shared by this process
     // (should it exist).
-    unique_ptr<DistMatrixNode<T>> child;
+    std::unique_ptr<DistMatrixNode<T>> child;
 
     mutable MatrixCommMeta commMeta;
 
@@ -275,7 +275,7 @@ struct Front
     DistFront<Field>* duplicate=nullptr;
 
     // Unique pointers to the child fronts (should they exist).
-    vector<unique_ptr<Front<Field>>> children;
+    vector<std::unique_ptr<Front<Field>>> children;
 
     Front( Front<Field>* parentNode=nullptr );
 
@@ -360,11 +360,11 @@ struct DistFront
     DistFront<Field>* parent=nullptr;
 
     // A unique pointer to the sequential duplicate front (should it exist).
-    unique_ptr<Front<Field>> duplicate;
+    std::unique_ptr<Front<Field>> duplicate;
 
     // A unique pointer to the distributed child front shared by this process
     // (should it exist).
-    unique_ptr<DistFront<Field>> child;
+    std::unique_ptr<DistFront<Field>> child;
 
     DistFront( DistFront<Field>* parentNode=nullptr );
 
@@ -539,9 +539,9 @@ public:
 private:
     bool initialized_=false;
     bool factored_=false;
-    unique_ptr<ldl::Front<Field>> front_;
-    unique_ptr<ldl::NodeInfo> info_;
-    unique_ptr<ldl::Separator> separator_;
+    std::unique_ptr<ldl::Front<Field>> front_;
+    std::unique_ptr<ldl::NodeInfo> info_;
+    std::unique_ptr<ldl::Separator> separator_;
 
     vector<Int> map_, inverseMap_;
 };
@@ -663,9 +663,9 @@ public:
 private:
     bool initialized_=false;
     bool factored_=false;
-    unique_ptr<ldl::DistFront<Field>> front_;
-    unique_ptr<ldl::DistNodeInfo> info_;
-    unique_ptr<ldl::DistSeparator> separator_;
+    std::unique_ptr<ldl::DistFront<Field>> front_;
+    std::unique_ptr<ldl::DistNodeInfo> info_;
+    std::unique_ptr<ldl::DistSeparator> separator_;
 
     DistMap map_, inverseMap_;
 

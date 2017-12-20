@@ -252,7 +252,7 @@ LN
     // Initialize the workspace for shifted columns of H
     Matrix<Field> W(m,nLoc);
     {
-        unique_ptr<AbstractDistMatrix<Field>>
+        std::unique_ptr<AbstractDistMatrix<Field>>
           h0( H.Construct(H.Grid(),H.Root()) );
         LockedView( *h0, H, ALL, IR(0) );
         DistMatrix<Field,Dist::STAR,Dist::STAR> h0_STAR_STAR( *h0 );
@@ -264,7 +264,7 @@ LN
     }
 
     // Simultaneously find the LQ factorization and solve against L
-    unique_ptr<AbstractDistMatrix<Field>> hB( H.Construct(H.Grid(),H.Root()) );
+    std::unique_ptr<AbstractDistMatrix<Field>> hB( H.Construct(H.Grid(),H.Root()) );
     DistMatrix<Field,Dist::STAR,Dist::STAR> hB_STAR_STAR( H.Grid() );
     for( Int k=0; k<m-1; ++k )
     {
@@ -374,7 +374,7 @@ UN
     // Initialize the workspace for shifted columns of H
     Matrix<Field> W(m,nLoc);
     {
-        unique_ptr<AbstractDistMatrix<Field>>
+        std::unique_ptr<AbstractDistMatrix<Field>>
           hLast( H.Construct(H.Grid(),H.Root()) );
         LockedView( *hLast, H, ALL, IR(m-1) );
         DistMatrix<Field,Dist::STAR,Dist::STAR> hLast_STAR_STAR( *hLast );
@@ -386,7 +386,7 @@ UN
     }
 
     // Simultaneously form the RQ factorization and solve against R
-    unique_ptr<AbstractDistMatrix<Field>> hT( H.Construct(H.Grid(),H.Root()) );
+    std::unique_ptr<AbstractDistMatrix<Field>> hT( H.Construct(H.Grid(),H.Root()) );
     DistMatrix<Field,Dist::STAR,Dist::STAR> hT_STAR_STAR( H.Grid() );
     for( Int k=m-1; k>0; --k )
     {
