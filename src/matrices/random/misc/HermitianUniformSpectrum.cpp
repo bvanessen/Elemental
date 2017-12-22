@@ -7,6 +7,7 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include "El/blas_like/level1.hpp"
+#include "El/core/random/decl.hpp"
 #include "El/lapack_like/factor.hpp"
 #include "El/matrices.hpp"
 

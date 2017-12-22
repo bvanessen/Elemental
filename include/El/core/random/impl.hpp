@@ -2,12 +2,15 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_RANDOM_IMPL_HPP
 #define EL_RANDOM_IMPL_HPP
+
+#include "El/core/environment/decl.hpp"
+#include "El/core/random/decl.hpp"
 
 namespace El {
 
@@ -42,7 +45,7 @@ Real LogChoose( Int n, Int k )
 
     // choose(n,k) = (n*(n-1)*...*(n-(k-1)))/(k*(k-1)*...*1)
     //             = (n/k)*(((n-1)/(k-1))*...*((n-(k-1))/1)
-    // Thus, 
+    // Thus,
     //  log(choose(n,k)) = log(n/k) + log((n-1)/(k-1)) + ... + log((n-(k-1))/1).
     //                   = log(n) + log(n-1) + ... log(n-(k-1)) -
     //                     log(k) - log(k-1) - ... log(1)
@@ -66,7 +69,7 @@ Real LogChoose( Int n, Int k )
 //
 // TODO(poulson): A parallel prefix version of this algorithm.
 template<typename Real>
-vector<Real> LogBinomial( Int n )
+std::vector<Real> LogBinomial( Int n )
 {
     EL_DEBUG_CSE
     std::vector<Real> binom(n+1,0), binomTmp(n+1,0);
@@ -84,7 +87,7 @@ vector<Real> LogBinomial( Int n )
 //
 // TODO(poulson): Attempt to reduce this to linear time.
 template<typename Real>
-vector<Real> LogEulerian( Int n )
+std::vector<Real> LogEulerian( Int n )
 {
     EL_DEBUG_CSE
     std::vector<Real> euler(n,0), eulerTmp(n,0);

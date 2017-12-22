@@ -27,4 +27,7 @@
 # define EL_NO_RELEASE_EXCEPT
 #endif
 
+#define EL_CONCAT2(name1,name2) name1 ## name2
+#define EL_CONCAT(name1,name2) EL_CONCAT2(name1,name2)
+
 #endif // EL_MACROS_H_

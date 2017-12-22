@@ -14,12 +14,17 @@
 #include <sstream>
 #include <string>
 
-namespace El {
-namespace read {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+
+namespace El
+{
+namespace read
+{
 
 template<typename T>
 inline void
-Ascii( Matrix<T>& A, string const& filename )
+Ascii( Matrix<T>& A, std::string const& filename )
 {
     EL_DEBUG_CSE
     std::ifstream file( filename.c_str() );
@@ -73,7 +78,7 @@ Ascii( Matrix<T>& A, string const& filename )
 
 template<typename T>
 inline void
-Ascii( AbstractDistMatrix<T>& A, string const& filename )
+Ascii( AbstractDistMatrix<T>& A, std::string const& filename )
 {
     EL_DEBUG_CSE
     std::ifstream file( filename.c_str() );
@@ -83,7 +88,7 @@ Ascii( AbstractDistMatrix<T>& A, string const& filename )
     // Walk through the file once to both count the number of rows and
     // columns and to ensure that the number of columns is consistent
     Int height=0, width=0;
-    string line;
+    std::string line;
     for ( ;; )
     {
         if (!std::getline(file, line))

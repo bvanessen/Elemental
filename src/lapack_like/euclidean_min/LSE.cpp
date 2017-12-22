@@ -63,9 +63,19 @@
 // of this regularized system is then used as a preconditioner for FGMRES(k).
 //
 
-namespace El {
+#include "El/lapack_like/euclidean_min.hpp"
 
-namespace lse {
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/matrices.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
+
+namespace lse
+{
 
 template<typename F>
 void Overwrite

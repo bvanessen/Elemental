@@ -9,7 +9,7 @@
 #ifndef EL_TYPES_HPP
 #define EL_TYPES_HPP
 
-#include "El/core/Element/Complex/decl.hpp"
+#include "El/Types/Complex.hpp"
 
 namespace El
 {

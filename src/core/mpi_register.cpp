@@ -6,7 +6,11 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-using std::function;
+
+#include <functional>
+#include "El/core/environment/decl.hpp"
+#include "El/core/environment/impl.hpp"
+#include "El/core/imports/mpi.hpp"
 
 namespace El {
 
@@ -97,8 +101,8 @@ bool Types<T>::createdUserCommOp = false;
 template<typename T>
 Op Types<T>::userCommOp = MPI_SUM;
 
-template<typename T> function<T(const T&,const T&)> Types<T>::userFunc;
-template<typename T> function<T(const T&,const T&)> Types<T>::userCommFunc;
+template<typename T> std::function<T(const T&,const T&)> Types<T>::userFunc;
+template<typename T> std::function<T(const T&,const T&)> Types<T>::userCommFunc;
 
 template struct Types<byte>;
 template struct Types<short>;

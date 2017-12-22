@@ -20,6 +20,7 @@
 #include "El/macros.h"
 #include "El/Traits.hpp"
 #include "El/Typedefs.hpp"
+#include "El/Types/Complex.hpp"
 #include "El/Types/ValueInt.hpp"
 
 namespace El {

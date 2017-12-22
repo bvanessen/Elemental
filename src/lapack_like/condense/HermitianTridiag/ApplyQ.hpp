@@ -26,11 +26,11 @@ void ApplyQ
     const bool onLeft = (side==LeftOrRight::LEFT);
     const ForwardOrBackward direction =
         ( (normal==onLeft) ^ (uplo==UpperOrLower::UPPER) ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
-    const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
+    const Conjugation conjugation = ( normal ? Conjugation::CONJUGATED : Conjugation::UNCONJUGATED );
     const Int offset = ( uplo==UpperOrLower::UPPER ? 1 : -1 );
     // TODO: Check for error in LeftOrRight::RIGHT UpperOrLower::UPPER Orientation::ADJOINT
     ApplyPackedReflectors
-    ( side, uplo, VERTICAL, direction, conjugation, offset,
+    ( side, uplo, VerticalOrHorizontal::VERTICAL, direction, conjugation, offset,
       A, householderScalars, B );
 }
 
@@ -48,10 +48,10 @@ void ApplyQ
     const bool onLeft = (side==LeftOrRight::LEFT);
     const ForwardOrBackward direction =
         ( (normal==onLeft) ^ (uplo==UpperOrLower::UPPER) ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
-    const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
+    const Conjugation conjugation = ( normal ? Conjugation::CONJUGATED : Conjugation::UNCONJUGATED );
     const Int offset = ( uplo==UpperOrLower::UPPER ? 1 : -1 );
     ApplyPackedReflectors
-    ( side, uplo, VERTICAL, direction, conjugation, offset,
+    ( side, uplo, VerticalOrHorizontal::VERTICAL, direction, conjugation, offset,
       A, householderScalars, B );
 }
 

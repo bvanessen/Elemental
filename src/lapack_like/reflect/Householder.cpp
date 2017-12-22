@@ -7,10 +7,13 @@
 
    This file is loosely based upon the LAPACK routines dlarfg.f and zlarfg.f.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
+
+#include "El/blas_like/level1.hpp"
+#include "El/core/DistMatrix.hpp"
 
 #include "./Householder/Col.hpp"
 #include "./Householder/Row.hpp"
@@ -22,14 +25,14 @@ namespace El {
 //
 //   H = I - tau [1; v] [1; v]',
 //
-// but adjoint(H) [chi; x] = [beta; 0]. 
+// but adjoint(H) [chi; x] = [beta; 0].
 //
 // Elemental simply uses H [chi; x] = [beta; 0].
 //
 // On exit, chi is overwritten with beta, and x is overwritten with v.
 //
-// Another major difference from LAPACK is in the treatment of the special case 
-// of x=0, where LAPACK would put H := I, which is not a valid Householder 
+// Another major difference from LAPACK is in the treatment of the special case
+// of x=0, where LAPACK would put H := I, which is not a valid Householder
 // reflector. We instead use the valid Householder reflector:
 //    H [chi; 0] = [-chi; 0],
 // which is accomplished by setting tau=2, and v=0.

@@ -14,12 +14,12 @@ namespace write {
 
 template<typename T>
 inline void
-Binary( const Matrix<T>& A, string basename="matrix" )
+Binary( const Matrix<T>& A, std::string basename="matrix" )
 {
     EL_DEBUG_CSE
 
-    string filename = basename + "." + FileExtension(FileFormat::BINARY);
-    ofstream file( filename.c_str(), std::ios::binary );
+    std::string filename = basename + "." + FileExtension(FileFormat::BINARY);
+    std::ofstream file( filename.c_str(), std::ios::binary );
     if( !file.is_open() )
         RuntimeError("Could not open ",filename);
 

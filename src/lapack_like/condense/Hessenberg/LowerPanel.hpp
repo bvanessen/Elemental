@@ -9,8 +9,13 @@
 #ifndef EL_HESSENBERG_LOWER_PANEL_HPP
 #define EL_HESSENBERG_LOWER_PANEL_HPP
 
-namespace El {
-namespace hessenberg {
+#include "El/core/Matrix.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
+namespace hessenberg
+{
 
 // NOTE: This is an extension into complex arithmetic
 //       (and conjugate-transposition) of the sequential algorithm proposed in:

@@ -1,166 +1,10 @@
-/*
-   Copyright (c) 2009-2016, Jack Poulson
-   All rights reserved.
+#ifndef EL_TYPES_COMPLEX_IMPL_HPP_
+#define EL_TYPES_COMPLEX_IMPL_HPP_
 
-   This file is part of Elemental and is under the BSD 2-Clause License,
-   which can be found in the LICENSE file in the root directory, or at
-   http://opensource.org/licenses/BSD-2-Clause
-*/
-#ifndef EL_ELEMENT_COMPLEX_IMPL_HPP
-#define EL_ELEMENT_COMPLEX_IMPL_HPP
-
-#include "El/core/Element/Complex/decl.hpp"
-#include "El/core/environment/decl.hpp"
-#include "El/core/limits.hpp"
+#include "El/Types/Complex_decl.hpp"
 
 namespace El
 {
-
-// c := a / b using the textbook algorithm
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-void NaiveDiv
-( const Real& aReal, const Real& aImag,
-  const Real& bReal, const Real& bImag,
-        Real& cReal,       Real& cImag )
-{
-    const Real den = bReal*bReal + bImag*bImag;
-    cReal = (aReal*bReal + aImag*bImag) / den;
-    cImag = (aImag*bReal - aReal*bImag) / den;
-}
-
-// c := a / b using Smith's algorithm
-// See Fig. 3 from Baudin and Smith
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-void SmithDiv
-( const Real& aReal, const Real& aImag,
-  const Real& bReal, const Real& bImag,
-        Real& cReal,       Real& cImag )
-{
-    if( Abs(bImag) <= Abs(bReal) )
-    {
-        const Real r = bImag/bReal;
-        const Real den = bReal + bImag*r;
-        cReal = (aReal + aImag*r) / den;
-        cImag = (aImag - aReal*r) / den;
-    }
-    else
-    {
-        const Real r = bReal/bImag;
-        const Real den = bReal*r + bImag;
-        cReal = (aReal*r + aImag) / den;
-        cImag = (aImag*r - aReal) / den;
-    }
-}
-
-namespace safe_div {
-
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-void InternalRealPart
-( const Real& aReal, const Real& aImag,
-  const Real& bReal, const Real& bImag,
-  const Real& r,
-  const Real& t,
-        Real& result )
-{
-    const Real zero = Real(0);
-    if( r != zero )
-    {
-        Real br = aImag*r;
-        if( br != zero )
-        {
-            result = (aReal + br)*t;
-        }
-        else
-        {
-            result = aReal*t + (aImag*t)*r;
-        }
-    }
-    else
-    {
-        result = (aReal + bImag*(aImag/bReal))*t;
-    }
-}
-
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-void Subinternal
-( const Real& aReal, const Real& aImag,
-  const Real& bReal, const Real& bImag,
-        Real& cReal,       Real& cImag )
-{
-    Real r = bImag/bReal;
-    Real t = 1/(bReal + bImag*r);
-    safe_div::InternalRealPart(aReal,aImag,bReal,bImag,r,t,cReal);
-    safe_div::InternalRealPart(aImag,-aReal,bReal,bImag,r,t,cImag);
-}
-
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-void Internal
-( const Real& aReal, const Real& aImag,
-  const Real& bReal, const Real& bImag,
-        Real& cReal,       Real& cImag )
-{
-    if( Abs(bImag) <= Abs(bReal) )
-    {
-        safe_div::Subinternal(aReal,aImag,bReal,bImag,cReal,cImag);
-    }
-    else
-    {
-        safe_div::Subinternal(aImag,aReal,bImag,bReal,cReal,cImag);
-        cImag = -cImag;
-    }
-}
-
-} // namespace safe_div
-
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-void SafeDiv
-( const Real& aReal, const Real& aImag,
-  const Real& bReal, const Real& bImag,
-        Real& cReal,       Real& cImag )
-{
-    const Real aMax = Max( Abs(aReal), Abs(aImag) );
-    const Real bMax = Max( Abs(bReal), Abs(bImag) );
-    const Real beta = 2;
-    const Real overflow = limits::Max<Real>();
-    const Real underflow = limits::SafeMin<Real>();
-    const Real eps = limits::Epsilon<Real>();
-    const Real betaEpsSq = beta / (eps*eps);
-
-    Real sigma=1;
-    Real aRealScaled=aReal, aImagScaled=aImag,
-         bRealScaled=bReal, bImagScaled=bImag;
-    if( aMax >= overflow/2 )
-    {
-        aRealScaled /= 2;
-        aImagScaled /= 2;
-        sigma *= 2;
-    }
-    if( bMax >= overflow/2 )
-    {
-        bRealScaled /= 2;
-        bImagScaled /= 2;
-        sigma /= 2;
-    }
-    if( aMax <= underflow*beta/eps )
-    {
-        aRealScaled *= betaEpsSq;
-        aImagScaled *= betaEpsSq;
-        sigma /= betaEpsSq;
-    }
-    if( bMax <= underflow*beta/eps )
-    {
-        bRealScaled *= betaEpsSq;
-        bImagScaled *= betaEpsSq;
-        sigma *= betaEpsSq;
-    }
-
-    safe_div::Internal
-    ( aRealScaled, aImagScaled,
-      bRealScaled, bImagScaled,
-      cReal,       cImag );
-    cReal *= sigma;
-    cImag *= sigma;
-}
 
 // Complex<float>
 // ==============
@@ -234,9 +78,12 @@ Complex<Quad>::Complex()
 Complex<Quad>::Complex( const std::complex<Quad>& a )
 : std::complex<Quad>(a)
 { }
-#endif
+#endif // HYDROGEN_HAVE_QUADMATH
 
 #ifdef HYDROGEN_HAVE_QD
+// Complex<DoubleDouble>
+// =====================
+
 // TODO: Avoid redundancy between DoubleDouble and QuadDouble impl's
 Complex<DoubleDouble>::Complex() { }
 
@@ -410,6 +257,9 @@ Complex<DoubleDouble>::operator/=( const Complex<DoubleDouble>& b )
     return *this;
 }
 
+// Complex<QuadDouble>
+// ===================
+
 Complex<QuadDouble>::Complex() { }
 
 template<typename S>
@@ -581,7 +431,8 @@ Complex<QuadDouble>::operator/=( const Complex<QuadDouble>& b )
       realPart, imagPart );
     return *this;
 }
-#endif
+#endif //HYDROGEN_HAVE_QD
+
 
 #ifdef HYDROGEN_HAVE_MPC
 // Complex<BigFloat>
@@ -1490,6 +1341,8 @@ byte* Complex<BigFloat>::Deserialize( byte* buf )
 { return const_cast<byte*>(Deserialize(static_cast<const byte*>(buf))); }
 #endif // HYDROGEN_HAVE_MPC
 
+// Operators == and !=
+
 #ifdef HYDROGEN_HAVE_QD
 bool operator==
 ( const Complex<DoubleDouble>& a, const Complex<DoubleDouble>& b )
@@ -1562,7 +1415,8 @@ bool operator!=
 {
     return !(a == b);
 }
-#endif
+#endif // HYDROGEN_HAVE_QD
+
 #ifdef HYDROGEN_HAVE_MPC
 bool operator==
 ( const Complex<BigFloat>& a, const Complex<BigFloat>& b )
@@ -1604,7 +1458,9 @@ bool operator!=
 {
     return !(a == b);
 }
-#endif
+#endif // HYDROGEN_HAVE_MPC
+
+// Unary operator -
 
 template<typename Real>
 Complex<Real>
@@ -1613,6 +1469,7 @@ operator-( const Complex<Real>& a )
     auto& aStd = static_cast<const std::complex<Real>&>(a);
     return -aStd;
 }
+
 #ifdef HYDROGEN_HAVE_QD
 Complex<DoubleDouble> operator-( const Complex<DoubleDouble>& a )
 {
@@ -1628,7 +1485,8 @@ Complex<QuadDouble> operator-( const Complex<QuadDouble>& a )
     aNeg.imagPart = -a.imagPart;
     return aNeg;
 }
-#endif
+#endif // HYDROGEN_HAVE_QD
+
 #ifdef HYDROGEN_HAVE_MPC
 Complex<BigFloat> operator-( const Complex<BigFloat>& a )
 {
@@ -1636,7 +1494,9 @@ Complex<BigFloat> operator-( const Complex<BigFloat>& a )
     mpc_neg( aNeg.Pointer(), a.LockedPointer(), mpc::RoundingMode() );
     return aNeg;
 }
-#endif
+#endif // HYDROGEN_HAVE_MPC
+
+// Binary operators +, -, *, and / for complex args
 
 template<typename Real>
 Complex<Real>
@@ -1734,7 +1594,8 @@ Complex<QuadDouble> operator/
       c.realPart, c.imagPart );
     return c;
 }
-#endif
+#endif // HYDROGEN_HAVE_QD
+
 #ifdef HYDROGEN_HAVE_MPC
 Complex<BigFloat> operator+
 ( const Complex<BigFloat>& a, const Complex<BigFloat>& b )
@@ -1768,8 +1629,9 @@ Complex<BigFloat> operator/
     ( c.Pointer(), a.LockedPointer(), b.LockedPointer(), mpc::RoundingMode() );
     return c;
 }
-#endif
+#endif // HYDROGEN_HAVE_MPC
 
+// Binary operators +, -, *, and / for 1 complex and 1 real argument
 template<typename Real>
 Complex<Real>
 operator+( const Complex<Real>& a, const Real& b )
@@ -1858,7 +1720,8 @@ Complex<QuadDouble> operator/
     c.imagPart /= b;
     return c;
 }
-#endif
+#endif // HYDROGEN_HAVE_QD
+
 #ifdef HYDROGEN_HAVE_MPC
 Complex<BigFloat> operator+
 ( const Complex<BigFloat>& a, const BigFloat& b )
@@ -1892,7 +1755,9 @@ Complex<BigFloat> operator/
     ( c.Pointer(), a.LockedPointer(), b.LockedPointer(), mpc::RoundingMode() );
     return c;
 }
-#endif
+#endif // HYDROGEN_HAVE_MPC
+
+// Binary operators +, -, *, and / for 1 real and 1 complex argument
 
 template<typename Real>
 Complex<Real>
@@ -1922,6 +1787,7 @@ operator/( const Real& a, const Complex<Real>& b )
     auto& bStd = static_cast<const std::complex<Real>&>(b);
     return a / bStd;
 }
+
 #ifdef HYDROGEN_HAVE_QD
 Complex<DoubleDouble> operator+
 ( const DoubleDouble& a, const Complex<DoubleDouble>& b )
@@ -1988,7 +1854,8 @@ Complex<QuadDouble> operator/
       c.realPart, c.imagPart );
     return c;
 }
-#endif
+#endif // HYDROGEN_HAVE_QD
+
 #ifdef HYDROGEN_HAVE_MPC
 Complex<BigFloat> operator+
 ( const BigFloat& a, const Complex<BigFloat>& b )
@@ -2022,89 +1889,7 @@ Complex<BigFloat> operator/
     ( c.Pointer(), a.LockedPointer(), b.LockedPointer(), mpc::RoundingMode() );
     return c;
 }
-#endif
+#endif // HYDROGEN_HAVE_MPC
 
-template<typename Real,typename>
-Real NaiveDiv( const Real& a, const Real& b )
-{ return a / b; }
-template<typename Real,typename>
-Complex<Real> NaiveDiv
-( const Real& a,
-  const Complex<Real>& b )
-{
-    Real cReal, cImag;
-    NaiveDiv( a, Real(0), b.real(), b.imag(), cReal, cImag );
-    return Complex<Real>(cReal,cImag);
-}
-template<typename Real,typename>
-Complex<Real> NaiveDiv
-( const Complex<Real>& a,
-  const Real& b )
-{ return a / b; }
-template<typename Real,typename>
-Complex<Real> NaiveDiv
-( const Complex<Real>& a,
-  const Complex<Real>& b )
-{
-    Real cReal, cImag;
-    NaiveDiv( a.real(), a.imag(), b.real(), b.imag(), cReal, cImag );
-    return Complex<Real>(cReal,cImag);
-}
-
-template<typename Real,typename>
-Real SmithDiv( const Real& a, const Real& b )
-{ return a / b; }
-template<typename Real,typename>
-Complex<Real> SmithDiv
-( const Real& a,
-  const Complex<Real>& b )
-{
-    Real cReal, cImag;
-    SmithDiv( a, Real(0), b.real(), b.imag(), cReal, cImag );
-    return Complex<Real>(cReal,cImag);
-}
-template<typename Real,typename>
-Complex<Real> SmithDiv
-( const Complex<Real>& a,
-  const Real& b )
-{ return a / b; }
-template<typename Real,typename>
-Complex<Real> SmithDiv
-( const Complex<Real>& a,
-  const Complex<Real>& b )
-{
-    Real cReal, cImag;
-    SmithDiv( a.real(), a.imag(), b.real(), b.imag(), cReal, cImag );
-    return Complex<Real>(cReal,cImag);
-}
-
-template<typename Real,typename>
-Real SafeDiv( const Real& a, const Real& b )
-{ return a / b; }
-template<typename Real,typename>
-Complex<Real> SafeDiv
-( const Real& a,
-  const Complex<Real>& b )
-{
-    Real cReal, cImag;
-    SafeDiv( a, Real(0), b.real(), b.imag(), cReal, cImag );
-    return Complex<Real>(cReal,cImag);
-}
-template<typename Real,typename>
-Complex<Real> SafeDiv
-( const Complex<Real>& a,
-  const Real& b )
-{ return a / b; }
-template<typename Real,typename>
-Complex<Real> SafeDiv
-( const Complex<Real>& a,
-  const Complex<Real>& b )
-{
-    Real cReal, cImag;
-    SafeDiv( a.real(), a.imag(), b.real(), b.imag(), cReal, cImag );
-    return Complex<Real>(cReal,cImag);
-}
-
-} // namespace El
-
-#endif // ifndef EL_ELEMENT_COMPLEX_IMPL_HPP
+}// namespace El
+#endif// EL_TYPES_COMPLEX_IMPL_HPP_

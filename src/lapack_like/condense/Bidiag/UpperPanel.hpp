@@ -9,8 +9,14 @@
 #ifndef EL_BIDIAG_UPPER_PANEL_HPP
 #define EL_BIDIAG_UPPER_PANEL_HPP
 
-namespace El {
-namespace bidiag {
+#include "El/blas_like/level2.hpp"
+#include "El/core/FlamePart/Partition.hpp"
+#include "El/core/Matrix/decl.hpp"
+
+namespace El
+{
+namespace bidiag
+{
 
 template<typename F>
 void

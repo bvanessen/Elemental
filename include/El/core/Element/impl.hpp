@@ -9,9 +9,13 @@
 #ifndef EL_ELEMENT_IMPL_HPP
 #define EL_ELEMENT_IMPL_HPP
 
-#include "El/core/Element/Complex/impl.hpp"
+#include <sstream>
+#include <string>
 
-namespace El {
+#include "El/core/environment/decl.hpp"
+
+namespace El
+{
 
 // Basic element manipulation and I/O
 // ==================================
@@ -20,17 +24,17 @@ namespace El {
 // ---------------
 
 template<typename Real>
-ostream& operator<<( ostream& os, const Complex<Real>& alpha )
+std::ostream& operator<<( std::ostream& os, const Complex<Real>& alpha )
 {
     os << alpha.real() << "+" << alpha.imag() << "i";
     return os;
 }
 
 template<typename Real>
-istream& operator>>( istream& is, Complex<Real>& alpha )
+std::istream& operator>>( std::istream& is, Complex<Real>& alpha )
 {
     Real realPart, imagPart;
-    string token;
+    std::string token;
     std::stringstream tokenStream;
 
     // Grab the full token of the form "3+4i"
@@ -370,7 +374,7 @@ TBase Pow( const TBase& alpha, const TExp& beta )
     const TBase alpha_to_even =
       ( halfEven == static_cast<TExp>(0) ? 1 : Pow( alpha*alpha, halfEven ) );
     if( beta == 2*halfEven )
-        return alpha_to_even; 
+        return alpha_to_even;
     else
         return alpha_to_even*alpha;
 }

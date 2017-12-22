@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "El/blas_like/level1.hpp"
-#include "El/core/Element/Complex/decl.hpp"
+#include "El/Types/Complex.hpp"
 
 namespace El
 {

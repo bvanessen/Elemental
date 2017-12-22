@@ -2,19 +2,27 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_READ_ASCIIMATLAB_HPP
 #define EL_READ_ASCIIMATLAB_HPP
 
-namespace El {
-namespace read {
+#include <fstream>
+#include <string>
+
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+
+namespace El
+{
+namespace read
+{
 
 template<typename T>
 inline void
-AsciiMatlab( Matrix<T>& A, const string filename )
+AsciiMatlab( Matrix<T>& A, const std::string filename )
 {
     EL_DEBUG_CSE
     std::ifstream file( filename.c_str() );
@@ -25,7 +33,7 @@ AsciiMatlab( Matrix<T>& A, const string filename )
 
 template<typename T>
 inline void
-AsciiMatlab( AbstractDistMatrix<T>& A, const string filename )
+AsciiMatlab( AbstractDistMatrix<T>& A, const std::string filename )
 {
     EL_DEBUG_CSE
     std::ifstream file( filename.c_str() );

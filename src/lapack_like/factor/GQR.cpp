@@ -7,7 +7,14 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/lapack_like/factor.hpp"
+
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
 
 template<typename F>
 void GQR

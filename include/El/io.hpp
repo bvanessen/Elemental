@@ -12,6 +12,7 @@
 #include <fstream>
 #include <iostream>
 
+#include "El/core/DistMatrix/Abstract.hpp"
 #include "El/core/Matrix/decl.hpp"
 #include "El/Types/Enums.hpp"
 

@@ -7,6 +7,13 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include <string>
+
+#include "El/core/DistMatrix/Element/CIRC_CIRC.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/io.hpp"
+#include "El/Types/Enums.hpp"
+
 #include "./Write/Ascii.hpp"
 #include "./Write/AsciiMatlab.hpp"
 #include "./Write/Binary.hpp"
@@ -19,7 +26,7 @@ namespace El {
 template<typename T>
 void Write
 ( const Matrix<T>& A,
-  string basename, FileFormat format, string title )
+  std::string basename, FileFormat format, std::string title )
 {
     EL_DEBUG_CSE
     switch( format )
@@ -45,7 +52,7 @@ void Write
 template<typename T>
 void Write
 ( const AbstractDistMatrix<T>& A,
-  string basename, FileFormat format, string title )
+  std::string basename, FileFormat format, std::string title )
 {
     EL_DEBUG_CSE
     if( A.ColStride() == 1 && A.RowStride() == 1 )
@@ -64,10 +71,10 @@ void Write
 #define PROTO(T) \
   template void Write \
   ( const Matrix<T>& A, \
-    string basename, FileFormat format, string title ); \
+    std::string basename, FileFormat format, std::string title ); \
   template void Write \
   ( const AbstractDistMatrix<T>& A, \
-    string basename, FileFormat format, string title );
+    std::string basename, FileFormat format, std::string title );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

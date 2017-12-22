@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
@@ -81,7 +81,7 @@ void DisplayWidget<T>::DisplayReal
     // Paint the matrix
     QPainter painter( &pixmap_ );
     painter.initFrom( this );
-    for( Int jPix=0; jPix<nPix; ++jPix ) 
+    for( Int jPix=0; jPix<nPix; ++jPix )
     {
         const Int j = nRatio*jPix;
         for( Int iPix=0; iPix<mPix; ++iPix )
@@ -147,7 +147,7 @@ void DisplayWidget<T>::DisplayImag
     // Paint the matrix
     QPainter painter( &pixmap_ );
     painter.initFrom( this );
-    for( Int jPix=0; jPix<nPix; ++jPix ) 
+    for( Int jPix=0; jPix<nPix; ++jPix )
     {
         const Int j = nRatio*jPix;
         for( Int iPix=0; iPix<mPix; ++iPix )
@@ -168,10 +168,10 @@ void DisplayWidget<T>::DisplayImag
 }
 
 template<typename T>
-void DisplayWidget<T>::SavePng( string basename ) const
+void DisplayWidget<T>::SavePng( std::string basename ) const
 {
     EL_DEBUG_CSE
-    string filename = basename + ".png";
+    std::string filename = basename + ".png";
     QFile file( filename.c_str() );
     file.open( QIODevice::WriteOnly );
     pixmap_.save( &file, "PNG" );

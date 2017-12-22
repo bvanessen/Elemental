@@ -7,7 +7,9 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/core/environment/decl.hpp"
 #include "El/core/imports/mpi.hpp"
+#include "El/core/imports/pmrrr.hpp"
 
 extern "C" {
 
@@ -33,8 +35,10 @@ int pmrrr
 
 } // extern "C"
 
-namespace El {
-namespace herm_tridiag_eig {
+namespace El
+{
+namespace herm_tridiag_eig
+{
 
 // Return upper bounds on the number of (local) eigenvalues in the given range,
 // (lowerBound,upperBound]

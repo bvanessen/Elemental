@@ -19,7 +19,11 @@
 #ifndef EL_CORE_DISTMAP_DECL_HPP
 #define EL_CORE_DISTMAP_DECL_HPP
 
-namespace El {
+#include "El/core/Grid.hpp"
+#include "El/Typedefs.hpp"
+
+namespace El
+{
 
 // Use a simple 1d distribution where each process owns a fixed number of
 // indices,

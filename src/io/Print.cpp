@@ -22,7 +22,7 @@ void ConfigurePrecision( ostream& os )
 // =====
 
 template<typename T>
-void Print( const Matrix<T>& A, string title, ostream& os )
+void Print( const Matrix<T>& A, std::string title, ostream& os )
 {
     EL_DEBUG_CSE
     if( title != "" )
@@ -43,7 +43,7 @@ void Print( const Matrix<T>& A, string title, ostream& os )
 
 template<typename T>
 void Print
-( const AbstractDistMatrix<T>& A, string title, ostream& os )
+( const AbstractDistMatrix<T>& A, std::string title, ostream& os )
 {
     EL_DEBUG_CSE
     if( A.ColStride() == 1 && A.RowStride() == 1 )
@@ -63,7 +63,7 @@ void Print
 // =========
 
 template<typename T>
-void Print( const std::vector<T>& x, string title, ostream& os )
+void Print( const std::vector<T>& x, std::string title, ostream& os )
 {
     EL_DEBUG_CSE
     if( title != "" )
@@ -79,11 +79,11 @@ void Print( const std::vector<T>& x, string title, ostream& os )
 
 #define PROTO(T) \
   template void Print \
-  ( const std::vector<T>& x, string title, ostream& os ); \
+  ( const std::vector<T>& x, std::string title, ostream& os ); \
   template void Print \
-  ( const Matrix<T>& A, string title, ostream& os ); \
+  ( const Matrix<T>& A, std::string title, ostream& os ); \
   template void Print \
-  ( const AbstractDistMatrix<T>& A, string title, ostream& os );
+  ( const AbstractDistMatrix<T>& A, std::string title, ostream& os );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

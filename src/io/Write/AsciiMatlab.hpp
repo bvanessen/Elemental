@@ -15,15 +15,15 @@ namespace write {
 template<typename T>
 inline void
 AsciiMatlab
-( const Matrix<T>& A, string basename="matrix", string title="matrix" )
+( const Matrix<T>& A, std::string basename="matrix", std::string title="matrix" )
 {
     EL_DEBUG_CSE
     // Empty titles are not legal
     if( title == "" )
         title = "matrix";
 
-    string filename = basename + "." + FileExtension(FileFormat::ASCII_MATLAB);
-    ofstream file( filename.c_str() );
+    std::string filename = basename + "." + FileExtension(FileFormat::ASCII_MATLAB);
+    std::ofstream file( filename.c_str() );
     if( !file.is_open() )
         RuntimeError("Could not open ",filename);
 

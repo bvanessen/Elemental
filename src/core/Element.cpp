@@ -2,72 +2,78 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
+
+#include <iostream>
+#include <string>
+
+#include "El/core/Element/decl.hpp"
+#include "El/core/Element/impl.hpp"
 
 namespace El {
 
 template<>
-string TypeName<bool>()
-{ return string("bool"); }
+std::string TypeName<bool>()
+{ return std::string("bool"); }
 template<>
-string TypeName<char>()
-{ return string("char"); }
+std::string TypeName<char>()
+{ return std::string("char"); }
 template<>
-string TypeName<char*>()
-{ return string("char*"); }
+std::string TypeName<char*>()
+{ return std::string("char*"); }
 template<>
-string TypeName<const char*>()
-{ return string("const char*"); }
+std::string TypeName<const char*>()
+{ return std::string("const char*"); }
 template<>
-string TypeName<string>()
-{ return string("string"); }
+std::string TypeName<std::string>()
+{ return std::string("std::string"); }
 template<>
-string TypeName<unsigned>()
-{ return string("unsigned"); }
+std::string TypeName<unsigned>()
+{ return std::string("unsigned"); }
 template<>
-string TypeName<unsigned long>()
-{ return string("unsigned long"); }
+std::string TypeName<unsigned long>()
+{ return std::string("unsigned long"); }
 template<>
-string TypeName<unsigned long long>()
-{ return string("unsigned long long"); }
+std::string TypeName<unsigned long long>()
+{ return std::string("unsigned long long"); }
 template<>
-string TypeName<int>()
-{ return string("int"); }
+std::string TypeName<int>()
+{ return std::string("int"); }
 template<>
-string TypeName<long int>()
-{ return string("long int"); }
+std::string TypeName<long int>()
+{ return std::string("long int"); }
 template<>
-string TypeName<long long int>()
-{ return string("long long int"); }
+std::string TypeName<long long int>()
+{ return std::string("long long int"); }
 template<>
-string TypeName<float>()
-{ return string("float"); }
+std::string TypeName<float>()
+{ return std::string("float"); }
 template<>
-string TypeName<double>()
-{ return string("double"); }
+std::string TypeName<double>()
+{ return std::string("double"); }
 #ifdef HYDROGEN_HAVE_QD
 template<>
-string TypeName<DoubleDouble>()
-{ return string("DoubleDouble"); }
+std::string TypeName<DoubleDouble>()
+{ return std::string("DoubleDouble"); }
 template<>
-string TypeName<QuadDouble>()
-{ return string("QuadDouble"); }
+std::string TypeName<QuadDouble>()
+{ return std::string("QuadDouble"); }
 #endif
 #ifdef HYDROGEN_HAVE_QUADMATH
 template<>
-string TypeName<Quad>()
-{ return string("Quad"); }
+std::string TypeName<Quad>()
+{ return std::string("Quad"); }
 #endif
 #ifdef HYDROGEN_HAVE_MPC
 template<>
-string TypeName<BigInt>()
-{ return string("BigInt"); }
+std::string TypeName<BigInt>()
+{ return std::string("BigInt"); }
 template<>
-string TypeName<BigFloat>()
-{ return string("BigFloat"); }
+std::string TypeName<BigFloat>()
+{ return std::string("BigFloat"); }
 #endif
 
 // Basic element manipulation and I/O
@@ -78,7 +84,7 @@ string TypeName<BigFloat>()
 
 // TODO: Move into core/imports/quadmath.hpp?
 #ifdef HYDROGEN_HAVE_QUADMATH
-ostream& operator<<( ostream& os, const Quad& alpha )
+std::ostream& operator<<( std::ostream& os, const Quad& alpha )
 {
     char str[128];
     quadmath_snprintf( str, 128, "%Qe", alpha );
@@ -86,10 +92,10 @@ ostream& operator<<( ostream& os, const Quad& alpha )
     return os;
 }
 
-istream& operator>>( istream& is, Quad& alpha )
+std::istream& operator>>( std::istream& is, Quad& alpha )
 {
-    string token;
-    is >> token; 
+    std::string token;
+    is >> token;
     alpha = strtoflt128( token.c_str(), NULL );
     return is;
 }
@@ -101,14 +107,14 @@ istream& operator>>( istream& is, Quad& alpha )
 Complex<DoubleDouble> Conj( const Complex<DoubleDouble>& alpha )
 {
     Complex<DoubleDouble> alphaConj;
-    alphaConj.realPart = alpha.realPart; 
+    alphaConj.realPart = alpha.realPart;
     alphaConj.imagPart = -alpha.imagPart;
     return alphaConj;
 }
 Complex<QuadDouble> Conj( const Complex<QuadDouble>& alpha )
 {
     Complex<QuadDouble> alphaConj;
-    alphaConj.realPart = alpha.realPart; 
+    alphaConj.realPart = alpha.realPart;
     alphaConj.imagPart = -alpha.imagPart;
     return alphaConj;
 }
@@ -117,14 +123,14 @@ void Conj
 ( const Complex<DoubleDouble>& alpha,
         Complex<DoubleDouble>& alphaConj )
 {
-    alphaConj.realPart = alpha.realPart; 
+    alphaConj.realPart = alpha.realPart;
     alphaConj.imagPart = -alpha.imagPart;
 }
 void Conj
 ( const Complex<QuadDouble>& alpha,
         Complex<QuadDouble>& alphaConj )
 {
-    alphaConj.realPart = alpha.realPart; 
+    alphaConj.realPart = alpha.realPart;
     alphaConj.imagPart = -alpha.imagPart;
 }
 #endif
@@ -243,11 +249,11 @@ QuadDouble Abs( const Complex<QuadDouble>& alpha ) EL_NO_EXCEPT
 Quad Abs( const Quad& alpha ) EL_NO_EXCEPT { return fabsq(alpha); }
 
 Quad Abs( const Complex<Quad>& alphaPre ) EL_NO_EXCEPT
-{ 
+{
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    return cabsq(alpha); 
+    return cabsq(alpha);
 }
 #endif
 
@@ -325,7 +331,7 @@ Complex<Quad> Exp( const Complex<Quad>& alphaPre ) EL_NO_EXCEPT
     __imag__(alpha) = alphaPre.imag();
 
     __complex128 alphaExp = cexpq(alpha);
-    return Complex<Quad>(crealq(alphaExp),cimagq(alphaExp)); 
+    return Complex<Quad>(crealq(alphaExp),cimagq(alphaExp));
 }
 #endif
 
@@ -452,7 +458,7 @@ void Pow( const BigInt& alpha, const unsigned long long& beta, BigInt& gamma )
     EL_DEBUG_ONLY(
       if( beta > static_cast<unsigned long long>(ULONG_MAX) )
       {
-          RuntimeError("Excessively large exponent for Pow: ",beta); 
+          RuntimeError("Excessively large exponent for Pow: ",beta);
       }
     )
     unsigned long betaLong = static_cast<unsigned long>(beta);
@@ -804,7 +810,7 @@ QuadDouble Sqrt( const QuadDouble& alpha ) { return sqrt(alpha); }
 Quad Sqrt( const Quad& alpha ) { return sqrtq(alpha); }
 
 Complex<Quad> Sqrt( const Complex<Quad>& alphaPre )
-{ 
+{
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
@@ -900,7 +906,7 @@ Complex<Quad> Cos( const Complex<Quad>& alphaPre )
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    
+
     __complex128 cosAlpha = ccosq(alpha);
     return Complex<Quad>(crealq(cosAlpha),cimagq(cosAlpha));
 }
@@ -940,7 +946,7 @@ Complex<Quad> Sin( const Complex<Quad>& alphaPre )
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    
+
     __complex128 sinAlpha = csinq(alpha);
     return Complex<Quad>(crealq(sinAlpha),cimagq(sinAlpha));
 }
@@ -980,7 +986,7 @@ Complex<Quad> Tan( const Complex<Quad>& alphaPre )
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    
+
     __complex128 tanAlpha = ctanq(alpha);
     return Complex<Quad>(crealq(tanAlpha),cimagq(tanAlpha));
 }
@@ -1022,7 +1028,7 @@ Complex<Quad> Acos( const Complex<Quad>& alphaPre )
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    
+
     __complex128 acosAlpha = cacosq(alpha);
     return Complex<Quad>(crealq(acosAlpha),cimagq(acosAlpha));
 }
@@ -1062,7 +1068,7 @@ Complex<Quad> Asin( const Complex<Quad>& alphaPre )
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    
+
     __complex128 asinAlpha = casinq(alpha);
     return Complex<Quad>(crealq(asinAlpha),cimagq(asinAlpha));
 }
@@ -1102,7 +1108,7 @@ Complex<Quad> Atan( const Complex<Quad>& alphaPre )
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    
+
     __complex128 atanAlpha = catanq(alpha);
     return Complex<Quad>(crealq(atanAlpha),cimagq(atanAlpha));
 }
@@ -1171,7 +1177,7 @@ Complex<Quad> Cosh( const Complex<Quad>& alphaPre )
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    
+
     __complex128 coshAlpha = ccoshq(alpha);
     return Complex<Quad>(crealq(coshAlpha),cimagq(coshAlpha));
 }
@@ -1211,7 +1217,7 @@ Complex<Quad> Sinh( const Complex<Quad>& alphaPre )
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    
+
     __complex128 sinhAlpha = csinhq(alpha);
     return Complex<Quad>(crealq(sinhAlpha),cimagq(sinhAlpha));
 }
@@ -1251,7 +1257,7 @@ Complex<Quad> Tanh( const Complex<Quad>& alphaPre )
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    
+
     __complex128 tanhAlpha = ctanhq(alpha);
     return Complex<Quad>(crealq(tanhAlpha),cimagq(tanhAlpha));
 }
@@ -1293,7 +1299,7 @@ Complex<Quad> Acosh( const Complex<Quad>& alphaPre )
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    
+
     __complex128 acoshAlpha = cacoshq(alpha);
     return Complex<Quad>(crealq(acoshAlpha),cimagq(acoshAlpha));
 }
@@ -1333,7 +1339,7 @@ Complex<Quad> Asinh( const Complex<Quad>& alphaPre )
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    
+
     __complex128 asinhAlpha = casinhq(alpha);
     return Complex<Quad>(crealq(asinhAlpha),cimagq(asinhAlpha));
 }
@@ -1373,7 +1379,7 @@ Complex<Quad> Atanh( const Complex<Quad>& alphaPre )
     __complex128 alpha;
     __real__(alpha) = alphaPre.real();
     __imag__(alpha) = alphaPre.imag();
-    
+
     __complex128 atanhAlpha = catanhq(alpha);
     return Complex<Quad>(crealq(atanhAlpha),cimagq(atanhAlpha));
 }
@@ -1419,7 +1425,7 @@ template<>
 BigInt Round( const BigInt& alpha ) { return alpha; }
 template<>
 BigFloat Round( const BigFloat& alpha )
-{ 
+{
     BigFloat alphaRound;
     alphaRound.SetPrecision( alpha.Precision() );
     mpfr_round( alphaRound.Pointer(), alpha.LockedPointer() );

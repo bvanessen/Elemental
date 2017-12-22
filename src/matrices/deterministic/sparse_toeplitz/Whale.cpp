@@ -2,20 +2,26 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/blas_like/level1/decl.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/matrices.hpp"
+
+namespace El
+{
 
 // The "whale matrix" is defined to have the symbol:
 //   f(z) = -z^{-4} - (3+2i) z^{-3} + i z^{-2} + z^{-1} + 10 z + (3+i) z^2 +
 //           4 z^3 + i z^4
-// Please see 
+// Please see
 //   A. Bottcher, "Infinite matrices and projection methods", 1996.
 
-template<typename Real> 
+template<typename Real>
 void Whale( Matrix<Complex<Real>>& A, Int n )
 {
     EL_DEBUG_CSE

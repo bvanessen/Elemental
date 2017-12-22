@@ -7,7 +7,9 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level3.hpp"
 #include "El/core/FlamePart.hpp"
+#include "El/matrices.hpp"
 
 #include "./ApplyPacked/Util.hpp"
 #include "./ExpandPacked/LV.hpp"
@@ -22,7 +24,7 @@ void ExpandPackedReflectors
   const Matrix<F>& householderScalars )
 {
     EL_DEBUG_CSE
-    if( uplo == UpperOrLower::LOWER && dir == VERTICAL )
+    if( uplo == UpperOrLower::LOWER && dir == VerticalOrHorizontal::VERTICAL )
         expand_packed_reflectors::LV
         ( conjugation, offset, H, householderScalars );
     else
@@ -37,7 +39,7 @@ void ExpandPackedReflectors
   const AbstractDistMatrix<F>& householderScalars )
 {
     EL_DEBUG_CSE
-    if( uplo == UpperOrLower::LOWER && dir == VERTICAL )
+    if( uplo == UpperOrLower::LOWER && dir == VerticalOrHorizontal::VERTICAL )
         expand_packed_reflectors::LV
         ( conjugation, offset, H, householderScalars );
     else

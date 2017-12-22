@@ -8,8 +8,7 @@
 */
 #include "El/blas_like/level1/decl.hpp"
 #include "El/blas_like/level2.hpp"
-#include "El/core/Element/Complex/decl.hpp"
-#include "El/core/Element/Complex/impl.hpp"
+#include "El/Types/Complex.hpp"
 #include "El/core/imports/blas.hpp"
 #include "El/core/imports/scalapack.hpp"
 #include "El/core/Matrix/decl.hpp"

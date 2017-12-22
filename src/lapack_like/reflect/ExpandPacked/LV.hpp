@@ -9,8 +9,14 @@
 #ifndef EL_EXPANDPACKEDREFLECTORS_LV_HPP
 #define EL_EXPANDPACKEDREFLECTORS_LV_HPP
 
-namespace El {
-namespace expand_packed_reflectors {
+#include "El/core/indexing/decl.hpp"
+#include "El/core/indexing/impl.hpp"
+#include "El/core/Proxy.hpp"
+
+namespace El
+{
+namespace expand_packed_reflectors
+{
 
 // TODO: Greatly simplify the implementation of these routines
 

@@ -9,19 +9,21 @@
 #ifndef EL_IMPORTS_BLAS_HPP
 #define EL_IMPORTS_BLAS_HPP
 
-#include "El/core/Element/Complex/decl.hpp"
+#include "El/config.h"
+#include "El/macros.h"
+#include "El/Types/Complex.hpp"
 
 namespace El
 {
 
 
-#if defined(HYDROGEN_BLAS_SUFFIX)
+#ifdef HYDROGEN_BLAS_SUFFIX
 #define EL_BLAS(name) EL_CONCAT(name,HYDROGEN_BLAS_SUFFIX)
 #else
 #define EL_BLAS(name) name
 #endif
 
-#if defined(HYDROGEN_LAPACK_SUFFIX)
+#ifdef HYDROGEN_LAPACK_SUFFIX
 #define EL_LAPACK(name) EL_CONCAT(name,HYDROGEN_LAPACK_SUFFIX)
 #else
 #define EL_LAPACK(name) name

@@ -9,7 +9,13 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMap.hpp"
+#include "El/core/Grid.hpp"
+#include "El/core/imports/mpi.hpp"
+#include "El/Typedefs.hpp"
+
+namespace El
+{
 
 DistMap::DistMap( const El::Grid& grid )
 : numSources_(0), grid_(&grid)

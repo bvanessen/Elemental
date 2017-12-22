@@ -7,7 +7,15 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace {
+#include <random>
+
+#include "El/core/environment/decl.hpp"
+#include "El/core/imports/mpi.hpp"
+#include "El/core/random/decl.hpp"
+#include "El/core/random/impl.hpp"
+
+namespace
+{
 
 // A common Mersenne twister configuration
 std::mt19937 generator;

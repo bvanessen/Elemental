@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "El/core/DistMatrix_decl.hpp"
+#include "El/core/DistMatrix/Element.hpp"
 #include "El/core/Grid.hpp"
 #include "El/macros.h"
 

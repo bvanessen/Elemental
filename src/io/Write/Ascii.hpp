@@ -9,16 +9,18 @@
 #ifndef EL_WRITE_ASCII_HPP
 #define EL_WRITE_ASCII_HPP
 
+#include <fstream>
+
 namespace El {
 namespace write {
 
 template<typename T>
 inline void
-Ascii( const Matrix<T>& A, string basename="matrix", string title="" )
+Ascii( const Matrix<T>& A, std::string basename="matrix", std::string title="" )
 {
     EL_DEBUG_CSE
-    string filename = basename + "." + FileExtension(FileFormat::ASCII);
-    ofstream file( filename.c_str() );
+    std::string filename = basename + "." + FileExtension(FileFormat::ASCII);
+    std::ofstream file( filename.c_str() );
     if( !file.is_open() )
         RuntimeError("Could not open ",filename);
 

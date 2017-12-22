@@ -7,7 +7,6 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-#include "El/core/Element/Complex/impl.hpp"
 
 extern "C" {
 

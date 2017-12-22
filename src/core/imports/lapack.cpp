@@ -8,6 +8,7 @@
 */
 #include <sstream>
 
+#include "El/core/imports/lapack.hpp"
 #include "El/lapack_like.hpp"
 
 using El::FortranLogical;

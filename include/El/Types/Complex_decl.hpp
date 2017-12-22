@@ -1,29 +1,17 @@
-/*
-   Copyright (c) 2009-2016, Jack Poulson
-   All rights reserved.
-
-   This file is part of Elemental and is under the BSD 2-Clause License,
-   which can be found in the LICENSE file in the root directory, or at
-   http://opensource.org/licenses/BSD-2-Clause
-*/
-#ifndef EL_ELEMENT_COMPLEX_DECL_HPP
-#define EL_ELEMENT_COMPLEX_DECL_HPP
+#ifndef EL_TYPES_COMPLEX_DECL_HPP_
+#define EL_TYPES_COMPLEX_DECL_HPP_
 
 #include <complex>
 
+#include "El/config.h"
+
 #ifdef HYDROGEN_HAVE_MPC
-
 #include <mpc.h>
-
-// TODO: Decide if _MPFR_EXP_FORMAT is reliable enough
-#if _MPFR_EXP_FORMAT == 4
-# error intmax_t is likely not supported by MPI
-#endif
-
 #endif // HYDROGEN_HAVE_MPC
 
-#include "El/core/Element/decl.hpp"
-#include "El/Traits.hpp"
+#ifdef HYDROGEN_HAVE_QUADMATH
+#include <quadmath.h>
+#endif
 
 namespace El
 {
@@ -581,78 +569,18 @@ inline Complex<BigFloat>
 operator/( const BigFloat& a, const Complex<BigFloat>& b );
 #endif
 
-typedef Complex<float> scomplex;
-typedef Complex<double> dcomplex;
+using scomplex = Complex<float>;
+using dcomplex = Complex<double>;
 #ifdef HYDROGEN_HAVE_QUADMATH
-typedef Complex<Quad> qcomplex;
+using qcomplex = Complex<Quad>;
 #endif
 #ifdef HYDROGEN_HAVE_QD
-typedef Complex<DoubleDouble> ddcomplex;
-typedef Complex<QuadDouble> qdcomplex;
+using ddcomplex = Complex<DoubleDouble>;
+using qdcomplex = Complex<QuadDouble>;
 #endif
 #ifdef HYDROGEN_HAVE_MPC
-typedef Complex<BigFloat> acomplex;
+using acomplex = Complex<BigFloat>;
 #endif
+}// namespace El
 
-// Returning the underlying, or "base", real field
-// -----------------------------------------------
-// Note: The following is for internal usage only; please use Base
-template<typename Real> struct BaseHelper                { typedef Real type; };
-template<typename Real> struct BaseHelper<Complex<Real>> { typedef Real type; };
-
-template<typename F> using Base = typename BaseHelper<F>::type;
-
-// Additional Traits
-template<typename T> struct IsScalar<Complex<T>>
-{ static const bool value=IsScalar<T>::value; };
-template<typename T> struct IsField<Complex<T>>
-{ static const bool value=IsField<T>::value; };
-template<typename T> struct IsStdScalar<Complex<T>>
-{ static const bool value=IsStdScalar<T>::value; };
-template<typename T> struct IsStdField<Complex<T>>
-{ static const bool value=IsStdField<T>::value; };
-
-// For querying whether or not an element's type is complex
-// --------------------------------------------------------
-// NOTE: This does not guarantee that the type is a field
-// NOTE: IsReal is not the negation of IsComplex
-template<typename Real> struct IsReal
-{ static const bool value=IsScalar<Real>::value; };
-template<typename Real> struct IsReal<Complex<Real>>
-{ static const bool value=false; };
-
-template<typename Real> struct IsComplex
-{ static const bool value=false; };
-template<typename Real> struct IsComplex<Complex<Real>>
-{ static const bool value=true; };
-
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-Real NaiveDiv( const Real& a, const Real& b );
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-Complex<Real> NaiveDiv( const Real& a, const Complex<Real>& b );
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-Complex<Real> NaiveDiv( const Complex<Real>& a, const Real& b );
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-Complex<Real> NaiveDiv( const Complex<Real>& a, const Complex<Real>& b );
-
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-Real SmithDiv( const Real& a, const Real& b );
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-Complex<Real> SmithDiv( const Real& a, const Complex<Real>& b );
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-Complex<Real> SmithDiv( const Complex<Real>& a, const Real& b );
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-Complex<Real> SmithDiv( const Complex<Real>& a, const Complex<Real>& b );
-
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-Real SafeDiv( const Real& a, const Real& b );
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-Complex<Real> SafeDiv( const Real& a, const Complex<Real>& b );
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-Complex<Real> SafeDiv( const Complex<Real>& a, const Real& b );
-template<typename Real,typename=EnableIf<IsReal<Real>>>
-Complex<Real> SafeDiv( const Complex<Real>& a, const Complex<Real>& b );
-
-} // namespace El
-
-#endif // ifndef EL_ELEMENT_COMPLEX_DECL_HPP
+#endif // EL_TYPES_COMPLEX_DECL_HPP_

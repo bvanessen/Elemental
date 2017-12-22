@@ -7,17 +7,25 @@
 
    This file is loosely based upon the LAPACK routines dlarfg.f and zlarfg.f.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_REFLECTOR_COL_HPP
 #define EL_REFLECTOR_COL_HPP
 
-namespace El {
-namespace reflector {
+#include <vector>
 
-template<typename F> 
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/imports/lapack.hpp"
+#include "El/core/limits.hpp"
+
+namespace El
+{
+namespace reflector
+{
+
+template<typename F>
 F Col( F& chi, AbstractDistMatrix<F>& x )
 {
     EL_DEBUG_CSE
@@ -32,7 +40,7 @@ F Col( F& chi, AbstractDistMatrix<F>& x )
     const Int colStride = x.ColStride();
 
     std::vector<Real> localNorms(colStride);
-    Real localNorm = Nrm2( x.LockedMatrix() ); 
+    Real localNorm = Nrm2( x.LockedMatrix() );
     mpi::AllGather( &localNorm, 1, localNorms.data(), 1, colComm );
     Real norm = blas::Nrm2( colStride, localNorms.data(), 1 );
 
@@ -85,7 +93,7 @@ F Col( F& chi, AbstractDistMatrix<F>& x )
     return tau;
 }
 
-template<typename F> 
+template<typename F>
 F Col( AbstractDistMatrix<F>& chi, AbstractDistMatrix<F>& x )
 {
     EL_DEBUG_CSE

@@ -9,11 +9,17 @@
 #ifndef EL_READ_MATRIXMARKET_HPP
 #define EL_READ_MATRIXMARKET_HPP
 
-namespace El {
-namespace read {
+#include <string>
+
+#include "El/matrices.hpp"
+
+namespace El
+{
+namespace read
+{
 
 template<typename T>
-void MatrixMarket( Matrix<T>& A, const string filename )
+void MatrixMarket( Matrix<T>& A, const std::string filename )
 {
     EL_DEBUG_CSE
     typedef Base<T> Real;
@@ -25,13 +31,13 @@ void MatrixMarket( Matrix<T>& A, const string filename )
     // ===============
     // Attempt to pull in the various header components
     // ------------------------------------------------
-    string line, stamp, object, format, field, symmetry;
+    std::string line, stamp, object, format, field, symmetry;
     if( !std::getline( file, line ) )
         RuntimeError("Could not extract header line");
     {
         std::stringstream lineStream( line );
         lineStream >> stamp;
-        if( stamp != string("%%MatrixMarket") )
+        if( stamp != std::string("%%MatrixMarket") )
             RuntimeError("Invalid Matrix Market stamp: ",stamp);
         if( !(lineStream >> object) )
             RuntimeError("Missing Matrix Market object");
@@ -44,22 +50,22 @@ void MatrixMarket( Matrix<T>& A, const string filename )
     }
     // Ensure that the header components are individually valid
     // --------------------------------------------------------
-    const bool isMatrix = ( object == string("matrix") );
-    const bool isArray = ( format == string("array") );
-    const bool isComplex = ( field == string("complex") );
-    const bool isPattern = ( field == string("pattern") );
-    const bool isGeneral = ( symmetry == string("general") );
-    const bool isSymmetric = ( symmetry == string("symmetric") );
-    const bool isSkewSymmetric = ( symmetry == string("skew-symmetric") );
-    const bool isHermitian = ( symmetry == string("hermitian") );
-    if( !isMatrix && object != string("vector") )
+    const bool isMatrix = ( object == std::string("matrix") );
+    const bool isArray = ( format == std::string("array") );
+    const bool isComplex = ( field == std::string("complex") );
+    const bool isPattern = ( field == std::string("pattern") );
+    const bool isGeneral = ( symmetry == std::string("general") );
+    const bool isSymmetric = ( symmetry == std::string("symmetric") );
+    const bool isSkewSymmetric = ( symmetry == std::string("skew-symmetric") );
+    const bool isHermitian = ( symmetry == std::string("hermitian") );
+    if( !isMatrix && object != std::string("vector") )
         RuntimeError("Invalid Matrix Market object: ",object);
-    if( !isArray && format != string("coordinate") )
+    if( !isArray && format != std::string("coordinate") )
         RuntimeError("Invalid Matrix Market format: ",format);
     if( !isComplex && !isPattern &&
-        field != string("real") &&
-        field != string("double") &&
-        field != string("integer") )
+        field != std::string("real") &&
+        field != std::string("double") &&
+        field != std::string("integer") )
         RuntimeError("Invalid Matrix Market field: ",field);
     if( !isGeneral && !isSymmetric && !isSkewSymmetric && !isHermitian )
         RuntimeError("Invalid Matrix Market symmetry: ",symmetry);
@@ -217,7 +223,7 @@ void MatrixMarket( Matrix<T>& A, const string filename )
 }
 
 template<typename T>
-void MatrixMarket( AbstractDistMatrix<T>& A, const string filename )
+void MatrixMarket( AbstractDistMatrix<T>& A, const std::string filename )
 {
     EL_DEBUG_CSE
     // TODO: Use a WriteProxy instead

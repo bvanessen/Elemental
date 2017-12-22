@@ -13,6 +13,7 @@
 
 #include "El/core/Element/decl.hpp"
 #include "El/Traits.hpp"
+#include "El/Typedefs.hpp"
 
 namespace El
 {
@@ -441,9 +442,6 @@ inline bool IsFinite( const BigFloat& alpha )
 #endif
 
 } // namespace limits
-
-inline Int BinaryToDecimalPrecision( Int prec )
-{ return Int(Floor(prec*std::log10(2.))); }
 
 } // namespace El
 

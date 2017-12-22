@@ -10,13 +10,15 @@
 #define EL_ELEMENT_DECL_HPP
 
 #include "El/macros.h"
-#include "El/core/Element/Complex/decl.hpp"
-#include "El/core/Element/Complex/impl.hpp"
+#include "El/Meta.hpp"
+#include "El/Traits.hpp"
+#include "El/Types/Complex.hpp"
 #include "El/Types/Entry.hpp"
 #include "El/Types/ValueInt.hpp"
 
 
-namespace El {
+namespace El
+{
 
 // While Elemental used to make use of typeid(T).name() for analogues of the
 // below strings, the 'name' property is not guaranteed to exist for all types,
@@ -1141,6 +1143,9 @@ template<> Quad LogGamma( const Quad& alpha );
 #ifdef HYDROGEN_HAVE_MPC
 template<> BigFloat LogGamma( const BigFloat& alpha );
 #endif
+
+inline Int BinaryToDecimalPrecision( Int prec )
+{ return Int(Floor(prec*std::log10(2.))); }
 
 } // namespace El
 

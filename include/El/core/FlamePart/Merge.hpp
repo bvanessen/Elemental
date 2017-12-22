@@ -9,7 +9,10 @@
 #ifndef EL_FLAMEPART_MERGE_HPP
 #define EL_FLAMEPART_MERGE_HPP
 
+#include "El/core/DistMatrix_decl.hpp"
+#include "El/core/DistMatrix/Element.hpp"
 #include "El/core/Matrix/decl.hpp"
+#include "El/Types/Enums.hpp"
 
 namespace El
 {

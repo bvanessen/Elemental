@@ -7,6 +7,13 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix_decl.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/lapack_like/reflect.hpp"
+#include "El/matrices.hpp"
+
 #include "./Bidiag/Apply.hpp"
 #include "./Bidiag/LowerBlocked.hpp"
 #include "./Bidiag/UpperBlocked.hpp"
@@ -51,7 +58,7 @@ void Explicit( Matrix<F>& A, Matrix<F>& P, Matrix<F>& Q )
     {
         Q = A;
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, Q, householderScalarsQ );
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, Q, householderScalarsQ );
         // TODO: Use ExpandPackedReflectors when it is available
         Identity( P, A.Width(), A.Width() );
         bidiag::ApplyP( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalarsP, P );
@@ -63,7 +70,7 @@ void Explicit( Matrix<F>& A, Matrix<F>& P, Matrix<F>& Q )
     {
         Q = A;
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, -1, Q, householderScalarsQ );
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, -1, Q, householderScalarsQ );
         // TODO: Use ExpandPackedReflectors when it is available
         Identity( P, A.Width(), A.Width() );
         bidiag::ApplyP( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalarsP, P );
@@ -87,7 +94,7 @@ void Explicit
     {
         Q = A;
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, Q, householderScalarsQ );
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, Q, householderScalarsQ );
         // TODO: Use ExpandPackedReflectors when it is available
         Identity( P, A.Width(), A.Width() );
         bidiag::ApplyP( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalarsP, P );
@@ -99,7 +106,7 @@ void Explicit
     {
         Q = A;
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, -1, Q, householderScalarsQ );
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, -1, Q, householderScalarsQ );
         // TODO: Use ExpandPackedReflectors when it is available
         Identity( P, A.Width(), A.Width() );
         bidiag::ApplyP( LeftOrRight::LEFT, Orientation::NORMAL, A, householderScalarsP, P );

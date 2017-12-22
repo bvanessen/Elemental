@@ -7,6 +7,8 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include "El/blas_like/level1.hpp"
+#include "El/core/random/decl.hpp"
+#include "El/core/random/impl.hpp"
 #include "El/matrices.hpp"
 
 // This is an implementation of the compressed hypercube/Ehrenfest matrix.

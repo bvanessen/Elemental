@@ -14,8 +14,7 @@
 */
 
 #include "El/core/imports/mpi.hpp"
-#include "El/core/Element/Complex/decl.hpp"
-#include "El/core/Element/Complex/impl.hpp"
+#include "El/Types/Complex.hpp"
 #include "El/core/environment/decl.hpp"
 #include "El/macros.h"
 

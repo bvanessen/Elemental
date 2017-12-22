@@ -1,16 +1,15 @@
 #ifndef EL_TRAITS_HPP_
 #define EL_TRAITS_HPP_
 
+#include <type_traits>
+
+#include "El/Types/Complex_decl.hpp"
+
 namespace El
 {
 
 template<typename S,typename T>
 using IsSame = std::is_same<S,T>;
-
-template<typename Condition,class T=void>
-using EnableIf = typename std::enable_if<Condition::value,T>::type;
-template<typename Condition,class T=void>
-using DisableIf = typename std::enable_if<!Condition::value,T>::type;
 
 template<typename T>
 struct IsIntegral { static const bool value = std::is_integral<T>::value; };
@@ -57,6 +56,8 @@ template<> struct IsScalar<BigInt>
 template<> struct IsScalar<BigFloat>
 { static const bool value=true; };
 #endif
+template<typename T> struct IsScalar<Complex<T>>
+{ static const bool value=IsScalar<T>::value; };
 
 // For querying whether an element's type is a field
 // -------------------------------------------------
@@ -82,6 +83,8 @@ template<> struct IsField<Quad>
 template<> struct IsField<BigFloat>
 { static const bool value=true; };
 #endif
+template<typename T> struct IsField<Complex<T>>
+{ static const bool value=IsField<T>::value; };
 
 // For querying whether an element's type is supported by the STL's math
 // ---------------------------------------------------------------------
@@ -109,6 +112,8 @@ template<> struct IsStdScalar<long double>
 template<> struct IsStdScalar<Quad>
 { static const bool value=true; };
 #endif
+template<typename T> struct IsStdScalar<Complex<T>>
+{ static const bool value=IsStdScalar<T>::value; };
 
 // For querying whether an element's type is a field supported by STL
 // ------------------------------------------------------------------
@@ -124,6 +129,30 @@ template<> struct IsStdField<long double>
 template<> struct IsStdField<Quad>
 { static const bool value=true; };
 #endif
+template<typename T> struct IsStdField<Complex<T>>
+{ static const bool value=IsStdField<T>::value; };
+
+// For querying whether or not an element's type is complex
+// --------------------------------------------------------
+// NOTE: This does not guarantee that the type is a field
+// NOTE: IsReal is not the negation of IsComplex
+template<typename Real> struct IsReal
+{ static const bool value=IsScalar<Real>::value; };
+template<typename Real> struct IsReal<Complex<Real>>
+{ static const bool value=false; };
+
+template<typename Real> struct IsComplex
+{ static const bool value=false; };
+template<typename Real> struct IsComplex<Complex<Real>>
+{ static const bool value=true; };
+
+// Returning the underlying, or "base", real field
+// -----------------------------------------------
+// Note: The following is for internal usage only; please use Base
+template<typename Real> struct BaseHelper                { typedef Real type; };
+template<typename Real> struct BaseHelper<Complex<Real>> { typedef Real type; };
+
+template<typename F> using Base = typename BaseHelper<F>::type;
 
 } // namespace El
 

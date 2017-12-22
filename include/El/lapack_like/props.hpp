@@ -10,7 +10,7 @@
 #define EL_PROPS_HPP
 
 #include "El/core/DistMatrix/Abstract.hpp"
-#include "El/core/Element/Complex/decl.hpp"
+#include "El/Types/Complex.hpp"
 #include "El/core/Matrix/decl.hpp"
 #include "El/Types/Enums.hpp"
 #include "El/Types/SafeProduct.hpp"

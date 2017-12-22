@@ -9,8 +9,14 @@
 #ifndef EL_BIDIAG_LOWER_UNBLOCKED_HPP
 #define EL_BIDIAG_LOWER_UNBLOCKED_HPP
 
-namespace El {
-namespace bidiag {
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/Typedefs.hpp"
+
+namespace El
+{
+namespace bidiag
+{
 
 template<typename F>
 void LowerUnblocked

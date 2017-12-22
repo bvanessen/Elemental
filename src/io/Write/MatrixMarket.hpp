@@ -9,23 +9,29 @@
 #ifndef EL_WRITE_MATRIXMARKET_HPP
 #define EL_WRITE_MATRIXMARKET_HPP
 
-namespace El {
-namespace write {
+#include <fstream>
+#include <sstream>
+#include <string>
+
+namespace El
+{
+namespace write
+{
 
 template<typename T>
-void MatrixMarket( const Matrix<T>& A, string basename="matrix" )
+void MatrixMarket( const Matrix<T>& A, std::string basename="matrix" )
 {
     EL_DEBUG_CSE
 
-    string filename = basename + "." + FileExtension(FileFormat::MATRIX_MARKET);
-    ofstream file( filename.c_str(), std::ios::binary );
+    std::string filename = basename + "." + FileExtension(FileFormat::MATRIX_MARKET);
+    std::ofstream file( filename.c_str(), std::ios::binary );
     if( !file.is_open() )
         RuntimeError("Could not open ",filename);
 
     // Write the header
     // ================
     {
-        ostringstream os;
+        std::ostringstream os;
         os << "%%MatrixMarket matrix array ";
         if( IsComplex<T>::value )
             os << "complex ";
@@ -47,7 +53,7 @@ void MatrixMarket( const Matrix<T>& A, string basename="matrix" )
     {
         for( Int i=0; i<m; ++i )
         {
-            ostringstream os;
+            std::ostringstream os;
             os << A.GetRealPart(i,j);
             if( IsComplex<T>::value )
                 os << " " << A.GetImagPart(i,j);

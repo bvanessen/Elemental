@@ -21,7 +21,7 @@ void FixDiagonal
     for( Int j=0; j<SInv.Height(); ++j )
     {
         const F value = householderScalars(j);
-        if( conjugation == CONJUGATED )
+        if( conjugation == Conjugation::CONJUGATED )
             SInv(j,j) = F(1) / Conj(value);
         else
             SInv(j,j) = F(1) / value;
@@ -40,7 +40,7 @@ void FixDiagonal
     for( Int j=0; j<SInv.Height(); ++j )
     {
         const F value = householderScalarsLoc(j);
-        if( conjugation == CONJUGATED )
+        if( conjugation == Conjugation::CONJUGATED )
             SInvLoc(j,j) = F(1) / Conj(value);
         else
             SInvLoc(j,j) = F(1) / value;

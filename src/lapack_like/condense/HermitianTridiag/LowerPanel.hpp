@@ -9,8 +9,19 @@
 #ifndef EL_HERMITIANTRIDIAG_LOWER_PANEL_HPP
 #define EL_HERMITIANTRIDIAG_LOWER_PANEL_HPP
 
-namespace El {
-namespace herm_tridiag {
+#include "El/core/DistMatrix_decl.hpp"
+#include "El/core/DistMatrix/Element/MC_STAR.hpp"
+#include "El/core/DistMatrix/Element/MD_STAR.hpp"
+#include "El/core/DistMatrix/Element/MR_STAR.hpp"
+#include "El/core/imports/blas.hpp"
+#include "El/core/imports/mpi.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/reflect.hpp"
+
+namespace El
+{
+namespace herm_tridiag
+{
 
 template<typename F>
 void LowerPanel

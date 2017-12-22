@@ -9,6 +9,9 @@
 #include <functional>
 
 #include "El/blas_like/level1.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/random/decl.hpp"
 #include "El/matrices.hpp"
 
 namespace El {

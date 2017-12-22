@@ -48,9 +48,19 @@
 // of this regularized system is then used as a preconditioner for FGMRES(k).
 //
 
-namespace El {
+#include "El/lapack_like/euclidean_min.hpp"
 
-namespace glm {
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/matrices.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
+
+namespace glm
+{
 
 // For the following two routines, on exit, A and B are overwritten with their
 // implicit Generalized QR factorization and D is overwritten with X

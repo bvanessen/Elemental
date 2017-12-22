@@ -22,11 +22,11 @@ namespace write {
 #ifdef EL_HAVE_QT5
 inline void
 SaveQImage
-( const QImage& image, string basename="matrix",
+( const QImage& image, std::string basename="matrix",
   FileFormat format=FileFormat::PNG )
 {
     EL_DEBUG_CSE
-    string filename = basename + "." + FileExtension(format);
+    std::string filename = basename + "." + FileExtension(format);
     QFile file( filename.c_str() );
     file.open( QIODevice::WriteOnly );
     image.save( &file, QtImageFormat(format) );
@@ -35,7 +35,7 @@ SaveQImage
 
 template<typename T>
 void RealPartImage
-( const Matrix<T>& A, string basename="matrix", FileFormat format=FileFormat::PNG )
+( const Matrix<T>& A, std::string basename="matrix", FileFormat format=FileFormat::PNG )
 {
     EL_DEBUG_CSE
 #ifdef EL_HAVE_QT5
@@ -84,7 +84,7 @@ void RealPartImage
 
 template<typename T>
 void ImagPartImage
-( const Matrix<T>& A, string basename="matrix", FileFormat format=FileFormat::PNG )
+( const Matrix<T>& A, std::string basename="matrix", FileFormat format=FileFormat::PNG )
 {
     EL_DEBUG_CSE
 #ifdef EL_HAVE_QT5
@@ -133,7 +133,7 @@ void ImagPartImage
 
 template<typename Real>
 void Image
-( const Matrix<Real>& A, string basename="matrix", FileFormat format=FileFormat::PNG )
+( const Matrix<Real>& A, std::string basename="matrix", FileFormat format=FileFormat::PNG )
 {
     EL_DEBUG_CSE
     RealPartImage( A, basename, format );
@@ -141,7 +141,7 @@ void Image
 
 template<typename Real>
 void Image
-( const Matrix<Complex<Real>>& A, string basename="matrix",
+( const Matrix<Complex<Real>>& A, std::string basename="matrix",
   FileFormat format=FileFormat::PNG )
 {
     EL_DEBUG_CSE

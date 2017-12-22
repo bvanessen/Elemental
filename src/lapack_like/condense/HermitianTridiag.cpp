@@ -7,8 +7,16 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
-namespace herm_tridiag {
+#include "El/blas_like/level2.hpp"
+#include "El/core/DistMatrix/Element/MC_MR.hpp"
+#include "El/core/DistMatrix/Element/MR_STAR.hpp"
+#include "El/lapack_like/condense.hpp"
+#include "El/Typedefs.hpp"
+
+namespace El
+{
+namespace herm_tridiag
+{
 
 template<typename F>
 void Ger2Sub

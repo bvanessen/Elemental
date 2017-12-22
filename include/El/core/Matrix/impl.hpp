@@ -9,6 +9,9 @@
 #ifndef EL_MATRIX_IMPL_HPP
 #define EL_MATRIX_IMPL_HPP
 
+#include "El/core/indexing/decl.hpp"
+#include "El/core/indexing/impl.hpp"
+
 namespace El
 {
 

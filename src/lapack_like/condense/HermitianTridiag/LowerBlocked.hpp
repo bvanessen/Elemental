@@ -9,10 +9,17 @@
 #ifndef EL_HERMITIANTRIDIAG_LOWER_BLOCKED_HPP
 #define EL_HERMITIANTRIDIAG_LOWER_BLOCKED_HPP
 
+#include "El/blas_like/level3.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/View.hpp"
+#include "El/matrices.hpp"
+
 #include "./LowerPanel.hpp"
 
-namespace El {
-namespace herm_tridiag {
+namespace El
+{
+namespace herm_tridiag
+{
 
 // TODO(poulson): Sequential blocked implementation
 template<typename F>

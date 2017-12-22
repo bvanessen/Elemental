@@ -9,8 +9,15 @@
 #ifndef EL_BIDIAG_APPLY_HPP
 #define EL_BIDIAG_APPLY_HPP
 
-namespace El {
-namespace bidiag {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/Typedefs.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
+namespace bidiag
+{
 
 template<typename F>
 void ApplyQ
@@ -23,10 +30,10 @@ void ApplyQ
     const bool normal = (orientation==Orientation::NORMAL);
     const bool onLeft = (side==LeftOrRight::LEFT);
     const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
-    const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
+    const Conjugation conjugation = ( normal ? Conjugation::CONJUGATED : Conjugation::UNCONJUGATED );
     const Int offset = ( A.Height()>=A.Width() ? 0 : -1 );
     ApplyPackedReflectors
-    ( side, UpperOrLower::LOWER, VERTICAL, direction, conjugation, offset,
+    ( side, UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, direction, conjugation, offset,
       A, householderScalars, B );
 }
 
@@ -41,10 +48,10 @@ void ApplyP
     const bool normal = (orientation==Orientation::NORMAL);
     const bool onLeft = (side==LeftOrRight::LEFT);
     const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
-    const Conjugation conjugation = ( normal ? UNCONJUGATED : CONJUGATED );
+    const Conjugation conjugation = ( normal ? Conjugation::UNCONJUGATED : Conjugation::CONJUGATED );
     const Int offset = ( A.Height()>=A.Width() ? 1 : 0 );
     ApplyPackedReflectors
-    ( side, UpperOrLower::UPPER, HORIZONTAL, direction, conjugation, offset,
+    ( side, UpperOrLower::UPPER, VerticalOrHorizontal::HORIZONTAL, direction, conjugation, offset,
       A, householderScalars, B );
 }
 
@@ -59,10 +66,10 @@ void ApplyQ
     const bool normal = (orientation==Orientation::NORMAL);
     const bool onLeft = (side==LeftOrRight::LEFT);
     const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
-    const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
+    const Conjugation conjugation = ( normal ? Conjugation::CONJUGATED : Conjugation::UNCONJUGATED );
     const Int offset = ( A.Height()>=A.Width() ? 0 : -1 );
     ApplyPackedReflectors
-    ( side, UpperOrLower::LOWER, VERTICAL, direction, conjugation, offset,
+    ( side, UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, direction, conjugation, offset,
       A, householderScalars, B );
 }
 
@@ -77,10 +84,10 @@ void ApplyP
     const bool normal = (orientation==Orientation::NORMAL);
     const bool onLeft = (side==LeftOrRight::LEFT);
     const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
-    const Conjugation conjugation = ( normal ? UNCONJUGATED : CONJUGATED );
+    const Conjugation conjugation = ( normal ? Conjugation::UNCONJUGATED : Conjugation::CONJUGATED );
     const Int offset = ( A.Height()>=A.Width() ? 1 : 0 );
     ApplyPackedReflectors
-    ( side, UpperOrLower::UPPER, HORIZONTAL, direction, conjugation, offset,
+    ( side, UpperOrLower::UPPER, VerticalOrHorizontal::HORIZONTAL, direction, conjugation, offset,
       A, householderScalars, B );
 }
 

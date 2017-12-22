@@ -1,6 +1,8 @@
 #ifndef EL_META_HPP_
 #define EL_META_HPP_
 
+#include <type_traits>
+
 namespace El
 {
 

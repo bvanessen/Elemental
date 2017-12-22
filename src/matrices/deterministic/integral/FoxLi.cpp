@@ -7,7 +7,7 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-#include "El/core/Element/Complex/decl.hpp"
+#include "El/Types/Complex.hpp"
 #include "El/core/Matrix/decl.hpp"
 #include "El/core/Proxy.hpp"
 #include "El/lapack_like/spectral.hpp"

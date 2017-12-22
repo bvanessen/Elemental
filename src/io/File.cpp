@@ -44,7 +44,7 @@ string FileExtension( FileFormat format )
     }
 }
 
-FileFormat FormatFromExtension( const string ext )
+FileFormat FormatFromExtension( const std::string ext )
 {
     bool foundFormat = false;
     FileFormat format = FileFormat::BINARY;
@@ -62,9 +62,9 @@ FileFormat FormatFromExtension( const string ext )
     return format;
 }
 
-FileFormat DetectFormat( const string filename )
+FileFormat DetectFormat( const std::string filename )
 {
-    const string ext = filename.substr(filename.find_last_of(".")+1);
+    const std::string ext = filename.substr(filename.find_last_of(".")+1);
     return FormatFromExtension( ext );
 }
 

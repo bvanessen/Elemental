@@ -2,8 +2,8 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_READ_BINARYFLAT_HPP
@@ -14,7 +14,7 @@ namespace read {
 
 template<typename T>
 inline void
-BinaryFlat( Matrix<T>& A, Int height, Int width, const string filename )
+BinaryFlat( Matrix<T>& A, Int height, Int width, const std::string filename )
 {
     EL_DEBUG_CSE
     std::ifstream file( filename.c_str(), std::ios::binary );
@@ -38,7 +38,7 @@ BinaryFlat( Matrix<T>& A, Int height, Int width, const string filename )
 template<typename T>
 inline void
 BinaryFlat
-( AbstractDistMatrix<T>& A, Int height, Int width, const string filename )
+( AbstractDistMatrix<T>& A, Int height, Int width, const std::string filename )
 {
     EL_DEBUG_CSE
     std::ifstream file( filename.c_str(), std::ios::binary );

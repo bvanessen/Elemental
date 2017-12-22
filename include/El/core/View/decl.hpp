@@ -2,14 +2,21 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #ifndef EL_VIEW_DECL_HPP
 #define EL_VIEW_DECL_HPP
 
-namespace El {
+#include "El/core/DistMatrix_decl.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Block.hpp"
+#include "El/core/DistMatrix/Element.hpp"
+#include "El/core/Matrix.hpp"
+
+namespace El
+{
 
 // View an entire matrix
 // =====================
@@ -140,12 +147,12 @@ void LockedView
 template<typename T>
 void View
 ( ElementalMatrix<T>& A,
-  ElementalMatrix<T>& B, 
+  ElementalMatrix<T>& B,
   Range<Int> I, Range<Int> J );
 template<typename T>
 void LockedView
 (       ElementalMatrix<T>& A,
-  const ElementalMatrix<T>& B, 
+  const ElementalMatrix<T>& B,
   Range<Int> I, Range<Int> J );
 
 // Return by value
@@ -185,12 +192,12 @@ void LockedView
 template<typename T>
 void View
 ( BlockMatrix<T>& A,
-  BlockMatrix<T>& B, 
+  BlockMatrix<T>& B,
   Range<Int> I, Range<Int> J );
 template<typename T>
 void LockedView
 (       BlockMatrix<T>& A,
-  const BlockMatrix<T>& B, 
+  const BlockMatrix<T>& B,
   Range<Int> I, Range<Int> J );
 
 // AbstractDistMatrix
@@ -209,12 +216,12 @@ void LockedView
 template<typename T>
 void View
 ( AbstractDistMatrix<T>& A,
-  AbstractDistMatrix<T>& B, 
+  AbstractDistMatrix<T>& B,
   Range<Int> I, Range<Int> J );
 template<typename T>
 void LockedView
 (       AbstractDistMatrix<T>& A,
-  const AbstractDistMatrix<T>& B, 
+  const AbstractDistMatrix<T>& B,
   Range<Int> I, Range<Int> J );
 
 } // namespace El

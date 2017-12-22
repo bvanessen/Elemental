@@ -24,7 +24,7 @@ void ProcessEvents( int numMsecs )
 }
 
 template<typename Real>
-void Display( const Matrix<Real>& A, string title )
+void Display( const Matrix<Real>& A, std::string title )
 {
     EL_DEBUG_CSE
 #ifdef EL_HAVE_QT5
@@ -55,7 +55,7 @@ void Display( const Matrix<Real>& A, string title )
 }
 
 template<typename Real>
-void Display( const Matrix<Complex<Real>>& A, string title )
+void Display( const Matrix<Complex<Real>>& A, std::string title )
 {
     EL_DEBUG_CSE
 #ifdef EL_HAVE_QT5
@@ -93,7 +93,7 @@ void Display( const Matrix<Complex<Real>>& A, string title )
 }
 
 template<typename T>
-void Display( const AbstractDistMatrix<T>& A, string title )
+void Display( const AbstractDistMatrix<T>& A, std::string title )
 {
     EL_DEBUG_CSE
     if( A.ColStride() == 1 && A.RowStride() == 1 )
@@ -111,8 +111,8 @@ void Display( const AbstractDistMatrix<T>& A, string title )
 
 
 #define PROTO(T) \
-  template void Display( const Matrix<T>& A, string title ); \
-  template void Display( const AbstractDistMatrix<T>& A, string title );
+  template void Display( const Matrix<T>& A, std::string title ); \
+  template void Display( const AbstractDistMatrix<T>& A, std::string title );
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

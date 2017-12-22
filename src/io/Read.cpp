@@ -7,6 +7,11 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/io.hpp"
+
+#include "El/blas_like/level1/decl.hpp"
+#include "El/core/DistMatrix/Element/CIRC_CIRC.hpp"
+
 #include "./Read/Ascii.hpp"
 #include "./Read/AsciiMatlab.hpp"
 #include "./Read/Binary.hpp"
@@ -16,7 +21,7 @@
 namespace El {
 
 template<typename T>
-void Read( Matrix<T>& A, const string filename, FileFormat format )
+void Read( Matrix<T>& A, const std::string filename, FileFormat format )
 {
     EL_DEBUG_CSE
     if( format == FileFormat::AUTO )
@@ -46,7 +51,7 @@ void Read( Matrix<T>& A, const string filename, FileFormat format )
 
 template<typename T>
 void Read
-( AbstractDistMatrix<T>& A, const string filename, FileFormat format,
+( AbstractDistMatrix<T>& A, const std::string filename, FileFormat format,
   bool sequential )
 {
     EL_DEBUG_CSE
@@ -103,9 +108,9 @@ void Read
 
 #define PROTO(T) \
   template void Read \
-  ( Matrix<T>& A, const string filename, FileFormat format ); \
+  ( Matrix<T>& A, const std::string filename, FileFormat format ); \
   template void Read \
-  ( AbstractDistMatrix<T>& A, const string filename, \
+  ( AbstractDistMatrix<T>& A, const std::string filename, \
     FileFormat format, bool sequential );
 
 #define EL_ENABLE_DOUBLEDOUBLE
