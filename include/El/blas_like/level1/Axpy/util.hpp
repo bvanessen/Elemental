@@ -9,6 +9,8 @@
 #ifndef EL_BLAS_AXPY_UTIL_HPP
 #define EL_BLAS_AXPY_UTIL_HPP
 
+#include "El/core/DistMatrix/Block.hpp"
+#include "El/core/DistMatrix/Element.hpp"
 #include "El/core/imports/blas.hpp"
 #include "El/core/imports/omp.hpp"
 #include "El/Typedefs.hpp"

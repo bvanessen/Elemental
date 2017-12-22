@@ -9,7 +9,10 @@
 #ifndef EL_IMPORTS_BLAS_HPP
 #define EL_IMPORTS_BLAS_HPP
 
-namespace El {
+#include "El/core/Element/Complex/decl.hpp"
+
+namespace El
+{
 
 
 #if defined(HYDROGEN_BLAS_SUFFIX)

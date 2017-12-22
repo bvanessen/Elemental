@@ -47,11 +47,34 @@ enum class ForwardOrBackward
     BACKWARD
 };
 
+enum class VerticalOrHorizontal
+{
+    VERTICAL,
+    HORIZONTAL
+};
+
 enum class SortType
 {
     UNSORTED,
     DESCENDING,
     ASCENDING
+};
+
+enum class Conjugation
+{
+    UNCONJUGATED,
+    CONJUGATED
+};
+
+enum class NormType
+{
+    ONE_NORM,           // Operator one norm
+    INFINITY_NORM,      // Operator infinity norm
+    ENTRYWISE_ONE_NORM, // One-norm of vectorized matrix
+    MAX_NORM,           // Maximum entry-wise magnitude
+    NUCLEAR_NORM,       // One-norm of the singular values
+    FROBENIUS_NORM,     // Two-norm of the singular values
+    TWO_NORM            // Infinity-norm of the singular values
 };
 
 enum class FileFormat

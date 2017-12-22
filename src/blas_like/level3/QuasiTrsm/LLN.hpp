@@ -7,8 +7,12 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
-namespace quasitrsm {
+#include "El/core/Proxy.hpp"
+
+namespace El
+{
+namespace quasitrsm
+{
 
 // Left Lower NORMAL (Non)Unit QuasiTrsm
 //   X := tril(L)^-1  X, or

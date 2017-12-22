@@ -11,6 +11,7 @@
 
 #include <vector>
 
+#include "El/core/DistMatrix/Abstract.hpp"
 #include "El/core/Permutation.hpp"
 
 namespace El

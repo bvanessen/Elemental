@@ -9,6 +9,8 @@
 #ifndef EL_CORE_DISTMATRIX_HPP
 #define EL_CORE_DISTMATRIX_HPP
 
+#include <El/core/environment/decl.hpp>
+
 namespace El
 {
 

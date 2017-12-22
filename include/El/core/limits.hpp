@@ -12,6 +12,7 @@
 #include <climits> // for INT_MIN et al. due to the Intel C++11 limitations
 
 #include "El/core/Element/decl.hpp"
+#include "El/Traits.hpp"
 
 namespace El
 {

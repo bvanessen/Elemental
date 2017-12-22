@@ -7,7 +7,14 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Block.hpp"
+#include "El/core/DistMatrix/Element.hpp"
+#include "El/core/Matrix/decl.hpp"
+
+namespace El
+{
 
 // Horizontally merge two contiguous matrices
 // ==========================================
@@ -427,20 +434,20 @@ DistMatrix<T,U,V> LockedMerge2x2
   template Matrix<T> LockedMerge2x2 \
   ( const Matrix<T>& BTL, const Matrix<T>& BTR, \
     const Matrix<T>& BBL, const Matrix<T>& BBR ); \
-  PROTO_DIST(T,Dist::CIRC,CIRC) \
-  PROTO_DIST(T,Dist::MC,  MR  ) \
-  PROTO_DIST(T,Dist::MC,  STAR) \
-  PROTO_DIST(T,Dist::MD,  STAR) \
-  PROTO_DIST(T,Dist::MR,  MC  ) \
-  PROTO_DIST(T,Dist::MR,  STAR) \
-  PROTO_DIST(T,Dist::STAR,MC  ) \
-  PROTO_DIST(T,Dist::STAR,MD  ) \
-  PROTO_DIST(T,Dist::STAR,MR  ) \
-  PROTO_DIST(T,Dist::STAR,STAR) \
-  PROTO_DIST(T,Dist::STAR,VC  ) \
-  PROTO_DIST(T,Dist::STAR,VR  ) \
-  PROTO_DIST(T,Dist::VC,  STAR) \
-  PROTO_DIST(T,Dist::VR,  STAR)
+  PROTO_DIST(T,Dist::CIRC,Dist::CIRC) \
+  PROTO_DIST(T,Dist::MC,  Dist::MR  ) \
+  PROTO_DIST(T,Dist::MC,  Dist::STAR) \
+  PROTO_DIST(T,Dist::MD,  Dist::STAR) \
+  PROTO_DIST(T,Dist::MR,  Dist::MC  ) \
+  PROTO_DIST(T,Dist::MR,  Dist::STAR) \
+  PROTO_DIST(T,Dist::STAR,Dist::MC  ) \
+  PROTO_DIST(T,Dist::STAR,Dist::MD  ) \
+  PROTO_DIST(T,Dist::STAR,Dist::MR  ) \
+  PROTO_DIST(T,Dist::STAR,Dist::STAR) \
+  PROTO_DIST(T,Dist::STAR,Dist::VC  ) \
+  PROTO_DIST(T,Dist::STAR,Dist::VR  ) \
+  PROTO_DIST(T,Dist::VC,  Dist::STAR) \
+  PROTO_DIST(T,Dist::VR,  Dist::STAR)
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

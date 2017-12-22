@@ -1,6 +1,8 @@
 #ifndef EL_TYPES_ENTRY_HPP_
 #define EL_TYPES_ENTRY_HPP_
 
+#include "El/Typedefs.hpp"
+
 namespace El
 {
 

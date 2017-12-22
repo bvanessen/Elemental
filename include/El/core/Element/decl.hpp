@@ -9,9 +9,12 @@
 #ifndef EL_ELEMENT_DECL_HPP
 #define EL_ELEMENT_DECL_HPP
 
+#include "El/macros.h"
 #include "El/core/Element/Complex/decl.hpp"
+#include "El/core/Element/Complex/impl.hpp"
 #include "El/Types/Entry.hpp"
 #include "El/Types/ValueInt.hpp"
+
 
 namespace El {
 

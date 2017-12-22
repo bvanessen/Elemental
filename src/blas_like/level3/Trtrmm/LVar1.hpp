@@ -9,8 +9,13 @@
 #ifndef EL_TRTRMM_LVAR1_HPP
 #define EL_TRTRMM_LVAR1_HPP
 
-namespace El {
-namespace trtrmm {
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/Proxy.hpp"
+
+namespace El
+{
+namespace trtrmm
+{
 
 template<typename T>
 void LVar1( Matrix<T>& L, bool conjugate=false )

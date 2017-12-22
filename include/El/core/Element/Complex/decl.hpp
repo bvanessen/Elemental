@@ -22,6 +22,7 @@
 
 #endif // HYDROGEN_HAVE_MPC
 
+#include "El/core/Element/decl.hpp"
 #include "El/Traits.hpp"
 
 namespace El

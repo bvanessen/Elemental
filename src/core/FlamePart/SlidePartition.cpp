@@ -2,12 +2,19 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix.hpp"
+#include "El/core/DistMatrix/Element.hpp"
+#include "El/core/FlamePart.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/View/decl.hpp"
+
+namespace El
+{
 
 // Slide a partition upward
 // ========================
@@ -232,10 +239,10 @@ void SlideLockedPartitionRight
 
 template<typename T>
 void SlidePartitionUpDiagonal
-( Matrix<T>& ATL, Matrix<T>& ATR, 
+( Matrix<T>& ATL, Matrix<T>& ATR,
   Matrix<T>& A00, Matrix<T>& A01, Matrix<T>& A02,
   Matrix<T>& A10, Matrix<T>& A11, Matrix<T>& A12,
-  Matrix<T>& ABL, Matrix<T>& ABR, 
+  Matrix<T>& ABL, Matrix<T>& ABR,
   Matrix<T>& A20, Matrix<T>& A21, Matrix<T>& A22 )
 {
     EL_DEBUG_CSE
@@ -248,10 +255,10 @@ void SlidePartitionUpDiagonal
 
 template<typename T>
 void SlidePartitionUpDiagonal
-( ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR, 
+( ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR,
   ElementalMatrix<T>& A00, ElementalMatrix<T>& A01, ElementalMatrix<T>& A02,
   ElementalMatrix<T>& A10, ElementalMatrix<T>& A11, ElementalMatrix<T>& A12,
-  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, ElementalMatrix<T>& A20, 
+  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, ElementalMatrix<T>& A20,
   ElementalMatrix<T>& A21, ElementalMatrix<T>& A22 )
 {
     EL_DEBUG_CSE
@@ -270,10 +277,10 @@ void SlidePartitionUpDiagonal
 
 template<typename T>
 void SlideLockedPartitionUpDiagonal
-( Matrix<T>& ATL, Matrix<T>& ATR, 
+( Matrix<T>& ATL, Matrix<T>& ATR,
   const Matrix<T>& A00, const Matrix<T>& A01, const Matrix<T>& A02,
   const Matrix<T>& A10, const Matrix<T>& A11, const Matrix<T>& A12,
-  Matrix<T>& ABL, Matrix<T>& ABR, 
+  Matrix<T>& ABL, Matrix<T>& ABR,
   const Matrix<T>& A20, const Matrix<T>& A21, const Matrix<T>& A22 )
 {
     EL_DEBUG_CSE
@@ -287,7 +294,7 @@ void SlideLockedPartitionUpDiagonal
 template<typename T>
 void SlideLockedPartitionUpDiagonal
 (       ElementalMatrix<T>& ATL,
-        ElementalMatrix<T>& ATR, 
+        ElementalMatrix<T>& ATR,
   const ElementalMatrix<T>& A00,
   const ElementalMatrix<T>& A01,
   const ElementalMatrix<T>& A02,
@@ -295,7 +302,7 @@ void SlideLockedPartitionUpDiagonal
   const ElementalMatrix<T>& A11,
   const ElementalMatrix<T>& A12,
         ElementalMatrix<T>& ABL,
-        ElementalMatrix<T>& ABR, 
+        ElementalMatrix<T>& ABR,
   const ElementalMatrix<T>& A20,
   const ElementalMatrix<T>& A21,
   const ElementalMatrix<T>& A22 )
@@ -319,10 +326,10 @@ void SlideLockedPartitionUpDiagonal
 
 template<typename T>
 void SlidePartitionDownDiagonal
-( Matrix<T>& ATL, Matrix<T>& ATR, 
+( Matrix<T>& ATL, Matrix<T>& ATR,
   Matrix<T>& A00, Matrix<T>& A01, Matrix<T>& A02,
   Matrix<T>& A10, Matrix<T>& A11, Matrix<T>& A12,
-  Matrix<T>& ABL, Matrix<T>& ABR, 
+  Matrix<T>& ABL, Matrix<T>& ABR,
   Matrix<T>& A20, Matrix<T>& A21, Matrix<T>& A22 )
 {
     EL_DEBUG_CSE
@@ -335,10 +342,10 @@ void SlidePartitionDownDiagonal
 
 template<typename T>
 void SlidePartitionDownDiagonal
-( ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR, 
+( ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR,
   ElementalMatrix<T>& A00, ElementalMatrix<T>& A01, ElementalMatrix<T>& A02,
   ElementalMatrix<T>& A10, ElementalMatrix<T>& A11, ElementalMatrix<T>& A12,
-  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, 
+  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR,
   ElementalMatrix<T>& A20, ElementalMatrix<T>& A21, ElementalMatrix<T>& A22 )
 {
     EL_DEBUG_CSE
@@ -357,10 +364,10 @@ void SlidePartitionDownDiagonal
 
 template<typename T>
 void SlideLockedPartitionDownDiagonal
-( Matrix<T>& ATL, Matrix<T>& ATR, 
+( Matrix<T>& ATL, Matrix<T>& ATR,
   const Matrix<T>& A00, const Matrix<T>& A01, const Matrix<T>& A02,
   const Matrix<T>& A10, const Matrix<T>& A11, const Matrix<T>& A12,
-  Matrix<T>& ABL, Matrix<T>& ABR, 
+  Matrix<T>& ABL, Matrix<T>& ABR,
   const Matrix<T>& A20, const Matrix<T>& A21, const Matrix<T>& A22 )
 {
     EL_DEBUG_CSE
@@ -374,7 +381,7 @@ void SlideLockedPartitionDownDiagonal
 template<typename T>
 void SlideLockedPartitionDownDiagonal
 (       ElementalMatrix<T>& ATL,
-        ElementalMatrix<T>& ATR, 
+        ElementalMatrix<T>& ATR,
   const ElementalMatrix<T>& A00,
   const ElementalMatrix<T>& A01,
   const ElementalMatrix<T>& A02,
@@ -382,7 +389,7 @@ void SlideLockedPartitionDownDiagonal
   const ElementalMatrix<T>& A11,
   const ElementalMatrix<T>& A12,
         ElementalMatrix<T>& ABL,
-        ElementalMatrix<T>& ABR, 
+        ElementalMatrix<T>& ABR,
   const ElementalMatrix<T>& A20,
   const ElementalMatrix<T>& A21,
   const ElementalMatrix<T>& A22 )

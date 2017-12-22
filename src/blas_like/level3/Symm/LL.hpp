@@ -7,8 +7,12 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
-namespace symm {
+#include "El/core/Proxy.hpp"
+
+namespace El
+{
+namespace symm
+{
 
 template<typename T>
 void LocalAccumulateLL

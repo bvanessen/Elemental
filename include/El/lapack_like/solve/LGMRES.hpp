@@ -11,9 +11,10 @@
 
 // TODO(poulson): Add support for promotion?
 
-namespace El {
-
-namespace lgmres {
+namespace El
+{
+namespace lgmres
+{
 
 // In what follows, 'applyA' should be a function of the form
 //
@@ -189,7 +190,8 @@ Int Single
             auto tT = t( IR(0,j+1), ALL );
             auto HTL = H( IR(0,j+1), IR(0,j+1) );
             auto y = tT;
-            Trsv( UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, HTL, y );
+            Trsv( UpperOrLower::UPPER, Orientation::NORMAL,
+                  UnitOrNonUnit::NON_UNIT, HTL, y );
             // x := x0 + Vj y
             // ^^^^^^^^^^^^^^
             x = x0;

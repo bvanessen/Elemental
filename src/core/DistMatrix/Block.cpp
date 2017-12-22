@@ -184,7 +184,7 @@ void BlockMatrix<T>::Empty( bool freeMemory )
     else
         this->matrix_.Resize( 0, 0 );
 
-    this->viewType_ = OWNER;
+    this->viewType_ = ViewType::OWNER;
     this->height_ = 0;
     this->width_ = 0;
     this->blockHeight_ = 0;
@@ -233,7 +233,7 @@ void BlockMatrix<T>::MakeConsistent( bool includingViewers )
     Int message[msgLength];
     if( this->CrossRank() == this->Root() )
     {
-        message[ 0] = this->viewType_;
+        message[ 0] = static_cast<Int>(this->viewType_);
         message[ 1] = this->height_;
         message[ 2] = this->width_;
         message[ 3] = this->colConstrained_;
@@ -489,7 +489,7 @@ void BlockMatrix<T>::Attach
     this->rowCut_ = rowCut;
     this->colConstrained_ = true;
     this->rowConstrained_ = true;
-    this->viewType_ = VIEW;
+    this->viewType_ = ViewType::VIEW;
     this->SetShifts();
     if( this->Participating() )
     {
@@ -534,7 +534,7 @@ void BlockMatrix<T>::LockedAttach
     this->rowCut_ = rowCut;
     this->colConstrained_ = true;
     this->rowConstrained_ = true;
-    this->viewType_ = LOCKED_VIEW;
+    this->viewType_ = ViewType::LOCKED_VIEW;
     this->SetShifts();
     if( this->Participating() )
     {

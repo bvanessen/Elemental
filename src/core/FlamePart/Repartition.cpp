@@ -2,13 +2,20 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include "El/core/FlamePart.hpp"
 
-namespace El {
+#include "El/core/DistMatrix.hpp"
+#include "El/core/DistMatrix/Block.hpp"
+#include "El/core/DistMatrix/Element.hpp"
+#include "El/core/FlamePart.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/View/decl.hpp"
+
+namespace El
+{
 
 // Repartition upwards from the bottom
 // ===================================
@@ -136,7 +143,7 @@ void RepartitionLeft
 template<typename T>
 void RepartitionLeft
 ( ElementalMatrix<T>& AL, ElementalMatrix<T>& AR,
-  ElementalMatrix<T>& A0, ElementalMatrix<T>& A1, 
+  ElementalMatrix<T>& A0, ElementalMatrix<T>& A1,
   ElementalMatrix<T>& A2, Int A1Width )
 {
     EL_DEBUG_CSE
@@ -161,7 +168,7 @@ void LockedRepartitionLeft
 template<typename T>
 void LockedRepartitionLeft
 ( const ElementalMatrix<T>& AL, const ElementalMatrix<T>& AR,
-  ElementalMatrix<T>& A0, ElementalMatrix<T>& A1, 
+  ElementalMatrix<T>& A0, ElementalMatrix<T>& A1,
   ElementalMatrix<T>& A2, Int A1Width )
 {
     EL_DEBUG_CSE
@@ -189,7 +196,7 @@ void RepartitionRight
 template<typename T>
 void RepartitionRight
 ( ElementalMatrix<T>& AL, ElementalMatrix<T>& AR,
-  ElementalMatrix<T>& A0, ElementalMatrix<T>& A1, 
+  ElementalMatrix<T>& A0, ElementalMatrix<T>& A1,
   ElementalMatrix<T>& A2, Int A1Width )
 {
     EL_DEBUG_CSE
@@ -214,7 +221,7 @@ void LockedRepartitionRight
 template<typename T>
 void LockedRepartitionRight
 ( const ElementalMatrix<T>& AL, const ElementalMatrix<T>& AR,
-  ElementalMatrix<T>& A0, ElementalMatrix<T>& A1, 
+  ElementalMatrix<T>& A0, ElementalMatrix<T>& A1,
   ElementalMatrix<T>& A2, Int A1Width )
 {
     EL_DEBUG_CSE
@@ -231,10 +238,10 @@ void LockedRepartitionRight
 
 template<typename T>
 void RepartitionUpDiagonal
-( Matrix<T>& ATL, Matrix<T>& ATR, 
+( Matrix<T>& ATL, Matrix<T>& ATR,
   Matrix<T>& A00, Matrix<T>& A01, Matrix<T>& A02,
   Matrix<T>& A10, Matrix<T>& A11, Matrix<T>& A12,
-  Matrix<T>& ABL, Matrix<T>& ABR, 
+  Matrix<T>& ABL, Matrix<T>& ABR,
   Matrix<T>& A20, Matrix<T>& A21, Matrix<T>& A22, Int bsize )
 {
     EL_DEBUG_CSE
@@ -249,13 +256,13 @@ void RepartitionUpDiagonal
 
 template<typename T>
 void RepartitionUpDiagonal
-( ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR, 
-  ElementalMatrix<T>& A00, ElementalMatrix<T>& A01, 
+( ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR,
+  ElementalMatrix<T>& A00, ElementalMatrix<T>& A01,
   ElementalMatrix<T>& A02,
-  ElementalMatrix<T>& A10, ElementalMatrix<T>& A11, 
+  ElementalMatrix<T>& A10, ElementalMatrix<T>& A11,
   ElementalMatrix<T>& A12,
-  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, 
-  ElementalMatrix<T>& A20, ElementalMatrix<T>& A21, 
+  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR,
+  ElementalMatrix<T>& A20, ElementalMatrix<T>& A21,
   ElementalMatrix<T>& A22, Int bsize )
 {
     EL_DEBUG_CSE
@@ -276,10 +283,10 @@ void RepartitionUpDiagonal
 
 template<typename T>
 void LockedRepartitionUpDiagonal
-( const Matrix<T>& ATL, const Matrix<T>& ATR, 
+( const Matrix<T>& ATL, const Matrix<T>& ATR,
   Matrix<T>& A00, Matrix<T>& A01, Matrix<T>& A02,
   Matrix<T>& A10, Matrix<T>& A11, Matrix<T>& A12,
-  const Matrix<T>& ABL, const Matrix<T>& ABR, 
+  const Matrix<T>& ABL, const Matrix<T>& ABR,
   Matrix<T>& A20, Matrix<T>& A21, Matrix<T>& A22, Int bsize )
 {
     EL_DEBUG_CSE
@@ -294,13 +301,13 @@ void LockedRepartitionUpDiagonal
 
 template<typename T>
 void LockedRepartitionUpDiagonal
-( const ElementalMatrix<T>& ATL, const ElementalMatrix<T>& ATR, 
-  ElementalMatrix<T>& A00, ElementalMatrix<T>& A01, 
+( const ElementalMatrix<T>& ATL, const ElementalMatrix<T>& ATR,
+  ElementalMatrix<T>& A00, ElementalMatrix<T>& A01,
   ElementalMatrix<T>& A02,
-  ElementalMatrix<T>& A10, ElementalMatrix<T>& A11, 
+  ElementalMatrix<T>& A10, ElementalMatrix<T>& A11,
   ElementalMatrix<T>& A12,
-  const ElementalMatrix<T>& ABL, const ElementalMatrix<T>& ABR, 
-  ElementalMatrix<T>& A20, ElementalMatrix<T>& A21, 
+  const ElementalMatrix<T>& ABL, const ElementalMatrix<T>& ABR,
+  ElementalMatrix<T>& A20, ElementalMatrix<T>& A21,
   ElementalMatrix<T>& A22, Int bsize )
 {
     EL_DEBUG_CSE
@@ -324,10 +331,10 @@ void LockedRepartitionUpDiagonal
 
 template<typename T>
 void RepartitionDownDiagonal
-( Matrix<T>& ATL, Matrix<T>& ATR, 
+( Matrix<T>& ATL, Matrix<T>& ATR,
   Matrix<T>& A00, Matrix<T>& A01, Matrix<T>& A02,
   Matrix<T>& A10, Matrix<T>& A11, Matrix<T>& A12,
-  Matrix<T>& ABL, Matrix<T>& ABR, 
+  Matrix<T>& ABL, Matrix<T>& ABR,
   Matrix<T>& A20, Matrix<T>& A21, Matrix<T>& A22, Int bsize )
 {
     EL_DEBUG_CSE
@@ -340,13 +347,13 @@ void RepartitionDownDiagonal
 
 template<typename T>
 void RepartitionDownDiagonal
-( ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR, 
-  ElementalMatrix<T>& A00, ElementalMatrix<T>& A01, 
+( ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR,
+  ElementalMatrix<T>& A00, ElementalMatrix<T>& A01,
   ElementalMatrix<T>& A02,
-  ElementalMatrix<T>& A10, ElementalMatrix<T>& A11, 
+  ElementalMatrix<T>& A10, ElementalMatrix<T>& A11,
   ElementalMatrix<T>& A12,
-  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, 
-  ElementalMatrix<T>& A20, ElementalMatrix<T>& A21, 
+  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR,
+  ElementalMatrix<T>& A20, ElementalMatrix<T>& A21,
   ElementalMatrix<T>& A22, Int bsize )
 {
     EL_DEBUG_CSE
@@ -365,10 +372,10 @@ void RepartitionDownDiagonal
 
 template<typename T>
 void LockedRepartitionDownDiagonal
-( const Matrix<T>& ATL, const Matrix<T>& ATR, 
+( const Matrix<T>& ATL, const Matrix<T>& ATR,
   Matrix<T>& A00, Matrix<T>& A01, Matrix<T>& A02,
   Matrix<T>& A10, Matrix<T>& A11, Matrix<T>& A12,
-  const Matrix<T>& ABL, const Matrix<T>& ABR, 
+  const Matrix<T>& ABL, const Matrix<T>& ABR,
   Matrix<T>& A20, Matrix<T>& A21, Matrix<T>& A22, Int bsize )
 {
     EL_DEBUG_CSE
@@ -381,13 +388,13 @@ void LockedRepartitionDownDiagonal
 
 template<typename T>
 void LockedRepartitionDownDiagonal
-( const ElementalMatrix<T>& ATL, const ElementalMatrix<T>& ATR, 
-  ElementalMatrix<T>& A00, ElementalMatrix<T>& A01, 
+( const ElementalMatrix<T>& ATL, const ElementalMatrix<T>& ATR,
+  ElementalMatrix<T>& A00, ElementalMatrix<T>& A01,
   ElementalMatrix<T>& A02,
-  ElementalMatrix<T>& A10, ElementalMatrix<T>& A11, 
+  ElementalMatrix<T>& A10, ElementalMatrix<T>& A11,
   ElementalMatrix<T>& A12,
-  const ElementalMatrix<T>& ABL, const ElementalMatrix<T>& ABR, 
-  ElementalMatrix<T>& A20, ElementalMatrix<T>& A21, 
+  const ElementalMatrix<T>& ABL, const ElementalMatrix<T>& ABR,
+  ElementalMatrix<T>& A20, ElementalMatrix<T>& A21,
   ElementalMatrix<T>& A22, Int bsize )
 {
     EL_DEBUG_CSE

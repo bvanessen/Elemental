@@ -7,8 +7,12 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include "El/matrices.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/DistMatrix/Element/STAR_VR.hpp"
+#include "El/core/random/decl.hpp"
 
-namespace El {
+namespace El
+{
 
 // Generate the "random Green's matrix" from
 //   A. Goetschy and S. E. Skipetrov's "Non-Hermitian Euclidean random matrix

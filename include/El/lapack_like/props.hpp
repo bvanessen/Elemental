@@ -9,14 +9,21 @@
 #ifndef EL_PROPS_HPP
 #define EL_PROPS_HPP
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Element/Complex/decl.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/Types/Enums.hpp"
+#include "El/Types/SafeProduct.hpp"
+
+namespace El
+{
 
 // Condition number
 // ================
 template<typename F>
-Base<F> Condition( const Matrix<F>& A, NormType type=TWO_NORM );
+Base<F> Condition( const Matrix<F>& A, NormType type=NormType::TWO_NORM );
 template<typename F>
-Base<F> Condition( const AbstractDistMatrix<F>& A, NormType type=TWO_NORM );
+Base<F> Condition( const AbstractDistMatrix<F>& A, NormType type=NormType::TWO_NORM );
 
 template<typename F>
 Base<F> FrobeniusCondition( const Matrix<F>& A );
@@ -125,25 +132,25 @@ InertiaType Inertia
 // Norm
 // ====
 template<typename F>
-Base<F> Norm( const Matrix<F>& A, NormType type=FROBENIUS_NORM );
+Base<F> Norm( const Matrix<F>& A, NormType type=NormType::FROBENIUS_NORM );
 template<typename F>
-Base<F> Norm( const AbstractDistMatrix<F>& A, NormType type=FROBENIUS_NORM );
+Base<F> Norm( const AbstractDistMatrix<F>& A, NormType type=NormType::FROBENIUS_NORM );
 
 template<typename F>
 Base<F> SymmetricNorm
-( UpperOrLower uplo, const Matrix<F>& A, NormType type=FROBENIUS_NORM );
+( UpperOrLower uplo, const Matrix<F>& A, NormType type=NormType::FROBENIUS_NORM );
 template<typename F>
 Base<F> SymmetricNorm
 ( UpperOrLower uplo, const AbstractDistMatrix<F>& A,
-  NormType type=FROBENIUS_NORM );
+  NormType type=NormType::FROBENIUS_NORM );
 
 template<typename F>
 Base<F> HermitianNorm
-( UpperOrLower uplo, const Matrix<F>& A, NormType type=FROBENIUS_NORM );
+( UpperOrLower uplo, const Matrix<F>& A, NormType type=NormType::FROBENIUS_NORM );
 template<typename F>
 Base<F> HermitianNorm
 ( UpperOrLower uplo, const AbstractDistMatrix<F>& A,
-  NormType type=FROBENIUS_NORM );
+  NormType type=NormType::FROBENIUS_NORM );
 
 // Entrywise norm
 // --------------

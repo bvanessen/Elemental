@@ -10,7 +10,8 @@
 #include "El/blas_like/level1/Copy.hpp"
 #include "El/blas_like/level1/Scale.hpp"
 
-namespace El {
+namespace El
+{
 
 // Public section
 // ##############
@@ -82,7 +83,7 @@ ElementalMatrix<T>::MakeConsistent( bool includingViewers )
     Int message[msgLength];
     if( this->CrossRank() == this->Root() )
     {
-        message[0] = this->viewType_;
+        message[0] = static_cast<Int>(this->viewType_);
         message[1] = this->height_;
         message[2] = this->width_;
         message[3] = this->colConstrained_;
@@ -343,7 +344,7 @@ ElementalMatrix<T>::Attach
     this->colConstrained_ = true;
     this->rowConstrained_ = true;
     this->rootConstrained_ = true;
-    this->viewType_ = VIEW;
+    this->viewType_ = ViewType::VIEW;
     this->SetShifts();
     if( this->Participating() )
     {
@@ -391,7 +392,7 @@ ElementalMatrix<T>::LockedAttach
     this->colConstrained_ = true;
     this->rowConstrained_ = true;
     this->rootConstrained_ = true;
-    this->viewType_ = LOCKED_VIEW;
+    this->viewType_ = ViewType::LOCKED_VIEW;
     this->SetShifts();
     if( this->Participating() )
     {
@@ -625,7 +626,7 @@ int ElementalMatrix<T>::DiagonalRoot( Int offset ) const EL_NO_EXCEPT
     EL_DEBUG_CSE
     const auto& grid = this->Grid();
 
-    if( this->ColDist() == MC && this->RowDist() == MR )
+    if( this->ColDist() == Dist::MC && this->RowDist() == Dist::MR )
     {
         // Result is an [MD,* ] or [* ,MD]
         int owner;
@@ -643,7 +644,7 @@ int ElementalMatrix<T>::DiagonalRoot( Int offset ) const EL_NO_EXCEPT
         }
         return grid.Diag(owner);
     }
-    else if( this->ColDist() == MR && this->RowDist() == MC )
+    else if( this->ColDist() == Dist::MR && this->RowDist() == Dist::MC )
     {
         // Result is an [MD,* ] or [* ,MD]
         int owner;
@@ -671,7 +672,7 @@ int ElementalMatrix<T>::DiagonalAlign( Int offset ) const EL_NO_EXCEPT
     EL_DEBUG_CSE
     const auto& grid = this->Grid();
 
-    if( this->ColDist() == MC && this->RowDist() == MR )
+    if( this->ColDist() == Dist::MC && this->RowDist() == Dist::MR )
     {
         // Result is an [MD,* ] or [* ,MD]
         int owner;
@@ -689,7 +690,7 @@ int ElementalMatrix<T>::DiagonalAlign( Int offset ) const EL_NO_EXCEPT
         }
         return grid.DiagRank(owner);
     }
-    else if( this->ColDist() == MR && this->RowDist() == MC )
+    else if( this->ColDist() == Dist::MR && this->RowDist() == Dist::MC )
     {
         // Result is an [MD,* ] or [* ,MD]
         int owner;
@@ -707,7 +708,7 @@ int ElementalMatrix<T>::DiagonalAlign( Int offset ) const EL_NO_EXCEPT
         }
         return grid.DiagRank(owner);
     }
-    else if( this->ColDist() == STAR )
+    else if( this->ColDist() == Dist::STAR )
     {
         // Result is a [V,* ] or [* ,V]
         if( offset >= 0 )

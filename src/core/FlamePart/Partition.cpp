@@ -2,19 +2,26 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix.hpp"
+#include "El/core/DistMatrix/Block.hpp"
+#include "El/core/DistMatrix/Element.hpp"
+#include "El/core/Matrix/decl.hpp"
+#include "El/core/View/decl.hpp"
+
+namespace El
+{
 
 // Partition downwards from the top
 // ================================
 
 template<typename T>
 void PartitionDown
-( Matrix<T>& A, Matrix<T>& AT, Matrix<T>& AB, Int heightAT ) 
+( Matrix<T>& A, Matrix<T>& AT, Matrix<T>& AB, Int heightAT )
 {
     EL_DEBUG_CSE
     heightAT = Max(Min(heightAT,A.Height()),0);
@@ -25,8 +32,8 @@ void PartitionDown
 
 template<typename T>
 void PartitionDown
-( ElementalMatrix<T>& A, 
-  ElementalMatrix<T>& AT, ElementalMatrix<T>& AB, 
+( ElementalMatrix<T>& A,
+  ElementalMatrix<T>& AT, ElementalMatrix<T>& AB,
   Int heightAT )
 {
     EL_DEBUG_CSE
@@ -42,7 +49,7 @@ void PartitionDown
 
 template<typename T>
 void LockedPartitionDown
-( const Matrix<T>& A, Matrix<T>& AT, Matrix<T>& AB, Int heightAT ) 
+( const Matrix<T>& A, Matrix<T>& AT, Matrix<T>& AB, Int heightAT )
 {
     EL_DEBUG_CSE
     heightAT = Max(Min(heightAT,A.Height()),0);
@@ -53,8 +60,8 @@ void LockedPartitionDown
 
 template<typename T>
 void LockedPartitionDown
-( const ElementalMatrix<T>& A, 
-        ElementalMatrix<T>& AT, ElementalMatrix<T>& AB, 
+( const ElementalMatrix<T>& A,
+        ElementalMatrix<T>& AT, ElementalMatrix<T>& AB,
   Int heightAT )
 {
     EL_DEBUG_CSE
@@ -81,8 +88,8 @@ void PartitionUp
 
 template<typename T>
 void PartitionUp
-( ElementalMatrix<T>& A, 
-  ElementalMatrix<T>& AT, ElementalMatrix<T>& AB, 
+( ElementalMatrix<T>& A,
+  ElementalMatrix<T>& AT, ElementalMatrix<T>& AB,
   Int heightAB )
 {
     EL_DEBUG_CSE
@@ -103,8 +110,8 @@ void LockedPartitionUp
 
 template<typename T>
 void LockedPartitionUp
-( const ElementalMatrix<T>& A, 
-        ElementalMatrix<T>& AT, ElementalMatrix<T>& AB, 
+( const ElementalMatrix<T>& A,
+        ElementalMatrix<T>& AT, ElementalMatrix<T>& AB,
   Int heightAB )
 {
     EL_DEBUG_CSE
@@ -131,8 +138,8 @@ void PartitionRight
 
 template<typename T>
 void PartitionRight
-( ElementalMatrix<T>& A, 
-  ElementalMatrix<T>& AL, ElementalMatrix<T>& AR, 
+( ElementalMatrix<T>& A,
+  ElementalMatrix<T>& AL, ElementalMatrix<T>& AR,
   Int widthAL )
 {
     EL_DEBUG_CSE
@@ -159,8 +166,8 @@ void LockedPartitionRight
 
 template<typename T>
 void LockedPartitionRight
-( const ElementalMatrix<T>& A, 
-        ElementalMatrix<T>& AL, ElementalMatrix<T>& AR, 
+( const ElementalMatrix<T>& A,
+        ElementalMatrix<T>& AL, ElementalMatrix<T>& AR,
   Int widthAL )
 {
     EL_DEBUG_CSE
@@ -187,8 +194,8 @@ void PartitionLeft
 
 template<typename T>
 void PartitionLeft
-( ElementalMatrix<T>& A, 
-  ElementalMatrix<T>& AL, ElementalMatrix<T>& AR, 
+( ElementalMatrix<T>& A,
+  ElementalMatrix<T>& AL, ElementalMatrix<T>& AR,
   Int widthAR )
 {
     EL_DEBUG_CSE
@@ -201,7 +208,7 @@ void PartitionLeft
 
 template<typename T>
 void LockedPartitionLeft
-( const Matrix<T>& A, 
+( const Matrix<T>& A,
         Matrix<T>& AL, Matrix<T>& AR, Int widthAR )
 {
     EL_DEBUG_CSE
@@ -210,8 +217,8 @@ void LockedPartitionLeft
 
 template<typename T>
 void LockedPartitionLeft
-( const ElementalMatrix<T>& A, 
-        ElementalMatrix<T>& AL, ElementalMatrix<T>& AR, 
+( const ElementalMatrix<T>& A,
+        ElementalMatrix<T>& AL, ElementalMatrix<T>& AR,
   Int widthAR )
 {
     EL_DEBUG_CSE
@@ -228,7 +235,7 @@ void LockedPartitionLeft
 template<typename T>
 void PartitionDownOffsetDiagonal
 ( Int offset,
-  Matrix<T>& A, 
+  Matrix<T>& A,
   Matrix<T>& ATL, Matrix<T>& ATR,
   Matrix<T>& ABL, Matrix<T>& ABR, Int diagDist )
 {
@@ -237,7 +244,7 @@ void PartitionDownOffsetDiagonal
     const Int n = A.Width();
     const Int diagLength = A.DiagonalLength(offset);
     diagDist = Max(Min(diagDist,diagLength),0);
-    
+
     const Int mCut = ( offset<=0 ? -offset+diagDist : diagDist );
     const Int nCut = ( offset<=0 ? diagDist : offset+diagDist );
     View( ATL, A, 0,    0,    mCut,   nCut   );
@@ -249,9 +256,9 @@ void PartitionDownOffsetDiagonal
 template<typename T>
 void PartitionDownOffsetDiagonal
 ( Int offset,
-  ElementalMatrix<T>& A, 
+  ElementalMatrix<T>& A,
   ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR,
-  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, 
+  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR,
   Int diagDist )
 {
     EL_DEBUG_CSE
@@ -275,7 +282,7 @@ void PartitionDownOffsetDiagonal
 template<typename T>
 void LockedPartitionDownOffsetDiagonal
 ( Int offset,
-  const Matrix<T>& A, 
+  const Matrix<T>& A,
         Matrix<T>& ATL, Matrix<T>& ATR,
         Matrix<T>& ABL, Matrix<T>& ABR, Int diagDist )
 {
@@ -284,7 +291,7 @@ void LockedPartitionDownOffsetDiagonal
     const Int n = A.Width();
     const Int diagLength = A.DiagonalLength(offset);
     diagDist = Max(Min(diagDist,diagLength),0);
-    
+
     const Int mCut = ( offset<=0 ? -offset+diagDist : diagDist );
     const Int nCut = ( offset<=0 ? diagDist : offset+diagDist );
     LockedView( ATL, A, 0,    0,    mCut,   nCut   );
@@ -296,9 +303,9 @@ void LockedPartitionDownOffsetDiagonal
 template<typename T>
 void LockedPartitionDownOffsetDiagonal
 ( Int offset,
-  const ElementalMatrix<T>& A, 
+  const ElementalMatrix<T>& A,
         ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR,
-        ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, 
+        ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR,
   Int diagDist )
 {
     EL_DEBUG_CSE
@@ -310,7 +317,7 @@ void LockedPartitionDownOffsetDiagonal
     const Int n = A.Width();
     const Int diagLength = A.DiagonalLength(offset);
     diagDist = Max(Min(diagDist,diagLength),0);
-    
+
     const Int mCut = ( offset<=0 ? -offset+diagDist : diagDist );
     const Int nCut = ( offset<=0 ? diagDist : offset+diagDist );
     LockedView( ATL, A, 0,    0,    mCut,   nCut   );
@@ -325,7 +332,7 @@ void LockedPartitionDownOffsetDiagonal
 template<typename T>
 void PartitionUpOffsetDiagonal
 ( Int offset,
-  Matrix<T>& A, 
+  Matrix<T>& A,
   Matrix<T>& ATL, Matrix<T>& ATR,
   Matrix<T>& ABL, Matrix<T>& ABR, Int diagDist )
 {
@@ -337,9 +344,9 @@ void PartitionUpOffsetDiagonal
 template<typename T>
 void PartitionUpOffsetDiagonal
 ( Int offset,
-  ElementalMatrix<T>& A, 
+  ElementalMatrix<T>& A,
   ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR,
-  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, 
+  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR,
   Int diagDist )
 {
     EL_DEBUG_CSE
@@ -354,7 +361,7 @@ void PartitionUpOffsetDiagonal
 template<typename T>
 void LockedPartitionUpOffsetDiagonal
 ( Int offset,
-  const Matrix<T>& A, 
+  const Matrix<T>& A,
         Matrix<T>& ATL, Matrix<T>& ATR,
         Matrix<T>& ABL, Matrix<T>& ABR, Int diagDist )
 {
@@ -366,9 +373,9 @@ void LockedPartitionUpOffsetDiagonal
 template<typename T>
 void LockedPartitionUpOffsetDiagonal
 ( Int offset,
-  const ElementalMatrix<T>& A, 
+  const ElementalMatrix<T>& A,
         ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR,
-        ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, 
+        ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR,
   Int diagDist )
 {
     EL_DEBUG_CSE
@@ -385,7 +392,7 @@ void LockedPartitionUpOffsetDiagonal
 
 template<typename T>
 void PartitionDownDiagonal
-( Matrix<T>& A, 
+( Matrix<T>& A,
   Matrix<T>& ATL, Matrix<T>& ATR,
   Matrix<T>& ABL, Matrix<T>& ABR, Int diagDist )
 {
@@ -395,9 +402,9 @@ void PartitionDownDiagonal
 
 template<typename T>
 void PartitionDownDiagonal
-( ElementalMatrix<T>& A, 
+( ElementalMatrix<T>& A,
   ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR,
-  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, 
+  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR,
   Int diagDist )
 {
     EL_DEBUG_CSE
@@ -410,7 +417,7 @@ void PartitionDownDiagonal
 
 template<typename T>
 void LockedPartitionDownDiagonal
-( const Matrix<T>& A, 
+( const Matrix<T>& A,
         Matrix<T>& ATL, Matrix<T>& ATR,
         Matrix<T>& ABL, Matrix<T>& ABR, Int diagDist )
 {
@@ -420,9 +427,9 @@ void LockedPartitionDownDiagonal
 
 template<typename T>
 void LockedPartitionDownDiagonal
-( const ElementalMatrix<T>& A, 
+( const ElementalMatrix<T>& A,
         ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR,
-        ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, 
+        ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR,
   Int diagDist )
 {
     EL_DEBUG_CSE
@@ -438,7 +445,7 @@ void LockedPartitionDownDiagonal
 
 template<typename T>
 void PartitionUpDiagonal
-( Matrix<T>& A, 
+( Matrix<T>& A,
   Matrix<T>& ATL, Matrix<T>& ATR,
   Matrix<T>& ABL, Matrix<T>& ABR, Int diagDist )
 {
@@ -448,9 +455,9 @@ void PartitionUpDiagonal
 
 template<typename T>
 void PartitionUpDiagonal
-( ElementalMatrix<T>& A, 
+( ElementalMatrix<T>& A,
   ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR,
-  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, 
+  ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR,
   Int diagDist )
 {
     EL_DEBUG_CSE
@@ -463,7 +470,7 @@ void PartitionUpDiagonal
 
 template<typename T>
 void LockedPartitionUpDiagonal
-( const Matrix<T>& A, 
+( const Matrix<T>& A,
         Matrix<T>& ATL, Matrix<T>& ATR,
         Matrix<T>& ABL, Matrix<T>& ABR, Int diagDist )
 {
@@ -473,9 +480,9 @@ void LockedPartitionUpDiagonal
 
 template<typename T>
 void LockedPartitionUpDiagonal
-( const ElementalMatrix<T>& A, 
+( const ElementalMatrix<T>& A,
         ElementalMatrix<T>& ATL, ElementalMatrix<T>& ATR,
-        ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR, 
+        ElementalMatrix<T>& ABL, ElementalMatrix<T>& ABR,
   Int diagDist )
 {
     EL_DEBUG_CSE

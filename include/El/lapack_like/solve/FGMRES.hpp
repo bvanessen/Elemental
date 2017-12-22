@@ -16,9 +16,12 @@
 
 // Add support for promotion?
 
-namespace El {
+#include "El/core/Timer.hpp"
 
-namespace fgmres {
+namespace El
+{
+namespace fgmres
+{
 
 // In what follows, 'applyA' should be a function of the form
 //
@@ -224,7 +227,8 @@ Int Single
             auto tT = t( IR(0,j+1), ALL );
             auto HTL = H( IR(0,j+1), IR(0,j+1) );
             auto y = tT;
-            Trsv( UPPER, Orientation::NORMAL, UnitOrNonUnit::NON_UNIT, HTL, y );
+            Trsv( UpperOrLower::UPPER, Orientation::NORMAL,
+                  UnitOrNonUnit::NON_UNIT, HTL, y );
             // x := x0 + Zj y
             // ^^^^^^^^^^^^^^
             x = x0;

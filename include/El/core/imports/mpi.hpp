@@ -18,9 +18,9 @@
 #include <mpi.h>
 
 #include "El/macros.h"
-#include "El/Typedefs.hpp"
-#include "El/core/Element/decl.hpp"
 #include "El/Traits.hpp"
+#include "El/Typedefs.hpp"
+#include "El/Types/ValueInt.hpp"
 
 namespace El {
 

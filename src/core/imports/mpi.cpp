@@ -13,6 +13,12 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/core/imports/mpi.hpp"
+#include "El/core/Element/Complex/decl.hpp"
+#include "El/core/Element/Complex/impl.hpp"
+#include "El/core/environment/decl.hpp"
+#include "El/macros.h"
+
 typedef unsigned char* UCP;
 
 namespace {
@@ -1901,7 +1907,7 @@ EL_NO_RELEASE_EXCEPT
 }
 
 template<typename T>
-vector<T> AllToAll
+std::vector<T> AllToAll
 ( const std::vector<T>& sendBuf,
   const std::vector<int>& sendCounts,
   const std::vector<int>& sendOffs,

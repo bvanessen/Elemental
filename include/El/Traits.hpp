@@ -1,8 +1,6 @@
 #ifndef EL_TRAITS_HPP_
 #define EL_TRAITS_HPP_
 
-#include "El/core/Element/Complex/decl.hpp"
-
 namespace El
 {
 

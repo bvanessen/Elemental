@@ -124,10 +124,9 @@ void LocalQuasiTrsm
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( (side == LeftOrRight::LEFT && X.ColDist() != STAR) ||
-          (side == LeftOrRight::RIGHT && X.RowDist() != STAR) )
-          LogicError
-          ("Dist of RHS must conform with that of triangle");
+    if((side == LeftOrRight::LEFT && X.ColDist() != Dist::STAR) ||
+       (side == LeftOrRight::RIGHT && X.RowDist() != Dist::STAR))
+        LogicError("Dist of RHS must conform with that of triangle");
     )
     QuasiTrsm
     ( side, uplo, orientation,
