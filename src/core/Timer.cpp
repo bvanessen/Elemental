@@ -2,14 +2,20 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include <string>
 
-Timer::Timer( const string& name )
+#include "El/core/environment/decl.hpp"
+#include "El/core/Timer.hpp"
+
+namespace El
+{
+
+Timer::Timer( const std::string& name )
 : name_(name)
 { }
 
@@ -31,18 +37,18 @@ double Timer::Stop()
     return lastPartialTime_;
 }
 
-void Timer::Reset( const string& name )
-{ 
+void Timer::Reset( const std::string& name )
+{
     name_ = name;
     running_ = false;
-    totalTime_ = 0; 
+    totalTime_ = 0;
     lastPartialTime_ = 0;
 }
 
-const string& Timer::Name() const { return name_; }
+const std::string& Timer::Name() const { return name_; }
 
 double Timer::Partial() const
-{ 
+{
     if( running_ )
     {
         auto now = Clock::now();
@@ -50,7 +56,7 @@ double Timer::Partial() const
         return timeSpan.count();
     }
     else
-        return lastPartialTime_; 
+        return lastPartialTime_;
 }
 
 double Timer::Total() const

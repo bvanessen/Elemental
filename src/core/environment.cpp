@@ -9,9 +9,21 @@
 */
 
 #include <algorithm>
+#include <exception>
+#include <iostream>
 #include <set>
+#include <string>
+#include <vector>
 
-namespace {
+#include "El/config.h"
+#include "El/core/environment/decl.hpp"
+#include "El/core/environment/impl.hpp"
+#include "El/core/Grid.hpp"
+#include "El/core/random/decl.hpp"
+#include "El/Typedefs.hpp"
+
+namespace
+{
 
 El::Int numElemInits = 0;
 bool elemInitializedMpi = false;
@@ -22,17 +34,17 @@ El::Args* args = 0;
 
 namespace El {
 
-void PrintVersion( ostream& os )
+void PrintVersion( std::ostream& os )
 {
     os << "Elemental version information:\n"
        << "  Git revision: " << EL_GIT_SHA1 << "\n"
        << "  Version:      " << EL_VERSION_MAJOR << "."
                              << EL_VERSION_MINOR << "\n"
        << "  Build type:   " << EL_CMAKE_BUILD_TYPE << "\n"
-       << endl;
+       << std::endl;
 }
 
-void PrintConfig( ostream& os )
+void PrintConfig( std::ostream& os )
 {
     os <<
       "Elemental configuration:\n" <<
@@ -72,10 +84,10 @@ void PrintConfig( ostream& os )
 #else
       "  Use byte AllGathers:          NO\n"
 #endif
-       << endl;
+       << std::endl;
 }
 
-void PrintCCompilerInfo( ostream& os )
+void PrintCCompilerInfo( std::ostream& os )
 {
     os << "Elemental's C compiler info:\n"
        << "  EL_CMAKE_C_COMPILER:    " << EL_CMAKE_C_COMPILER << "\n"
@@ -84,10 +96,10 @@ void PrintCCompilerInfo( ostream& os )
        << "  EL_MPI_C_COMPILE_FLAGS: " << EL_MPI_C_COMPILE_FLAGS << "\n"
        << "  EL_MPI_C_LINK_FLAGS:    " << EL_MPI_C_LINK_FLAGS << "\n"
        << "  EL_MPI_C_LIBRARIES:     " << EL_MPI_C_LIBRARIES << "\n"
-       << endl;
+       << std::endl;
 }
 
-void PrintCxxCompilerInfo( ostream& os )
+void PrintCxxCompilerInfo( std::ostream& os )
 {
     os << "Elemental's C++ compiler info:\n"
        << "  EL_CMAKE_CXX_COMPILER:    " << EL_CMAKE_CXX_COMPILER << "\n"
@@ -97,7 +109,7 @@ void PrintCxxCompilerInfo( ostream& os )
        << "  EL_MPI_CXX_COMPILE_FLAGS: " << EL_MPI_CXX_COMPILE_FLAGS << "\n"
        << "  EL_MPI_CXX_LINK_FLAGS:    " << EL_MPI_CXX_LINK_FLAGS << "\n"
        << "  EL_MPI_CXX_LIBRARIES:     " << EL_MPI_CXX_LIBRARIES << "\n"
-       << endl;
+       << std::endl;
 }
 
 bool Using64BitInt()
@@ -153,8 +165,8 @@ void Initialize( int& argc, char**& argv )
         const int commRank = mpi::Rank( mpi::COMM_WORLD );
         if( provided != mpi::THREAD_MULTIPLE && commRank == 0 )
         {
-            cerr << "WARNING: Could not achieve THREAD_MULTIPLE support."
-                 << endl;
+            std::cerr << "WARNING: Could not achieve THREAD_MULTIPLE support."
+                 << std::endl;
         }
 #else
         mpi::Initialize( argc, argv );
@@ -201,13 +213,13 @@ void Finalize()
     EL_DEBUG_CSE
     if( ::numElemInits <= 0 )
     {
-        cerr << "Finalized Elemental more times than initialized" << endl;
+        std::cerr << "Finalized Elemental more times than initialized" << std::endl;
         return;
     }
     --::numElemInits;
 
     if( mpi::Finalized() )
-        cerr << "Warning: MPI was finalized before Elemental." << endl;
+        std::cerr << "Warning: MPI was finalized before Elemental." << std::endl;
     if( ::numElemInits == 0 )
     {
         delete ::args;
@@ -249,9 +261,9 @@ Args& GetArgs()
     return *::args;
 }
 
-void Args::HandleVersion( ostream& os ) const
+void Args::HandleVersion( std::ostream& os ) const
 {
-    string version = "--version";
+    std::string version = "--version";
     char** arg = std::find( argv_, argv_+argc_, version );
     const bool foundVersion = ( arg != argv_+argc_ );
     if( foundVersion )
@@ -262,9 +274,9 @@ void Args::HandleVersion( ostream& os ) const
     }
 }
 
-void Args::HandleBuild( ostream& os ) const
+void Args::HandleBuild( std::ostream& os ) const
 {
-    string build = "--build";
+    std::string build = "--build";
     char** arg = std::find( argv_, argv_+argc_, build );
     const bool foundBuild = ( arg != argv_+argc_ );
     if( foundBuild )
@@ -280,32 +292,32 @@ void Args::HandleBuild( ostream& os ) const
     }
 }
 
-void ReportException( const exception& e, ostream& os )
+void ReportException( const std::exception& e, std::ostream& os )
 {
     try
     {
         const ArgException& argExcept = dynamic_cast<const ArgException&>(e);
-        if( string(argExcept.what()) != "" )
-            os << argExcept.what() << endl;
+        if( std::string(argExcept.what()) != "" )
+            os << argExcept.what() << std::endl;
         EL_DEBUG_ONLY(DumpCallStack(os))
     }
     catch( UnrecoverableException& recovExcept )
     {
-        if( string(e.what()) != "" )
+        if( std::string(e.what()) != "" )
         {
             os << "Process " << mpi::Rank()
                << " caught an unrecoverable exception with message:\n"
-               << e.what() << endl;
+               << e.what() << std::endl;
         }
         EL_DEBUG_ONLY(DumpCallStack(os))
         mpi::Abort( mpi::COMM_WORLD, 1 );
     }
-    catch( exception& castExcept )
+    catch( std::exception& castExcept )
     {
-        if( string(e.what()) != "" )
+        if( std::string(e.what()) != "" )
         {
             os << "Process " << mpi::Rank() << " caught error message:\n"
-               << e.what() << endl;
+               << e.what() << std::endl;
         }
         EL_DEBUG_ONLY(DumpCallStack(os))
     }
@@ -359,7 +371,7 @@ void Union
     both.resize( Int(it-both.begin()) );
 }
 
-vector<Int>
+std::vector<Int>
 Union( const std::vector<Int>& first, const std::vector<Int>& second )
 {
     std::vector<Int> both;
@@ -385,7 +397,7 @@ void RelativeIndices
     }
 }
 
-vector<Int> RelativeIndices( const std::vector<Int>& sub, const std::vector<Int>& full )
+std::vector<Int> RelativeIndices( const std::vector<Int>& sub, const std::vector<Int>& full )
 {
     std::vector<Int> relInds;
     RelativeIndices( relInds, sub, full );

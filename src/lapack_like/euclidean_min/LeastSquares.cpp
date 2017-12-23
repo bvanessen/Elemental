@@ -7,9 +7,16 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/environment/decl.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/euclidean_min.hpp"
+#include "El/Types/Enums.hpp"
 
-namespace ls {
+namespace El
+{
+namespace ls
+{
 
 template<typename F>
 void Overwrite

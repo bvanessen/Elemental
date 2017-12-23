@@ -8,7 +8,12 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/environment/decl.hpp"
+#include "El/core/Grid.hpp"
+#include "El/core/indexing/decl.hpp"
+
+namespace El
+{
 
 Grid* Grid::defaultGrid = 0;
 Grid* Grid::trivialGrid = 0;
@@ -129,7 +134,7 @@ void Grid::SetUpGrid()
     vcToViewing_.resize(size_);
     diagsAndRanks_.resize(2*size_);
     MemZero( diagsAndRanks_.data(), 2*size_ );
-    const bool colMajor = (order_==COLUMN_MAJOR);
+    const bool colMajor = (order_==GridOrder::COLUMN_MAJOR);
     if( InGrid() )
     {
         // Create a cartesian communicator
@@ -305,7 +310,7 @@ int Grid::Col() const EL_NO_RELEASE_EXCEPT { return MRRank(); }
 mpi::Comm Grid::ColComm() const EL_NO_EXCEPT { return MCComm(); }
 mpi::Comm Grid::RowComm() const EL_NO_EXCEPT { return MRComm(); }
 mpi::Comm Grid::Comm() const EL_NO_EXCEPT
-{ return ( order_==COLUMN_MAJOR ? VCComm() : VRComm() ); }
+{ return ( order_==GridOrder::COLUMN_MAJOR ? VCComm() : VRComm() ); }
 
 // Advanced routines
 // =================
@@ -362,46 +367,46 @@ int Grid::CoordsToVC
 ( Dist colDist, Dist rowDist,
   int distRank, int crossRank, int redundantRank ) const EL_NO_RELEASE_EXCEPT
 {
-    if( colDist == CIRC && rowDist == CIRC )
+    if( colDist == Dist::CIRC && rowDist == Dist::CIRC )
     {
         return crossRank;
     }
-    else if( colDist == MC && rowDist == MR )
+    else if( colDist == Dist::MC && rowDist == Dist::MR )
     {
         return distRank;
     }
-    else if( (colDist == MC && rowDist == STAR) ||
-             (rowDist == MC && colDist == STAR) )
+    else if( (colDist == Dist::MC && rowDist == Dist::STAR) ||
+             (rowDist == Dist::MC && colDist == Dist::STAR) )
     {
         return distRank + redundantRank*Height();
     }
-    else if( (colDist == MD && rowDist == STAR) ||
-             (rowDist == MD && colDist == STAR) )
+    else if( (colDist == Dist::MD && rowDist == Dist::STAR) ||
+             (rowDist == Dist::MD && colDist == Dist::STAR) )
     {
         const int row = distRank % Height();
         const int col = (crossRank+distRank) % Width();
         return row + col*Height();
     }
-    else if( colDist == MR && rowDist == MC )
+    else if( colDist == Dist::MR && rowDist == Dist::MC )
     {
         return VRToVC(distRank);
     }
-    else if( (colDist == MR && rowDist == STAR) ||
-             (rowDist == MR && colDist == STAR) )
+    else if( (colDist == Dist::MR && rowDist == Dist::STAR) ||
+             (rowDist == Dist::MR && colDist == Dist::STAR) )
     {
         return redundantRank + distRank*Height();
     }
-    else if( colDist == STAR && rowDist == STAR )
+    else if( colDist == Dist::STAR && rowDist == Dist::STAR )
     {
         return redundantRank;
     }
-    else if( (colDist == STAR && rowDist == VC) ||
-             (rowDist == STAR && colDist == VC) )
+    else if( (colDist == Dist::STAR && rowDist == Dist::VC) ||
+             (rowDist == Dist::STAR && colDist == Dist::VC) )
     {
         return distRank;
     }
-    else if( (colDist == STAR && rowDist == VR) ||
-             (rowDist == STAR && colDist == VR) )
+    else if( (colDist == Dist::STAR && rowDist == Dist::VR) ||
+             (rowDist == Dist::STAR && colDist == Dist::VR) )
     {
         return VRToVC(distRank);
     }

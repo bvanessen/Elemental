@@ -6,9 +6,18 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
-#include <stack>
 
-namespace {
+#include <iostream>
+#include <stack>
+#include <sstream>
+#include <string>
+
+#include "El/core/environment/decl.hpp"
+#include "El/core/environment/impl.hpp"
+#include "El/macros.h"
+
+namespace
+{
 
 // Debugging
 EL_DEBUG_ONLY(
@@ -26,7 +35,7 @@ namespace El {
   void EnableTracing() { ::tracingEnabled = true; }
   void DisableTracing() { ::tracingEnabled = false; }
 
-  void PushCallStack( string s )
+  void PushCallStack( std::string s )
   {
       // [1]:
       // It was discovered that a global instantiation of a BigInt
@@ -51,11 +60,11 @@ namespace El {
       if( ::tracingEnabled )
       {
           const int stackSize = ::callStack.size();
-          ostringstream os;
+          std::ostringstream os;
           for( int j=0; j<stackSize; ++j )
               os << " ";
-          os << s << endl;
-          cout <<  os.str();
+          os << s << std::endl;
+          std::cout <<  os.str();
       }
   }
 
@@ -73,18 +82,18 @@ namespace El {
       ::callStack.pop();
   }
 
-  void DumpCallStack( ostream& os )
-  {
-      ostringstream msg;
-      while( ! ::callStack.empty() )
-      {
-          msg << "[" << ::callStack.size() << "]: " << ::callStack.top()
-              << "\n";
-          ::callStack.pop();
-      }
-      os << msg.str();
-      os.flush();
-  }
+void DumpCallStack( std::ostream& os )
+{
+    std::ostringstream msg;
+    while( ! ::callStack.empty() )
+    {
+        msg << "[" << ::callStack.size() << "]: " << ::callStack.top()
+            << "\n";
+        ::callStack.pop();
+    }
+    os << msg.str();
+    os.flush();
+}
 
 #endif // EL_RELEASE
 

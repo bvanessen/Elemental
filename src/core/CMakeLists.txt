@@ -12,7 +12,6 @@ set_full_path(THIS_DIR_SOURCES
   logging.cpp
   mpi_register.cpp
   random.cpp
-  types.cpp
   )
 
 # Add the subdirectories
