@@ -7,112 +7,119 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/config.h"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/CIRC_CIRC.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/io.hpp"
+
 #ifdef EL_HAVE_QT5
 # include "El/io/DisplayWindow-premoc.hpp"
 # include "El/io/ComplexDisplayWindow-premoc.hpp"
 # include <QApplication>
 #endif
 
-namespace El {
+namespace El
+{
 
-void ProcessEvents( int numMsecs )
+void ProcessEvents(int numMsecs)
 {
 #ifdef EL_HAVE_QT5
     QCoreApplication::instance()->processEvents
-    ( QEventLoop::AllEvents, numMsecs );
+    (QEventLoop::AllEvents, numMsecs);
 #endif
 }
 
 template<typename Real>
-void Display( const Matrix<Real>& A, std::string title )
+void Display(const Matrix<Real>& A, std::string title)
 {
     EL_DEBUG_CSE
 #ifdef EL_HAVE_QT5
-    if( GuiDisabled() )
+    if(GuiDisabled())
     {
-        Print( A, title );
+        Print(A, title);
         return;
     }
 
     // Convert A to double-precision since Qt's MOC does not support templates
     const Int m = A.Height();
     const Int n = A.Width();
-    Matrix<double>* ADouble = new Matrix<double>( m, n );
-    for( Int j=0; j<n; ++j )
-        for( Int i=0; i<m; ++i )
-            ADouble->Set( i, j, double(A.Get(i,j)) );
+    Matrix<double>* ADouble = new Matrix<double>(m, n);
+    for(Int j=0; j<n; ++j)
+        for(Int i=0; i<m; ++i)
+            ADouble->Set(i, j, double(A.Get(i,j)));
 
-    QString qTitle = QString::fromStdString( title );
+    QString qTitle = QString::fromStdString(title);
     DisplayWindow* displayWindow = new DisplayWindow;
-    displayWindow->Display( ADouble, qTitle );
+    displayWindow->Display(ADouble, qTitle);
     displayWindow->show();
 
     // Spend at most 200 milliseconds rendering
-    ProcessEvents( 200 );
+    ProcessEvents(200);
 #else
-    Print( A, title );
+    Print(A, title);
 #endif
 }
 
 template<typename Real>
-void Display( const Matrix<Complex<Real>>& A, std::string title )
+void Display(const Matrix<Complex<Real>>& A, std::string title)
 {
     EL_DEBUG_CSE
 #ifdef EL_HAVE_QT5
-    if( GuiDisabled() )
+    if(GuiDisabled())
     {
-        Print( A, title );
+        Print(A, title);
         return;
     }
 
     // Convert A to double-precision since Qt's MOC does not support templates
     const Int m = A.Height();
     const Int n = A.Width();
-    Matrix<Complex<double>>* ADouble = new Matrix<Complex<double>>( m, n );
-    for( Int j=0; j<n; ++j )
+    Matrix<Complex<double>>* ADouble = new Matrix<Complex<double>>(m, n);
+    for(Int j=0; j<n; ++j)
     {
-        for( Int i=0; i<m; ++i )
+        for(Int i=0; i<m; ++i)
         {
             const Complex<Real> alpha = A.Get(i,j);
             const Complex<double> alphaDouble =
                 Complex<double>(alpha.real(),alpha.imag());
-            ADouble->Set( i, j, alphaDouble );
+            ADouble->Set(i, j, alphaDouble);
         }
     }
 
-    QString qTitle = QString::fromStdString( title );
+    QString qTitle = QString::fromStdString(title);
     ComplexDisplayWindow* displayWindow = new ComplexDisplayWindow;
-    displayWindow->Display( ADouble, qTitle );
+    displayWindow->Display(ADouble, qTitle);
     displayWindow->show();
 
     // Spend at most 200 milliseconds rendering
-    ProcessEvents( 200 );
+    ProcessEvents(200);
 #else
-    Print( A, title );
+    Print(A, title);
 #endif
 }
 
 template<typename T>
-void Display( const AbstractDistMatrix<T>& A, std::string title )
+void Display(const AbstractDistMatrix<T>& A, std::string title)
 {
     EL_DEBUG_CSE
-    if( A.ColStride() == 1 && A.RowStride() == 1 )
+    if(A.ColStride() == 1 && A.RowStride() == 1)
     {
-        if( A.CrossRank() == A.Root() && A.RedundantRank() == 0 )
-            Display( A.LockedMatrix(), title );
+        if(A.CrossRank() == A.Root() && A.RedundantRank() == 0)
+            Display(A.LockedMatrix(), title);
     }
     else
     {
-        DistMatrix<T,Dist::CIRC,Dist::CIRC> A_CIRC_CIRC( A );
-        if( A_CIRC_CIRC.CrossRank() == A_CIRC_CIRC.Root() )
-            Display( A_CIRC_CIRC.Matrix(), title );
+        DistMatrix<T,Dist::CIRC,Dist::CIRC> A_CIRC_CIRC(A);
+        if(A_CIRC_CIRC.CrossRank() == A_CIRC_CIRC.Root())
+            Display(A_CIRC_CIRC.Matrix(), title);
     }
 }
 
 
 #define PROTO(T) \
-  template void Display( const Matrix<T>& A, std::string title ); \
-  template void Display( const AbstractDistMatrix<T>& A, std::string title );
+  template void Display(const Matrix<T>& A, std::string title); \
+  template void Display(const AbstractDistMatrix<T>& A, std::string title);
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

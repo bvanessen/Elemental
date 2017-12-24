@@ -7,6 +7,15 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level2.hpp"
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/reflect.hpp"
+#include "El/matrices.hpp"
+#include "El/Types/Enums.hpp"
+
 #include "./RQ/ApplyQ.hpp"
 #include "./RQ/Householder.hpp"
 
@@ -16,7 +25,8 @@
 
 #include "./RQ/Cholesky.hpp"
 
-namespace El {
+namespace El
+{
 
 template<typename F>
 void RQ

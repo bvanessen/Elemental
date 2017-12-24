@@ -9,8 +9,14 @@
 #ifndef EL_HESSENBERG_FORMQ_HPP
 #define EL_HESSENBERG_FORMQ_HPP
 
-namespace El {
-namespace hessenberg {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/matrices.hpp"
+
+namespace El
+{
+namespace hessenberg
+{
 
 template<typename F>
 void FormQ

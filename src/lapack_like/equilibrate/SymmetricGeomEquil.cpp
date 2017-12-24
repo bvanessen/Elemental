@@ -6,6 +6,15 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
+
+#include <iostream>
+
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/matrices.hpp"
+#include "El/Types/Enums.hpp"
+
 #include "./Util.hpp"
 
 // The following routines are adaptations of the approach uses by
@@ -18,7 +27,8 @@
 // The implementation of Saunders et al. is commonly referred to as either
 // gmscale.m or gmscal.m.
 
-namespace El {
+namespace El
+{
 
 template<typename Real>
 Real DampScaling( const Real& alpha )
@@ -60,8 +70,8 @@ void SymmetricGeomEquil
     const Real minAbsVal = MinAbsNonzero( A, maxAbsVal );
     Real ratio = maxAbsVal / minAbsVal;
     if( progress )
-        cout << "    Original ratio is " << maxAbsVal << "/" << minAbsVal << "="
-             << ratio << endl;
+        std::cout << "    Original ratio is " << maxAbsVal << "/" << minAbsVal << "="
+             << ratio << std::endl;
 
     Matrix<Real> scales;
     Zeros( scales, n, 1 );
@@ -90,8 +100,8 @@ void SymmetricGeomEquil
         const Real newMinAbsVal = MinAbsNonzero( A, newMaxAbsVal );
         const Real newRatio = newMaxAbsVal / newMinAbsVal;
         if( progress )
-            cout << "    New ratio is " << newMaxAbsVal << "/"
-                 << newMinAbsVal << "=" << newRatio << endl;
+            std::cout << "    New ratio is " << newMaxAbsVal << "/"
+                 << newMinAbsVal << "=" << newRatio << std::endl;
         if( iter >= minIter && newRatio >= ratio*relTol )
             break;
         ratio = newRatio;
@@ -115,8 +125,8 @@ void SymmetricGeomEquil
     const Real newMinAbsVal = MinAbsNonzero( A, newMaxAbsVal );
     const Real newRatio = newMaxAbsVal / newMinAbsVal;
     if( progress )
-        cout << "    Final ratio is " << newMaxAbsVal << "/"
-             << newMinAbsVal << "=" << newRatio << endl;
+        std::cout << "    Final ratio is " << newMaxAbsVal << "/"
+             << newMinAbsVal << "=" << newRatio << std::endl;
 }
 
 template<typename Field>
@@ -161,8 +171,8 @@ void SymmetricGeomEquil
     const Real minAbsVal = MinAbsNonzero( A, maxAbsVal );
     Real ratio = maxAbsVal / minAbsVal;
     if( progress && A.Grid().Rank() == 0 )
-        cout << "    Original ratio is " << maxAbsVal << "/" << minAbsVal << "="
-             << ratio << endl;
+        std::cout << "    Original ratio is " << maxAbsVal << "/" << minAbsVal << "="
+             << ratio << std::endl;
 
     DistMatrix<Real,Dist::MR,Dist::STAR> scales(A.Grid());
     for( Int iter=0; iter<maxIter; ++iter )
@@ -183,8 +193,8 @@ void SymmetricGeomEquil
         const Real newMinAbsVal = MinAbsNonzero( A, newMaxAbsVal );
         const Real newRatio = newMaxAbsVal / newMinAbsVal;
         if( progress && A.Grid().Rank() == 0 )
-            cout << "    New ratio is " << newMaxAbsVal << "/"
-                 << newMinAbsVal << "=" << newRatio << endl;
+            std::cout << "    New ratio is " << newMaxAbsVal << "/"
+                 << newMinAbsVal << "=" << newRatio << std::endl;
         if( iter >= minIter && newRatio >= ratio*relTol )
             break;
         ratio = newRatio;
@@ -216,8 +226,8 @@ void SymmetricGeomEquil
     const Real newMinAbsVal = MinAbsNonzero( A, newMaxAbsVal );
     const Real newRatio = newMaxAbsVal / newMinAbsVal;
     if( progress && A.Grid().Rank() == 0 )
-        cout << "    Final ratio is " << newMaxAbsVal << "/"
-             << newMinAbsVal << "=" << newRatio << endl;
+        std::cout << "    Final ratio is " << newMaxAbsVal << "/"
+                  << newMinAbsVal << "=" << newRatio << std::endl;
 }
 
 

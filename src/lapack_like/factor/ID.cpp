@@ -12,9 +12,20 @@
 //       "A randomized algorithm for principal component analysis", and
 //       "On the compression of low-rank matrices"
 
-namespace El {
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistPermutation.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/core/View.hpp"
+#include "El/lapack_like/factor.hpp"
 
-namespace id {
+namespace El
+{
+
+namespace id
+{
 
 // On output, the matrix Z contains the non-trivial portion of the interpolation
 // matrix, and p contains the pivots used during the iterations of

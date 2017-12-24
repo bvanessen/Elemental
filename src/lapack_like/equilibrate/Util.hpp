@@ -7,7 +7,11 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+
+namespace El
+{
 
 // TODO(poulson): Move these into BLAS1?
 template<typename Field>

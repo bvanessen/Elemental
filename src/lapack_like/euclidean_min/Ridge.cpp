@@ -7,7 +7,18 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/lapack_like/euclidean_min.hpp"
+
+#include "El/blas_like/level2.hpp"
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/spectral.hpp"
+#include "El/matrices.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
 
 template<typename Field>
 void Ridge

@@ -66,7 +66,7 @@ RUHBUnblocked
         auto hPan = H( IR(ki), IR(kj,nA) );
         auto ARight = A( ALL, IR(kj,nA) );
         const F tau = householderScalars(k);
-        const F gamma = ( conjugation == CONJUGATED ? Conj(tau) : tau );
+        const F gamma = ( conjugation == Conjugation::CONJUGATED ? Conj(tau) : tau );
 
         // Convert to an explicit (scaled) Householder vector
         hPanCopy = hPan;
@@ -204,7 +204,7 @@ RUHBUnblocked
 
         auto ARight = A( ALL, IR(kj,nA) );
         const F tau = householderScalars.GetLocal( k, 0 );
-        const F gamma = ( conjugation == CONJUGATED ? Conj(tau) : tau );
+        const F gamma = ( conjugation == Conjugation::CONJUGATED ? Conj(tau) : tau );
 
         // Convert to an explicit (scaled) Householder vector
         LockedView( *hPan, H, IR(ki), IR(kj,nA) );

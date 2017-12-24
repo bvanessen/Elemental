@@ -7,6 +7,19 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/MC_MR.hpp"
+#include "El/core/imports/scalapack.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/core/Timer.hpp"
+#include "El/core/View.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/lapack_like/spectral.hpp"
+#include "El/matrices.hpp"
+
 #include "./SVD/Chan.hpp"
 #include "./SVD/Product.hpp"
 
@@ -326,7 +339,7 @@ SVDInfo SVD
         const bool relative = (tolType == RELATIVE_TO_MAX_SING_VAL_TOL);
 
         // TODO: Switch to using control structure
-        if( U.ColDist() == VC && U.RowDist() == STAR )
+        if( U.ColDist() == Dist::VC && U.RowDist() == Dist::STAR )
         {
             auto& UCast = static_cast<DistMatrix<Field,Dist::VC,Dist::STAR>&>( U );
             info = svd::Product

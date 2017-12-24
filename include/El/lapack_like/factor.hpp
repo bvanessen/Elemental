@@ -661,22 +661,22 @@ struct TreeData
     { }
 
     TreeData(TreeData<Field>&& treeData)
-    : QR0(move(treeData.QR0)),
-      householderScalars0(move(treeData.householderScalars0)),
-      signature0(move(treeData.signature0)),
-      QRList(move(treeData.QRList)),
-      householderScalarsList(move(treeData.householderScalarsList)),
-      signatureList(move(treeData.signatureList))
+    : QR0(std::move(treeData.QR0)),
+      householderScalars0(std::move(treeData.householderScalars0)),
+      signature0(std::move(treeData.signature0)),
+      QRList(std::move(treeData.QRList)),
+      householderScalarsList(std::move(treeData.householderScalarsList)),
+      signatureList(std::move(treeData.signatureList))
     { }
 
     TreeData<Field>& operator=(TreeData<Field>&& treeData)
     {
-        QR0 = move(treeData.QR0);
-        householderScalars0 = move(treeData.householderScalars0);
-        signature0 = move(treeData.signature0);
-        QRList = move(treeData.QRList);
-        householderScalarsList = move(treeData.householderScalarsList);
-        signatureList = move(treeData.signatureList);
+        QR0 = std::move(treeData.QR0);
+        householderScalars0 = std::move(treeData.householderScalars0);
+        signature0 = std::move(treeData.signature0);
+        QRList = std::move(treeData.QRList);
+        householderScalarsList = std::move(treeData.householderScalarsList);
+        signatureList = std::move(treeData.signatureList);
         return *this;
     }
 };

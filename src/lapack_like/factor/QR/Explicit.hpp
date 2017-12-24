@@ -67,7 +67,7 @@ void ExplicitUnitary
     {
         A.Resize( A.Height(), householderScalars.Height() );
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, A, householderScalars );
         DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, A );
     }
     else
@@ -103,7 +103,7 @@ void ExplicitUnitary
     {
         A.Resize( A.Height(), householderScalars.Height() );
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, A, householderScalars );
         DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, A );
     }
     else
@@ -145,7 +145,7 @@ void Explicit
     {
         A.Resize( m, numIts );
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, A, householderScalars );
         DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, A );
     }
     else
@@ -192,7 +192,7 @@ void Explicit
     {
         A.Resize( m, numIts );
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, A, householderScalars );
         DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, A );
     }
     else
@@ -230,7 +230,7 @@ void Explicit
     {
         A.Resize( m, numIts );
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, A, householderScalars );
         DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, A );
     }
     else
@@ -275,7 +275,7 @@ void Explicit
     {
         A.Resize( m, numIts );
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, A, householderScalars );
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, A, householderScalars );
         DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, A );
     }
     else

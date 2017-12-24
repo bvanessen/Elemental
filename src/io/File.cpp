@@ -7,11 +7,18 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include <string>
+#include <fstream>
 
-const char* QtImageFormat( FileFormat format )
+#include "El/core/environment/decl.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
 {
-    switch( format )
+
+const char* QtImageFormat(FileFormat format)
+{
+    switch(format)
     {
     case FileFormat::BMP:  return "FileFormat::BMP";  break;
     case FileFormat::JPG:  return "JPG";  break;
@@ -24,9 +31,9 @@ const char* QtImageFormat( FileFormat format )
     }
 }
 
-string FileExtension( FileFormat format )
+std::string FileExtension(FileFormat format)
 {
-    switch( format )
+    switch(format)
     {
     case FileFormat::ASCII:            return "txt";  break;
     case FileFormat::ASCII_MATLAB:     return "m";    break;
@@ -44,36 +51,38 @@ string FileExtension( FileFormat format )
     }
 }
 
-FileFormat FormatFromExtension( const std::string ext )
+FileFormat FormatFromExtension(const std::string ext)
 {
+    using UT = std::underlying_type<FileFormat>::type;
+
     bool foundFormat = false;
     FileFormat format = FileFormat::BINARY;
-    for( int j=1; j<FileFormat_MAX; ++j )
+    for(UT j=1; j<static_cast<UT>(FileFormat::FileFormat_MAX); ++j)
     {
         format = static_cast<FileFormat>(j);
-        if( FileExtension(format) == ext )
+        if(FileExtension(format) == ext)
         {
             foundFormat = true;
             break;
         }
     }
-    if( !foundFormat )
+    if(!foundFormat)
         RuntimeError("Did not detect file format");
     return format;
 }
 
-FileFormat DetectFormat( const std::string filename )
+FileFormat DetectFormat(const std::string filename)
 {
     const std::string ext = filename.substr(filename.find_last_of(".")+1);
-    return FormatFromExtension( ext );
+    return FormatFromExtension(ext);
 }
 
-ifstream::pos_type FileSize( ifstream& file )
+std::ifstream::pos_type FileSize(std::ifstream& file)
 {
     auto pos = file.tellg();
-    file.seekg( 0, ifstream::end );
+    file.seekg(0, std::ifstream::end);
     auto numBytes = file.tellg();
-    file.seekg( pos );
+    file.seekg(pos);
     return numBytes;
 }
 

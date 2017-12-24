@@ -27,7 +27,7 @@ void ApplyQ
     const bool applyDFirst = normal!=onLeft;
 
     const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
-    const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
+    const Conjugation conjugation = ( normal ? Conjugation::CONJUGATED : Conjugation::UNCONJUGATED );
     const Int offset = A.Width()-A.Height();
     const Int minDim = Min(A.Height(),A.Width());
 
@@ -49,7 +49,7 @@ void ApplyQ
     }
 
     ApplyPackedReflectors
-    ( side, UpperOrLower::LOWER, HORIZONTAL, direction, conjugation, offset,
+    ( side, UpperOrLower::LOWER, VerticalOrHorizontal::HORIZONTAL, direction, conjugation, offset,
       A, householderScalars, B );
 
     if( !applyDFirst )
@@ -82,7 +82,7 @@ void ApplyQ
     const bool applyDFirst = normal!=onLeft;
 
     const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
-    const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
+    const Conjugation conjugation = ( normal ? Conjugation::CONJUGATED : Conjugation::UNCONJUGATED );
     const Int offset = APre.Width()-APre.Height();
     const Int minDim = Min(APre.Height(),APre.Width());
 
@@ -119,7 +119,7 @@ void ApplyQ
     }
 
     ApplyPackedReflectors
-    ( side, UpperOrLower::LOWER, HORIZONTAL, direction, conjugation, offset,
+    ( side, UpperOrLower::LOWER, VerticalOrHorizontal::HORIZONTAL, direction, conjugation, offset,
       A, householderScalars, B );
 
     if( !applyDFirst )

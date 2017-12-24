@@ -7,6 +7,18 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level2.hpp"
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/imports/scalapack.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/reflect.hpp"
+#include "El/matrices.hpp"
+#include "El/Types/Enums.hpp"
+
 #include "./QR/ApplyQ.hpp"
 #include "./QR/BusingerGolub.hpp"
 #include "./QR/Cholesky.hpp"
@@ -18,7 +30,8 @@
 
 #include "./QR/TS.hpp"
 
-namespace El {
+namespace El
+{
 
 template<typename F>
 void QR

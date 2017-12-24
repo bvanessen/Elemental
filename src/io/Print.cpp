@@ -7,55 +7,63 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include <iostream>
+#include <string>
+
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/CIRC_CIRC.hpp"
+#include "El/core/Matrix.hpp"
+
+namespace El
+{
 
 template<typename T>
-void ConfigurePrecision( ostream& os )
+void ConfigurePrecision(std::ostream& os)
 {
     // Force the full precision to be reported
     const Int numDecimals =
       BinaryToDecimalPrecision(NumMantissaBits(Base<T>()))+1;
-    os.precision( numDecimals );
+    os.precision(numDecimals);
 }
 
 // Dense
 // =====
 
 template<typename T>
-void Print( const Matrix<T>& A, std::string title, ostream& os )
+void Print(const Matrix<T>& A, std::string title, std::ostream& os)
 {
     EL_DEBUG_CSE
-    if( title != "" )
-        os << title << endl;
+    if(title != "")
+        os << title << std::endl;
 
-    ConfigurePrecision<T>( os );
+    ConfigurePrecision<T>(os);
 
     const Int height = A.Height();
     const Int width = A.Width();
-    for( Int i=0; i<height; ++i )
+    for(Int i=0; i<height; ++i)
     {
-        for( Int j=0; j<width; ++j )
+        for(Int j=0; j<width; ++j)
             os << A.Get(i,j) << " ";
-        os << endl;
+        os << std::endl;
     }
-    os << endl;
+    os << std::endl;
 }
 
 template<typename T>
 void Print
-( const AbstractDistMatrix<T>& A, std::string title, ostream& os )
+(const AbstractDistMatrix<T>& A, std::string title, std::ostream& os)
 {
     EL_DEBUG_CSE
-    if( A.ColStride() == 1 && A.RowStride() == 1 )
+    if(A.ColStride() == 1 && A.RowStride() == 1)
     {
-        if( A.CrossRank() == A.Root() && A.RedundantRank() == 0 )
-            Print( A.LockedMatrix(), title, os );
+        if(A.CrossRank() == A.Root() && A.RedundantRank() == 0)
+            Print(A.LockedMatrix(), title, os);
     }
     else
     {
-        DistMatrix<T,Dist::CIRC,Dist::CIRC> A_CIRC_CIRC( A );
-        if( A_CIRC_CIRC.CrossRank() == A_CIRC_CIRC.Root() )
-            Print( A_CIRC_CIRC.LockedMatrix(), title, os );
+        DistMatrix<T,Dist::CIRC,Dist::CIRC> A_CIRC_CIRC(A);
+        if(A_CIRC_CIRC.CrossRank() == A_CIRC_CIRC.Root())
+            Print(A_CIRC_CIRC.LockedMatrix(), title, os);
     }
 }
 
@@ -63,27 +71,27 @@ void Print
 // =========
 
 template<typename T>
-void Print( const std::vector<T>& x, std::string title, ostream& os )
+void Print(const std::vector<T>& x, std::string title, std::ostream& os)
 {
     EL_DEBUG_CSE
-    if( title != "" )
-        os << title << endl;
+    if(title != "")
+        os << title << std::endl;
 
-    ConfigurePrecision<T>( os );
+    ConfigurePrecision<T>(os);
 
     const Int length = x.size();
-    for( Int i=0; i<length; ++i )
+    for(Int i=0; i<length; ++i)
         os << x[i] << " ";
-    os << endl;
+    os << std::endl;
 }
 
 #define PROTO(T) \
   template void Print \
-  ( const std::vector<T>& x, std::string title, ostream& os ); \
+  (const std::vector<T>& x, std::string title, std::ostream& os); \
   template void Print \
-  ( const Matrix<T>& A, std::string title, ostream& os ); \
+  (const Matrix<T>& A, std::string title, std::ostream& os); \
   template void Print \
-  ( const AbstractDistMatrix<T>& A, std::string title, ostream& os );
+  (const AbstractDistMatrix<T>& A, std::string title, std::ostream& os);
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

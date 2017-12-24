@@ -50,7 +50,7 @@ QDWHDivide( UpperOrLower uplo, Matrix<F>& A, Matrix<F>& G, bool returnQ=false )
     const Base<F> oneA = OneNorm( A );
     if( returnQ )
     {
-        ExpandPackedReflectors( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, t );
+        ExpandPackedReflectors( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, G, t );
         DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, d, G );
         Matrix<F> B;
         Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
@@ -98,7 +98,7 @@ QDWHDivide
     const Base<F> oneA = OneNorm( A );
     if( returnQ )
     {
-        ExpandPackedReflectors( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, t );
+        ExpandPackedReflectors( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, G, t );
         DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, d, G );
         DistMatrix<F> B(g);
         Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
@@ -161,7 +161,7 @@ RandomizedSignDivide
         V = A;
         if( returnQ )
         {
-            ExpandPackedReflectors( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, t );
+            ExpandPackedReflectors( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, G, t );
             DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, d, G );
             Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
             Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), B, G, A );
@@ -232,7 +232,7 @@ RandomizedSignDivide
         V = A;
         if( returnQ )
         {
-            ExpandPackedReflectors( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, t );
+            ExpandPackedReflectors( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, G, t );
             DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, d, G );
             Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
             Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), B, G, A );

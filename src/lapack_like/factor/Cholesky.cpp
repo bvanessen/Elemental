@@ -7,6 +7,18 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/lapack_like/factor.hpp"
+
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/imports/scalapack.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/funcs.hpp"
+#include "El/matrices.hpp"
+#include "El/lapack_like/reflect.hpp"
+#include "El/Types/Enums.hpp"
+
 #include "./Cholesky/LowerVariant3.hpp"
 #include "./Cholesky/UpperVariant3.hpp"
 #include "./Cholesky/ReverseLowerVariant3.hpp"
@@ -18,7 +30,8 @@
 #include "./Cholesky/LowerMod.hpp"
 #include "./Cholesky/UpperMod.hpp"
 
-namespace El {
+namespace El
+{
 
 // TODO: Pivoted Reverse Cholesky?
 

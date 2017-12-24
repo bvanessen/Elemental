@@ -65,7 +65,7 @@ void LUHFUnblocked
         auto hPan = H( IR(ki), IR(kj,nH) );
         auto ABot = A( IR(kj,nH), ALL );
         const F tau = householderScalars(k);
-        const F gamma = ( conjugation == CONJUGATED ? Conj(tau) : tau );
+        const F gamma = ( conjugation == Conjugation::CONJUGATED ? Conj(tau) : tau );
 
         // Convert to an explicit (scaled) Householder vector
         hPanCopy = hPan;
@@ -195,7 +195,7 @@ void LUHFUnblocked
 
         auto ABot = A( IR(kj,nH), ALL );
         const F tau = householderScalars.GetLocal( k, 0 );
-        const F gamma = ( conjugation == CONJUGATED ? Conj(tau) : tau );
+        const F gamma = ( conjugation == Conjugation::CONJUGATED ? Conj(tau) : tau );
 
         // Convert to an explicit (scaled) Householder vector
         LockedView( *hPan, H, IR(ki), IR(kj,nH) );

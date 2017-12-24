@@ -155,7 +155,7 @@ ValueInt<Base<F>> SignDivide
     if( returnQ )
     {
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, G, householderScalars );
         DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, G );
         Matrix<F> B;
         Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
@@ -200,7 +200,7 @@ ValueInt<Base<F>> SignDivide
     if( returnQ )
     {
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, G, householderScalars );
         DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, G );
         DistMatrix<F> B(g);
         Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
@@ -258,7 +258,7 @@ ValueInt<Base<F>> RandomizedSignDivide
         if( returnQ )
         {
             ExpandPackedReflectors
-            ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
+            ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, G, householderScalars );
             DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, G );
             Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
             Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), B, G, A );
@@ -324,7 +324,7 @@ ValueInt<Base<F>> RandomizedSignDivide
         if( returnQ )
         {
             ExpandPackedReflectors
-            ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0, G, householderScalars );
+            ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0, G, householderScalars );
             DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, signature, G );
             Gemm( Orientation::ADJOINT, Orientation::NORMAL, F(1), G, A, B );
             Gemm( Orientation::NORMAL, Orientation::NORMAL, F(1), B, G, A );

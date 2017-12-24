@@ -7,6 +7,16 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level2.hpp"
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/core/View.hpp"
+#include "El/matrices.hpp"
+#include "El/Typedefs.hpp"
+#include "El/Types/Enums.hpp"
+
 #include "./ApplyPacked/Util.hpp"
 #include "./ApplyPacked/LLHB.hpp"
 #include "./ApplyPacked/LLHF.hpp"
@@ -42,10 +52,10 @@ void ApplyPackedReflectors
     {
         if( uplo == UpperOrLower::LOWER )
         {
-            if( dir == VERTICAL && order == ForwardOrBackward::FORWARD )
+            if( dir == VerticalOrHorizontal::VERTICAL && order == ForwardOrBackward::FORWARD )
                 apply_packed_reflectors::LLVF
                 ( conjugation, offset, H, householderScalars, A );
-            else if( dir == VERTICAL )
+            else if( dir == VerticalOrHorizontal::VERTICAL )
                 apply_packed_reflectors::LLVB
                 ( conjugation, offset, H, householderScalars, A );
             else if( order == ForwardOrBackward::FORWARD )
@@ -57,10 +67,10 @@ void ApplyPackedReflectors
         }
         else
         {
-            if( dir == VERTICAL && order == ForwardOrBackward::FORWARD )
+            if( dir == VerticalOrHorizontal::VERTICAL && order == ForwardOrBackward::FORWARD )
                 apply_packed_reflectors::LUVF
                 ( conjugation, offset, H, householderScalars, A );
-            else if( dir == VERTICAL )
+            else if( dir == VerticalOrHorizontal::VERTICAL )
                 apply_packed_reflectors::LUVB
                 ( conjugation, offset, H, householderScalars, A );
             else if( order == ForwardOrBackward::FORWARD )
@@ -75,10 +85,10 @@ void ApplyPackedReflectors
     {
         if( uplo == UpperOrLower::LOWER )
         {
-            if( dir == VERTICAL && order == ForwardOrBackward::FORWARD )
+            if( dir == VerticalOrHorizontal::VERTICAL && order == ForwardOrBackward::FORWARD )
                 apply_packed_reflectors::RLVF
                 ( conjugation, offset, H, householderScalars, A );
-            else if( dir == VERTICAL )
+            else if( dir == VerticalOrHorizontal::VERTICAL )
                 apply_packed_reflectors::RLVB
                 ( conjugation, offset, H, householderScalars, A );
             else if( order == ForwardOrBackward::FORWARD )
@@ -90,10 +100,10 @@ void ApplyPackedReflectors
         }
         else
         {
-            if( dir == VERTICAL && order == ForwardOrBackward::FORWARD )
+            if( dir == VerticalOrHorizontal::VERTICAL && order == ForwardOrBackward::FORWARD )
                 apply_packed_reflectors::RUVF
                 ( conjugation, offset, H, householderScalars, A );
-            else if( dir == VERTICAL )
+            else if( dir == VerticalOrHorizontal::VERTICAL )
                 apply_packed_reflectors::RUVB
                 ( conjugation, offset, H, householderScalars, A );
             else if( order == ForwardOrBackward::FORWARD )
@@ -121,10 +131,10 @@ void ApplyPackedReflectors
     {
         if( uplo == UpperOrLower::LOWER )
         {
-            if( dir == VERTICAL && order == ForwardOrBackward::FORWARD )
+            if( dir == VerticalOrHorizontal::VERTICAL && order == ForwardOrBackward::FORWARD )
                 apply_packed_reflectors::LLVF
                 ( conjugation, offset, H, householderScalars, A );
-            else if( dir == VERTICAL )
+            else if( dir == VerticalOrHorizontal::VERTICAL )
                 apply_packed_reflectors::LLVB
                 ( conjugation, offset, H, householderScalars, A );
             else if( order == ForwardOrBackward::FORWARD )
@@ -136,10 +146,10 @@ void ApplyPackedReflectors
         }
         else
         {
-            if( dir == VERTICAL && order == ForwardOrBackward::FORWARD )
+            if( dir == VerticalOrHorizontal::VERTICAL && order == ForwardOrBackward::FORWARD )
                 apply_packed_reflectors::LUVF
                 ( conjugation, offset, H, householderScalars, A );
-            else if( dir == VERTICAL )
+            else if( dir == VerticalOrHorizontal::VERTICAL )
                 apply_packed_reflectors::LUVB
                 ( conjugation, offset, H, householderScalars, A );
             else if( order == ForwardOrBackward::FORWARD )
@@ -154,10 +164,10 @@ void ApplyPackedReflectors
     {
         if( uplo == UpperOrLower::LOWER )
         {
-            if( dir == VERTICAL && order == ForwardOrBackward::FORWARD )
+            if( dir == VerticalOrHorizontal::VERTICAL && order == ForwardOrBackward::FORWARD )
                 apply_packed_reflectors::RLVF
                 ( conjugation, offset, H, householderScalars, A );
-            else if( dir == VERTICAL )
+            else if( dir == VerticalOrHorizontal::VERTICAL )
                 apply_packed_reflectors::RLVB
                 ( conjugation, offset, H, householderScalars, A );
             else if( order == ForwardOrBackward::FORWARD )
@@ -169,10 +179,10 @@ void ApplyPackedReflectors
         }
         else
         {
-            if( dir == VERTICAL && order == ForwardOrBackward::FORWARD )
+            if( dir == VerticalOrHorizontal::VERTICAL && order == ForwardOrBackward::FORWARD )
                 apply_packed_reflectors::RUVF
                 ( conjugation, offset, H, householderScalars, A );
-            else if( dir == VERTICAL )
+            else if( dir == VerticalOrHorizontal::VERTICAL )
                 apply_packed_reflectors::RUVB
                 ( conjugation, offset, H, householderScalars, A );
             else if( order == ForwardOrBackward::FORWARD )

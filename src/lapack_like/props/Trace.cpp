@@ -7,7 +7,10 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-#include "El/core/Matrix/decl.hpp"
+#include "El/blas_like/level1.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/Types/Enums.hpp"
 
 namespace El
 {

@@ -7,6 +7,12 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+//#include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/Types/Enums.hpp"
+
 namespace El {
 
 template<typename Field>
@@ -17,26 +23,26 @@ Base<Field> Norm( const Matrix<Field>& A, NormType type )
     switch( type )
     {
     // The following norms are rather cheap to compute
-    case ENTRYWISE_ONE_NORM:
+    case NormType::ENTRYWISE_ONE_NORM:
         norm = EntrywiseNorm( A, Base<Field>(1) );
         break;
-    case FROBENIUS_NORM:
+    case NormType::FROBENIUS_NORM:
         norm = FrobeniusNorm( A );
         break;
-    case INFINITY_NORM:
+    case NormType::INFINITY_NORM:
         norm = InfinityNorm( A );
         break;
-    case MAX_NORM:
+    case NormType::MAX_NORM:
         norm = MaxNorm( A );
         break;
-    case ONE_NORM:
+    case NormType::ONE_NORM:
         norm = OneNorm( A );
         break;
     // The following two norms make use of an SVD
-    case NUCLEAR_NORM:
+    case NormType::NUCLEAR_NORM:
         norm = NuclearNorm( A );
         break;
-    case TWO_NORM:
+    case NormType::TWO_NORM:
         norm = TwoNorm( A );
         break;
     }
@@ -52,26 +58,26 @@ Base<Field> SymmetricNorm
     switch( type )
     {
     // The following norms are rather cheap to compute
-    case FROBENIUS_NORM:
+    case NormType::FROBENIUS_NORM:
         norm = SymmetricFrobeniusNorm( uplo, A );
         break;
-    case ENTRYWISE_ONE_NORM:
+    case NormType::ENTRYWISE_ONE_NORM:
         norm = SymmetricEntrywiseNorm( uplo, A, Base<Field>(1) );
         break;
-    case INFINITY_NORM:
+    case NormType::INFINITY_NORM:
         norm = SymmetricInfinityNorm( uplo, A );
         break;
-    case MAX_NORM:
+    case NormType::MAX_NORM:
         norm = SymmetricMaxNorm( uplo, A );
         break;
-    case ONE_NORM:
+    case NormType::ONE_NORM:
         norm = SymmetricOneNorm( uplo, A );
         break;
     // The following norms make use of an SVD
-    case NUCLEAR_NORM:
+    case NormType::NUCLEAR_NORM:
         norm = SymmetricNuclearNorm( uplo, A );
         break;
-    case TWO_NORM:
+    case NormType::TWO_NORM:
         norm = SymmetricTwoNorm( uplo, A );
         break;
     }
@@ -87,26 +93,26 @@ HermitianNorm( UpperOrLower uplo, const Matrix<Field>& A, NormType type )
     switch( type )
     {
     // The following norms are rather cheap to compute
-    case FROBENIUS_NORM:
+    case NormType::FROBENIUS_NORM:
         norm = HermitianFrobeniusNorm( uplo, A );
         break;
-    case ENTRYWISE_ONE_NORM:
+    case NormType::ENTRYWISE_ONE_NORM:
         norm = HermitianEntrywiseNorm( uplo, A, Base<Field>(1) );
         break;
-    case INFINITY_NORM:
+    case NormType::INFINITY_NORM:
         norm = HermitianInfinityNorm( uplo, A );
         break;
-    case MAX_NORM:
+    case NormType::MAX_NORM:
         norm = HermitianMaxNorm( uplo, A );
         break;
-    case ONE_NORM:
+    case NormType::ONE_NORM:
         norm = HermitianOneNorm( uplo, A );
         break;
     // The following norms make use of an SVD
-    case NUCLEAR_NORM:
+    case NormType::NUCLEAR_NORM:
         norm = HermitianNuclearNorm( uplo, A );
         break;
-    case TWO_NORM:
+    case NormType::TWO_NORM:
         norm = HermitianTwoNorm( uplo, A );
         break;
     }
@@ -121,26 +127,26 @@ Base<Field> Norm( const AbstractDistMatrix<Field>& A, NormType type )
     switch( type )
     {
     // The following norms are rather cheap to compute
-    case FROBENIUS_NORM:
+    case NormType::FROBENIUS_NORM:
         norm = FrobeniusNorm( A );
         break;
-    case ENTRYWISE_ONE_NORM:
+    case NormType::ENTRYWISE_ONE_NORM:
         norm = EntrywiseNorm( A, Base<Field>(1) );
         break;
-    case INFINITY_NORM:
+    case NormType::INFINITY_NORM:
         norm = InfinityNorm( A );
         break;
-    case MAX_NORM:
+    case NormType::MAX_NORM:
         norm = MaxNorm( A );
         break;
-    case ONE_NORM:
+    case NormType::ONE_NORM:
         norm = OneNorm( A );
         break;
     // The following norms make use of an SVD
-    case NUCLEAR_NORM:
+    case NormType::NUCLEAR_NORM:
         norm = NuclearNorm( A );
         break;
-    case TWO_NORM:
+    case NormType::TWO_NORM:
         norm = TwoNorm( A );
         break;
     }
@@ -156,26 +162,26 @@ Base<Field> SymmetricNorm
     switch( type )
     {
     // The following norms are rather cheap to compute
-    case FROBENIUS_NORM:
+    case NormType::FROBENIUS_NORM:
         norm = SymmetricFrobeniusNorm( uplo, A );
         break;
-    case ENTRYWISE_ONE_NORM:
+    case NormType::ENTRYWISE_ONE_NORM:
         norm = SymmetricEntrywiseNorm( uplo, A, Base<Field>(1) );
         break;
-    case INFINITY_NORM:
+    case NormType::INFINITY_NORM:
         norm = SymmetricInfinityNorm( uplo, A );
         break;
-    case MAX_NORM:
+    case NormType::MAX_NORM:
         norm = SymmetricMaxNorm( uplo, A );
         break;
-    case ONE_NORM:
+    case NormType::ONE_NORM:
         norm = SymmetricOneNorm( uplo, A );
         break;
     // The following norms make use of an SVD
-    case NUCLEAR_NORM:
+    case NormType::NUCLEAR_NORM:
         norm = SymmetricNuclearNorm( uplo, A );
         break;
-    case TWO_NORM:
+    case NormType::TWO_NORM:
         norm = SymmetricTwoNorm( uplo, A );
         break;
     }
@@ -191,26 +197,26 @@ Base<Field> HermitianNorm
     switch( type )
     {
     // The following norms are rather cheap to compute
-    case FROBENIUS_NORM:
+    case NormType::FROBENIUS_NORM:
         norm = HermitianFrobeniusNorm( uplo, A );
         break;
-    case ENTRYWISE_ONE_NORM:
+    case NormType::ENTRYWISE_ONE_NORM:
         norm = HermitianEntrywiseNorm( uplo, A, Base<Field>(1) );
         break;
-    case INFINITY_NORM:
+    case NormType::INFINITY_NORM:
         norm = HermitianInfinityNorm( uplo, A );
         break;
-    case MAX_NORM:
+    case NormType::MAX_NORM:
         norm = HermitianMaxNorm( uplo, A );
         break;
-    case ONE_NORM:
+    case NormType::ONE_NORM:
         norm = HermitianOneNorm( uplo, A );
         break;
     // The following norms make use of an SVD
-    case NUCLEAR_NORM:
+    case NormType::NUCLEAR_NORM:
         norm = HermitianNuclearNorm( uplo, A );
         break;
-    case TWO_NORM:
+    case NormType::TWO_NORM:
         norm = HermitianTwoNorm( uplo, A );
         break;
     }

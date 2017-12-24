@@ -7,7 +7,16 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistPermutation.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
 
 template<typename Field>
 Base<Field> Condition( const Matrix<Field>& A, NormType type )
@@ -16,19 +25,19 @@ Base<Field> Condition( const Matrix<Field>& A, NormType type )
     Base<Field> norm = 0;
     switch( type )
     {
-    case FROBENIUS_NORM:
+    case NormType::FROBENIUS_NORM:
         norm = FrobeniusCondition( A );
         break;
-    case INFINITY_NORM:
+    case NormType::INFINITY_NORM:
         norm = InfinityCondition( A );
         break;
-    case MAX_NORM:
+    case NormType::MAX_NORM:
         norm = MaxCondition( A );
         break;
-    case ONE_NORM:
+    case NormType::ONE_NORM:
         norm = OneCondition( A );
         break;
-    case TWO_NORM:
+    case NormType::TWO_NORM:
         norm = TwoCondition( A );
         break;
     default:
@@ -44,19 +53,19 @@ Base<Field> Condition( const AbstractDistMatrix<Field>& A, NormType type )
     Base<Field> norm = 0;
     switch( type )
     {
-    case FROBENIUS_NORM:
+    case NormType::FROBENIUS_NORM:
         norm = FrobeniusCondition( A );
         break;
-    case INFINITY_NORM:
+    case NormType::INFINITY_NORM:
         norm = InfinityCondition( A );
         break;
-    case MAX_NORM:
+    case NormType::MAX_NORM:
         norm = MaxCondition( A );
         break;
-    case ONE_NORM:
+    case NormType::ONE_NORM:
         norm = OneCondition( A );
         break;
-    case TWO_NORM:
+    case NormType::TWO_NORM:
         norm = TwoCondition( A );
         break;
     default:

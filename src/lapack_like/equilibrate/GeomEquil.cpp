@@ -6,6 +6,13 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
+
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/matrices.hpp"
+#include "El/Traits.hpp"
+
 #include "./Util.hpp"
 
 // The following routines are adaptations of the approach uses by
@@ -18,7 +25,8 @@
 // The implementation of Saunders et al. is commonly referred to as either
 // gmscale.m or gmscal.m.
 
-namespace El {
+namespace El
+{
 
 // TODO(poulson): Make this consistent with ConeGeomEquil
 

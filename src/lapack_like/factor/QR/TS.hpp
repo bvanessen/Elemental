@@ -18,7 +18,7 @@ void Reduce( const AbstractDistMatrix<F>& A, TreeData<F>& treeData )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( A.RowDist() != STAR )
+      if( A.RowDist() != Dist::STAR )
           LogicError("Invalid row distribution for TSQR");
     )
     const Int m =  A.Height();
@@ -89,7 +89,7 @@ template<typename F>
 Matrix<F>&
 RootQR( const AbstractDistMatrix<F>& A, TreeData<F>& treeData )
 {
-    if( A.RowDist() != STAR )
+    if( A.RowDist() != Dist::STAR )
         LogicError("Invalid row distribution for TSQR");
     const Int p = mpi::Size( A.ColComm() );
     const Int rank = mpi::Rank( A.ColComm() );
@@ -105,7 +105,7 @@ template<typename F>
 const Matrix<F>&
 RootQR( const AbstractDistMatrix<F>& A, const TreeData<F>& treeData )
 {
-    if( A.RowDist() != STAR )
+    if( A.RowDist() != Dist::STAR )
         LogicError("Invalid row distribution for TSQR");
     const Int p = mpi::Size( A.ColComm() );
     const Int rank = mpi::Rank( A.ColComm() );
@@ -121,7 +121,7 @@ template<typename F>
 inline Matrix<F>&
 RootHouseholderScalars( const AbstractDistMatrix<F>& A, TreeData<F>& treeData )
 {
-    if( A.RowDist() != STAR )
+    if( A.RowDist() != Dist::STAR )
         LogicError("Invalid row distribution for TSQR");
     const Int p = mpi::Size( A.ColComm() );
     const Int rank = mpi::Rank( A.ColComm() );
@@ -139,7 +139,7 @@ inline const Matrix<F>&
 RootHouseholderScalars
 ( const AbstractDistMatrix<F>& A, const TreeData<F>& treeData )
 {
-    if( A.RowDist() != STAR )
+    if( A.RowDist() != Dist::STAR )
         LogicError("Invalid row distribution for TSQR");
     const Int p = mpi::Size( A.ColComm() );
     const Int rank = mpi::Rank( A.ColComm() );
@@ -156,7 +156,7 @@ template<typename F>
 inline Matrix<Base<F>>&
 RootSignature( const AbstractDistMatrix<F>& A, TreeData<F>& treeData )
 {
-    if( A.RowDist() != STAR )
+    if( A.RowDist() != Dist::STAR )
         LogicError("Invalid row distribution for TSQR");
     const Int p = mpi::Size( A.ColComm() );
     const Int rank = mpi::Rank( A.ColComm() );
@@ -172,7 +172,7 @@ template<typename F>
 inline const Matrix<Base<F>>&
 RootSignature( const AbstractDistMatrix<F>& A, const TreeData<F>& treeData )
 {
-    if( A.RowDist() != STAR )
+    if( A.RowDist() != Dist::STAR )
         LogicError("Invalid row distribution for TSQR");
     const Int p = mpi::Size( A.ColComm() );
     const Int rank = mpi::Rank( A.ColComm() );
@@ -189,7 +189,7 @@ void Scatter( AbstractDistMatrix<F>& A, const TreeData<F>& treeData )
 {
     EL_DEBUG_CSE
     EL_DEBUG_ONLY(
-      if( A.RowDist() != STAR )
+      if( A.RowDist() != Dist::STAR )
           LogicError("Invalid row distribution for TSQR");
     )
     const Int m = A.Height();
@@ -264,7 +264,7 @@ template<typename F>
 inline DistMatrix<F,Dist::STAR,Dist::STAR>
 FormR( const AbstractDistMatrix<F>& A, const TreeData<F>& treeData )
 {
-    if( A.RowDist() != STAR )
+    if( A.RowDist() != Dist::STAR )
         LogicError("Invalid row distribution for TSQR");
     const Grid& g = A.Grid();
     DistMatrix<F,Dist::CIRC,Dist::CIRC> RRoot(g);
@@ -288,14 +288,14 @@ template<typename F>
 inline void
 FormQ( AbstractDistMatrix<F>& A, TreeData<F>& treeData )
 {
-    if( A.RowDist() != STAR )
+    if( A.RowDist() != Dist::STAR )
         LogicError("Invalid row distribution for TSQR");
     const Int p = mpi::Size( A.ColComm() );
     if( p == 1 )
     {
         A.Matrix() = treeData.QR0;
         ExpandPackedReflectors
-        ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0,
+        ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0,
           A.Matrix(), RootHouseholderScalars(A,treeData) );
         DiagonalScale( LeftOrRight::RIGHT, Orientation::NORMAL, RootSignature(A,treeData), A.Matrix() );
     }
@@ -304,7 +304,7 @@ FormQ( AbstractDistMatrix<F>& A, TreeData<F>& treeData )
         if( A.ColRank() == 0 )
         {
             ExpandPackedReflectors
-            ( UpperOrLower::LOWER, VERTICAL, CONJUGATED, 0,
+            ( UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, Conjugation::CONJUGATED, 0,
               RootQR(A,treeData), RootHouseholderScalars(A,treeData) );
             DiagonalScale
             ( LeftOrRight::RIGHT, Orientation::NORMAL, RootSignature(A,treeData), RootQR(A,treeData) );
@@ -318,7 +318,7 @@ FormQ( AbstractDistMatrix<F>& A, TreeData<F>& treeData )
 template<typename F>
 TreeData<F> TS( const AbstractDistMatrix<F>& A )
 {
-    if( A.RowDist() != STAR )
+    if( A.RowDist() != Dist::STAR )
         LogicError("Invalid row distribution for TSQR");
     TreeData<F> treeData;
     treeData.QR0 = A.LockedMatrix();

@@ -7,8 +7,14 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-#include "El/core/Complex/decl.hpp"
-#include "El/core/Matrix/decl.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistPermutation.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/funcs.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/Types/InertiaType.hpp"
 
 namespace El
 {

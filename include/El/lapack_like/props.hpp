@@ -10,9 +10,13 @@
 #define EL_PROPS_HPP
 
 #include "El/core/DistMatrix/Abstract.hpp"
-#include "El/Types/Complex.hpp"
+#include "El/core/DistPermutation.hpp"
 #include "El/core/Matrix/decl.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/Types/Complex.hpp"
 #include "El/Types/Enums.hpp"
+#include "El/Types/InertiaType.hpp"
 #include "El/Types/SafeProduct.hpp"
 
 namespace El

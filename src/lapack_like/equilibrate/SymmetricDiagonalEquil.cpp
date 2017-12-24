@@ -7,7 +7,12 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/matrices.hpp"
+
+namespace El
+{
 
 template<typename Field>
 void SymmetricDiagonalEquil

@@ -7,6 +7,13 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/Types/Enums.hpp"
+
 // TODO: Use column-pivoted LQ decompositions to avoid unnecessary explicit
 //       adjoints
 
@@ -18,7 +25,8 @@
 // TODO: Implement randomized algorithms from Jiawei Chiu and Laurent Demanet's
 //       "Sublinear randomized algorithms for skeleton decompositions"?
 
-namespace El {
+namespace El
+{
 
 template<typename F>
 void Skeleton

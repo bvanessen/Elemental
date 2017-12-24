@@ -28,7 +28,7 @@ void ApplyQ
     const Int minDim = Min(A.Height(),A.Width());
 
     const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
-    const Conjugation conjugation =  ( normal ? CONJUGATED : UNCONJUGATED );
+    const Conjugation conjugation =  ( normal ? Conjugation::CONJUGATED : Conjugation::UNCONJUGATED );
 
     const Int m = B.Height();
     const Int n = B.Width();
@@ -48,7 +48,7 @@ void ApplyQ
     }
 
     ApplyPackedReflectors
-    ( side, UpperOrLower::LOWER, VERTICAL, direction, conjugation, 0,
+    ( side, UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, direction, conjugation, 0,
       A, householderScalars, B );
 
     if( !applyDFirst )
@@ -82,7 +82,7 @@ void ApplyQ
     const Int minDim = Min(APre.Height(),APre.Width());
 
     const ForwardOrBackward direction = ( normal==onLeft ? ForwardOrBackward::BACKWARD : ForwardOrBackward::FORWARD );
-    const Conjugation conjugation = ( normal ? CONJUGATED : UNCONJUGATED );
+    const Conjugation conjugation = ( normal ? Conjugation::CONJUGATED : Conjugation::UNCONJUGATED );
 
     DistMatrixReadProxy<F,F,Dist::MC,Dist::MR> AProx( APre );
     DistMatrixReadWriteProxy<F,F,Dist::MC,Dist::MR> BProx( BPre );
@@ -107,7 +107,7 @@ void ApplyQ
     }
 
     ApplyPackedReflectors
-    ( side, UpperOrLower::LOWER, VERTICAL, direction, conjugation, 0,
+    ( side, UpperOrLower::LOWER, VerticalOrHorizontal::VERTICAL, direction, conjugation, 0,
       A, householderScalars, B );
 
     if( !applyDFirst )
