@@ -9,9 +9,19 @@
    which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
+
+#include "El/blas_like/level1.hpp"
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/lapack_like/spectral.hpp"
+#include "El/matrices.hpp"
+
 #include "./TriangEig/MultiShiftSolve.hpp"
 
-namespace El {
+namespace El
+{
 
 template<typename Field>
 void TriangEig( Matrix<Field>& U, Matrix<Field>& X )

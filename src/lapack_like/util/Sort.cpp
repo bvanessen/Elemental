@@ -8,65 +8,78 @@
 */
 
 #include <algorithm>
+#include <vector>
 
-namespace El {
+#include "El/blas_like/level1.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/CIRC_CIRC.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/DistMatrix/Element/STAR_VR.hpp"
+#include "El/core/DistMatrix/Element/VC_STAR.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/lapack_like/util.hpp"
+#include "El/Types/Enums.hpp"
+
+namespace El
+{
 
 // Sort each column of the real matrix X
 
 template<typename Real,
          typename/*=DisableIf<IsComplex<Real>>*/>
-void Sort( Matrix<Real>& X, SortType sort, bool stable )
+void Sort(Matrix<Real>& X, SortType sort, bool stable)
 {
     EL_DEBUG_CSE
-    if( sort == SortType::UNSORTED )
+    if (sort == SortType::UNSORTED)
         return;
     const Int m = X.Height();
     const Int n = X.Width();
-    for( Int j=0; j<n; ++j )
+    for (Int j=0; j<n; ++j)
     {
         Real* XCol = X.Buffer(0,j);
-        if( sort == SortType::ASCENDING )
+        if (sort == SortType::ASCENDING)
         {
-            if( stable )
-                std::stable_sort( XCol, XCol+m );
+            if (stable)
+                std::stable_sort(XCol, XCol+m);
             else
-                std::sort( XCol, XCol+m );
+                std::sort(XCol, XCol+m);
         }
         else
         {
-            if( stable )
-                std::stable_sort( XCol, XCol+m, std::greater<Real>() );
+            if (stable)
+                std::stable_sort(XCol, XCol+m, std::greater<Real>());
             else
-                std::sort( XCol, XCol+m, std::greater<Real>() );
+                std::sort(XCol, XCol+m, std::greater<Real>());
         }
     }
 }
 
 template<typename Real,
          typename/*=DisableIf<IsComplex<Real>>*/>
-void Sort( AbstractDistMatrix<Real>& X, SortType sort, bool stable )
+void Sort(AbstractDistMatrix<Real>& X, SortType sort, bool stable)
 {
     EL_DEBUG_CSE
-    if( sort == SortType::UNSORTED )
+    if (sort == SortType::UNSORTED)
         return;
 
-    if( (X.ColDist()==STAR && X.RowDist()==STAR) ||
-        (X.ColDist()==CIRC && X.RowDist()==CIRC) )
+    if ((X.ColDist()==Dist::STAR && X.RowDist()==Dist::STAR) ||
+        (X.ColDist()==Dist::CIRC && X.RowDist()==Dist::CIRC))
     {
-        if( X.Participating() )
-            Sort( X.Matrix(), sort, stable );
+        if (X.Participating())
+            Sort(X.Matrix(), sort, stable);
     }
     else
     {
         // TODO(poulson): Distributed sort
 
         // Get a copy on a single process, sort, and then redistribute
-        DistMatrix<Real,Dist::CIRC,Dist::CIRC> X_CIRC_CIRC( X );
-        if( X_CIRC_CIRC.Participating() )
-            Sort( X_CIRC_CIRC.Matrix(), sort, stable );
+        DistMatrix<Real,Dist::CIRC,Dist::CIRC> X_CIRC_CIRC(X);
+        if (X_CIRC_CIRC.Participating())
+            Sort(X_CIRC_CIRC.Matrix(), sort, stable);
 
         // Refill the distributed X with the sorted values
-        Copy( X_CIRC_CIRC, X );
+        Copy(X_CIRC_CIRC, X);
     }
 }
 
@@ -74,41 +87,41 @@ void Sort( AbstractDistMatrix<Real>& X, SortType sort, bool stable )
 
 template<typename Real,
          typename/*=DisableIf<IsComplex<Real>>*/>
-vector<ValueInt<Real>>
-TaggedSort( const Matrix<Real>& x, SortType sort, bool stable )
+std::vector<ValueInt<Real>>
+TaggedSort(const Matrix<Real>& x, SortType sort, bool stable)
 {
     EL_DEBUG_CSE
     const Int m = x.Height();
     const Int n = x.Width();
-    if( m != 1 && n != 1 )
+    if (m != 1 && n != 1)
         LogicError("TaggedSort is meant for a single vector");
 
-    const Int k = ( n==1 ? m : n );
-    const Int stride = ( n==1 ? 1 : x.LDim() );
+    const Int k = (n==1 ? m : n);
+    const Int stride = (n==1 ? 1 : x.LDim());
     const Real* xBuffer = x.LockedBuffer();
 
-    std::vector<ValueInt<Real>> pairs( k );
-    for( Int i=0; i<k; ++i )
+    std::vector<ValueInt<Real>> pairs(k);
+    for (Int i=0; i<k; ++i)
     {
         pairs[i].value = xBuffer[i*stride];
         pairs[i].index = i;
     }
 
-    if( sort == SortType::ASCENDING )
+    if (sort == SortType::ASCENDING)
     {
-        if( stable )
+        if (stable)
             std::stable_sort
-            ( pairs.begin(), pairs.end(), ValueInt<Real>::Lesser );
+            (pairs.begin(), pairs.end(), ValueInt<Real>::Lesser);
         else
-            std::sort( pairs.begin(), pairs.end(), ValueInt<Real>::Lesser );
+            std::sort(pairs.begin(), pairs.end(), ValueInt<Real>::Lesser);
     }
-    else if( sort == SortType::DESCENDING )
+    else if (sort == SortType::DESCENDING)
     {
-        if( stable )
+        if (stable)
             std::stable_sort
-            ( pairs.begin(), pairs.end(), ValueInt<Real>::Greater );
+            (pairs.begin(), pairs.end(), ValueInt<Real>::Greater);
         else
-            std::sort( pairs.begin(), pairs.end(), ValueInt<Real>::Greater );
+            std::sort(pairs.begin(), pairs.end(), ValueInt<Real>::Greater);
     }
 
     return pairs;
@@ -116,51 +129,51 @@ TaggedSort( const Matrix<Real>& x, SortType sort, bool stable )
 
 template<typename Real,
          typename/*=DisableIf<IsComplex<Real>>*/>
-vector<ValueInt<Real>>
-TaggedSort( const AbstractDistMatrix<Real>& x, SortType sort, bool stable )
+std::vector<ValueInt<Real>>
+TaggedSort(const AbstractDistMatrix<Real>& x, SortType sort, bool stable)
 {
     EL_DEBUG_CSE
-    if( x.ColDist()==STAR && x.RowDist()==STAR )
+    if (x.ColDist()==Dist::STAR && x.RowDist()==Dist::STAR)
     {
-        return TaggedSort( x.LockedMatrix(), sort, stable );
+        return TaggedSort(x.LockedMatrix(), sort, stable);
     }
     else
     {
-        DistMatrix<Real,Dist::STAR,Dist::STAR> x_STAR_STAR( x );
-        return TaggedSort( x_STAR_STAR.LockedMatrix(), sort, stable );
+        DistMatrix<Real,Dist::STAR,Dist::STAR> x_STAR_STAR(x);
+        return TaggedSort(x_STAR_STAR.LockedMatrix(), sort, stable);
     }
 }
 
 template<typename Real,typename Field>
 void ApplyTaggedSortToEachRow
-( const std::vector<ValueInt<Real>>& sortPairs,
-        Matrix<Field>& Z )
+(const std::vector<ValueInt<Real>>& sortPairs,
+        Matrix<Field>& Z)
 {
     EL_DEBUG_CSE
     const Int m = Z.Height();
     const Int n = Z.Width();
-    Matrix<Field> ZPerm( m, n );
-    for( Int j=0; j<n; ++j )
+    Matrix<Field> ZPerm(m, n);
+    for (Int j=0; j<n; ++j)
     {
         const Int source = sortPairs[j].index;
-        MemCopy( ZPerm.Buffer(0,j), Z.LockedBuffer(0,source), m );
+        MemCopy(ZPerm.Buffer(0,j), Z.LockedBuffer(0,source), m);
     }
     Z = ZPerm;
 }
 
 template<typename Real,typename Field>
 void ApplyTaggedSortToEachColumn
-( const std::vector<ValueInt<Real>>& sortPairs,
-        Matrix<Field>& Z )
+(const std::vector<ValueInt<Real>>& sortPairs,
+        Matrix<Field>& Z)
 {
     EL_DEBUG_CSE
     const Int m = Z.Height();
     const Int n = Z.Width();
-    Matrix<Field> ZPerm( m, n );
-    for( Int i=0; i<m; ++i )
+    Matrix<Field> ZPerm(m, n);
+    for (Int i=0; i<m; ++i)
     {
         const Int source = sortPairs[i].index;
-        for( Int j=0; j<n; ++j )
+        for (Int j=0; j<n; ++j)
             ZPerm(i,j) = Z(source,j);
     }
     Z = ZPerm;
@@ -168,148 +181,148 @@ void ApplyTaggedSortToEachColumn
 
 template<typename Real,typename Field>
 void ApplyTaggedSortToEachRow
-( const std::vector<ValueInt<Real>>& sortPairs,
-        AbstractDistMatrix<Field>& Z )
+(const std::vector<ValueInt<Real>>& sortPairs,
+        AbstractDistMatrix<Field>& Z)
 {
     EL_DEBUG_CSE
     const Int m = Z.Height();
     const Int n = Z.Width();
-    DistMatrix<Field,Dist::VC,Dist::STAR> Z_VC_STAR( Z );
+    DistMatrix<Field,Dist::VC,Dist::STAR> Z_VC_STAR(Z);
     DistMatrix<Field,Dist::VC,Dist::STAR> ZPerm_VC_STAR(Z.Grid());
-    ZPerm_VC_STAR.AlignWith( Z_VC_STAR );
-    ZPerm_VC_STAR.Resize( m, n );
+    ZPerm_VC_STAR.AlignWith(Z_VC_STAR);
+    ZPerm_VC_STAR.Resize(m, n);
     const Int mLocal = Z_VC_STAR.LocalHeight();
-    for( Int j=0; j<n; ++j )
+    for (Int j=0; j<n; ++j)
     {
         const Int source = sortPairs[j].index;
         MemCopy
-        ( ZPerm_VC_STAR.Buffer(0,j),
-          Z_VC_STAR.LockedBuffer(0,source), mLocal );
+        (ZPerm_VC_STAR.Buffer(0,j),
+          Z_VC_STAR.LockedBuffer(0,source), mLocal);
     }
     Z_VC_STAR.Empty();
-    Copy( ZPerm_VC_STAR, Z );
+    Copy(ZPerm_VC_STAR, Z);
 }
 
 template<typename Real,typename Field>
 void ApplyTaggedSortToEachColumn
-( const std::vector<ValueInt<Real>>& sortPairs,
-        AbstractDistMatrix<Field>& Z )
+(const std::vector<ValueInt<Real>>& sortPairs,
+        AbstractDistMatrix<Field>& Z)
 {
     EL_DEBUG_CSE
     const Int m = Z.Height();
     const Int n = Z.Width();
-    DistMatrix<Field,Dist::STAR,Dist::VR> Z_STAR_VR( Z );
+    DistMatrix<Field,Dist::STAR,Dist::VR> Z_STAR_VR(Z);
     DistMatrix<Field,Dist::STAR,Dist::VR> ZPerm_STAR_VR(Z.Grid());
-    ZPerm_STAR_VR.AlignWith( Z_STAR_VR );
-    ZPerm_STAR_VR.Resize( m, n );
+    ZPerm_STAR_VR.AlignWith(Z_STAR_VR);
+    ZPerm_STAR_VR.Resize(m, n);
     const Int nLocal = Z_STAR_VR.LocalWidth();
-    for( Int i=0; i<m; ++i )
+    for (Int i=0; i<m; ++i)
     {
         const Int source = sortPairs[i].index;
-        for( Int jLoc=0; jLoc<nLocal; ++jLoc )
-            ZPerm_STAR_VR.SetLocal( i, jLoc, Z_STAR_VR.GetLocal(source,jLoc) );
+        for (Int jLoc=0; jLoc<nLocal; ++jLoc)
+            ZPerm_STAR_VR.SetLocal(i, jLoc, Z_STAR_VR.GetLocal(source,jLoc));
     }
     Z_STAR_VR.Empty();
-    Copy( ZPerm_STAR_VR, Z );
+    Copy(ZPerm_STAR_VR, Z);
 }
 
 template<typename Real,
          typename/*=DisableIf<IsComplex<Real>>*/>
 void SortingPermutation
-( const Matrix<Real>& x, Permutation& sortPerm, SortType sort, bool stable )
+(const Matrix<Real>& x, Permutation& sortPerm, SortType sort, bool stable)
 {
     EL_DEBUG_CSE
-    auto sortPairs = TaggedSort( x, sort, stable );
-    const Int n = ( x.Width()==1 ? x.Height() : x.Width() );
-    sortPerm.MakeIdentity( n );
-    for( Int i=0; i<n; ++i )
-        sortPerm.SetImage( sortPairs[i].index, i );
+    auto sortPairs = TaggedSort(x, sort, stable);
+    const Int n = (x.Width()==1 ? x.Height() : x.Width());
+    sortPerm.MakeIdentity(n);
+    for (Int i=0; i<n; ++i)
+        sortPerm.SetImage(sortPairs[i].index, i);
 }
 
 template<typename Real,
          typename/*=DisableIf<IsComplex<Real>>*/>
 void MergeSortingPermutation
-( Int n0, Int n1, const Matrix<Real>& x, Permutation& sortPerm, SortType sort )
+(Int n0, Int n1, const Matrix<Real>& x, Permutation& sortPerm, SortType sort)
 {
     EL_DEBUG_CSE
     const Int m = x.Height();
     const Int n = x.Width();
-    if( m != 1 && n != 1 )
+    if (m != 1 && n != 1)
         LogicError("MergeSortingPermutation meant for a vector");
 
-    const Int k = ( n==1 ? m : n );
-    if( k != n0+n1 )
+    const Int k = (n==1 ? m : n);
+    if (k != n0+n1)
         LogicError("Dimensions did not match");
 
-    const Int stride = ( n==1 ? 1 : x.LDim() );
+    const Int stride = (n==1 ? 1 : x.LDim());
     const Real* xBuffer = x.LockedBuffer();
 
-    std::vector<ValueInt<Real>> pairs( k );
-    for( Int i=0; i<k; ++i )
+    std::vector<ValueInt<Real>> pairs(k);
+    for (Int i=0; i<k; ++i)
     {
         pairs[i].value = xBuffer[i*stride];
         pairs[i].index = i;
     }
 
-    if( sort == SortType::ASCENDING )
+    if (sort == SortType::ASCENDING)
         std::inplace_merge
-        ( pairs.begin(), pairs.begin()+n0, pairs.end(),
-          ValueInt<Real>::Lesser );
-    else if( sort == SortType::DESCENDING )
+        (pairs.begin(), pairs.begin()+n0, pairs.end(),
+          ValueInt<Real>::Lesser);
+    else if (sort == SortType::DESCENDING)
         std::inplace_merge
-        ( pairs.begin(), pairs.begin()+n0, pairs.end(),
-          ValueInt<Real>::Greater );
+        (pairs.begin(), pairs.begin()+n0, pairs.end(),
+          ValueInt<Real>::Greater);
 
-    sortPerm.MakeIdentity( k );
-    for( Int i=0; i<k; ++i )
-        sortPerm.SetImage( pairs[i].index, i );
+    sortPerm.MakeIdentity(k);
+    for (Int i=0; i<k; ++i)
+        sortPerm.SetImage(pairs[i].index, i);
 }
 
 #define PROTO_COMPLEX(Field) \
   template void ApplyTaggedSortToEachRow \
-  ( const std::vector<ValueInt<Base<Field>>>& sortPairs, \
-          Matrix<Field>& Z ); \
+  (const std::vector<ValueInt<Base<Field>>>& sortPairs, \
+          Matrix<Field>& Z); \
   template void ApplyTaggedSortToEachColumn \
-  ( const std::vector<ValueInt<Base<Field>>>& sortPairs, \
-          Matrix<Field>& Z ); \
+  (const std::vector<ValueInt<Base<Field>>>& sortPairs, \
+          Matrix<Field>& Z); \
   template void ApplyTaggedSortToEachRow \
-  ( const std::vector<ValueInt<Base<Field>>>& sortPairs, \
-          AbstractDistMatrix<Field>& Z ); \
+  (const std::vector<ValueInt<Base<Field>>>& sortPairs, \
+          AbstractDistMatrix<Field>& Z); \
   template void ApplyTaggedSortToEachColumn \
-  ( const std::vector<ValueInt<Base<Field>>>& sortPairs, \
-          AbstractDistMatrix<Field>& Z );
+  (const std::vector<ValueInt<Base<Field>>>& sortPairs, \
+          AbstractDistMatrix<Field>& Z);
 
 #define PROTO(Real) \
   PROTO_COMPLEX(Real) \
-  template void Sort( Matrix<Real>& x, SortType sort, bool stable ); \
+  template void Sort(Matrix<Real>& x, SortType sort, bool stable); \
   template void Sort \
-  ( AbstractDistMatrix<Real>& x, SortType sort, bool stable ); \
+  (AbstractDistMatrix<Real>& x, SortType sort, bool stable); \
   template std::vector<ValueInt<Real>> TaggedSort \
-  ( const Matrix<Real>& x, SortType sort, bool stable ); \
+  (const Matrix<Real>& x, SortType sort, bool stable); \
   template std::vector<ValueInt<Real>> TaggedSort \
-  ( const AbstractDistMatrix<Real>& x, SortType sort, bool stable ); \
+  (const AbstractDistMatrix<Real>& x, SortType sort, bool stable); \
   template void SortingPermutation \
-  ( const Matrix<Real>& x, Permutation& sortPerm, SortType sort, bool stable );
+  (const Matrix<Real>& x, Permutation& sortPerm, SortType sort, bool stable);
 
 // For support for double-precision MRRR with float eigenvectors
 
 #define PROTO_FLOAT \
   PROTO(float) \
   template void ApplyTaggedSortToEachRow \
-  ( const std::vector<ValueInt<float>>& sortPairs, \
-    AbstractDistMatrix<double>& Z ); \
+  (const std::vector<ValueInt<float>>& sortPairs, \
+    AbstractDistMatrix<double>& Z); \
   template void ApplyTaggedSortToEachColumn \
-  ( const std::vector<ValueInt<float>>& sortPairs, \
-    AbstractDistMatrix<double>& Z );
+  (const std::vector<ValueInt<float>>& sortPairs, \
+    AbstractDistMatrix<double>& Z);
 
 #define PROTO_COMPLEX_FLOAT \
   PROTO_COMPLEX(Complex<float>) \
   template void ApplyTaggedSortToEachRow \
-  ( const std::vector<ValueInt<float>>& sortPairs, \
-    AbstractDistMatrix<Complex<double>>& Z ); \
+  (const std::vector<ValueInt<float>>& sortPairs, \
+    AbstractDistMatrix<Complex<double>>& Z); \
   template void ApplyTaggedSortToEachColumn \
-  ( const std::vector<ValueInt<float>>& sortPairs, \
-    AbstractDistMatrix<Complex<double>>& Z );
+  (const std::vector<ValueInt<float>>& sortPairs, \
+    AbstractDistMatrix<Complex<double>>& Z);
 
 #define EL_ENABLE_DOUBLEDOUBLE
 #define EL_ENABLE_QUADDOUBLE

@@ -1,7 +1,8 @@
 #ifndef EL_TYPES_VALUEINT_HPP_
 #define EL_TYPES_VALUEINT_HPP_
 
-#include "El/Types/Complex.hpp"
+#include "El/Types/Complex_decl.hpp"
+#include "El/Types/Complex_impl.hpp"
 
 namespace El
 {

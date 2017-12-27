@@ -7,7 +7,13 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/util.hpp"
+
+namespace El
+{
 
 template<typename Real,
          typename/*=DisableIf<IsComplex<Real>>*/>
@@ -39,7 +45,7 @@ template<typename Real,
 ValueInt<Real> Median( const AbstractDistMatrix<Real>& x )
 {
     EL_DEBUG_CSE
-    if( x.ColDist() == STAR && x.RowDist() == STAR )
+    if( x.ColDist() == Dist::STAR && x.RowDist() == Dist::STAR )
     {
         return Median( x.LockedMatrix() );
     }

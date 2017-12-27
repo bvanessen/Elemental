@@ -9,9 +9,13 @@
 #ifndef EL_PSEUDOSPECTRA_UTIL_SNAPSHOT_HPP
 #define EL_PSEUDOSPECTRA_UTIL_SNAPSHOT_HPP
 
-namespace El {
+#include "El/io.hpp"
 
-namespace pspec {
+namespace El
+{
+
+namespace pspec
+{
 
 template<typename Real>
 void Snapshot
@@ -116,7 +120,7 @@ void FinalSnapshot
         }
         if( numSave )
         {
-            string base = snapCtrl.numBase;
+            std::string base = snapCtrl.numBase;
             Write( estMap, base, snapCtrl.numFormat );
             if( snapCtrl.itCounts )
                 Write( itCountMap, base+"_counts", snapCtrl.numFormat );
@@ -125,7 +129,7 @@ void FinalSnapshot
             EntrywiseMap( estMap, MakeFunction(logMap) );
         if( imgSave )
         {
-            string base = snapCtrl.imgBase;
+            std::string base = snapCtrl.imgBase;
             Write( estMap, base, snapCtrl.imgFormat );
             if( snapCtrl.itCounts )
                 Write( itCountMap, base+"_counts", snapCtrl.imgFormat );
@@ -136,7 +140,7 @@ void FinalSnapshot
         }
         if( imgDisp )
         {
-            string base = snapCtrl.imgBase;
+            std::string base = snapCtrl.imgBase;
             Display( estMap, base );
             if( snapCtrl.itCounts )
                 Display( itCountMap, base+"_counts" );
@@ -253,7 +257,7 @@ void FinalSnapshot
         }
         if( numSave )
         {
-            string base = snapCtrl.numBase;
+            std::string base = snapCtrl.numBase;
             Write( estMap, base, snapCtrl.numFormat );
             if( snapCtrl.itCounts )
                 Write( itCountMap, base+"_counts", snapCtrl.numFormat );
@@ -262,7 +266,7 @@ void FinalSnapshot
             EntrywiseMap( estMap, MakeFunction(logMap) );
         if( imgSave )
         {
-            string base = snapCtrl.imgBase;
+            std::string base = snapCtrl.imgBase;
             Write( estMap, base, snapCtrl.imgFormat );
             if( snapCtrl.itCounts )
                 Write( itCountMap, base+"_counts", snapCtrl.imgFormat );
@@ -273,7 +277,7 @@ void FinalSnapshot
         }
         if( imgDisp )
         {
-            string base = snapCtrl.imgBase;
+            std::string base = snapCtrl.imgBase;
             Display( estMap, base );
             if( snapCtrl.itCounts )
                 Display( itCountMap, base+"_counts" );

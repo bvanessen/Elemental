@@ -11,8 +11,10 @@
 
 #include "./Power.hpp"
 
-namespace El {
-namespace pspec {
+namespace El
+{
+namespace pspec
+{
 
 const Int HCapacityInit = 10;
 
@@ -99,7 +101,8 @@ void Deflate
         }
     }
     if( progress )
-        cout << "Deflation took " << timer.Stop() << " seconds" << endl;
+        std::cout << "Deflation took " << timer.Stop() << " seconds"
+                  << std::endl;
 }
 
 template<typename Real>
@@ -214,7 +217,8 @@ void Deflate
     {
         mpi::Barrier( activeShifts.Grid().Comm() );
         if( activeShifts.Grid().Rank() == 0 )
-            cout << "Deflation took " << timer.Stop() << " seconds" << endl;
+            std::cout << "Deflation took " << timer.Stop() << " seconds"
+                      << std::endl;
     }
 }
 
@@ -312,8 +316,8 @@ Lanczos
                 const double msTime = subtimer.Stop();
                 const Int numActiveShifts = activeShifts.Height();
                 const double gflops = (8.*n*n*numActiveShifts)/(msTime*1.e9);
-                cout << "  MultiShiftTrsm's: " << msTime << " seconds, "
-                     << gflops << " GFlops" << endl;
+                std::cout << "  MultiShiftTrsm's: " << msTime << " seconds, "
+                     << gflops << " GFlops" << std::endl;
             }
         }
         else
@@ -331,8 +335,8 @@ Lanczos
                 const double msTime = subtimer.Stop();
                 const Int numActiveShifts = activeShifts.Height();
                 const double gflops = (32.*n*n*numActiveShifts)/(msTime*1.e9);
-                cout << "  MultiShiftHessSolve's: " << msTime
-                     << " seconds, " << gflops << " GFlops" << endl;
+                std::cout << "  MultiShiftHessSolve's: " << msTime
+                     << " seconds, " << gflops << " GFlops" << std::endl;
             }
         }
 
@@ -359,8 +363,8 @@ Lanczos
             subtimer.Start();
         ComputeNewEstimates( HDiagList, HSubdiagList, activeEsts );
         if( progress )
-            cout << "  Ritz computations: " << subtimer.Stop()
-                 << " seconds" << endl;
+            std::cout << "  Ritz computations: " << subtimer.Stop()
+                 << " seconds" << std::endl;
 
         auto activeConverged =
             FindConverged
@@ -373,9 +377,9 @@ Lanczos
         if( progress )
         {
             const double iterTime = timer.Stop();
-            cout << "iteration " << numIts << ": " << iterTime
+            std::cout << "iteration " << numIts << ": " << iterTime
                  << " seconds, " << numDone << " of " << numShifts
-                 << " converged" << endl;
+                 << " converged" << std::endl;
         }
 
         ++numIts;
@@ -433,7 +437,7 @@ Lanczos
     const bool progress = psCtrl.progress;
 
     if( deflate && g.Rank() == 0 )
-        cerr << "NOTE: Deflation swaps not yet optimized!" << endl;
+        std::cerr << "NOTE: Deflation swaps not yet optimized!" << std::endl;
 
     // Keep track of the number of iterations per shift
     DistMatrix<Int,Dist::VR,Dist::STAR> itCounts(g);
@@ -529,8 +533,8 @@ Lanczos
                     const double msTime = subtimer.Stop();
                     const Int numActiveShifts = activeShifts.Height();
                     const double gflops = (8.*n*n*numActiveShifts)/(msTime*1e9);
-                    cout << "  MultiShiftTrsm's: " << msTime
-                         << " seconds, " << gflops << " GFlops" << endl;
+                    std::cout << "  MultiShiftTrsm's: " << msTime
+                         << " seconds, " << gflops << " GFlops" << std::endl;
                 }
             }
         }
@@ -562,8 +566,8 @@ Lanczos
                     const Int numActiveShifts = activeShifts.Height();
                     const double gflops =
                         (32.*n*n*numActiveShifts)/(msTime*1.e9);
-                    cout << "  MultiShiftHessSolve's: " << msTime
-                         << " seconds, " << gflops << " GFlops" << endl;
+                    std::cout << "  MultiShiftHessSolve's: " << msTime
+                         << " seconds, " << gflops << " GFlops" << std::endl;
                 }
             }
         }
@@ -598,8 +602,8 @@ Lanczos
         {
             mpi::Barrier( g.Comm() );
             if( g.Rank() == 0 )
-                cout << "  Ritz computations: " << subtimer.Stop()
-                     << " seconds" << endl;
+                std::cout << "  Ritz computations: " << subtimer.Stop()
+                     << " seconds" << std::endl;
         }
 
         auto activeConverged =
@@ -616,9 +620,9 @@ Lanczos
             if( g.Rank() == 0 )
             {
                 const double iterTime = timer.Stop();
-                cout << "iteration " << numIts << ": " << iterTime
+                std::cout << "iteration " << numIts << ": " << iterTime
                      << " seconds, " << numDone << " of " << numShifts
-                     << " converged" << endl;
+                     << " converged" << std::endl;
             }
         }
 

@@ -7,6 +7,11 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/View.hpp"
+#include "El/lapack_like/solve.hpp"
+
 // NOTE: These algorithms are adaptations and/or extensions of Alg. 2 from
 //       Greg Henry's "The shifted Hessenberg system solve computation".
 //       It is important to note that the Givens rotation definition in
@@ -16,8 +21,10 @@
 // TODO(poulson): Expose interface which does not solve against Q, since that
 // step is not needed for two-norm pseudospectra
 
-namespace El {
-namespace mshs {
+namespace El
+{
+namespace mshs
+{
 
 template<typename Field>
 void

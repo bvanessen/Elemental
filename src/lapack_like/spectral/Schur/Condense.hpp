@@ -9,8 +9,12 @@
 #ifndef EL_SCHUR_CONDENSE_HPP
 #define EL_SCHUR_CONDENSE_HPP
 
-namespace El {
-namespace schur {
+#include "El/core/Timer.hpp"
+
+namespace El
+{
+namespace schur
+{
 
 template<typename F>
 void Condense

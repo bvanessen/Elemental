@@ -17,13 +17,17 @@
 
 #include <mpi.h>
 
+#include "El/core/Element/decl.hpp"
 #include "El/macros.h"
+#include "El/Meta.hpp"
 #include "El/Traits.hpp"
 #include "El/Typedefs.hpp"
-#include "El/Types/Complex.hpp"
+#include "El/Types/Complex_decl.hpp"
+#include "El/Types/Entry.hpp"
 #include "El/Types/ValueInt.hpp"
 
-namespace El {
+namespace El
+{
 
 namespace mpi {
 

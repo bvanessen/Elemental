@@ -7,9 +7,16 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/imports/scalapack.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/solve.hpp"
 
-namespace lu {
+namespace El
+{
+namespace lu
+{
 
 template<typename Field>
 void Panel( Matrix<Field>& APan, Permutation& P, Permutation& p1, Int offset );

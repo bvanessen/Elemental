@@ -10,6 +10,8 @@
 #define EL_DISTMATRIX_ELEMENTAL_VR_STAR_HPP
 
 #include "El/core/DistMatrix_decl.hpp"
+#include "El/core/DistMatrix/Element.hpp"
+#include "El/core/DistMatrix/Element/STAR_VR.hpp"
 #include "El/core/Grid.hpp"
 #include "El/macros.h"
 

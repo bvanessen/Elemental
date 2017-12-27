@@ -7,9 +7,17 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistPermutation.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/matrices.hpp"
 
-namespace {
+namespace El
+{
+
+namespace
+{
 
 template<typename T>
 void PermuteCols

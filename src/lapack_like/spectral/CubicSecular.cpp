@@ -2,12 +2,17 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/spectral.hpp"
+
+namespace El
+{
 
 // Solve for an inner root of the secular equation
 //
@@ -106,7 +111,7 @@ CubicSecular
             if( secular <= zero )
             {
                 // The root is right of rootEst
-                rootLowerBound = rootEst; 
+                rootLowerBound = rootEst;
             }
             else
             {
@@ -134,9 +139,9 @@ CubicSecular
     {
         maxDenomAbs = Min( Abs(d(0)-rootEst), Abs(d(1)-rootEst) );
     }
-    if( maxDenomAbs <= safeMinToCube ) 
+    if( maxDenomAbs <= safeMinToCube )
     {
-        rescale = true; 
+        rescale = true;
         Real scale;
         if( maxDenomAbs <= safeMinToRootCube )
         {
@@ -235,7 +240,7 @@ CubicSecular
 
         // Normalize the coefficients of the quadratic equation
         const Real maxAbs = Max( Abs(a), Max( Abs(bNeg), Abs(c) ) );
-        a /= maxAbs; 
+        a /= maxAbs;
         bNeg /= maxAbs;
         c /= maxAbs;
 
@@ -292,7 +297,7 @@ CubicSecular
             // We have converged
             break;
         }
-        if( secular <= zero ) 
+        if( secular <= zero )
             rootLowerBound = rootEst;
         else
             rootUpperBound = rootEst;

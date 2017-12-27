@@ -10,6 +10,9 @@
 #define EL_DISTMATRIX_BLOCKCYCLIC_MC_MR_HPP
 
 #include "El/core/DistMatrix_decl.hpp"
+#include "El/core/DistMatrix/Block.hpp"
+#include "El/core/DistMatrix/Block/MR_MC.hpp"
+#include "El/core/DistMatrix/Block/MD_STAR.hpp"
 #include "El/core/Grid.hpp"
 #include "El/macros.h"
 

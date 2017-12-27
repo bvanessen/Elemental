@@ -7,10 +7,18 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/funcs.hpp"
+#include "El/Types/Enums.hpp"
+
 #include "./HPD/CholeskyLVar2.hpp"
 #include "./HPD/CholeskyUVar2.hpp"
 
-namespace El {
+namespace El
+{
 
 template<typename Field>
 void HPDInverse( UpperOrLower uplo, Matrix<Field>& A )

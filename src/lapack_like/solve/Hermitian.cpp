@@ -7,9 +7,15 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/solve.hpp"
 
-namespace herm_solve {
+namespace El
+{
+
+namespace herm_solve
+{
 
 template<typename Field>
 void Overwrite

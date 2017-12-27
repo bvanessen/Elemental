@@ -9,15 +9,20 @@
 #ifndef EL_FUNCS_HPP
 #define EL_FUNCS_HPP
 
+#include "El/blas_like/level3.hpp"
 #include "El/core/DistMatrix_decl.hpp"
 #include "El/core/DistMatrix/Abstract.hpp"
 #include "El/core/Matrix/decl.hpp"
 #include "El/core/Permutation.hpp"
 #include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/lapack_like/reflect.hpp"
 #include "El/lapack_like/spectral.hpp"
+#include "El/matrices.hpp"
 #include "El/Types/Enums.hpp"
 
-namespace El {
+namespace El
+{
 
 namespace SignScalingNS {
 enum SignScaling {

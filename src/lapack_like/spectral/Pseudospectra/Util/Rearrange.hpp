@@ -9,8 +9,10 @@
 #ifndef EL_PSEUDOSPECTRA_UTIL_REARRANGE_HPP
 #define EL_PSEUDOSPECTRA_UTIL_REARRANGE_HPP
 
-namespace El {
-namespace pspec {
+namespace El
+{
+namespace pspec
+{
 
 template<typename T>
 void
@@ -212,7 +214,8 @@ void PushBackList
         const Int m = vecList[k].Height();
         if( vecList[k].LDim() == m )
         {
-            cerr << "Warning: reallocation required in PushBackList" << endl;
+            std::cerr << "Warning: reallocation required in PushBackList"
+                      << std::endl;
             auto A = vecList[k];
             vecList[k].Resize( m+1, 1 );
             for( Int i=0; i<m; ++i )

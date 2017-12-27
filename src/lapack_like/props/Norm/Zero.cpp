@@ -10,7 +10,12 @@
 // The number of nonzeros in a matrix isn't really a norm...
 // but the terminology is common
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/props.hpp"
+
+namespace El
+{
 
 template<typename T>
 Int ZeroNorm( const Matrix<T>& A, Base<T> tol )

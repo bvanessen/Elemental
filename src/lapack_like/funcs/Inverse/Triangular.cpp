@@ -7,66 +7,75 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/funcs.hpp"
+#include "El/Types/Enums.hpp"
+
 #include "./Triangular/LVar3.hpp"
 #include "./Triangular/UVar3.hpp"
 
-namespace El {
-namespace triang_inv {
+namespace El
+{
+namespace triang_inv
+{
 
 template<typename Field>
-void Var3( UpperOrLower uplo, UnitOrNonUnit diag, Matrix<Field>& A  )
+void Var3(UpperOrLower uplo, UnitOrNonUnit diag, Matrix<Field>& A )
 {
     EL_DEBUG_CSE
-    if( uplo == UpperOrLower::LOWER )
-        LVar3( diag, A );
+    if (uplo == UpperOrLower::LOWER)
+        LVar3(diag, A);
     else
-        UVar3( diag, A );
+        UVar3(diag, A);
 }
 
 template<typename Field>
 void Var3
-( UpperOrLower uplo, UnitOrNonUnit diag, AbstractDistMatrix<Field>& A  )
+(UpperOrLower uplo, UnitOrNonUnit diag, AbstractDistMatrix<Field>& A )
 {
     EL_DEBUG_CSE
-    if( uplo == UpperOrLower::LOWER )
-        LVar3( diag, A );
+    if (uplo == UpperOrLower::LOWER)
+        LVar3(diag, A);
     else
-        UVar3( diag, A );
+        UVar3(diag, A);
 }
 
 } // namespace triang_inv
 
 template<typename Field>
 void TriangularInverse
-( UpperOrLower uplo, UnitOrNonUnit diag, Matrix<Field>& A )
+(UpperOrLower uplo, UnitOrNonUnit diag, Matrix<Field>& A)
 {
     EL_DEBUG_CSE
-    triang_inv::Var3( uplo, diag, A );
+    triang_inv::Var3(uplo, diag, A);
 }
 
 template<typename Field>
 void TriangularInverse
-( UpperOrLower uplo, UnitOrNonUnit diag, AbstractDistMatrix<Field>& A  )
+(UpperOrLower uplo, UnitOrNonUnit diag, AbstractDistMatrix<Field>& A )
 {
     EL_DEBUG_CSE
-    triang_inv::Var3( uplo, diag, A );
+    triang_inv::Var3(uplo, diag, A);
 }
 
 template<typename Field>
 void LocalTriangularInverse
-( UpperOrLower uplo, UnitOrNonUnit diag, DistMatrix<Field,Dist::STAR,Dist::STAR>& A )
+(UpperOrLower uplo, UnitOrNonUnit diag, DistMatrix<Field,Dist::STAR,Dist::STAR>& A)
 {
     EL_DEBUG_CSE
-    TriangularInverse( uplo, diag, A.Matrix() );
+    TriangularInverse(uplo, diag, A.Matrix());
 }
 
 #define PROTO(Field) \
   template void TriangularInverse \
-  ( UpperOrLower uplo, UnitOrNonUnit diag, Matrix<Field>& A ); \
+  (UpperOrLower uplo, UnitOrNonUnit diag, Matrix<Field>& A); \
   template void TriangularInverse \
-  ( UpperOrLower uplo, UnitOrNonUnit diag, AbstractDistMatrix<Field>& A ); \
+  (UpperOrLower uplo, UnitOrNonUnit diag, AbstractDistMatrix<Field>& A); \
   template void LocalTriangularInverse \
-  ( UpperOrLower uplo, UnitOrNonUnit diag, DistMatrix<Field,Dist::STAR,Dist::STAR>& A );
+  (UpperOrLower uplo, UnitOrNonUnit diag, DistMatrix<Field,Dist::STAR,Dist::STAR>& A);
 
 #define EL_NO_INT_PROTO
 #define EL_ENABLE_DOUBLEDOUBLE

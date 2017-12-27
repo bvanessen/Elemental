@@ -7,6 +7,10 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/spectral.hpp"
+
 #include "./BidiagSVD/QR.hpp"
 #include "./BidiagSVD/DivideAndConquer.hpp"
 

@@ -7,6 +7,17 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/funcs.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/lapack_like/solve.hpp"
+#include "El/lapack_like/spectral.hpp"
+#include "El/matrices.hpp"
+
 #include "./Pseudospectra/Util.hpp"
 #include "./Pseudospectra/Power.hpp"
 #include "./Pseudospectra/Lanczos.hpp"
@@ -18,7 +29,8 @@
 // Higham and Tisseur will hopefully be implemented soon.
 #include "./Pseudospectra/HagerHigham.hpp"
 
-namespace El {
+namespace El
+{
 
 template<typename Field>
 Matrix<Int> TriangularSpectralCloud

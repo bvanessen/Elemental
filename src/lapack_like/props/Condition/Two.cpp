@@ -7,7 +7,13 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/VR_STAR.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/spectral.hpp"
+
+namespace El
+{
 
 template<typename Field>
 Base<Field> TwoCondition( const Matrix<Field>& A )

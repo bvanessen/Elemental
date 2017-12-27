@@ -397,8 +397,8 @@ Matrix<Int> IRA
             subtimer.Start();
         Restart( HList, activeConverged, activeVList );
         if( progress )
-            cout << "IRA restart: " << subtimer.Stop()
-                 << " seconds" << endl;
+            std::cout << "IRA restart: " << subtimer.Stop()
+                 << " seconds" << std::endl;
 
         const Int numActiveDone = ZeroNorm( activeConverged );
         if( deflate )
@@ -409,9 +409,9 @@ Matrix<Int> IRA
         if( progress )
         {
             const double iterTime = timer.Stop();
-            cout << "iteration " << numIts << ": " << iterTime
+            std::cout << "iteration " << numIts << ": " << iterTime
                  << " seconds, " << numDone << " of " << numShifts
-                 << " converged" << endl;
+                 << " converged" << std::endl;
         }
         if( numIts >= maxIts )
             break;
@@ -543,8 +543,8 @@ IRA
                 const double msTime = subtimer.Stop();
                 const Int numActiveShifts = activeShifts.Height();
                 const double gflops = (4.*n*n*numActiveShifts)/(msTime*1.e9);
-                cout << "  MultiShiftQuasiTrsm's: " << msTime
-                     << " seconds, " << gflops << " GFlops" << endl;
+                std::cout << "  MultiShiftQuasiTrsm's: " << msTime
+                     << " seconds, " << gflops << " GFlops" << std::endl;
             }
 
             // Orthogonalize with respect to the old iterate
@@ -611,8 +611,8 @@ IRA
             subtimer.Start();
         Restart( HList, activeConverged, activeVRealList, activeVImagList );
         if( progress )
-            cout << "IRA restart: " << subtimer.Stop()
-                 << " seconds" << endl;
+            std::cout << "IRA restart: " << subtimer.Stop()
+                 << " seconds" << std::endl;
 
         const Int numActiveDone = ZeroNorm( activeConverged );
         if( deflate )
@@ -623,9 +623,9 @@ IRA
         if( progress )
         {
             const double iterTime = timer.Stop();
-            cout << "iteration " << numIts << ": " << iterTime
+            std::cout << "iteration " << numIts << ": " << iterTime
                  << " seconds, " << numDone << " of " << numShifts
-                 << " converged" << endl;
+                 << " converged" << std::endl;
         }
         if( numIts >= maxIts )
             break;
@@ -785,8 +785,8 @@ IRA
                         const Int numActiveShifts = activeShifts.Height();
                         const double gflops =
                             (8.*n*n*numActiveShifts)/(msTime*1.e9);
-                        cout << "  MultiShiftTrsm's: " << msTime
-                             << " seconds, " << gflops << " GFlops" << endl;
+                        std::cout << "  MultiShiftTrsm's: " << msTime
+                             << " seconds, " << gflops << " GFlops" << std::endl;
                     }
                 }
             }
@@ -818,8 +818,8 @@ IRA
                         const Int numActiveShifts = activeShifts.Height();
                         const double gflops =
                             (32.*n*n*numActiveShifts)/(msTime*1.e9);
-                        cout << "  MultiShiftHessSolve's: " << msTime
-                             << " seconds, " << gflops << " GFlops" << endl;
+                        std::cout << "  MultiShiftHessSolve's: " << msTime
+                             << " seconds, " << gflops << " GFlops" << std::endl;
                     }
                 }
             }
@@ -885,8 +885,8 @@ IRA
         {
             mpi::Barrier( g.Comm() );
             if( g.Rank() == 0 )
-                cout << "IRA computations: " << subtimer.Stop()
-                     << " seconds" << endl;
+                std::cout << "IRA computations: " << subtimer.Stop()
+                     << " seconds" << std::endl;
         }
 
         const Int numActiveDone = ZeroNorm( activeConverged );
@@ -901,9 +901,9 @@ IRA
             if( g.Rank() == 0 )
             {
                 const double iterTime = timer.Stop();
-                cout << "iteration " << numIts << ": " << iterTime
+                std::cout << "iteration " << numIts << ": " << iterTime
                      << " seconds, " << numDone << " of " << numShifts
-                     << " converged" << endl;
+                     << " converged" << std::endl;
             }
         }
         if( numIts >= maxIts )
@@ -1065,8 +1065,8 @@ IRA
                     const Int numActiveShifts = activeShifts.Height();
                     const double gflops =
                         (4.*n*n*numActiveShifts)/(msTime*1.e9);
-                    cout << "  MultiShiftQuasiTrsm's: " << msTime
-                         << " seconds, " << gflops << " GFlops" << endl;
+                    std::cout << "  MultiShiftQuasiTrsm's: " << msTime
+                         << " seconds, " << gflops << " GFlops" << std::endl;
                 }
             }
 
@@ -1141,8 +1141,8 @@ IRA
         {
             mpi::Barrier( g.Comm() );
             if( g.Rank() == 0 )
-                cout << "IRA computations: " << subtimer.Stop()
-                     << " seconds" << endl;
+                std::cout << "IRA computations: " << subtimer.Stop()
+                     << " seconds" << std::endl;
         }
 
         const Int numActiveDone = ZeroNorm( activeConverged );
@@ -1157,9 +1157,9 @@ IRA
             if( g.Rank() == 0 )
             {
                 const double iterTime = timer.Stop();
-                cout << "iteration " << numIts << ": " << iterTime
+                std::cout << "iteration " << numIts << ": " << iterTime
                      << " seconds, " << numDone << " of " << numShifts
-                     << " converged" << endl;
+                     << " converged" << std::endl;
             }
         }
         if( numIts >= maxIts )

@@ -299,9 +299,9 @@ HagerHigham
         if( progress )
         {
             const double iterTime = timer.Stop();
-            cout << "iteration " << numIts << ": " << iterTime
+            std::cout << "iteration " << numIts << ": " << iterTime
                  << " seconds, " << numDone << " of " << numShifts
-                 << " converged" << endl;
+                 << " converged" << std::endl;
         }
 
         ++numIts;
@@ -463,9 +463,9 @@ HagerHigham
         if( progress )
         {
             const double iterTime = timer.Stop();
-            cout << "iteration " << numIts << ": " << iterTime
+            std::cout << "iteration " << numIts << ": " << iterTime
                  << " seconds, " << numDone << " of " << numShifts
-                 << " converged" << endl;
+                 << " converged" << std::endl;
         }
 
         ++numIts;
@@ -653,9 +653,9 @@ HagerHigham
         if( progress && g.Rank() == 0 )
         {
             const double iterTime = timer.Stop();
-            cout << "iteration " << numIts << ": " << iterTime
+            std::cout << "iteration " << numIts << ": " << iterTime
                  << " seconds, " << numDone << " of " << numShifts
-                 << " converged" << endl;
+                 << " converged" << std::endl;
         }
 
         ++numIts;
@@ -861,9 +861,9 @@ HagerHigham
         if( progress && g.Rank() == 0 )
         {
             const double iterTime = timer.Stop();
-            cout << "iteration " << numIts << ": " << iterTime
+            std::cout << "iteration " << numIts << ": " << iterTime
                  << " seconds, " << numDone << " of " << numShifts
-                 << " converged" << endl;
+                 << " converged" << std::endl;
         }
 
         ++numIts;

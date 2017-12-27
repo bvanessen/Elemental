@@ -377,8 +377,8 @@ SpectralDivide( Matrix<Real>& A, const SDCCtrl<Real>& ctrl )
         ShiftDiagonal( G, shift );
 
         if( ctrl.progress )
-            cout << "chose shift=" << shift << " using -median.value="
-                 << -median.value << " and spread=" << spread << endl;
+            std::cout << "chose shift=" << shift << " using -median.value="
+                 << -median.value << " and spread=" << spread << std::endl;
 
         try
         {
@@ -390,17 +390,17 @@ SpectralDivide( Matrix<Real>& A, const SDCCtrl<Real>& ctrl )
             if( part.value <= tol )
             {
                 if( ctrl.progress )
-                    cout << "Converged during outer iter " << it-1 << endl;
+                    std::cout << "Converged during outer iter " << it-1 << std::endl;
                 break;
             }
             else if( ctrl.progress )
-                cout << "part.value=" << part.value << " was greater than "
-                     << tol << " during outer iter " << it-1 << endl;
+                std::cout << "part.value=" << part.value << " was greater than "
+                     << tol << " during outer iter " << it-1 << std::endl;
         }
         catch( SingularMatrixException& e )
         {
             if( ctrl.progress )
-                cout << "Caught singular matrix in outer iter " << it-1 << endl;
+                std::cout << "Caught singular matrix in outer iter " << it-1 << std::endl;
         }
         if( it != ctrl.maxOuterIts )
             A = ACopy;
@@ -446,9 +446,9 @@ SpectralDivide( Matrix<Complex<Real>>& A, const SDCCtrl<Real>& ctrl )
         ShiftDiagonal( G, shift );
 
         if( ctrl.progress )
-            cout << "chose gamma=" << gamma << " and shift=" << shift
+            std::cout << "chose gamma=" << gamma << " and shift=" << shift
                  << " using -median.value=" << -median.value
-                 << " and spread=" << spread << endl;
+                 << " and spread=" << spread << std::endl;
 
         try
         {
@@ -460,17 +460,17 @@ SpectralDivide( Matrix<Complex<Real>>& A, const SDCCtrl<Real>& ctrl )
             if( part.value <= tol )
             {
                 if( ctrl.progress )
-                    cout << "Converged during outer iter " << it-1 << endl;
+                    std::cout << "Converged during outer iter " << it-1 << std::endl;
                 break;
             }
             else if( ctrl.progress )
-                cout << "part.value=" << part.value << " was greater than "
-                     << tol << " during outer iter " << it-1 << endl;
+                std::cout << "part.value=" << part.value << " was greater than "
+                     << tol << " during outer iter " << it-1 << std::endl;
         }
         catch( SingularMatrixException& e )
         {
             if( ctrl.progress )
-                cout << "Caught singular matrix in outer iter " << it-1 << endl;
+                std::cout << "Caught singular matrix in outer iter " << it-1 << std::endl;
         }
         if( it != ctrl.maxOuterIts )
             A = ACopy;
@@ -515,8 +515,8 @@ SpectralDivide
         ShiftDiagonal( Q, shift );
 
         if( ctrl.progress )
-            cout << "chose shift=" << shift << " using -median.value="
-                 << -median.value << " and spread=" << spread << endl;
+            std::cout << "chose shift=" << shift << " using -median.value="
+                 << -median.value << " and spread=" << spread << std::endl;
 
         try
         {
@@ -528,17 +528,17 @@ SpectralDivide
             if( part.value <= tol )
             {
                 if( ctrl.progress )
-                    cout << "Converged during outer iter " << it-1 << endl;
+                    std::cout << "Converged during outer iter " << it-1 << std::endl;
                 break;
             }
             else if( ctrl.progress )
-                cout << "part.value=" << part.value << " was greater than "
-                     << tol << " during outer iter " << it-1 << endl;
+                std::cout << "part.value=" << part.value << " was greater than "
+                     << tol << " during outer iter " << it-1 << std::endl;
         }
         catch( SingularMatrixException& e )
         {
             if( ctrl.progress )
-                cout << "Caught singular matrix in outer iter " << it-1 << endl;
+                std::cout << "Caught singular matrix in outer iter " << it-1 << std::endl;
         }
         if( it != ctrl.maxOuterIts )
             A = ACopy;
@@ -587,9 +587,9 @@ SpectralDivide
         ShiftDiagonal( Q, shift );
 
         if( ctrl.progress )
-            cout << "chose gamma=" << gamma << " and shift=" << shift
+            std::cout << "chose gamma=" << gamma << " and shift=" << shift
                  << " using -median.value=" << -median.value
-                 << " and spread=" << spread << endl;
+                 << " and spread=" << spread << std::endl;
 
         try
         {
@@ -601,17 +601,17 @@ SpectralDivide
             if( part.value <= tol )
             {
                 if( ctrl.progress )
-                    cout << "Converged during outer iter " << it-1 << endl;
+                    std::cout << "Converged during outer iter " << it-1 << std::endl;
                 break;
             }
             else if( ctrl.progress )
-                cout << "part.value=" << part.value << " was greater than "
-                     << tol << " during outer iter " << it-1 << endl;
+                std::cout << "part.value=" << part.value << " was greater than "
+                     << tol << " during outer iter " << it-1 << std::endl;
         }
         catch( SingularMatrixException& e )
         {
             if( ctrl.progress )
-                cout << "Caught singular matrix in outer iter " << it-1 << endl;
+                std::cout << "Caught singular matrix in outer iter " << it-1 << std::endl;
         }
         if( it != ctrl.maxOuterIts )
             A = ACopy;
@@ -655,8 +655,8 @@ SpectralDivide( DistMatrix<Real>& A, const SDCCtrl<Real>& ctrl )
         ShiftDiagonal( G, shift );
 
         if( ctrl.progress && g.Rank() == 0 )
-            cout << "chose shift=" << shift << " using -median.value="
-                 << -median.value << " and spread=" << spread << endl;
+            std::cout << "chose shift=" << shift << " using -median.value="
+                 << -median.value << " and spread=" << spread << std::endl;
 
         try
         {
@@ -668,17 +668,17 @@ SpectralDivide( DistMatrix<Real>& A, const SDCCtrl<Real>& ctrl )
             if( part.value <= tol )
             {
                 if( ctrl.progress && g.Rank() == 0 )
-                    cout << "Converged during outer iter " << it-1 << endl;
+                    std::cout << "Converged during outer iter " << it-1 << std::endl;
                 break;
             }
             else if( ctrl.progress && g.Rank() == 0 )
-                cout << "part.value=" << part.value << " was greater than "
-                     << tol << " during outer iter " << it-1 << endl;
+                std::cout << "part.value=" << part.value << " was greater than "
+                     << tol << " during outer iter " << it-1 << std::endl;
         }
         catch( SingularMatrixException& e )
         {
             if( ctrl.progress && g.Rank() == 0 )
-                cout << "Caught singular matrix in outer iter " << it-1 << endl;
+                std::cout << "Caught singular matrix in outer iter " << it-1 << std::endl;
         }
         if( it != ctrl.maxOuterIts )
             A = ACopy;
@@ -727,9 +727,9 @@ SpectralDivide( DistMatrix<Complex<Real>>& A, const SDCCtrl<Real>& ctrl )
         ShiftDiagonal( G, shift );
 
         if( ctrl.progress && g.Rank() == 0 )
-            cout << "chose gamma=" << gamma << " and shift=" << shift
+            std::cout << "chose gamma=" << gamma << " and shift=" << shift
                  << " using -median.value=" << -median.value
-                 << " and spread=" << spread << endl;
+                 << " and spread=" << spread << std::endl;
 
         try
         {
@@ -741,17 +741,17 @@ SpectralDivide( DistMatrix<Complex<Real>>& A, const SDCCtrl<Real>& ctrl )
             if( part.value <= tol )
             {
                 if( ctrl.progress && g.Rank() == 0 )
-                    cout << "Converged during outer iter " << it-1 << endl;
+                    std::cout << "Converged during outer iter " << it-1 << std::endl;
                 break;
             }
             else if( ctrl.progress && g.Rank() == 0 )
-                cout << "part.value=" << part.value << " was greater than "
-                     << tol << " during outer iter " << it-1 << endl;
+                std::cout << "part.value=" << part.value << " was greater than "
+                     << tol << " during outer iter " << it-1 << std::endl;
         }
         catch( SingularMatrixException& e )
         {
             if( ctrl.progress && g.Rank() == 0 )
-                cout << "Caught singular matrix in outer iter " << it-1 << endl;
+                std::cout << "Caught singular matrix in outer iter " << it-1 << std::endl;
         }
         if( it != ctrl.maxOuterIts )
             A = ACopy;
@@ -798,8 +798,8 @@ SpectralDivide
         ShiftDiagonal( Q, shift );
 
         if( ctrl.progress && g.Rank() == 0 )
-            cout << "chose shift=" << shift << " using -median.value="
-                 << -median.value << " and spread=" << spread << endl;
+            std::cout << "chose shift=" << shift << " using -median.value="
+                 << -median.value << " and spread=" << spread << std::endl;
 
         try
         {
@@ -811,17 +811,17 @@ SpectralDivide
             if( part.value <= tol )
             {
                 if( ctrl.progress && g.Rank() == 0 )
-                    cout << "Converged during outer iter " << it-1 << endl;
+                    std::cout << "Converged during outer iter " << it-1 << std::endl;
                 break;
             }
             else if( ctrl.progress && g.Rank() == 0 )
-                cout << "part.value=" << part.value << " was greater than "
-                     << tol << " during outer iter " << it-1 << endl;
+                std::cout << "part.value=" << part.value << " was greater than "
+                     << tol << " during outer iter " << it-1 << std::endl;
         }
         catch( SingularMatrixException& e )
         {
             if( ctrl.progress && g.Rank() == 0 )
-                cout << "Caught singular matrix in outer iter " << it-1 << endl;
+                std::cout << "Caught singular matrix in outer iter " << it-1 << std::endl;
         }
         if( it != ctrl.maxOuterIts )
             A = ACopy;
@@ -873,9 +873,9 @@ SpectralDivide
         ShiftDiagonal( Q, shift );
 
         if( ctrl.progress && g.Rank() == 0 )
-            cout << "chose gamma=" << gamma << " and shift=" << shift
+            std::cout << "chose gamma=" << gamma << " and shift=" << shift
                  << " using -median.value=" << -median.value
-                 << " and spread=" << spread << endl;
+                 << " and spread=" << spread << std::endl;
 
         try
         {
@@ -887,17 +887,17 @@ SpectralDivide
             if( part.value <= tol )
             {
                 if( ctrl.progress && g.Rank() == 0 )
-                    cout << "Converged during outer iter " << it-1 << endl;
+                    std::cout << "Converged during outer iter " << it-1 << std::endl;
                 break;
             }
             else if( ctrl.progress && g.Rank() == 0 )
-                cout << "part.value=" << part.value << " was greater than "
-                     << tol << " during outer iter " << it-1 << endl;
+                std::cout << "part.value=" << part.value << " was greater than "
+                     << tol << " during outer iter " << it-1 << std::endl;
         }
         catch( SingularMatrixException& e )
         {
             if( ctrl.progress && g.Rank() == 0 )
-                cout << "Caught singular matrix in outer iter " << it-1 << endl;
+                std::cout << "Caught singular matrix in outer iter " << it-1 << std::endl;
         }
         if( it != ctrl.maxOuterIts )
             A = ACopy;
@@ -1049,8 +1049,8 @@ inline bool SplitGrid
         leftGrid = &grid;
         rightGrid = &grid;
         if( progress && grid.Rank() == 0 )
-            cout << "leftWork/rightWork=" << leftWork/rightWork
-                 << ", so the grid was not split" << endl;
+            std::cout << "leftWork/rightWork=" << leftWork/rightWork
+                 << ", so the grid was not split" << std::endl;
         return false;
     }
     else
@@ -1071,10 +1071,10 @@ inline bool SplitGrid
         const Int rLeft = Grid::DefaultHeight(pLeft);
         const Int rRight = Grid::DefaultHeight(pRight);
         if( progress && grid.Rank() == 0 )
-            cout << "leftWork/rightWork=" << leftWork/rightWork
+            std::cout << "leftWork/rightWork=" << leftWork/rightWork
                  << ", so split " << p << " processes into "
                  << rLeft << " x " << pLeft/rLeft << " and "
-                 << rRight << " x " << pRight/rRight << " grids" << endl;
+                 << rRight << " x " << pRight/rRight << " grids" << std::endl;
         leftGrid = new Grid( grid.VCComm(), leftGroup, rLeft );
         rightGrid = new Grid( grid.VCComm(), rightGroup, rRight );
         mpi::Free( leftGroup );

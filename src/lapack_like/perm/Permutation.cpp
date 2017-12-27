@@ -2,14 +2,21 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/Matrix.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/matrices.hpp"
 
-namespace {
+namespace El
+{
+
+namespace
+{
 
 template<typename T>
 void PermuteCols
@@ -384,10 +391,10 @@ bool Permutation::Parity() const
         if( swapSequence_ )
             LogicError("Unexpected stale parity for a swap sequence");
 
-        // Walking through the process of LU factorization with partial 
+        // Walking through the process of LU factorization with partial
         // pivoting for a permutation matrix, which never requires a
-        // Schur-complement update, yields an algorithm for expressing the 
-        // inverse of a permutation in terms of a sequence of transpositions in         // linear time. Note that performing the swaps requires access to the 
+        // Schur-complement update, yields an algorithm for expressing the
+        // inverse of a permutation in terms of a sequence of transpositions in         // linear time. Note that performing the swaps requires access to the
         // inverse permutation, which can be formed in linear time.
         if( staleInverse_ )
         {
@@ -408,7 +415,7 @@ bool Permutation::Parity() const
                 const Int invPermVal = invPermCopy(k);
                 // We only need to perform half of the swaps
                 //      perm[k] <-> perm[invPerm[k]]
-                //   invPerm[k] <-> invPerm[perk[k]] 
+                //   invPerm[k] <-> invPerm[perk[k]]
                 // since we will not need to access perm[k] and invPerm[k] again
                 permCopy(invPermVal) = permVal;
                 invPermCopy(permVal) = invPermVal;
@@ -731,7 +738,7 @@ void Permutation::ExplicitVector( Matrix<Int>& p ) const
 {
     EL_DEBUG_CSE
     if( swapSequence_ )
-    {   
+    {
         p.Resize( size_, 1 );
         for( Int i=0; i<size_; ++i )
             p(i) = i;

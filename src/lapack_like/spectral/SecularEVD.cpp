@@ -19,11 +19,18 @@
 #pragma float_control (source, on)
 #endif
 
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/lapack_like/spectral.hpp"
+#include "El/matrices.hpp"
+
 #include "./SecularEVD/TwoByTwo.hpp"
 
-namespace El {
+namespace El
+{
 
-namespace secular_evd {
+namespace secular_evd
+{
 
 template<typename Real>
 struct State

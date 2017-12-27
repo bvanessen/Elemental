@@ -14,9 +14,20 @@
 // TODO(poulson): Determine whether stopping criterion should be different than
 // that of Sign
 
-namespace El {
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistPermutation.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/funcs.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/Types/Enums.hpp"
 
-namespace square_root {
+namespace El
+{
+namespace square_root
+{
 
 template<typename Field>
 void
@@ -88,10 +99,10 @@ Newton( Matrix<Field>& A, const SquareRootCtrl<Base<Field>>& ctrl )
         ++numIts;
         std::swap( X, XNew );
         if( ctrl.progress )
-            cout << "after " << numIts << " Newton iter's: "
+            std::cout << "after " << numIts << " Newton iter's: "
                  << "oneDiff=" << oneDiff << ", oneNew=" << oneNew
                  << ", oneDiff/oneNew=" << oneDiff/oneNew << ", tol="
-                 << tol << endl;
+                 << tol << std::endl;
         if( oneDiff/oneNew <= Pow(oneNew,ctrl.power)*tol )
             break;
     }
@@ -134,10 +145,10 @@ Newton
         ++numIts;
         std::swap( X, XNew );
         if( ctrl.progress && g.Rank() == 0 )
-            cout << "after " << numIts << " Newton iter's: "
+            std::cout << "after " << numIts << " Newton iter's: "
                  << "oneDiff=" << oneDiff << ", oneNew=" << oneNew
                  << ", oneDiff/oneNew=" << oneDiff/oneNew << ", tol="
-                 << tol << endl;
+                 << tol << std::endl;
         if( oneDiff/oneNew <= Pow(oneNew,ctrl.power)*tol )
             break;
     }

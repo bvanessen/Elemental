@@ -240,8 +240,8 @@ IRL
                     const Int numActiveShifts = activeShifts.Height();
                     const double gflops =
                         (8.*n*n*numActiveShifts)/(msTime*1.e9);
-                    cout << "  MultiShiftTrsm's: " << msTime
-                         << " seconds, " << gflops << " GFlops" << endl;
+                    std::cout << "  MultiShiftTrsm's: " << msTime
+                         << " seconds, " << gflops << " GFlops" << std::endl;
                 }
             }
             else
@@ -262,8 +262,8 @@ IRL
                     const Int numActiveShifts = activeShifts.Height();
                     const double gflops =
                         (32.*n*n*numActiveShifts)/(msTime*1.e9);
-                    cout << "  MultiShiftHessSolve's: " << msTime
-                         << " seconds, " << gflops << " GFlops" << endl;
+                    std::cout << "  MultiShiftHessSolve's: " << msTime
+                         << " seconds, " << gflops << " GFlops" << std::endl;
                 }
             }
 
@@ -315,8 +315,8 @@ IRL
         Restart
         ( HDiagList, HSubdiagList, activeVList, activeConverged, activeEsts );
         if( progress )
-            cout << "IRL restart: " << subtimer.Stop()
-                 << " seconds" << endl;
+            std::cout << "IRL restart: " << subtimer.Stop()
+                 << " seconds" << std::endl;
 
         const Int numActiveDone = ZeroNorm( activeConverged );
         if( deflate )
@@ -327,9 +327,9 @@ IRL
         if( progress )
         {
             const double iterTime = timer.Stop();
-            cout << "iteration " << numIts << ": " << iterTime
+            std::cout << "iteration " << numIts << ": " << iterTime
                  << " seconds, " << numDone << " of " << numShifts
-                 << " converged" << endl;
+                 << " converged" << std::endl;
         }
         if( numIts >= maxIts )
             break;
@@ -497,8 +497,8 @@ IRL
                         const Int numActiveShifts = activeShifts.Height();
                         const double gflops =
                             (8.*n*n*numActiveShifts)/(msTime*1.e9);
-                        cout << "  MultiShiftTrsm's: " << msTime
-                             << " seconds, " << gflops << " GFlops" << endl;
+                        std::cout << "  MultiShiftTrsm's: " << msTime
+                             << " seconds, " << gflops << " GFlops" << std::endl;
                     }
                 }
             }
@@ -530,8 +530,8 @@ IRL
                         const Int numActiveShifts = activeShifts.Height();
                         const double gflops =
                             (32.*n*n*numActiveShifts)/(msTime*1.e9);
-                        cout << "  MultiShiftHessSolve's: " << msTime
-                             << " seconds, " << gflops << " GFlops" << endl;
+                        std::cout << "  MultiShiftHessSolve's: " << msTime
+                             << " seconds, " << gflops << " GFlops" << std::endl;
                     }
                 }
             }
@@ -590,8 +590,8 @@ IRL
         {
             mpi::Barrier( g.Comm() );
             if( g.Rank() == 0 )
-                cout << "IRL computations: " << subtimer.Stop()
-                     << " seconds" << endl;
+                std::cout << "IRL computations: " << subtimer.Stop()
+                     << " seconds" << std::endl;
         }
 
         const Int numActiveDone = ZeroNorm( activeConverged );
@@ -606,9 +606,9 @@ IRL
             if( g.Rank() == 0 )
             {
                 const double iterTime = timer.Stop();
-                cout << "iteration " << numIts << ": " << iterTime
+                std::cout << "iteration " << numIts << ": " << iterTime
                      << " seconds, " << numDone << " of " << numShifts
-                     << " converged" << endl;
+                     << " converged" << std::endl;
             }
         }
         if( numIts >= maxIts )

@@ -7,9 +7,19 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/DistPermutation.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/lapack_like/funcs.hpp"
+#include "El/matrices.hpp"
+
 #include "./General/LUPartialPiv.hpp"
 
-namespace El {
+namespace El
+{
 
 template<typename Field>
 void Inverse( Matrix<Field>& A )

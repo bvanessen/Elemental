@@ -7,12 +7,24 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Block/MC_MR.hpp"
+#include "El/core/DistPermutation.hpp"
+#include "El/core/imports/scalapack.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/spectral.hpp"
+#include "El/matrices.hpp"
+
 #include "./HessenbergSchur/Util/MakeSubdiagonalReal.hpp"
 #include "./HessenbergSchur/Simple.hpp"
 #include "./HessenbergSchur/MultiBulge.hpp"
 #include "./HessenbergSchur/AED.hpp"
 
-namespace El {
+namespace El
+{
 
 template<typename F>
 HessenbergSchurInfo

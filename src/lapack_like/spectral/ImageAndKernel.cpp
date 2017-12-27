@@ -7,7 +7,16 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/blas_like/level1.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistMatrix/Element/MC_MR.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/limits.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/spectral.hpp"
+
+namespace El
+{
 
 template<typename Field>
 void ImageAndKernel
@@ -90,7 +99,7 @@ void ImageAndKernel
     auto UL = U( ALL, IR(0,rank) );
     auto VR = V( ALL, IR(rank,END) );
     Copy( UL, M );
-    Copy( Dist::VR, K );
+    Copy( VR, K );
 }
 
 template<typename Field>
@@ -215,7 +224,7 @@ void Kernel
     }
 
     auto VR = V( ALL, IR(rank,END) );
-    Copy( Dist::VR, K );
+    Copy( VR, K );
 }
 
 #define PROTO(Field) \

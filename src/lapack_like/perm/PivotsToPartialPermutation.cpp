@@ -7,7 +7,13 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/perm.hpp"
+
+namespace El
+{
 
 void PivotsToPartialPermutation
 ( const Matrix<Int>& pivots,

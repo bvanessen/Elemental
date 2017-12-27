@@ -12,7 +12,7 @@
 #include "El/macros.h"
 #include "El/Meta.hpp"
 #include "El/Traits.hpp"
-#include "El/Types/Complex.hpp"
+#include "El/Types/Complex_decl.hpp"
 #include "El/Types/Entry.hpp"
 #include "El/Types/ValueInt.hpp"
 

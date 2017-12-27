@@ -7,6 +7,15 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/DistPermutation.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/funcs.hpp"
+#include "El/lapack_like/spectral.hpp"
+
 #include "./Schur/CheckReal.hpp"
 #include "./Schur/RealToComplex.hpp"
 #include "./Schur/QuasiTriangEig.hpp"
@@ -14,7 +23,8 @@
 #include "./Schur/SDC.hpp"
 #include "./Schur/InverseFreeSDC.hpp"
 
-namespace El {
+namespace El
+{
 
 template<typename F>
 void Schur

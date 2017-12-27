@@ -7,7 +7,14 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix.hpp"
+#include "El/core/DistMatrix/Element/STAR_STAR.hpp"
+#include "El/core/DistPermutation.hpp"
+#include "El/core/indexing/decl.hpp"
+#include "El/core/indexing/impl.hpp"
+
+namespace El
+{
 
 PermutationMeta::PermutationMeta
 ( const DistMatrix<Int,Dist::STAR,Dist::STAR>& perm,

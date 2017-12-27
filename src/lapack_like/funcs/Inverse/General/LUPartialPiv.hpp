@@ -9,8 +9,12 @@
 #ifndef EL_INVERSE_LUPARTIALPIV_HPP
 #define EL_INVERSE_LUPARTIALPIV_HPP
 
-namespace El {
-namespace inverse {
+#include "El/lapack_like/factor.hpp"
+
+namespace El
+{
+namespace inverse
+{
 
 // Start by forming the partially pivoted LU decomposition of A,
 //     P A = L U,

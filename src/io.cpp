@@ -7,6 +7,8 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/io.hpp"
+
 namespace {
 using namespace El;
 

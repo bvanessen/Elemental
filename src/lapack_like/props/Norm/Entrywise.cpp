@@ -7,7 +7,12 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/props.hpp"
+
+namespace El
+{
 
 template<typename Field>
 Base<Field> EntrywiseNorm( const Matrix<Field>& A, Base<Field> p )

@@ -9,6 +9,9 @@
 #ifndef EL_PSEUDOSPECTRA_POWER_HPP
 #define EL_PSEUDOSPECTRA_POWER_HPP
 
+#include "El/core/Timer.hpp"
+#include "El/core/View.hpp"
+
 #include "./Util.hpp"
 
 namespace El {
