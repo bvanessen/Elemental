@@ -7,9 +7,15 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/lapack_like/funcs.hpp"
+#include "El/lapack_like/spectral.hpp"
 
-namespace eig {
+namespace El
+{
+namespace eig
+{
 
 template<typename Real>
 void Helper

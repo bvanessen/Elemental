@@ -2,14 +2,19 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include <iostream>
+#include <sstream>
 
-namespace {
+namespace El
+{
+
+namespace
+{
 
 template<typename G>
 static G* New( size_t size )
@@ -54,8 +59,8 @@ void Memory<G>::ShallowSwap( Memory<G>& mem )
 }
 
 template<typename G>
-Memory<G>::~Memory() 
-{ 
+Memory<G>::~Memory()
+{
     Delete( rawBuffer_ );
 }
 
@@ -82,14 +87,14 @@ G* Memory<G>::Require( size_t size )
 
             size_ = size;
 #ifndef EL_RELEASE
-        } 
+        }
         catch( std::bad_alloc& e )
         {
             size_ = 0;
-            ostringstream os;
-            os << "Failed to allocate " << size*sizeof(G) 
-               << " bytes on process " << mpi::Rank() << endl;
-            cerr << os.str();
+            std::ostringstream os;
+            os << "Failed to allocate " << size*sizeof(G)
+               << " bytes on process " << mpi::Rank() << std::endl;
+            std::cerr << os.str();
             throw e;
         }
 #endif

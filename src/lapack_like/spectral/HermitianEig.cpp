@@ -7,6 +7,16 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Timer.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/lapack_like/reflect.hpp"
+#include "El/lapack_like/spectral.hpp"
+#include "El/matrices.hpp"
+
 #include "./HermitianEig/SDC.hpp"
 
 // The targeted number of pieces to break the eigenvectors into during the
@@ -14,7 +24,8 @@
 // distribution needed for backtransformation.
 #define TARGET_CHUNKS 20
 
-namespace El {
+namespace El
+{
 
 // TODO(poulson): Decide if this should be lifted
 template<typename T>

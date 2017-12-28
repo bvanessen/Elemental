@@ -2,13 +2,18 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
+
+#include "El/config.h"
+#include "El/core/imports/mpfr.hpp"
+
 #ifdef HYDROGEN_HAVE_MPC
 
-namespace El {
+namespace El
+{
 
 void BigFloat::SetNumLimbs( mpfr_prec_t prec )
 {
@@ -38,7 +43,7 @@ mpfr_prec_t BigFloat::Precision() const
 
 void BigFloat::SetPrecision( mpfr_prec_t prec )
 {
-    mpfr_set_prec( mpfrFloat_, prec ); 
+    mpfr_set_prec( mpfrFloat_, prec );
     SetNumLimbs( prec );
 }
 
@@ -71,7 +76,7 @@ BigFloat::BigFloat( const BigInt& a, mpfr_prec_t prec )
 {
     EL_DEBUG_CSE
     Init( prec );
-    mpfr_set_z( Pointer(), a.LockedPointer(), mpfr::RoundingMode() ); 
+    mpfr_set_z( Pointer(), a.LockedPointer(), mpfr::RoundingMode() );
 }
 
 BigFloat::BigFloat( const unsigned& a, mpfr_prec_t prec )
@@ -134,7 +139,7 @@ BigFloat::BigFloat( const long double& a, mpfr_prec_t prec )
 {
     EL_DEBUG_CSE
     Init( prec );
-    mpfr_set_ld( Pointer(), a, mpfr::RoundingMode() ); 
+    mpfr_set_ld( Pointer(), a, mpfr::RoundingMode() );
 }
 
 #ifdef HYDROGEN_HAVE_QD
@@ -144,7 +149,7 @@ BigFloat::BigFloat( const DoubleDouble& a, mpfr_prec_t prec )
     Init( prec );
     // Set to the high portion
     mpfr_set_d( Pointer(), a.x[0], mpfr::RoundingMode() );
-    // Add in the low portion 
+    // Add in the low portion
     *this += a.x[1];
 
 #ifdef EL_TEST_ROUNDTRIPS
@@ -153,7 +158,7 @@ BigFloat::BigFloat( const DoubleDouble& a, mpfr_prec_t prec )
       DoubleDouble b = DoubleDouble(*this);
       if( a != b )
           LogicError("a=",a,", b=",b,", a-b=",a-b,", BF=",*this);
-    )    
+    )
 #endif
 }
 
@@ -163,7 +168,7 @@ BigFloat::BigFloat( const QuadDouble& a, mpfr_prec_t prec )
     Init( prec );
     // Set to the high portion
     mpfr_set_d( Pointer(), a.x[0], mpfr::RoundingMode() );
-    // Add in the low portions 
+    // Add in the low portions
     for( Int j=1; j<4; ++j )
         *this += a.x[j];
 
@@ -173,7 +178,7 @@ BigFloat::BigFloat( const QuadDouble& a, mpfr_prec_t prec )
       QuadDouble b = QuadDouble(*this);
       if( a != b )
           LogicError("a=",a,", b=",b,", a-b=",a-b,", BF=",*this);
-    )    
+    )
 #endif
 }
 #endif
@@ -198,7 +203,7 @@ BigFloat::BigFloat( const Quad& a, mpfr_prec_t prec )
       Quad b = Quad(*this);
       if( a != b )
           LogicError("a=",a,", b=",b,", a-b=",a-b,", BF=",*this);
-    )    
+    )
 #endif
 }
 #endif
@@ -340,7 +345,7 @@ BigFloat& BigFloat::operator=( const DoubleDouble& a )
       DoubleDouble b = DoubleDouble(*this);
       if( a != b )
           LogicError("a=",a,", b=",b,", a-b=",a-b,", BF=",*this);
-    )    
+    )
 #endif
     return *this;
 }
@@ -361,7 +366,7 @@ BigFloat& BigFloat::operator=( const QuadDouble& a )
       DoubleDouble b = DoubleDouble(*this);
       if( a != b )
           LogicError("a=",a,", b=",b,", a-b=",a-b,", BF=",*this);
-    )    
+    )
 #endif
     return *this;
 }
@@ -385,7 +390,7 @@ BigFloat& BigFloat::operator=( const Quad& a )
       Quad b = Quad(*this);
       if( a != b )
           LogicError("a=",a,", b=",b,", a-b=",a-b,", BF=",*this);
-    )    
+    )
 #endif
     return *this;
 }
@@ -1082,7 +1087,7 @@ byte* BigFloat::Serialize( byte* buf ) const
     // NOTE: We don't have to necessarily serialize the precisions, as
     //       they are known a priori (as long as the user does not fiddle
     //       with SetPrecision)
-    // 
+    //
 
     std::memcpy( buf, &mpfrFloat_->_mpfr_prec, sizeof(mpfr_prec_t) );
     buf += sizeof(mpfr_prec_t);

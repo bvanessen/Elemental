@@ -7,12 +7,24 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level1.hpp"
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/imports/pmrrr.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Timer.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/props.hpp"
+#include "El/lapack_like/spectral.hpp"
+#include "El/matrices.hpp"
+
 #include "./HermitianTridiagEig/QR.hpp"
 #include "./HermitianTridiagEig/DivideAndConquer.hpp"
 
 // NOTE: dSubReal and QReal could be packed into their complex counterparts
 
-namespace El {
+namespace El
+{
 
 // Return eigenvalues
 // ==================

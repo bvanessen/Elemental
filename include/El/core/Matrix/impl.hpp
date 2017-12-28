@@ -9,8 +9,10 @@
 #ifndef EL_MATRIX_IMPL_HPP
 #define EL_MATRIX_IMPL_HPP
 
+#include "El/blas_like/level1.hpp"
 #include "El/core/indexing/decl.hpp"
 #include "El/core/indexing/impl.hpp"
+#include "El/core/View.hpp"
 
 namespace El
 {

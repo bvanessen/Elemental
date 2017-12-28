@@ -9,7 +9,10 @@
 #ifndef EL_VIEW_IMPL_HPP
 #define EL_VIEW_IMPL_HPP
 
-namespace El {
+#include "El/core/DistMatrix.hpp"
+
+namespace El
+{
 
 // View an entire matrix
 // =====================

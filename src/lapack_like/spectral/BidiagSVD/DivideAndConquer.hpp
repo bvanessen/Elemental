@@ -161,7 +161,7 @@ Merge
     for( Int j=0; j<m0; ++j )
     {
         r(j+1) = alpha*V0(lastRowOfV0,j);
-        columnTypes(j+1) = COLUMN_NONZERO_IN_FIRST_DistWrap::BLOCK;
+        columnTypes(j+1) = COLUMN_NONZERO_IN_FIRST_BLOCK;
     }
     for( Int j=0; j<m1; ++j )
     {

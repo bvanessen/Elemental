@@ -7,16 +7,25 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
+#include "El/blas_like/level1.hpp"
+#include "El/blas_like/level3.hpp"
 #include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/imports/lapack.hpp"
 #include "El/core/Matrix.hpp"
+#include "El/core/Permutation.hpp"
+#include "El/core/View.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/props.hpp"
 #include "El/lapack_like/spectral.hpp"
+#include "El/matrices.hpp"
 
 #include "./BidiagSVD/QR.hpp"
 #include "./BidiagSVD/DivideAndConquer.hpp"
 
-namespace El {
-
-namespace bidiag_svd {
+namespace El
+{
+namespace bidiag_svd
+{
 
 template<typename Real>
 Real APosterioriThreshold

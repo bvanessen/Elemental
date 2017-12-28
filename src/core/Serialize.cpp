@@ -2,10 +2,12 @@
    Copyright (c) 2009-2016, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
+
+#include "El/config.h"
 
 #ifdef HYDROGEN_HAVE_MPC
 
@@ -500,7 +502,7 @@ const byte* Deserialize( Int n, const byte* buf, Entry<Complex<BigFloat>>* x )
 
 void Deserialize( Int n, const std::vector<byte>& buf, BigInt* x )
 {
-    Deserialize( n, buf.data(), x ); 
+    Deserialize( n, buf.data(), x );
 }
 void Deserialize( Int n, const std::vector<byte>& buf, ValueInt<BigInt>* x )
 {
@@ -513,7 +515,7 @@ void Deserialize( Int n, const std::vector<byte>& buf, Entry<BigInt>* x )
 
 void Deserialize( Int n, const std::vector<byte>& buf, BigFloat* x )
 {
-    Deserialize( n, buf.data(), x ); 
+    Deserialize( n, buf.data(), x );
 }
 void Deserialize( Int n, const std::vector<byte>& buf, ValueInt<BigFloat>* x )
 {
@@ -527,7 +529,7 @@ void Deserialize( Int n, const std::vector<byte>& buf, Entry<BigFloat>* x )
 void Deserialize
 ( Int n, const std::vector<byte>& buf, Complex<BigFloat>* x )
 {
-    Deserialize( n, buf.data(), x ); 
+    Deserialize( n, buf.data(), x );
 }
 void Deserialize
 ( Int n, const std::vector<byte>& buf, ValueInt<Complex<BigFloat>>* x )

@@ -7,7 +7,15 @@
    http://opensource.org/licenses/BSD-2-Clause
 */
 
-namespace El {
+#include "El/blas_like/level3.hpp"
+#include "El/core/DistMatrix/Abstract.hpp"
+#include "El/core/Matrix.hpp"
+#include "El/core/Proxy.hpp"
+#include "El/lapack_like/factor.hpp"
+#include "El/lapack_like/spectral.hpp"
+
+namespace El
+{
 
 // Compute eigenvalues
 // ===================

@@ -912,18 +912,20 @@ LAPACKHelper
         Matrix<Real> superDiagPlus(n,1);
         superDiagPlus = superDiag;
         lapack::BidiagSVDQRAlg
-        ( UpperOrLower::UPPER, n, VAdj.Width(), U.Height(),
-          mainDiag.Buffer(), superDiagPlus.Buffer(),
-          VAdj.Buffer(), VAdj.LDim(),
-          U.Buffer(), U.LDim() );
+            ( static_cast<char>(UpperOrLower::UPPER),
+              n, VAdj.Width(), U.Height(),
+              mainDiag.Buffer(), superDiagPlus.Buffer(),
+              VAdj.Buffer(), VAdj.LDim(),
+              U.Buffer(), U.LDim() );
     }
     else
     {
         lapack::BidiagSVDQRAlg
-        ( UpperOrLower::UPPER, n, VAdj.Width(), U.Height(),
-          mainDiag.Buffer(), superDiag.Buffer(),
-          VAdj.Buffer(), VAdj.LDim(),
-          U.Buffer(), U.LDim() );
+            ( static_cast<char>(UpperOrLower::UPPER),
+              n, VAdj.Width(), U.Height(),
+              mainDiag.Buffer(), superDiag.Buffer(),
+              VAdj.Buffer(), VAdj.LDim(),
+              U.Buffer(), U.LDim() );
     }
 
     Adjoint( VAdj, V );
