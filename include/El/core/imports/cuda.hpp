@@ -108,16 +108,26 @@ public:
 
     ~GPUManager()
     {
-      if (cublas_handle_) {
-        if (cublasDestroy(cublas_handle_) != CUBLAS_STATUS_SUCCESS) {
-          std::terminate();
+#if 0
+      try{
+        if (cublas_handle_) {
+          if (cublasDestroy(cublas_handle_) != CUBLAS_STATUS_SUCCESS) {
+            std::terminate();
+          }
+        }
+        if (cuda_stream_) {
+          EL_FORCE_CHECK_CUDA(cudaStreamSynchronize(cuda_stream_));
+          EL_FORCE_CHECK_CUDA(cudaStreamDestroy(cuda_stream_));
+          // if (cudaStreamDestroy(cuda_stream_) != cudaSuccess) {
+          //   std::terminate();
+          // }
         }
       }
-      // if (cuda_stream_) {
-      //   if (cudaStreamDestroy(cuda_stream_) != cudaSuccess) {
-      //     std::terminate();
-      //   }
-      // }
+      catch(const std::exception& e) {
+        std::cerr << "~GPUManager: try ... catch " << e.what() << std::endl;
+        std::terminate();
+      }
+#endif
     }
 
 private:
