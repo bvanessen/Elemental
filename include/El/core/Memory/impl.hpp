@@ -105,10 +105,9 @@ struct MemHelper<G,Device::GPU>
 #ifdef HYDROGEN_HAVE_CUB
         case 1:
             {
-                GPUManager* gpu_manager = GPUManager::getInstance();
                 status = cubMemPool.DeviceAllocate(&ptr,
                                                    size * sizeof(G),
-                                                   gpu_manager->get_local_stream());
+                                                   GPUManager::Stream());
             }
             break;
 #endif // HYDROGEN_HAVE_CUB
@@ -118,8 +117,14 @@ struct MemHelper<G,Device::GPU>
         // Check for errors
         if (status != cudaSuccess)
         {
+            size_t freeMemory = 0;
+            size_t totalMemory = 0;
+            cudaMemGetInfo(&freeMemory, &totalMemory);
             RuntimeError("Failed to allocate GPU memory with message: ",
-                         "\"", cudaGetErrorString(status), "\"");
+                         "\"", cudaGetErrorString(status), "\" ",
+                         "(",size*sizeof(G)," bytes requested, ",
+                         freeMemory," bytes available, ",
+                         totalMemory," bytes total)");
         }
 
         return ptr;
@@ -150,16 +155,9 @@ struct MemHelper<G,Device::GPU>
 
     static void MemZero( G* buffer, size_t numEntries, unsigned int mode )
     {
-        GPUManager* gpu_manager = GPUManager::getInstance();
-        auto error = cudaMemsetAsync(buffer,
-                                     0,
-                                     numEntries * sizeof(G),
-                                     gpu_manager->get_local_stream());
-        if (error != cudaSuccess)
-        {
-            RuntimeError("cudaMemsetAsync failed with message: \"",
-                         cudaGetErrorString(error), "\"");
-        }
+        EL_CHECK_CUDA(cudaMemsetAsync(buffer, 0x0,
+                                      numEntries * sizeof(G),
+                                      GPUManager::Stream()));
     }
 
 };
